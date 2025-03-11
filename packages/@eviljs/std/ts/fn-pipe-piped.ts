@@ -24,7 +24,7 @@ export function createPipeLazy(
         to(fn) {
             return createPipeLazy([...stack, fn], compute)
         },
-        end() {
+        get end() {
             return compute(stack)
         },
     }
@@ -47,7 +47,7 @@ export function computePipeLazy(stack: Array<PipeLazyTask>, input: unknown): unk
 export interface PipeLazy<V1> {
     __stack__: Array<PipeLazyTask>
     to<V2>(fn: Io<V1, V2>): PipeLazy<V2>
-    end(): V1
+    end: V1
 }
 
 export type PipeLazyTask = Io<unknown, unknown>

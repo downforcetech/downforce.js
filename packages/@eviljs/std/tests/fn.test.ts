@@ -261,9 +261,9 @@ describe('@eviljs/std/fn', (ctx) => {
     test('piped()', (ctx) => {
         {
             const result = piped(subject)
-            .to(identity)
-            .to(identity)
-            .end()
+                .to(identity)
+                .to(identity)
+            .end
 
             expectType<Subject>(result)
             Assert.strictEqual(result, subject)
