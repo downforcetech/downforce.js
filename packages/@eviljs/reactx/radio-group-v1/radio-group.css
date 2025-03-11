@@ -1,5 +1,5 @@
 .RadioGroup-e37b {
-    --radio-size--default: 1em;
+    --RadioGroup-size--default: 1em;
 }
 
 .item-bf74,
@@ -9,7 +9,7 @@
 }
 
 .radio-1370 {
-    width: var(--radio-size, var(--radio-size--default, 1em));
-    height: var(--radio-size, var(--radio-size--default, 1em));
+    width: var(--RadioGroup-size, var(--RadioGroup-size--default));
+    height: var(--RadioGroup-size, var(--RadioGroup-size--default));
     flex-shrink: 0;
 }
