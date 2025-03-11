@@ -1,0 +1,25 @@
+{
+    "type": "module",
+    "scripts": {
+        "check": "tsc --noEmit",
+        "build": "tsc --listEmittedFiles",
+        "test": "npm run build && npx --yes tsx --test"
+    },
+    "engines": { "node": ">= 20" },
+    "packageManager": "pnpm@10.6.2",
+    "dependencies": {
+        "@evilcss/std": "workspace:*",
+        "@evilcss/ui": "workspace:*",
+        "@eviljs/react": "workspace:*",
+        "@eviljs/reactx": "workspace:*",
+        "@eviljs/std": "workspace:*",
+        "@eviljs/ts-reset": "workspace:*",
+        "@eviljs/web": "workspace:*",
+        "@eviljs/webx": "workspace:*",
+        "tslib": "2"
+    },
+    "devDependencies": {
+        "@eviljs/tsconfig": "workspace:*",
+        "typescript": "5.8"
+    }
+}

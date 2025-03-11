@@ -6,6 +6,7 @@
             "cache": true,
             "dependsOn": ["^build"],
             "inputs": [
+                "{workspaceRoot}/.npmrc",
                 "{workspaceRoot}/package.json",
                 "{workspaceRoot}/pnpm-lock.yaml",
                 "{projectRoot}/package.json",

@@ -8,7 +8,10 @@
 set -e # errexit
 set -u # nounset
 
-Dir="$(cd "$(dirname "$0")/.." && pwd)"
+case "$(dirname "$0")" in
+    /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
+    *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
+esac
 
 : ${Git:=git}
 : ${Npm:=npm}
@@ -29,7 +32,7 @@ for pkg; do
         $Git -C "$pkg" commit --edit --message "($pkg_name) "
     fi
 
-    "$Dir/tools/package-publish" "$pkg"
+    "$Dir/package-publish" "$pkg"
 
     pkg_version=$(npm --prefix "$pkg" pkg get version | tr -d '"')
 

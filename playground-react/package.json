@@ -1,7 +1,7 @@
 {
     "type": "module",
     "scripts": {
-        "init": "corepack pnpm install",
+        "init": "pnpm install",
         "upgrade": "npx npm-upgrade@latest && npm --prefix dev run upgrade && npm run init",
         "check": "npm --prefix dev run check",
         "build": "npm --prefix dev run build",
@@ -9,7 +9,8 @@
         "preview": "npm --prefix dev run preview",
         "serve": "npm --prefix dev run serve"
     },
-    "packageManager": "pnpm@9.15.0",
+    "engines": { "node": ">= 20" },
+    "packageManager": "pnpm@10.6.2",
     "dependencies": {
         "@evilcss/std": "link:../packages/@evilcss/std",
         "@evilcss/ui": "link:../packages/@evilcss/ui",
@@ -26,8 +27,5 @@
     },
     "devDependencies": {
         "@eviljs/tsconfig": "link:../packages/@eviljs/tsconfig"
-    },
-    "engines": {
-        "node": ">= 18"
     }
 }

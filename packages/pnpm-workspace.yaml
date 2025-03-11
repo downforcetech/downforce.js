@@ -1,1 +1,3 @@
-packages: ['@evilcss/*', '@eviljs/*']
+packages: ['@evilcss/*', '@eviljs/*', 'tests']
+
+ignoredBuiltDependencies: ['nx']

@@ -1,7 +1,7 @@
 {
     "type": "module",
     "scripts": {
-        "init": "corepack pnpm install",
+        "init": "pnpm install",
         "upgrade": "npx npm-upgrade@latest && npm run init",
         "check": "npm run check-ts && npm run check-circular",
         "check-ts": "tsc --noEmit --project ..",
@@ -19,7 +19,7 @@
         "postcss-preset-env": "10",
         "rollup-plugin-visualizer": "5",
         "tslib": "2",
-        "typescript": "5.7",
+        "typescript": "5.8",
         "vite": "6",
         "vite-plugin-checker": "0",
         "vite-plugin-ejs": "1"

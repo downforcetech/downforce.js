@@ -8,7 +8,10 @@
 set -e # errexit
 set -u # nounset
 
-Dir="$(cd "$(dirname "$0")/.." && pwd)"
+case "$(dirname "$0")" in
+    /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
+    *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
+esac
 
 : ${NpmUpgrade:=npx npm-upgrade}
 : ${NpmUpgradeArgs:=}
@@ -21,7 +24,7 @@ for pkg; do
 
     (
         case "$pkg" in
-            /*) cd "$pkg";;
+            /*|./*) cd "$pkg";;
             *) cd "$PWD/$pkg";;
         esac
 

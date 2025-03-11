@@ -8,7 +8,10 @@ set -u # nounset
 # EXAMPLE
 # ./package-clean ./packages/@evil*/*
 
-Dir="$(cd "$(dirname "$0")/.." && pwd)"
+case "$(dirname "$0")" in
+    /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
+    *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
+esac
 
 : ${Git:=git}
 
