@@ -23,7 +23,7 @@
     },
     "devDependencies": {
         "@types/node": "22",
-        "typescript": "5.7"
+        "typescript": "5.8"
     },
     "author": "Daniele Orlando",
     "license": "BSD-2-Clause",
@@ -34,12 +34,12 @@
         "Vanilla",
         "JS"
     ],
-    "homepage": "https://github.com/EvilcorpTech/evilcode",
+    "homepage": "https://github.com/EvilcorpTech/eviljs",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/EvilcorpTech/evilcode.git"
+        "url": "git+https://github.com/EvilcorpTech/eviljs.git"
     },
     "bugs": {
-        "url": "https://github.com/EvilcorpTech/evilcode/issues"
+        "url": "https://github.com/EvilcorpTech/eviljs/issues"
     }
 }

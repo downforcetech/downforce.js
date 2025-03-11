@@ -1,5 +1,6 @@
 export * from './fn-call.js'
 export * from './fn-cancel.js'
+export * from './fn-chain.js'
 export * from './fn-compose.js'
 export * from './fn-compute.js'
 export * from './fn-event.js'

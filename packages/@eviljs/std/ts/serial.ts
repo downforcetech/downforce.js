@@ -81,13 +81,7 @@ export const SerialBuiltinCodec: {
             return value instanceof Map
         },
         encode(map, ctx) {
-            return Array.from(map.entries()).map((entry, idx) => {
-                const [key, value] = entry
-
-                const valueEncoded = visitStruct(value, {...ctx, path: [...ctx.path, idx, 1]})
-
-                return [key, valueEncoded]
-            })
+            return Array.from(map.entries()).map((entry, idx) => entry)
         },
         decode(mapEncoded) {
             return new Map(mapEncoded)
@@ -99,9 +93,7 @@ export const SerialBuiltinCodec: {
             return value instanceof Set
         },
         encode(set, ctx) {
-            return Array.from(set.values()).map((value, idx) => {
-                return visitStruct(value, {...ctx, path: [...ctx.path, idx]})
-            })
+            return Array.from(set.values()).map((value, idx) => value)
         },
         decode(setEncoded) {
             return new Set(setEncoded)
@@ -124,6 +116,9 @@ export function serializeStruct(
 }
 
 export function visitStruct(value: unknown, ctx: SerialCodecContext): unknown {
+    if (isPrimitive(value)) {
+        return value
+    }
     for (const codec of ctx.codecs) {
         const codecDidMatch = codec.is(value)
 
@@ -133,12 +128,11 @@ export function visitStruct(value: unknown, ctx: SerialCodecContext): unknown {
 
         const valueEncoded = codec.encode(value, ctx)
 
+        const valueEncodedDeep = visitStruct(valueEncoded, ctx)
+
         ctx.stack.push([ctx.path, codec.id])
 
-        return valueEncoded
-    }
-    if (isPrimitive(value)) {
-        return value
+        return valueEncodedDeep
     }
     if (isArray(value)) {
         return value.map((it, idx) => {
