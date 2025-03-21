@@ -1,6 +1,6 @@
 {
-    "name": "@eviljs/tsconfig",
-    "version": "1.8.0",
+    "name": "@downforce/ts-config",
+    "version": "1.0.0",
     "type": "module",
     "sideEffects": false,
     "files": [
@@ -14,12 +14,12 @@
         "TypeScript",
         "tsconfig"
     ],
-    "homepage": "https://github.com/EvilcorpTech/eviljs",
+    "homepage": "https://github.com/downforce-tech/downforce.js",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/EvilcorpTech/eviljs.git"
+        "url": "git+https://github.com/downforce-tech/downforce.js.git"
     },
     "bugs": {
-        "url": "https://github.com/EvilcorpTech/eviljs/issues"
+        "url": "https://github.com/downforce-tech/downforce.js/issues"
     }
 }
