@@ -1,9 +1,9 @@
-import {getObjectPath, setObjectPath} from '@eviljs/std/object-path'
-import {cloneDeep} from '@eviljs/std/struct'
+import {getObjectPath, setObjectPath} from '@downforce/std/object-path'
+import {cloneDeep} from '@downforce/std/struct'
 import Assert from 'node:assert'
 import {describe, test} from 'node:test'
 
-describe('@eviljs/std/object-path', (ctx) => {
+describe('@downforce/std/object-path', (ctx) => {
     const leaf = 'initial value'
     const tree = [
         {

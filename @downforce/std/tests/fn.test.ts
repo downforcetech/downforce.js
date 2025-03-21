@@ -1,5 +1,5 @@
-import {chain} from '@eviljs/std/fn-chain'
-import {compose} from '@eviljs/std/fn-compose'
+import {chain} from '@downforce/std/fn-chain'
+import {compose} from '@downforce/std/fn-compose'
 import {
     awaiting,
     catching,
@@ -16,16 +16,16 @@ import {
     mappingSome,
     then,
     trying,
-} from '@eviljs/std/fn-monad'
-import {pipe, piped, piping} from '@eviljs/std/fn-pipe'
-import {identity} from '@eviljs/std/fn-return'
-import {ResultError} from '@eviljs/std/result'
-import {expectType} from '@eviljs/std/type'
-import {ensureStringNotEmpty} from '@eviljs/std/type-ensure'
+} from '@downforce/std/fn-monad'
+import {pipe, piped, piping} from '@downforce/std/fn-pipe'
+import {identity} from '@downforce/std/fn-return'
+import {ResultError} from '@downforce/std/result'
+import {expectType} from '@downforce/std/type'
+import {ensureStringNotEmpty} from '@downforce/std/type-ensure'
 import Assert from 'node:assert'
 import {describe, test} from 'node:test'
 
-describe('@eviljs/std/fn', (ctx) => {
+describe('@downforce/std/fn', (ctx) => {
     type Subject = {id: number, name: string, age: number, admin: boolean}
     const subject: Subject = {id: 1, name: 'Mario', age: 18, admin: false}
 

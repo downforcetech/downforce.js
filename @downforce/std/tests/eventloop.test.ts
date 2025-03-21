@@ -1,8 +1,8 @@
-import {scheduleMacroTaskUsingTimeout, scheduleMicroTaskUsingPromise} from '@eviljs/std/eventloop'
+import {scheduleMacroTaskUsingTimeout, scheduleMicroTaskUsingPromise} from '@downforce/std/eventloop'
 import Assert from 'node:assert'
 import {describe, test} from 'node:test'
 
-describe('@eviljs/std/eventloop', (ctx) => {
+describe('@downforce/std/eventloop', (ctx) => {
     test('schedule{Micro,Marco}TaskUsing*()', async (ctx) => {
         const results: Array<string> = []
 

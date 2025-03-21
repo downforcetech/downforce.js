@@ -1,8 +1,8 @@
-import {deserializeStruct, serializeStruct} from '@eviljs/std/serial'
+import {deserializeStruct, serializeStruct} from '@downforce/std/serial'
 import Assert from 'node:assert'
 import {describe, test} from 'node:test'
 
-describe('@eviljs/std/serial', (ctx) => {
+describe('@downforce/std/serial', (ctx) => {
     const dateString = '2000-01-01T00:00:00.000Z'
     const regexpString = 'a|b([a-z]+)'
     const date = new Date(dateString)

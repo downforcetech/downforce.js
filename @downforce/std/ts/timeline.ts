@@ -18,7 +18,7 @@ export function playTimeline(timeline: TimelineAsync): Promise<unknown> {
     }
 
     return throwInvalidArgument(
-        '@eviljs/std/timeline.playTimeline(~~timeline~~):\n'
+        '@downforce/std/timeline.playTimeline(~~timeline~~):\n'
         + `timeline must be a Function | Object | Array, given "${timeline}".`
     )
 }

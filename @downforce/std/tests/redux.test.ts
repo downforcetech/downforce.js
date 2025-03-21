@@ -5,10 +5,10 @@ import {
     type ReduxActionReducer,
     type ReduxCompositeReducerOfEntries,
     type ReduxReducerId,
-} from '@eviljs/std/redux'
+} from '@downforce/std/redux'
 import {describe, test} from 'node:test'
 
-describe('@eviljs/std/redux', (ctx) => {
+describe('@downforce/std/redux', (ctx) => {
     test('defineReduxAction()', (ctx) => {
         type State = {state: number}
         const state = {state: 1}

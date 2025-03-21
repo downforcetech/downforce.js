@@ -1,9 +1,9 @@
-import {piping} from '@eviljs/std/fn-pipe'
-import {defineMachine} from '@eviljs/std/machine'
+import {piping} from '@downforce/std/fn-pipe'
+import {defineMachine} from '@downforce/std/machine'
 import Assert from 'node:assert'
 import {describe, test} from 'node:test'
 
-describe('@eviljs/std/machine', (ctx) => {
+describe('@downforce/std/machine', (ctx) => {
     test('defineMachine()', (ctx) => {
         enum StateType {
             Init = 'init',

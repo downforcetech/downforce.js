@@ -1,10 +1,10 @@
-import {asArray} from '@eviljs/std/type-as'
-import {ensureEnum} from '@eviljs/std/type-ensure'
-import {expectType} from '@eviljs/std/type-expect'
+import {asArray} from '@downforce/std/type-as'
+import {ensureEnum} from '@downforce/std/type-ensure'
+import {expectType} from '@downforce/std/type-expect'
 import Assert from 'node:assert'
 import {describe, test} from 'node:test'
 
-describe('@eviljs/std/type-as', (ctx) => {
+describe('@downforce/std/type-as', (ctx) => {
     test('asArray()', (ctx) => {
         expectType<[number]>(asArray([] as any as (number | [number])))
         expectType<number[]>(asArray([] as any as (number | number[])))
@@ -18,7 +18,7 @@ describe('@eviljs/std/type-as', (ctx) => {
     })
 })
 
-describe('@eviljs/std/type-ensure', (ctx) => {
+describe('@downforce/std/type-ensure', (ctx) => {
     test('ensureEnum()', (ctx) => {
         const enum1: ['A', 'B'] = ['A', 'B']
         const enum2: readonly ['A', 'B'] = ['A', 'B']

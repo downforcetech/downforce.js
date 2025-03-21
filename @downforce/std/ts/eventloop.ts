@@ -39,7 +39,7 @@ export function scheduleMacroTaskUsingTimeout(task: Task): Task {
 }
 
 let PostMessageInit = false
-export let PostMessageId = '@eviljs/std/eventloop.scheduleMacroTaskWithPostMessage()'
+export let PostMessageId = '@downforce/std/eventloop.scheduleMacroTaskWithPostMessage()'
 export const PostMessageQueue: Array<Task> = []
 
 export function scheduleMacroTaskUsingPostMessage(task: Task): Task {
