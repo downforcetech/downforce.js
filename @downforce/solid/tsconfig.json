@@ -1,5 +1,5 @@
 {
-    "extends": "../../@eviljs/tsconfig/preset-solid-lib.json",
+    "extends": "../../@downforce/ts-config/preset-solid-lib.json",
     "compilerOptions": {
     },
 }
