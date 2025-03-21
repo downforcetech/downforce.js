@@ -2,7 +2,7 @@ import type {FnArgs, FnAsync} from '@eviljs/std/fn-type'
 import {areObjectsEqualShallow} from '@eviljs/std/object'
 import type {PromiseView} from '@eviljs/std/promise'
 import type {ResultOrError} from '@eviljs/std/result'
-import {asResultOrError, isResult, isResultError, whenResultOrError} from '@eviljs/std/result'
+import {Result} from '@eviljs/std/result'
 import {isDefined} from '@eviljs/std/type-is'
 import {useCallback, useRef, useState} from 'react'
 
@@ -14,6 +14,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
         fulfilled: false,
         rejected: false,
         pending: false,
+        settled: true,
     })
     const taskHandleRef = useRef<TaskHandle>(undefined)
 
@@ -38,6 +39,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
                 fulfilled: state.fulfilled,
                 rejected: state.rejected,
                 pending: true,
+                settled: false,
             }
             if (areObjectsEqualShallow(state, nextState)) {
                 return state // Optimization.
@@ -48,25 +50,25 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
         const taskHandle: TaskHandle = {
             cancel() { taskHandle.canceled = true },
             canceled: false,
-            promise: asResultOrError(asyncTask(...args)),
+            promise: Result.from(asyncTask(...args)),
         }
 
         taskHandleRef.current = taskHandle
 
         const resultOrError: ResultOrError<R, unknown> = await taskHandle.promise
 
-        if (taskHandle.canceled && taskHandleRef.current !== taskHandle) {
-            // A new task started after current one. We fulfill current one
-            // with the result-or-error of the newer one.
-            return taskHandleRef.current?.promise
-        }
         if (taskHandle.canceled && taskHandleRef.current === taskHandle) {
             // Task has been canceled with cancel() and no new task started with call().
             return
         }
+        if (taskHandle.canceled && taskHandleRef.current !== taskHandle) {
+            // Task has been canceled with cancel() and a new task started after current one.
+            // We fulfill current one with the result-or-error of the newer one.
+            return taskHandleRef.current?.promise
+        }
 
         setState(
-            whenResultOrError(resultOrError, {
+            Result.map(resultOrError, {
                 result: (result): AsyncIoState<R> => ({
                     output: resultOrError,
                     error: undefined,
@@ -74,6 +76,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
                     fulfilled: true,
                     rejected: false,
                     pending: false,
+                    settled: true,
                 }),
                 error: (error): AsyncIoState<R> => ({
                     output: resultOrError,
@@ -82,6 +85,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
                     fulfilled: false,
                     rejected: true,
                     pending: false,
+                    settled: true,
                 }),
             })
         )
@@ -100,6 +104,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
                 fulfilled: state.fulfilled,
                 rejected: state.rejected,
                 pending: false,
+                settled: true,
             }
             if (areObjectsEqualShallow(state, nextState)) {
                 return state // Optimization.
@@ -117,6 +122,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
                 fulfilled: false,
                 rejected: false,
                 pending: false,
+                settled: true,
             }
             if (areObjectsEqualShallow(state, nextState)) {
                 return state // Optimization.
@@ -128,12 +134,13 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
     const resetError = useCallback(() => {
         setState(state => {
             const nextState: AsyncIoState<R> = {
-                output: isResultError(state.output) ? undefined : state.output,
+                output: Result.isError(state.output) ? undefined : state.output,
                 error: undefined,
                 result: state.result,
                 fulfilled: state.fulfilled,
                 rejected: false,
                 pending: state.pending,
+                settled: state.settled,
             }
             if (areObjectsEqualShallow(state, nextState)) {
                 return state // Optimization.
@@ -145,12 +152,13 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
     const resetResult = useCallback(() => {
         setState(state => {
             const nextState: AsyncIoState<R> = {
-                output: isResult(state.output) ? undefined : state.output,
+                output: Result.isResult(state.output) ? undefined : state.output,
                 error: state.error,
                 result: undefined,
                 fulfilled: false,
                 rejected: state.rejected,
                 pending: state.pending,
+                settled: state.settled,
             }
             if (areObjectsEqualShallow(state, nextState)) {
                 return state // Optimization.
@@ -167,15 +175,18 @@ export function useAsyncIoAggregated(asyncIoStates: Record<string, AsyncIoState<
     results: Array<unknown>
     pending: boolean
     rejected: boolean
+    settled: boolean
     hasError: boolean
 } {
-    const errors = Object.values(asyncIoStates).map(it => it.error).filter(isDefined)
-    const results = Object.values(asyncIoStates).map(it => it.result)
-    const pending = Object.values(asyncIoStates).some(it => it.pending)
-    const rejected = Object.values(asyncIoStates).some(it => it.rejected)
+    const values = Object.values(asyncIoStates)
+    const errors = values.map(it => it.error).filter(isDefined)
+    const results = values.map(it => it.result)
+    const pending = values.some(it => it.pending)
+    const rejected = values.some(it => it.rejected)
+    const settled = values.every(it => it.settled)
     const hasError = errors.length > 0
 
-    return {errors, results, pending, rejected, hasError}
+    return {errors, results, pending, settled, rejected, hasError}
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
