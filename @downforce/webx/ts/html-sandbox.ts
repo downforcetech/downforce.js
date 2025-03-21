@@ -1,5 +1,5 @@
-import {tryOrValue} from '@eviljs/std/fn-try'
-import {onMounted, useEventListener, WebElement} from '@eviljs/web/element'
+import {tryOrValue} from '@downforce/std/fn-try'
+import {onMounted, useEventListener, WebElement} from '@downforce/web/element'
 
 /*
 * EXAMPLE
