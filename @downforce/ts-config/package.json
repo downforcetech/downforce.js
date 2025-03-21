@@ -10,16 +10,10 @@
     "author": "Daniele Orlando",
     "license": "BSD-2-Clause",
     "description": "TypeScript tsconfig presets",
-    "keywords": [
-        "TypeScript",
-        "tsconfig"
-    ],
-    "homepage": "https://github.com/downforce-tech/downforce.js",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/downforce-tech/downforce.js.git"
-    },
+    "keywords": ["TypeScript", "tsconfig"],
+    "homepage": "https://github.com/downforcetech/downforce.js",
+    "repository": {"type": "git", "url": "git+https://github.com/downforcetech/downforce.js.git"},
     "bugs": {
-        "url": "https://github.com/downforce-tech/downforce.js/issues"
+        "url": "https://github.com/downforcetech/downforce.js/issues"
     }
 }
