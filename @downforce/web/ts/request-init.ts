@@ -1,5 +1,5 @@
-import {mapSome} from '@eviljs/std/fn-monad'
-import type {Io} from '@eviljs/std/fn-type'
+import {mapSome} from '@downforce/std/fn-monad'
+import type {Io} from '@downforce/std/fn-type'
 import {cloneRequest} from './request-clone.js'
 import {mergeRequest, mergeRequestHeaders} from './request-merge.js'
 import type {RequestMethodEnum} from './request-method.js'

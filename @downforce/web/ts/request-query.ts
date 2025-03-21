@@ -1,5 +1,5 @@
-import {piping} from '@eviljs/std/fn-pipe'
-import type {Io} from '@eviljs/std/fn-type'
+import {piping} from '@downforce/std/fn-pipe'
+import type {Io} from '@downforce/std/fn-type'
 import {usingRequestHeaders} from './request-init.js'
 import {usingRequestParams} from './request-params.js'
 import type {UrlParams} from './url-params.js'

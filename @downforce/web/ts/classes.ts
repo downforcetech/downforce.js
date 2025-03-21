@@ -1,5 +1,5 @@
-import {isObject} from '@eviljs/std/type-is'
-import type {None} from '@eviljs/std/type'
+import {isObject} from '@downforce/std/type-is'
+import type {None} from '@downforce/std/type'
 
 export function classes(...args: Array<Classes>): string {
     // Implementation based on these benchmarks:
@@ -38,7 +38,7 @@ export function classes(...args: Array<Classes>): string {
         }
 
         console.error(
-            '@eviljs/web/classes.classes(~~...args~~):\n'
+            '@downforce/web/classes.classes(~~...args~~):\n'
             + `args must be of type String | Object | Array, given "${arg}".`
         )
     }

@@ -1,7 +1,7 @@
-import {mapSome} from '@eviljs/std/fn-monad'
-import {deserializeStruct, serializeStruct} from '@eviljs/std/serial'
+import {mapSome} from '@downforce/std/fn-monad'
+import {deserializeStruct, serializeStruct} from '@downforce/std/serial'
 
-export {deserializeStruct as deserializeSsrState, serializeStruct as serializeSsrState} from '@eviljs/std/serial'
+export {deserializeStruct as deserializeSsrState, serializeStruct as serializeSsrState} from '@downforce/std/serial'
 
 export function saveSsrState(id: string, payload: unknown, options?: undefined | SsrSaveOptions): void {
     if (! payload) {

@@ -1,4 +1,4 @@
-import type {ObjectPartial} from '@eviljs/std/type'
+import type {ObjectPartial} from '@downforce/std/type'
 
 /**
 * @throws TypeError

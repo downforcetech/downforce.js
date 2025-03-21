@@ -1,5 +1,5 @@
-import {compute} from '@eviljs/std/fn-compute'
-import type {FnArgs, Io} from '@eviljs/std/fn-type'
+import {compute} from '@downforce/std/fn-compute'
+import type {FnArgs, Io} from '@downforce/std/fn-type'
 import {defineRouteParams, type RouteParamOptions, type RouteParamsDefinition} from './route-param.js'
 
 export function defineRoutePath<const R extends string, A extends FnArgs>(

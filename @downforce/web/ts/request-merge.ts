@@ -1,7 +1,7 @@
-import type {Io} from '@eviljs/std/fn-type'
-import {throwInvalidArgument} from '@eviljs/std/throw'
-import {isArray, isNone, isObject} from '@eviljs/std/type-is'
-import type {ObjectPartial} from '@eviljs/std/type'
+import type {Io} from '@downforce/std/fn-type'
+import {throwInvalidArgument} from '@downforce/std/throw'
+import {isArray, isNone, isObject} from '@downforce/std/type-is'
+import type {ObjectPartial} from '@downforce/std/type'
 import {cloneRequest} from './request-clone.js'
 import {joinUrlPaths} from './url-path.js'
 import {isUrlAbsolute} from './url.js'
@@ -61,7 +61,7 @@ export function mergeRequestHeaders(...headersList: Array<HeadersInit>): Record<
         }
         else {
             return throwInvalidArgument(
-                '@eviljs/web/request-merge.mergeRequestHeaders(...list: Array<headers>):\n'
+                '@downforce/web/request-merge.mergeRequestHeaders(...list: Array<headers>):\n'
                 + `headers must be undefined | null | Object | Array | Headers, given "${headers}".`
             )
         }

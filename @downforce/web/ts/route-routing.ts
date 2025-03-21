@@ -1,5 +1,5 @@
-import type {Io, Task} from '@eviljs/std/fn-type'
-import {asArray} from '@eviljs/std/type-as'
+import type {Io, Task} from '@downforce/std/fn-type'
+import {asArray} from '@downforce/std/type-as'
 import {compileRoutePatternRegexp, type RoutePattern} from './route-pattern.js'
 
 export function testRoutePattern(routePath: string, pattern: RoutePattern): boolean {

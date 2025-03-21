@@ -1,5 +1,5 @@
-import {piping, type PipeContinuation} from '@eviljs/std/fn-pipe'
-import type {ObjectPartial, StringAutocompleted, ValueOf} from '@eviljs/std/type'
+import {piping, type PipeContinuation} from '@downforce/std/fn-pipe'
+import type {ObjectPartial, StringAutocompleted, ValueOf} from '@downforce/std/type'
 import {joinRequestBasePath} from './request-merge.js'
 
 export const RequestMethod = {

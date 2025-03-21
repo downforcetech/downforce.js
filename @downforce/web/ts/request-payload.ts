@@ -1,5 +1,5 @@
-import type {Io} from '@eviljs/std/fn-type'
-import {isDefined, isString} from '@eviljs/std/type-is'
+import type {Io} from '@downforce/std/fn-type'
+import {isDefined, isString} from '@downforce/std/type-is'
 import {useRequestBody} from './request-init.js'
 import {useRequestJson} from './request-json.js'
 

@@ -1,8 +1,8 @@
-import {compute, type Computable} from '@eviljs/std/fn-compute'
-import {piping} from '@eviljs/std/fn-pipe'
-import type {Fn, FnArgs} from '@eviljs/std/fn-type'
-import {asString} from '@eviljs/std/type-as'
-import {isObject} from '@eviljs/std/type-is'
+import {compute, type Computable} from '@downforce/std/fn-compute'
+import {piping} from '@downforce/std/fn-pipe'
+import type {Fn, FnArgs} from '@downforce/std/fn-type'
+import {asString} from '@downforce/std/type-as'
+import {isObject} from '@downforce/std/type-is'
 import {usingRequestJson} from './request-json.js'
 import {RequestMethod, creatingRequest} from './request-method.js'
 import {decodeResponseBody} from './response.js'
@@ -124,7 +124,7 @@ export function extractDefaultResponseToken(body: unknown): undefined | string {
 
 export function throwAuthInvalidResponse(fnName: string, reason: string): never {
     return throwInvalidResponse(
-        `@eviljs/web/auth.${fnName}() -> ~~Response~~:\n`
+        `@downforce/web/auth.${fnName}() -> ~~Response~~:\n`
         + reason
     )
 }

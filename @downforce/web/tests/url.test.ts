@@ -1,8 +1,8 @@
-import {joinUrlPaths} from '@eviljs/web/url'
+import {joinUrlPaths} from '@downforce/web/url'
 import Assert from 'node:assert'
 import {describe, test} from 'node:test'
 
-describe('@eviljs/web/url', (ctx) => {
+describe('@downforce/web/url', (ctx) => {
     test('joinUrlPaths()', async (ctx) => {
         const tests: Array<[string, [string, string, ...Array<string>]]> = [
             ['/api', ['', 'api']],

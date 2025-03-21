@@ -1,10 +1,10 @@
-import type {Task} from '@eviljs/std/fn-type'
-import {Future, createFuture} from '@eviljs/std/promise-future'
-import {createLinearScale, directionOf, distanceBetween} from '@eviljs/std/scale'
+import type {Task} from '@downforce/std/fn-type'
+import {Future, createFuture} from '@downforce/std/promise-future'
+import {createLinearScale, directionOf, distanceBetween} from '@downforce/std/scale'
 
-export {wait} from '@eviljs/std/async'
-export {playTimeline} from '@eviljs/std/timeline'
-export type {TimelineAsync, TimelineParallel, TimelineSequence, TimelineTask} from '@eviljs/std/timeline'
+export {wait} from '@downforce/std/async'
+export {playTimeline} from '@downforce/std/timeline'
+export type {TimelineAsync, TimelineParallel, TimelineSequence, TimelineTask} from '@downforce/std/timeline'
 
 export const SpringPrecision: number = 200
 export const SpringSnapping: number = 1 / SpringPrecision
@@ -211,7 +211,7 @@ export function computeDampedSimpleHarmonicMotion(time: number, options: SpringO
 
     if (isNaN(position)) {
         console.warn(
-            '@eviljs/web/animation.computeDampedSimpleHarmonicMotion(time, ~~options~~):\n'
+            '@downforce/web/animation.computeDampedSimpleHarmonicMotion(time, ~~options~~):\n'
             + 'spring has an invalid configuration because\n'
             + `a stiffness of ${stiffness} is insufficient compared to a damping of ${damping};\n`
             + 'try increasing the stiffness or decreasing the damping\n'

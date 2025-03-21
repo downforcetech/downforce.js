@@ -1,6 +1,6 @@
-import {wait} from '@eviljs/std/async'
-import {OneSecondInMs} from '@eviljs/std/date'
-import type {Fn, Io} from '@eviljs/std/fn-type'
+import {wait} from '@downforce/std/async'
+import {OneSecondInMs} from '@downforce/std/date'
+import type {Fn, Io} from '@downforce/std/fn-type'
 import {cloneRequestWithBody} from './request-clone.js'
 
 /**

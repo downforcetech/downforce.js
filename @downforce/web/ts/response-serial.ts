@@ -1,8 +1,8 @@
-import {returnUndefined} from '@eviljs/std/fn-return'
-import {tryCatch} from '@eviljs/std/fn-try'
-import {asArrayStrict} from '@eviljs/std/type-as'
-import {ensureNumber, ensureObject, ensureString} from '@eviljs/std/type-ensure'
-import type {Unsafe} from '@eviljs/std/type-types'
+import {returnUndefined} from '@downforce/std/fn-return'
+import {tryCatch} from '@downforce/std/fn-try'
+import {asArrayStrict} from '@downforce/std/type-as'
+import {ensureNumber, ensureObject, ensureString} from '@downforce/std/type-ensure'
+import type {Unsafe} from '@downforce/std/type-types'
 
 export function asResponseEncoded(response: unknown): undefined | ResponseEncoded {
     return tryCatch(

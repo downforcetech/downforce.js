@@ -1,5 +1,5 @@
-import type {ElementOf} from '@eviljs/std/type'
-import {isArray, isRegExp} from '@eviljs/std/type-is'
+import type {ElementOf} from '@downforce/std/type'
+import {isArray, isRegExp} from '@downforce/std/type-is'
 
 export const MatchStart = '^'
 export const MatchEnd = '(?:/)?$'

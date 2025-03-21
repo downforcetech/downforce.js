@@ -1,5 +1,5 @@
-import type {ReactiveRef} from '@eviljs/std/reactive-ref'
-import {isString} from '@eviljs/std/type-is'
+import type {ReactiveRef} from '@downforce/std/reactive-ref'
+import {isString} from '@downforce/std/type-is'
 import {
     encodeUrlParamKey,
     encodeUrlParamValue,

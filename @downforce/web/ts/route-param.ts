@@ -1,5 +1,5 @@
-import {mapSome} from '@eviljs/std/fn-monad'
-import {mapObjectValue, omitObjectProp, pickObjectProp} from '@eviljs/std/object'
+import {mapSome} from '@downforce/std/fn-monad'
+import {mapObjectValue, omitObjectProp, pickObjectProp} from '@downforce/std/object'
 import type {RouterRouteParams} from './router.js'
 import type {UrlParamsDictValue} from './url-params.js'
 

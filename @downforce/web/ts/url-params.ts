@@ -1,7 +1,7 @@
-import type {Fn, Io} from '@eviljs/std/fn-type'
-import {throwInvalidArgument} from '@eviljs/std/throw'
-import {isArray, isObject, isSome, isString} from '@eviljs/std/type-is'
-import {kindOf} from '@eviljs/std/type-kind'
+import type {Fn, Io} from '@downforce/std/fn-type'
+import {throwInvalidArgument} from '@downforce/std/throw'
+import {isArray, isObject, isSome, isString} from '@downforce/std/type-is'
+import {kindOf} from '@downforce/std/type-kind'
 
 export function joinUrlWithParams(url: string, params: UrlParams, options?: undefined | UrlParamsEncodeOptions): string {
     const paramsUrl = encodeUrlParams(params, options)
@@ -50,7 +50,7 @@ export function encodeUrlParams(params: undefined | UrlParams, options?: undefin
     }
 
     return throwInvalidArgument(
-        '@eviljs/web/url-params.encodeUrlParams(~~params~~):\n'
+        '@downforce/web/url-params.encodeUrlParams(~~params~~):\n'
         + 'params is of an invalid type.\n'
         + `Must be a <undefined | null | string | object | array>, given "${params}".`
     )
@@ -126,7 +126,7 @@ export function encodeUrlParamKey(name: unknown): string {
             return String(name)
         default:
             return throwInvalidArgument(
-                '@eviljs/web/url-params.defaultEncodeParamName(~~name~~):\n'
+                '@downforce/web/url-params.defaultEncodeParamName(~~name~~):\n'
                 + `name is of an invalid type.\n`
                 + `Must be <number | string>, given "${name}".`
             )
@@ -152,7 +152,7 @@ export function encodeUrlParamValue(value: unknown): string {
             return encodeURIComponent(JSON.stringify(value))
         default: // undefined.
             return throwInvalidArgument(
-                '@eviljs/web/url-params.defaultEncodeParamValue(~~value~~):\n'
+                '@downforce/web/url-params.defaultEncodeParamValue(~~value~~):\n'
                 + `value is of an invalid type.\n`
                 + `Must be <null | boolean | number | string | array | object>, given "${value}".`
             )

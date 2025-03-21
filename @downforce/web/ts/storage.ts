@@ -1,8 +1,8 @@
-import {tryCatch} from '@eviljs/std/fn-try'
-import type {Io} from '@eviljs/std/fn-type'
-import {createReadWrite, type RwSync} from '@eviljs/std/rw'
-import {asBoolean, asNumber} from '@eviljs/std/type-as'
-import {isUndefined} from '@eviljs/std/type-is'
+import {tryCatch} from '@downforce/std/fn-try'
+import type {Io} from '@downforce/std/fn-type'
+import {createReadWrite, type RwSync} from '@downforce/std/rw'
+import {asBoolean, asNumber} from '@downforce/std/type-as'
+import {isUndefined} from '@downforce/std/type-is'
 
 export function createBrowserStorageAccessor(
     key: string,
