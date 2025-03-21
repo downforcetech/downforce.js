@@ -1,7 +1,7 @@
-import {classes} from '@eviljs/react/classes'
-import type {ElementProps, Props} from '@eviljs/react/props'
-import {isElementType} from '@eviljs/react/type'
-import {asArray} from '@eviljs/std/type-as'
+import {classes} from '@downforce/react/classes'
+import type {ElementProps, Props} from '@downforce/react/props'
+import {isElementType} from '@downforce/react/type'
+import {asArray} from '@downforce/std/type-as'
 
 /*
 * EXAMPLE

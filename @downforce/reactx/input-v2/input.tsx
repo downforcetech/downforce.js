@@ -1,10 +1,10 @@
-import {classes} from '@eviljs/react/classes'
-import type {ElementProps, Props, VoidProps} from '@eviljs/react/props'
-import {useMergeRefs} from '@eviljs/react/ref'
-import {identity} from '@eviljs/std/fn-return'
+import {classes} from '@downforce/react/classes'
+import type {ElementProps, Props, VoidProps} from '@downforce/react/props'
+import {useMergeRefs} from '@downforce/react/ref'
+import {identity} from '@downforce/std/fn-return'
 import {useRef, useState} from 'react'
 
-export {decoratingElement, decoratingElementAfter, decoratingElementBefore} from '@eviljs/react/children'
+export {decoratingElement, decoratingElementAfter, decoratingElementBefore} from '@downforce/react/children'
 
 export function InputLabel(props: Props<InputLabelProps>): React.JSX.Element {
     const {children, className, labelClass, title, ...otherProps} = props

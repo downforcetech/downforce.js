@@ -1,5 +1,5 @@
-import {classes} from '@eviljs/react/classes'
-import type {ElementProps, Props} from '@eviljs/react/props'
+import {classes} from '@downforce/react/classes'
+import type {ElementProps, Props} from '@downforce/react/props'
 import type {CheckboxModel} from './checkbox.js'
 
 export function CheckboxMark(props: Props<CheckboxMarkProps>): React.JSX.Element {

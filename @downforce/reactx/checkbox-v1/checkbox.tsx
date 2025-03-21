@@ -1,6 +1,6 @@
-import {classes} from '@eviljs/react/classes'
-import type {ElementProps, Props} from '@eviljs/react/props'
-import {asBooleanString} from '@eviljs/web/aria'
+import {classes} from '@downforce/react/classes'
+import type {ElementProps, Props} from '@downforce/react/props'
+import {asBooleanString} from '@downforce/web/aria'
 import {cloneElement, isValidElement} from 'react'
 
 export function Checkbox(props: Props<CheckboxProps>): React.JSX.Element {

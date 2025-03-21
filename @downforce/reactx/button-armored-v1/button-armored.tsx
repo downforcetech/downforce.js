@@ -1,5 +1,5 @@
-import {classes} from '@eviljs/react/classes'
-import type {ElementProps} from '@eviljs/react/props'
+import {classes} from '@downforce/react/classes'
+import type {ElementProps} from '@downforce/react/props'
 import {useCallback, useState} from 'react'
 
 export function ButtonArmored(props: ButtonArmoredProps): React.JSX.Element {

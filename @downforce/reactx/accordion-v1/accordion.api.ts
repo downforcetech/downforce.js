@@ -1,4 +1,4 @@
-import {flushStyles} from '@eviljs/web/animation'
+import {flushStyles} from '@downforce/web/animation'
 
 export function animateAccordionOpen(element: HTMLElement): void {
     const eventOptions = {

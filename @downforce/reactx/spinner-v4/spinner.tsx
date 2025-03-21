@@ -1,5 +1,5 @@
-import {classes} from '@eviljs/react/classes'
-import type {ElementProps, Props} from '@eviljs/react/props'
+import {classes} from '@downforce/react/classes'
+import type {ElementProps, Props} from '@downforce/react/props'
 
 export function Spinner(props: Props<SpinnerProps>): React.JSX.Element {
     const {active, className, ...otherProps} = props

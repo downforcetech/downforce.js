@@ -1,5 +1,5 @@
-import {Box, type BoxProps} from '@eviljs/react/box'
-import {classes} from '@eviljs/react/classes'
+import {Box, type BoxProps} from '@downforce/react/box'
+import {classes} from '@downforce/react/classes'
 
 export function Bubble(props: BubbleProps): React.JSX.Element {
     const {className, arrowPosition, ...otherProps} = props

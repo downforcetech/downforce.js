@@ -1,4 +1,4 @@
-import {AuthTokenState, type AuthTokenStateEnum} from '@eviljs/react/auth'
+import {AuthTokenState, type AuthTokenStateEnum} from '@downforce/react/auth'
 
 export function AuthBarrier(props: AuthBarrierProps): React.ReactNode {
     const {children, fallback, progress, tokenState} = props

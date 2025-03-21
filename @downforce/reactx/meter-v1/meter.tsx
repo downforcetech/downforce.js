@@ -1,5 +1,5 @@
-import {classes} from '@eviljs/react/classes'
-import type {ElementProps, Props} from '@eviljs/react/props'
+import {classes} from '@downforce/react/classes'
+import type {ElementProps, Props} from '@downforce/react/props'
 
 export function Meter(props: Props<MeterProps>): React.JSX.Element {
     const {className, value, ...otherProps} = props

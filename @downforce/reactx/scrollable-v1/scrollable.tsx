@@ -1,9 +1,9 @@
-import {Box, type BoxProps} from '@eviljs/react/box'
-import {useBrowserFeatures} from '@eviljs/react/browser'
-import {classes} from '@eviljs/react/classes'
-import {useScrollHorizontal} from '@eviljs/react/drag'
-import {useMergeRefs} from '@eviljs/react/ref'
-import {isUndefined} from '@eviljs/std/type-is'
+import {Box, type BoxProps} from '@downforce/react/box'
+import {useBrowserFeatures} from '@downforce/react/browser'
+import {classes} from '@downforce/react/classes'
+import {useScrollHorizontal} from '@downforce/react/drag'
+import {useMergeRefs} from '@downforce/react/ref'
+import {isUndefined} from '@downforce/std/type-is'
 import {useMemo, useRef} from 'react'
 
 export function Scrollable(props: ScrollableProps): React.JSX.Element {

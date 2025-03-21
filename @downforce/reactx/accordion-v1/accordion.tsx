@@ -1,7 +1,7 @@
-import {Box, type BoxProps} from '@eviljs/react/box'
-import {classes} from '@eviljs/react/classes'
-import type {ElementProps, Props} from '@eviljs/react/props'
-import {KeyboardKey} from '@eviljs/web/keybinding'
+import {Box, type BoxProps} from '@downforce/react/box'
+import {classes} from '@downforce/react/classes'
+import type {ElementProps, Props} from '@downforce/react/props'
+import {KeyboardKey} from '@downforce/web/keybinding'
 import {Children, cloneElement, isValidElement, useCallback, useEffect, useRef, useState} from 'react'
 import {animateAccordionClose, animateAccordionOpen} from './accordion.api.js'
 

@@ -1,6 +1,6 @@
-import {classes} from '@eviljs/react/classes'
-import type {ElementProps, Props} from '@eviljs/react/props'
-import {HtmlSandbox as HtmlSandboxElement} from '@eviljs/webx/html-sandbox'
+import {classes} from '@downforce/react/classes'
+import type {ElementProps, Props} from '@downforce/react/props'
+import {HtmlSandbox as HtmlSandboxElement} from '@downforce/webx/html-sandbox'
 import {createElement} from 'react'
 
 export const HtmlSandboxTag = 'html-sandbox'

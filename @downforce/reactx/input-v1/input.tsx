@@ -1,6 +1,6 @@
-import {classes} from '@eviljs/react/classes'
-import type {ElementProps, Props} from '@eviljs/react/props'
-import {useMergeRefs} from '@eviljs/react/ref'
+import {classes} from '@downforce/react/classes'
+import type {ElementProps, Props} from '@downforce/react/props'
+import {useMergeRefs} from '@downforce/react/ref'
 import {useLayoutEffect, useRef, useState} from 'react'
 
 export function Input(props: Props<InputProps>): React.JSX.Element {

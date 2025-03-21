@@ -1,6 +1,6 @@
 {
-    "name": "@eviljs/reactx",
-    "version": "1.40.0",
+    "name": "@downforce/reactx",
+    "version": "1.0.0",
     "type": "module",
     "sideEffects": false,
     "files": [
@@ -19,17 +19,16 @@
         "preversion": "npm run build"
     },
     "dependencies": {
-        "@eviljs/react": "1",
-        "@eviljs/std": "1",
-        "@eviljs/web": "1",
-        "@eviljs/webx": "1",
+        "@downforce/react": "1",
+        "@downforce/std": "1",
+        "@downforce/web": "1",
+        "@downforce/webx": "1",
         "@types/react": "19",
         "@types/react-dom": "19",
         "tslib": "2"
     },
     "peerDependencies": {
-        "@evilcss/std": "1",
-        "@evilcss/ui": "1",
+        "@downforce/std.css": "1",
         "react": "19",
         "react-dom": "19"
     },
@@ -45,12 +44,12 @@
         "Widgets",
         "TypeScript"
     ],
-    "homepage": "https://github.com/EvilcorpTech/eviljs",
+    "homepage": "https://github.com/downforce-tech/downforce.js",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/EvilcorpTech/eviljs.git"
+        "url": "git+https://github.com/downforce-tech/downforce.js.git"
     },
     "bugs": {
-        "url": "https://github.com/EvilcorpTech/eviljs/issues"
+        "url": "https://github.com/downforce-tech/downforce.js/issues"
     }
 }

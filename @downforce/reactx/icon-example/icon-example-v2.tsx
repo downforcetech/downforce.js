@@ -1,4 +1,4 @@
-import {defineSvg, type SvgProps} from '@eviljs/react/svg'
+import {defineSvg, type SvgProps} from '@downforce/react/svg'
 
 export const ExampleIcon: React.ComponentType<SvgProps> = defineSvg({
     name: 'ExampleIcon',

@@ -1,9 +1,9 @@
-import {classes} from '@eviljs/react/classes'
-import {useCallbackThrottled} from '@eviljs/react/event'
-import type {ElementProps, Props, VoidProps} from '@eviljs/react/props'
-import {useMergeRefs} from '@eviljs/react/ref'
-import {useResizeObserver} from '@eviljs/react/resize-observer'
-import {isFunction} from '@eviljs/std/type-is'
+import {classes} from '@downforce/react/classes'
+import {useCallbackThrottled} from '@downforce/react/event'
+import type {ElementProps, Props, VoidProps} from '@downforce/react/props'
+import {useMergeRefs} from '@downforce/react/ref'
+import {useResizeObserver} from '@downforce/react/resize-observer'
+import {isFunction} from '@downforce/std/type-is'
 import {useCallback, useLayoutEffect, useMemo, useRef, useState} from 'react'
 
 export function SliderVirtual<I>(props: Props<SliderVirtualProps<I>>): React.JSX.Element {

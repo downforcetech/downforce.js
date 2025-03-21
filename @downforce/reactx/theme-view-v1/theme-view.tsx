@@ -1,7 +1,7 @@
-import {classes} from '@eviljs/react/classes'
-import type {ElementProps, Props} from '@eviljs/react/props'
-import {colorHslFromRgbHexString, colorRgbHexStringFromHsl, type ColorHslDict} from '@eviljs/std/color'
-import {times} from '@eviljs/std/iter'
+import {classes} from '@downforce/react/classes'
+import type {ElementProps, Props} from '@downforce/react/props'
+import {colorHslFromRgbHexString, colorRgbHexStringFromHsl, type ColorHslDict} from '@downforce/std/color'
+import {times} from '@downforce/std/iter'
 import {Fragment, useEffect, useRef, useState} from 'react'
 import {ExampleIcon as Icon} from '../icon-example/icon-example-v2.js'
 

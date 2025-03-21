@@ -1,6 +1,6 @@
-import {Box, type BoxProps} from '@eviljs/react/box'
-import {classes} from '@eviljs/react/classes'
-import type {ElementProps, Props} from '@eviljs/react/props'
+import {Box, type BoxProps} from '@downforce/react/box'
+import {classes} from '@downforce/react/classes'
+import type {ElementProps, Props} from '@downforce/react/props'
 import type {TooltipPosition} from './tooltip.api.js'
 
 export type {TooltipPosition} from './tooltip.api.js'

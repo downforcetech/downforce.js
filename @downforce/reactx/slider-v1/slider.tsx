@@ -1,7 +1,7 @@
-import {classes} from '@eviljs/react/classes'
-import type {ElementProps, Props} from '@eviljs/react/props'
-import type {ValueOf} from '@eviljs/std/type'
-import {asArray} from '@eviljs/std/type-as'
+import {classes} from '@downforce/react/classes'
+import type {ElementProps, Props} from '@downforce/react/props'
+import type {ValueOf} from '@downforce/std/type'
+import {asArray} from '@downforce/std/type-as'
 
 export const SliderDirection = {
     Row: 'row' as const,
