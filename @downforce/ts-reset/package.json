@@ -1,6 +1,6 @@
 {
-    "name": "@eviljs/ts-reset",
-    "version": "1.4.0",
+    "name": "@downforce/ts-reset",
+    "version": "1.0.0",
     "type": "module",
     "sideEffects": false,
     "files": [
@@ -15,12 +15,12 @@
         "TypeScript",
         "resets"
     ],
-    "homepage": "https://github.com/EvilcorpTech/eviljs",
+    "homepage": "https://github.com/downforce-tech/downforce.js",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/EvilcorpTech/eviljs.git"
+        "url": "git+https://github.com/downforce-tech/downforce.js.git"
     },
     "bugs": {
-        "url": "https://github.com/EvilcorpTech/eviljs/issues"
+        "url": "https://github.com/downforce-tech/downforce.js/issues"
     }
 }
