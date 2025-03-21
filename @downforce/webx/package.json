@@ -28,20 +28,10 @@
     "author": "Daniele Orlando",
     "license": "BSD-2-Clause",
     "description": "Awesome Web Components and Custom Elements",
-    "keywords": [
-        "Web",
-        "Components",
-        "Custom",
-        "Elements",
-        "TypeScript",
-        "JavaScript"
-    ],
-    "homepage": "https://github.com/downforce-tech/downforce.js",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/downforce-tech/downforce.js.git"
-    },
+    "keywords": ["TypeScript", "JavaScript", "Web", "Components", "Custom", "Elements"],
+    "homepage": "https://github.com/downforcetech/downforce.js",
+    "repository": {"type": "git", "url": "git+https://github.com/downforcetech/downforce.js.git"},
     "bugs": {
-        "url": "https://github.com/downforce-tech/downforce.js/issues"
+        "url": "https://github.com/downforcetech/downforce.js/issues"
     }
 }
