@@ -1,6 +1,6 @@
 {
     "name": "@downforce/reactx",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "type": "module",
     "sideEffects": false,
     "files": [
@@ -38,9 +38,15 @@
     "author": "Daniele Orlando",
     "license": "BSD-2-Clause",
     "description": "Awesome React UI Widgets",
-    "keywords": ["React", "UI"],
+    "keywords": [
+        "React",
+        "UI"
+    ],
     "homepage": "https://github.com/downforcetech/downforce.js",
-    "repository": {"type": "git", "url": "git+https://github.com/downforcetech/downforce.js.git"},
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/downforcetech/downforce.js.git"
+    },
     "bugs": {
         "url": "https://github.com/downforcetech/downforce.js/issues"
     }
