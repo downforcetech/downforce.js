@@ -27,19 +27,11 @@
     },
     "author": "Daniele Orlando",
     "license": "BSD-2-Clause",
-    "description": "Awesome TypeScript and Vanilla JavaScript",
-    "keywords": [
-        "TypeScript",
-        "JavaScript",
-        "Vanilla",
-        "JS"
-    ],
-    "homepage": "https://github.com/downforce-tech/downforce.js",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/downforce-tech/downforce.js.git"
-    },
+    "description": "Awesome TypeScript and JavaScript",
+    "keywords": ["TypeScript", "JavaScript"],
+    "homepage": "https://github.com/downforcetech/downforce.js",
+    "repository": {"type": "git", "url": "git+https://github.com/downforcetech/downforce.js.git"},
     "bugs": {
-        "url": "https://github.com/downforce-tech/downforce.js/issues"
+        "url": "https://github.com/downforcetech/downforce.js/issues"
     }
 }
