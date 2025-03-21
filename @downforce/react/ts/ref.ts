@@ -1,5 +1,5 @@
-import type {None} from '@eviljs/std/type'
-import {isFunction, isObject} from '@eviljs/std/type-is'
+import type {None} from '@downforce/std/type'
+import {isFunction, isObject} from '@downforce/std/type-is'
 import {useLayoutEffect, useMemo, useRef} from 'react'
 
 export function useMergeRefs<V>(...refs: Array<void | None | RefHandler<None | V>>): (element: null | V) => void {

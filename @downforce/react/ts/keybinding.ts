@@ -1,5 +1,5 @@
-import {asArray} from '@eviljs/std/type-as'
-import type {None} from '@eviljs/std/type-types'
+import {asArray} from '@downforce/std/type-as'
+import type {None} from '@downforce/std/type-types'
 import {useCallback, useRef} from 'react'
 import {useEvent, type EventElement, type EventHandler, type EventOptions} from './event.js'
 

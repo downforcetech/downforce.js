@@ -1,9 +1,9 @@
-import type {FnArgs, FnAsync} from '@eviljs/std/fn-type'
-import {areObjectsEqualShallow} from '@eviljs/std/object'
-import type {PromiseView} from '@eviljs/std/promise'
-import type {ResultOrError} from '@eviljs/std/result'
-import {Result} from '@eviljs/std/result'
-import {isDefined} from '@eviljs/std/type-is'
+import type {FnArgs, FnAsync} from '@downforce/std/fn-type'
+import {areObjectsEqualShallow} from '@downforce/std/object'
+import type {PromiseView} from '@downforce/std/promise'
+import type {ResultOrError} from '@downforce/std/result'
+import {Result} from '@downforce/std/result'
+import {isDefined} from '@downforce/std/type-is'
 import {useCallback, useRef, useState} from 'react'
 
 export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?: Array<unknown>): AsyncIoManager<A, R> {

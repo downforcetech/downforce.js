@@ -1,12 +1,12 @@
-import {createReactive, readReactive, writeReactive, type ReactiveProtocol} from '@eviljs/std/reactive'
-import {asReduxEvent, type ReduxEvent, type ReduxEventPolymorphic, type ReduxReducerState} from '@eviljs/std/redux'
-import type {RwSync} from '@eviljs/std/rw'
+import {createReactive, readReactive, writeReactive, type ReactiveProtocol} from '@downforce/std/reactive'
+import {asReduxEvent, type ReduxEvent, type ReduxEventPolymorphic, type ReduxReducerState} from '@downforce/std/redux'
+import type {RwSync} from '@downforce/std/rw'
 import {useCallback, useContext, useMemo} from 'react'
 import {defineContext} from './ctx.js'
 import {useReactiveSelect} from './reactive.js'
 import type {StoreDefinitionV2 as StoreDefinition, StoreDispatchV2 as StoreDispatch} from './store-v2.js'
 
-export * from '@eviljs/std/redux'
+export * from '@downforce/std/redux'
 export type {StoreDefinitionV2 as StoreDefinition, StoreDispatchV2 as StoreDispatch, StoreV2Observer as StoreObserver} from './store-v2.js'
 
 export function setupStore<S extends ReduxReducerState, A extends ReduxEvent = ReduxEvent>(

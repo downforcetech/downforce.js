@@ -1,5 +1,5 @@
-import {compute} from '@eviljs/std/fn-compute'
-import type {Io} from '@eviljs/std/fn-type'
+import {compute} from '@downforce/std/fn-compute'
+import type {Io} from '@downforce/std/fn-type'
 import {startTransition, useCallback, useRef, useState} from 'react'
 
 export function useStateAccessor<S>(initialState: StateInit<S>): StateAccessorManager<S> {

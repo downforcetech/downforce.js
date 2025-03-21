@@ -1,6 +1,6 @@
 {
-    "name": "@eviljs/react",
-    "version": "1.63.0",
+    "name": "@downforce/react",
+    "version": "1.0.0",
     "type": "module",
     "sideEffects": false,
     "files": [
@@ -18,8 +18,8 @@
         "preversion": "npm run build"
     },
     "dependencies": {
-        "@eviljs/std": "1",
-        "@eviljs/web": "1",
+        "@downforce/std": "1",
+        "@downforce/web": "1",
         "@types/react": "19",
         "@types/react-dom": "19",
         "tslib": "2"
@@ -40,12 +40,12 @@
         "TypeScript",
         "CSS"
     ],
-    "homepage": "https://github.com/EvilcorpTech/eviljs",
+    "homepage": "https://github.com/downforce-tech/downforce.js",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/EvilcorpTech/eviljs.git"
+        "url": "git+https://github.com/downforce-tech/downforce.js.git"
     },
     "bugs": {
-        "url": "https://github.com/EvilcorpTech/eviljs/issues"
+        "url": "https://github.com/downforce-tech/downforce.js/issues"
     }
 }

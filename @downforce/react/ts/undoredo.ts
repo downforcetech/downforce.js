@@ -1,5 +1,5 @@
-import {compute} from '@eviljs/std/fn-compute'
-import {createHistory} from '@eviljs/std/undoredo'
+import {compute} from '@downforce/std/fn-compute'
+import {createHistory} from '@downforce/std/undoredo'
 import {useCallback, useMemo} from 'react'
 import {useRender} from './render.js'
 import type {StateSetterArg} from './state.js'

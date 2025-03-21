@@ -1,5 +1,5 @@
-import {call} from '@eviljs/std/fn-call'
-import {createRef, type Ref} from '@eviljs/std/ref'
+import {call} from '@downforce/std/fn-call'
+import {createRef, type Ref} from '@downforce/std/ref'
 
 export const SuspensePromiseMap: WeakMap<SuspensePromiseMapKey, SuspenseStateRef> = new WeakMap()
 

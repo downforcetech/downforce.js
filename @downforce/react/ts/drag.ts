@@ -1,4 +1,4 @@
-import type {None} from '@eviljs/std/type-types'
+import type {None} from '@downforce/std/type-types'
 import {
     asDragPointerEvent,
     attachDragDraggingListeners,
@@ -21,11 +21,11 @@ import {
     type DragScrollChange,
     type DragScrollOptions,
     type DragScrollState,
-} from '@eviljs/web/drag'
+} from '@downforce/web/drag'
 import {useCallback, useEffect, useRef, useState} from 'react'
 
-export {asDragPointerEvent} from '@eviljs/web/drag'
-export type {DragMoveChange, DragOptions, DragPointerEvent} from '@eviljs/web/drag'
+export {asDragPointerEvent} from '@downforce/web/drag'
+export type {DragMoveChange, DragOptions, DragPointerEvent} from '@downforce/web/drag'
 
 // React events handlers are slow, and React.onMouseMove leads to high cpu usage
 // even when the event listener is detached, due to the Synthetic Event global

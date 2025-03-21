@@ -1,7 +1,7 @@
-import type {ValueOf} from '@eviljs/std/type'
-import type {AuthAuthenticateOptions, AuthCredentials, AuthInvalidateOptions, AuthValidateOptions} from '@eviljs/web/auth'
-import {authenticate, invalidateAuthentication, validateAuthentication} from '@eviljs/web/auth'
-import {throwInvalidResponse} from '@eviljs/web/throw'
+import type {ValueOf} from '@downforce/std/type'
+import type {AuthAuthenticateOptions, AuthCredentials, AuthInvalidateOptions, AuthValidateOptions} from '@downforce/web/auth'
+import {authenticate, invalidateAuthentication, validateAuthentication} from '@downforce/web/auth'
+import {throwInvalidResponse} from '@downforce/web/throw'
 import {useCallback, useMemo, useState} from 'react'
 import {useBusyLock} from './busy.js'
 
@@ -67,7 +67,7 @@ export function useAuthentication(args: AuthenticationOptions): AuthenticationMa
 
             if (! ok) {
                 throwInvalidResponse(
-                    `@eviljs/react/auth.useAuthentication().destroySession()`
+                    `@downforce/react/auth.useAuthentication().destroySession()`
                 )
             }
         }

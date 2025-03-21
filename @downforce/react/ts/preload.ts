@@ -1,7 +1,7 @@
-import {exposePreloadHintElement, type PreloadElementAttrs, type PreloadElementOptions} from '@eviljs/web/preload'
+import {exposePreloadHintElement, type PreloadElementAttrs, type PreloadElementOptions} from '@downforce/web/preload'
 import {useConditionalEffect} from './effect.js'
 
-export type {PreloadElementAttrs} from '@eviljs/web/preload'
+export type {PreloadElementAttrs} from '@downforce/web/preload'
 
 export function usePreloadHint(attrs: PreloadElementAttrs, options?: undefined | UsePreloadHintOptions): void {
     const active = options?.active ?? true

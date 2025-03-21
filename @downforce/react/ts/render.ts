@@ -1,4 +1,4 @@
-import type {Task} from '@eviljs/std/fn-type'
+import type {Task} from '@downforce/std/fn-type'
 import {useCallback, useState} from 'react'
 
 /*

@@ -1,4 +1,4 @@
-import {hasBrowserTouch} from '@eviljs/web/browser'
+import {hasBrowserTouch} from '@downforce/web/browser'
 import {useEffect} from 'react'
 import {useStateTransition} from './state.js'
 

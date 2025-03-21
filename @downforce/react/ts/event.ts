@@ -1,7 +1,7 @@
-import {debounced, throttled, type EventTask} from '@eviljs/std/fn-event'
-import type {Fn, FnArgs, Task} from '@eviljs/std/fn-type'
-import {asArray} from '@eviljs/std/type-as'
-import type {None} from '@eviljs/std/type-types'
+import {debounced, throttled, type EventTask} from '@downforce/std/fn-event'
+import type {Fn, FnArgs, Task} from '@downforce/std/fn-type'
+import {asArray} from '@downforce/std/type-as'
+import type {None} from '@downforce/std/type-types'
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef} from 'react'
 import {useStateTransition, type StateInit, type StateSetter} from './state.js'
 

@@ -1,6 +1,6 @@
-// See `@evilcss/std/modal.classes.css`.
+// See `@downforce/std.css/modal.classes.css`.
 
-import {asInteger} from '@eviljs/std/type-as'
+import {asInteger} from '@downforce/std/type-as'
 import {useEffect} from 'react'
 
 export function useScrollLock(activeOptional?: undefined | boolean): void {

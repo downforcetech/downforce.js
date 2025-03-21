@@ -8,7 +8,7 @@ import {
     type MsgMessageArgValue,
     type MsgMessageKey,
     type MsgMessages,
-} from '@eviljs/std/msg'
+} from '@downforce/std/msg'
 import {memo, useContext, useMemo, useState} from 'react'
 import {Box, type BoxProps} from './box.js'
 import {classes} from './classes.js'
@@ -16,7 +16,7 @@ import {defineContext} from './ctx.js'
 import type {Props, VoidProps} from './props.js'
 import type {StateSetter} from './state.js'
 
-export type * from '@eviljs/std/msg'
+export type * from '@downforce/std/msg'
 
 export const MessageContext: React.Context<undefined | MessageStore<string, MsgMessageKey>> = defineContext<MessageStore>('MessageContext')
 

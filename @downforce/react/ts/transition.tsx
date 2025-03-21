@@ -1,6 +1,6 @@
-import {asArray} from '@eviljs/std/type-as'
-import {isSome, isString, isUndefined} from '@eviljs/std/type-is'
-import {flushStyles} from '@eviljs/web/animation'
+import {asArray} from '@downforce/std/type-as'
+import {isSome, isString, isUndefined} from '@downforce/std/type-is'
+import {flushStyles} from '@downforce/web/animation'
 import {
     Fragment,
     cloneElement,
@@ -238,7 +238,7 @@ export function Animator(props: AnimatorProps): React.JSX.Element {
             if (isUndefined(timeout)) {
                 // No timeout was provided, which means that it was not expected.
                 console.warn(
-                    '@eviljs/react/transition.Animator:\n'
+                    '@downforce/react/transition.Animator:\n'
                     + `transition timeout detected during '${taskAction}'.`
                 )
             }
@@ -364,7 +364,7 @@ export function reduceTransitionChildrenChange(state: TransitionState, args: {
     }
 
     console.warn(
-        '@eviljs/react/transition.reduceTransitionChildrenChange:\n'
+        '@downforce/react/transition.reduceTransitionChildrenChange:\n'
         + 'unexpected children condition.',
         oldChild, newChild,
     )
@@ -412,7 +412,7 @@ export function reduceTransitionChildUpdate(state: TransitionState, args: {
 
     if (! taskFound) {
         console.warn(
-            '@eviljs/react/transition.reduceTransitionChildUpdate:\n'
+            '@downforce/react/transition.reduceTransitionChildUpdate:\n'
             + 'the candidate task for the update was not found.'
         )
         return {...state, children: child}

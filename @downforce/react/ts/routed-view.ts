@@ -1,4 +1,4 @@
-import {createCssTransition, playTimeline} from '@eviljs/web/animation'
+import {createCssTransition, playTimeline} from '@downforce/web/animation'
 import {useEffect, useMemo, useState} from 'react'
 import {useRouteTransition} from './router.js'
 import type {StateManager} from './state.js'
@@ -145,7 +145,7 @@ export function getViewElement(selector: string): undefined | HTMLElement {
 
     if (! element) {
         console.warn(
-            '@eviljs/react/routed-view.getViewElement(~~selector~~)\n'
+            '@downforce/react/routed-view.getViewElement(~~selector~~)\n'
             + `missing view's animated element "${selector}".`
         )
     }
