@@ -1,58 +1,69 @@
 import {call} from './fn-call.js'
-import type {CancelableProtocol} from './fn-cancel.js'
+import type {CancelableProtocol, CancelableState} from './fn-cancel.js'
 import type {Task} from './fn-type.js'
+import type {PromiseView} from './promise.js'
+import type {Writable} from './type-types.js'
 
-export class Future {
-    static from<P>(promise: P): Future<Awaited<P>> {
+export class Future<R, E = unknown> {
+    static from<P, E = unknown>(promise: P): Future<Awaited<P>, E> {
         return asFuture(promise)
     }
 
-    static new<V>(
+    static new<V, E = unknown>(
         executor: (
             resolve: (value: V | PromiseLike<V>) => void,
-            reject: (error?: unknown) => void,
+            reject: (error?: E) => void,
         ) => void,
-    ): Future<Awaited<V>> {
+    ): Future<Awaited<V>, E> {
         return createFuture(executor)
     }
 }
 
-export function createFuture<V>(
+export function createFuture<R, E = unknown>(
     executor: (
-        resolve: (value: V | PromiseLike<V>) => void,
-        reject: (error?: unknown) => void,
+        resolve: (value: R | PromiseLike<R>) => void,
+        reject: (error?: E) => void,
     ) => void,
-): Future<Awaited<V>> {
-    return asFuture(new Promise<V>(executor))
+): Future<Awaited<R>, E> {
+    return asFuture(new Promise<R>(executor))
 }
 
-export function asFuture<V>(value: V | PromiseLike<V>): Future<Awaited<V>> {
-    const state = {
+export function asFuture<P, E = unknown>(value: P | PromiseLike<P>): Future<Awaited<P>, E> {
+    const state: Writable<FutureState<Awaited<P>, E>> & ObserversCleanup = {
+        pending: true,
         settled: false,
         fulfilled: false,
         rejected: false,
         canceled: false,
-        result: undefined as undefined | Awaited<V>,
-        error: undefined as undefined | unknown,
-        onCancelObservers: [] as Array<Task>,
+        result: undefined,
+        error: undefined,
+        onCancelObservers: [],
+    }
+
+    interface ObserversCleanup {
+        onCancelObservers: Array<Task>
     }
 
     const promise = Promise.resolve(value).then(
         result => {
+            state.pending = false
             state.settled = true
             state.fulfilled = true
+            state.rejected = false
             state.result = result
             return result
         },
         error => {
+            state.pending = false
             state.settled = true
+            state.fulfilled = false
             state.rejected = true
             state.error = error
             throw error
         },
     )
 
-    const self: Future<Awaited<V>> = {
+    const self: Future<Awaited<P>, E> = {
         // Promise Protocol ////////////////////////////////////////////////////
 
         then(onFulfil, onReject) {
@@ -72,6 +83,10 @@ export function asFuture<V>(value: V | PromiseLike<V>): Future<Awaited<V>> {
         },
 
         // Future Protocol /////////////////////////////////////////////////////
+
+        get pending() {
+            return state.pending
+        },
 
         get settled() {
             return state.settled
@@ -121,11 +136,11 @@ export function asFuture<V>(value: V | PromiseLike<V>): Future<Awaited<V>> {
 
 // Type ////////////////////////////////////////////////////////////////////////
 
-export interface Future<V = unknown> extends Promise<V>, CancelableProtocol {
-    readonly settled: boolean
-    readonly fulfilled: boolean
-    readonly rejected: boolean
-    readonly result: undefined | V
-    readonly error: undefined | unknown
+export interface Future<R, E = unknown> extends Promise<R>, FutureState<R, E>, CancelableProtocol {
     onCancel(onCancel: Task): Task
+}
+
+export interface FutureState<R, E = unknown> extends PromiseView, CancelableState {
+    readonly result: undefined | R
+    readonly error: undefined | E
 }

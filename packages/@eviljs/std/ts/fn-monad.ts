@@ -2,7 +2,7 @@ import {identity} from './fn-return.js'
 import {tryCatch} from './fn-try.js'
 import type {Io} from './fn-type.js'
 import {omitObjectProps, pickObjectProps} from './object.js'
-import {ResultError, isResultError, type ResultErrorOf, type ResultOf} from './result.js'
+import {ResultError, isError, type ResultErrorOf, type ResultOf} from './result.js'
 import {asArray} from './type-as.js'
 import {isNone, isSome} from './type-is.js'
 import type {None} from './type.js'
@@ -118,7 +118,7 @@ export function mappingResultOrError<I, O1, O2>(onResult: Io<ResultOf<I>, O1>, o
 }
 
 export function mapResultOrError<I, O1, O2>(input: I, onResult: Io<ResultOf<I>, O1>, onError: Io<ResultErrorOf<I>, O2>): O1 | O2 {
-    return ! isResultError(input)
+    return ! isError(input)
         ? mapResult(input as ResultOf<I>, onResult) as O1
         : mapResultError(input as ResultErrorOf<I>, onError) as O2
 }
@@ -128,7 +128,7 @@ export function mappingResult<I, O>(onResult: Io<ResultOf<I>, O>): Io<I, O | Res
 }
 
 export function mapResult<I, O>(input: I, onResult: Io<ResultOf<I>, O>): O | ResultErrorOf<I> {
-    return ! isResultError(input)
+    return ! isError(input)
         ? onResult(input as ResultOf<I>)
         : input as ResultErrorOf<I>
 }
@@ -138,7 +138,7 @@ export function mappingResultError<I, O>(onError: Io<ResultErrorOf<I>, O>): Io<I
 }
 
 export function mapResultError<I, O>(input: I, onError: Io<ResultErrorOf<I>, O>): O | ResultOf<I> {
-    return isResultError(input)
+    return isError(input)
         ? onError(input as ResultErrorOf<I>)
         : input as ResultOf<I>
 }
@@ -148,7 +148,7 @@ export function mappingResultErrorValue<I, O>(onError: Io<ResultErrorOf<I>['erro
 }
 
 export function mapResultErrorValue<I, O>(input: I, onError: Io<ResultErrorOf<I>['error'], O>): O | ResultOf<I> {
-    return isResultError(input)
+    return isError(input)
         ? onError(input.error)
         : input as ResultOf<I>
 }

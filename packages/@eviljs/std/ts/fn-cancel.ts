@@ -48,7 +48,10 @@ export type CreateCancelableReturn<A extends FnArgs, R> = [
     Task<boolean>,
 ]
 
-export interface CancelableProtocol {
+export interface CancelableState {
     readonly canceled: boolean
+}
+
+export interface CancelableProtocol extends CancelableState {
     cancel(): void
 }
