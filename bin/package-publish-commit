@@ -3,7 +3,10 @@
 # Commits changes, bumps up package version and publishes it.
 #
 # EXAMPLE
-# PublishVersion=minor ./package-publish-commit ./packages/@eviljs/*
+# NpmPublishVersion=patch ./package-publish-commit ./@downforce/*
+# NpmPublishVersion=minor ./package-publish-commit ./@downforce/*
+# NpmPublishVersion=major ./package-publish-commit ./@downforce/*
+# NpmPublishVersion= ./package-publish-commit ./@downforce/*
 
 set -e # errexit
 set -u # nounset
@@ -36,6 +39,9 @@ for pkg; do
 
     pkg_version=$(npm --prefix "$pkg" pkg get version | tr -d '"')
 
-    $Git -C "$pkg" add --all .
-    $Git -C "$pkg" commit --message "($pkg_name) v$pkg_version"
+    dirty=$($Git -C "$pkg" status --porcelain . | tail -n1)
+    if test -n "$dirty"; then
+        $Git -C "$pkg" add --all .
+        $Git -C "$pkg" commit --message "($pkg_name) v$pkg_version"
+    fi
 done

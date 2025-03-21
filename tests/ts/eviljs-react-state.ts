@@ -1,4 +1,4 @@
-import {mergingState, useMergeState, type StateSetterArg} from '@eviljs/react/state'
+import {mergingState, useMergeState, type StateSetterArg} from '@downforce/react/state'
 
 type State = {a: number, b: string}
 function setState(state: StateSetterArg<State>) {

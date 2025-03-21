@@ -1,3 +1,21 @@
-packages: ['@evilcss/*', '@eviljs/*', 'tests']
+packages: ['@downforce/*', 'tests']
 
 ignoredBuiltDependencies: ['nx']
+
+managePackageManagerVersions: true
+packageManagerStrictVersion: true
+
+optimisticRepeatInstall: true
+verifyDepsBeforeRun: install
+
+autoInstallPeers: true
+strictDepBuilds: true
+strictPeerDependencies: true
+
+hoist: false
+hoistWorkspacePackages: false
+hoistPattern: []
+publicHoistPattern: []
+
+linkWorkspacePackages: deep
+preferWorkspacePackages: true

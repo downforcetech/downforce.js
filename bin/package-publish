@@ -3,7 +3,10 @@
 # Bumps up a package version and publishes it.
 #
 # EXAMPLE
-# NpmPublishVersion=minor ./package-publish ./packages/@eviljs/*
+# NpmPublishVersion=patch ./package-publish ./@downforce/*
+# NpmPublishVersion=minor ./package-publish ./@downforce/*
+# NpmPublishVersion=major ./package-publish ./@downforce/*
+# NpmPublishVersion= ./package-publish ./@downforce/*
 
 set -e # errexit
 set -u # nounset
@@ -18,7 +21,7 @@ esac
 : ${NpmVersionArgs:=--no-git-tag-version}
 : ${NpmPublishCmd:=publish}
 : ${NpmPublishArgs:=--access public --auth-type legacy}
-: ${NpmPublishVersion:=minor}
+: ${NpmPublishVersion=minor}
 
 for pkg; do
     if test ! -e "$pkg/package.json"; then
@@ -32,12 +35,15 @@ for pkg; do
             *) cd "$PWD/$pkg";;
         esac
 
-        set -- $NpmVersionCmd $NpmVersionArgs $NpmPublishVersion
-        $Npm "$@"
-        printf -- 'Press Enter to continue'
-        read answer
-        set -- $NpmPublishCmd $NpmPublishArgs
+        if test -n "$NpmPublishVersion"; then
+            set -- $NpmVersionCmd $NpmVersionArgs $NpmPublishVersion
+            $Npm "$@"
 
+            printf -- 'Press Enter to continue'
+            read answer
+        fi
+
+        set -- $NpmPublishCmd $NpmPublishArgs
         until $Npm "$@"; do
             printf -- 'Press Enter to retry'
             read answer

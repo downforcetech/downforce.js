@@ -3,7 +3,7 @@
 # Upgrades the dependencies of the packages.
 #
 # EXAMPLE
-# ./package-upgrade ./packages/@eviljs/*
+# ./package-upgrade ./packages/@downforce/*
 
 set -e # errexit
 set -u # nounset
