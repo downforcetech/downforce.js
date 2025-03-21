@@ -1,6 +1,0 @@
-/build/
-node_modules/
-package-lock.json
-pnpm-lock.yaml
-.tsbuildinfo
-tsconfig.tsbuildinfo
