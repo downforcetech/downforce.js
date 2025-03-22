@@ -1,11 +1,10 @@
 {
+    "name": "tests",
     "type": "module",
     "scripts": {
-        "check": "tsc --noEmit",
-        "build": "tsc --listEmittedFiles",
-        "test": "npm run build && npx --yes tsx --test"
+        "test": "tsc && npx --yes tsx --test"
     },
-    "engines": { "node": ">= 20" },
+    "engines": {"node": ">= 20"},
     "packageManager": "pnpm@10.6.5",
     "dependencies": {
         "@downforce/std.css": "workspace:*",

@@ -1,5 +1,13 @@
 {
     "extends": "@downforce/ts-config/preset-web-lib.json",
     "compilerOptions": {
-    },
+        "declaration": null,
+        "declarationMap": null,
+        "incremental": null,
+        "isolatedDeclarations": null,
+        "noEmit": true,
+        "outDir": null,
+        "sourceMap": null,
+        "tsBuildInfoFile": null
+    }
 }
