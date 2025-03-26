@@ -1,5 +1,5 @@
 {
-    "name": "@downforce/ts-config",
+    "name": "@downforce/tsconfig",
     "version": "1.0.1",
     "type": "module",
     "sideEffects": false,
