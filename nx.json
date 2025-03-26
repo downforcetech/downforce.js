@@ -9,6 +9,7 @@
                 "{workspaceRoot}/.npmrc",
                 "{workspaceRoot}/package.json",
                 "{workspaceRoot}/pnpm-lock.yaml",
+                "{workspaceRoot}/pnpm-workspace.yaml",
                 "{projectRoot}/package.json",
                 "{projectRoot}/tsconfig.json",
                 "{projectRoot}/**/*.ts",

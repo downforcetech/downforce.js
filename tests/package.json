@@ -11,13 +11,13 @@
         "@downforce/react": "workspace:*",
         "@downforce/reactx": "workspace:*",
         "@downforce/std": "workspace:*",
-        "@downforce/ts-reset": "workspace:*",
+        "@downforce/tsreset": "workspace:*",
         "@downforce/web": "workspace:*",
         "@downforce/webx": "workspace:*",
         "tslib": "2"
     },
     "devDependencies": {
-        "@downforce/ts-config": "workspace:*",
+        "@downforce/tsconfig": "workspace:*",
         "typescript": "5.8"
     }
 }
