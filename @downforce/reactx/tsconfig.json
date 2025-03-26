@@ -1,5 +1,5 @@
 {
-    "extends": "../../@downforce/ts-config/preset-react-lib.json",
+    "extends": "@downforce/tsconfig/preset-react-lib.json",
     "include": ["./**/*.ts", "./**/*.tsx"],
     "exclude": ["./**/*.d.ts"],
     "compilerOptions": {
