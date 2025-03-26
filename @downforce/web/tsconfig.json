@@ -1,5 +1,5 @@
 {
-    "extends": "../../@downforce/ts-config/preset-web-lib.json",
+    "extends": "@downforce/tsconfig/preset-web-lib.json",
     "compilerOptions": {
     },
 }
