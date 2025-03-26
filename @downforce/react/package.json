@@ -29,6 +29,7 @@
         "react-dom": "19"
     },
     "devDependencies": {
+        "@downforce/tsconfig": "1",
         "typescript": "5.8"
     },
     "author": "Daniele Orlando",

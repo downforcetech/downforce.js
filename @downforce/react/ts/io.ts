@@ -1,10 +1,10 @@
-import type {FnArgs, FnAsync} from '@downforce/std/fn-type'
+import type {Fn, FnArgs, FnAsync, Task} from '@downforce/std/fn-type'
 import {areObjectsEqualShallow} from '@downforce/std/object'
 import type {PromiseView} from '@downforce/std/promise'
 import type {ResultOrError} from '@downforce/std/result'
 import {Result} from '@downforce/std/result'
 import {isDefined} from '@downforce/std/type-is'
-import {useCallback, useRef, useState} from 'react'
+import {useCallback, useEffect, useRef, useState} from 'react'
 
 export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?: Array<unknown>): AsyncIoManager<A, R> {
     const [state, setState] = useState<AsyncIoState<R>>({
@@ -169,6 +169,26 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
 
     return {...state, call, cancel, reset, resetError, resetResult}
 }
+
+export function useAsyncIoEffect<R>(
+    ioContext: AsyncIoState<R>,
+    effect: Fn<[AsyncIoState<R>], void | Task>,
+    deps?: undefined | Array<any>,
+  ): void {
+    useEffect(
+      () => effect(ioContext),
+      [
+        ioContext.pending,
+        ioContext.settled,
+        ioContext.fulfilled,
+        ioContext.rejected,
+        ioContext.output,
+        ioContext.result,
+        ioContext.error,
+        ...deps ?? [],
+      ],
+    )
+  }
 
 export function useAsyncIoAggregated(asyncIoStates: Record<string, AsyncIoState<unknown>>): {
     errors: Array<unknown>
