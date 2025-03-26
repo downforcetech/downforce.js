@@ -29,6 +29,7 @@
         "@babel/cli": "7",
         "@babel/core": "7",
         "@babel/preset-typescript": "7",
+        "@downforce/tsconfig": "1",
         "babel-preset-solid": "1",
         "typescript": "5.8"
     },
