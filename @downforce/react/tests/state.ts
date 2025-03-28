@@ -6,7 +6,9 @@ function setState(state: StateSetterArg<State>) {
 
 const patch = useMergeState(setState)
 patch({a: 1})
+// @ts-expect-error
 patch({a: 1, b: undefined})
+// @ts-expect-error
 patch({a: 1, c: 123})
 
 const merge1 = mergingState({a: 123})

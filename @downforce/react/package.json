@@ -14,8 +14,9 @@
     "scripts": {
         "clean": "rm -rf ./esm/ || true; rm -rf ./node_modules/.cache/ || true",
         "build": "tsc --listEmittedFiles",
-        "prepack": "npm run clean; npm run build",
-        "preversion": "npm run build"
+        "test": "tsc --project ./tests && npx --yes tsx --test",
+        "prepack": "npm run clean; npm run build && npm run test",
+        "preversion": "npm run build && npm run test"
     },
     "dependencies": {
         "@downforce/std": "1",
