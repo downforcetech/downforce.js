@@ -4,7 +4,7 @@ import {setRef} from '@downforce/react/ref'
 import {compute, type Computable} from '@downforce/std/fn-compute'
 import {mapSome} from '@downforce/std/fn-monad'
 import {clamp} from '@downforce/std/math'
-import {isUndefined} from '@downforce/std/type-is'
+import {isDefined, isUndefined} from '@downforce/std/type-is'
 import {classes} from '@downforce/web/classes'
 import {KeyboardKey} from '@downforce/web/keybinding'
 import {useCallback, useContext, useEffect, useId, useLayoutEffect, useRef, useState, type AriaRole} from 'react'
@@ -41,6 +41,19 @@ export function useSelectOneProvider<V, O extends object = object>(
 
     const open = openControlled ?? openUncontrolled
     const selected = selectedControlled ?? selectedUncontrolled
+
+    useLayoutEffect(() => {
+        if (isDefined(selectedControlled)) {
+            return
+        }
+        // If the `selectedControlled` changes from a value to undefined
+        // from outside (without passing from the `setSelected()`)
+        // we need to reset the `selectedUncontrolled` value too.
+        // We can't set `selectedUncontrolled` to undefined; we must set/reset it
+        // to `initialSelected`, otherwise the `initialSelected` value set during
+        // component mount is discarded.
+        setSelectedUncontrolled(initialSelected)
+    }, [selectedControlled])
 
     const setOpen = useCallback((open: boolean) => {
         setOpenUncontrolled(open)
