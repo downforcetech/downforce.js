@@ -1,45 +1,43 @@
 import {defineContext} from '@downforce/react/ctx'
 import {useClickOutside} from '@downforce/react/gesture'
-import {call} from '@downforce/std/fn-call'
+import {setRef} from '@downforce/react/ref'
 import {compute, type Computable} from '@downforce/std/fn-compute'
+import {mapSome} from '@downforce/std/fn-monad'
 import {clamp} from '@downforce/std/math'
-import {isArray, isUndefined} from '@downforce/std/type-is'
-import type {ObjectPartial} from '@downforce/std/type-types'
+import {isUndefined} from '@downforce/std/type-is'
 import {classes} from '@downforce/web/classes'
 import {KeyboardKey} from '@downforce/web/keybinding'
 import {useCallback, useContext, useEffect, useId, useLayoutEffect, useRef, useState, type AriaRole} from 'react'
 import type {SelectOptionGeneric, SelectPlacement} from './select.api.js'
-import {mapSome} from '@downforce/std/fn-monad'
-import {setRef} from '@downforce/react/ref'
 
 const NoItems: [] = []
 
-export const SelectContext: React.Context<undefined | SelectContextValueGeneric> = (
-    defineContext<SelectContextValueGeneric>('SelectContext')
+export const SelectContext: React.Context<undefined | SelectContextDefaultValue> = (
+    defineContext<SelectContextDefaultValue>('SelectContext')
 )
 
-export function useSelectOneContext<I extends SelectOptionGeneric<any>>(): undefined | SelectContextValue<I, undefined | I> {
-    return useContext(SelectContext) as undefined | SelectContextValue<I, undefined | I>
+export function useSelectOneContext<V, O extends object = object>(): undefined | SelectContextValue<V, undefined | V, O> {
+    return useContext(SelectContext) as undefined | SelectContextValue<V, undefined | V, O>
 }
 
-export function useSelectManyContext<I extends SelectOptionGeneric<any>>(): undefined | SelectContextValue<I, Array<I>> {
-    return useContext(SelectContext) as undefined | SelectContextValue<I, Array<I>>
+export function useSelectManyContext<V, O extends object = object>(): undefined | SelectContextValue<V, Array<V>, O> {
+    return useContext(SelectContext) as undefined | SelectContextValue<V, Array<V>, O>
 }
 
-export function useSelectOneProvider<I extends SelectOptionGeneric<any>>(
-    args: SelectOneProviderOptions<I>,
-): SelectContextValue<I, undefined | I> {
+export function useSelectOneProvider<V, O extends object = object>(
+    args: SelectOneProviderOptions<V, O>,
+): SelectContextValue<V, undefined | V, O> {
     const {
         initialOpen,
         initialSelected,
         open: openControlled,
         selected: selectedControlled,
-        setOpen: setOpenControlled,
-        setSelected: setSelectedControlled,
+        onOpen: setOpenControlled,
+        onSelected: setSelectedControlled,
         ...otherArgs
     } = args
     const [openUncontrolled, setOpenUncontrolled] = useState<boolean>(initialOpen ?? openControlled ?? false)
-    const [selectedUncontrolled, setSelectedUncontrolled] = useState<undefined | I>(initialSelected)
+    const [selectedUncontrolled, setSelectedUncontrolled] = useState<undefined | V>(initialSelected)
 
     const open = openControlled ?? openUncontrolled
     const selected = selectedControlled ?? selectedUncontrolled
@@ -49,45 +47,125 @@ export function useSelectOneProvider<I extends SelectOptionGeneric<any>>(
         setOpenControlled?.(open)
     }, [setOpenUncontrolled, setOpenControlled])
 
-    const setSelected = useCallback((selected: undefined | I) => {
-        setSelectedUncontrolled(selected)
-        setSelectedControlled(selected)
-    }, [setSelectedUncontrolled, setSelectedControlled])
+    const setSelected = useCallback((value: undefined | V) => {
+        setSelectedUncontrolled(value)
+        setSelectedControlled?.(value, args.options ?? [])
+    }, [setSelectedUncontrolled, setSelectedControlled, args.options])
 
     const clearSelected = useCallback(() => {
         setSelected(undefined)
     }, [setSelected])
 
-    const onOptionSelection = useCallback((option: I, optionIdx: number, event: React.UIEvent<HTMLElement>) => {
-        setSelected(option)
+    const isSelected = useCallback((value: V) => {
+        return selected === value
+    }, [selected])
+
+    const onOptionSelection = useCallback((option: SelectOptionGeneric<V> & O, optionIdx: number, event: React.UIEvent<HTMLElement>) => {
+        setSelected(option.value)
         setOpen(false)
     }, [setSelected, setOpen])
 
-    return useSelectGenericProvider({
+    const context = useSelectProvider({
         ...otherArgs,
         open: open,
         selected: selected,
-        clearSelected: clearSelected,
         setOpen: setOpen,
         setSelected: setSelected,
+        clearSelected: clearSelected,
+        isSelected: isSelected,
         onOptionSelection: onOptionSelection,
     })
+
+    useLayoutEffect(() => {
+        if (context.state.placement !== 'positioned') {
+            return
+        }
+        if (context.state.teleport) {
+            return
+        }
+        if (! context.state.options) {
+            return
+        }
+        if (! context.state.open) {
+            ElementTranslate.clean(context.refs.optionsRootRef.current)
+            return
+        }
+        if (isUndefined(context.state.selected)) {
+            ElementTranslate.clean(context.refs.optionsRootRef.current)
+            return
+        }
+
+        const selected = context.state.selected
+        const selectedOptionIdx = context.state.options.findIndex(it => it.value === selected)
+        const controlElement = context.refs.controlRef.current
+        const optionsRootElement = context.refs.optionsRootRef.current
+        const optionsListElement = context.refs.optionsListRef.current
+        const optionElement = context.refs.optionsRef.current[selectedOptionIdx]
+
+        if (selectedOptionIdx < 0) {
+            return
+        }
+        if (! controlElement) {
+            return
+        }
+        if (! optionsRootElement) {
+            return
+        }
+        if (! optionsListElement) {
+            return
+        }
+        if (! optionElement) {
+            return
+        }
+
+        const hasScrolling = (optionsListElement.scrollHeight - optionsListElement.clientHeight)
+
+        if (hasScrolling) {
+            const scrollHeight = optionsListElement.scrollHeight
+            const optionsListElementRect = optionsListElement.getBoundingClientRect()
+            const optionElementRect = optionElement.getBoundingClientRect()
+            const optionElementOffsetY = optionElement.offsetTop
+
+            const optionElementScrollY = (
+                optionElementOffsetY
+                - (optionsListElementRect.height / 2) // Centered inside the options list.
+                + (optionElementRect.height / 2) // Centered inside the options list.
+            )
+
+            optionsListElement.scrollTop = clamp(0, optionElementScrollY, scrollHeight)
+            return
+        }
+
+        const [currentXOptional, currentYOptional] = ElementTranslate.read(context.refs.optionsRootRef.current)
+        const currentY = currentYOptional ?? 0
+
+        const optionElementRect = optionElement.getBoundingClientRect()
+        const controlElementRect = controlElement.getBoundingClientRect()
+
+        const heightDelta = controlElementRect.height - optionElementRect.height
+        const yDelta = controlElementRect.y - optionElementRect.y
+        const transformY = currentY + yDelta + (heightDelta / 2)
+
+        ElementTranslate.write(context.refs.optionsRootRef.current, 0, transformY)
+    }, [context.state.placement, context.state.teleport, context.state.open, context.state.selected, context.state.options])
+
+    return context
 }
 
-export function useSelectManyProvider<I extends SelectOptionGeneric<any>>(
-    args: SelectManyProviderOptions<I>,
-): SelectContextValue<I, Array<I>> {
+export function useSelectManyProvider<V, O extends object = object>(
+    args: SelectManyProviderOptions<V, O>,
+): SelectContextValue<V, Array<V>, O> {
     const {
         initialOpen,
         initialSelected,
         open: openControlled,
         selected: selectedControlled,
-        setOpen: setOpenControlled,
-        setSelected: setSelectedControlled,
+        onOpen: setOpenControlled,
+        onSelected: setSelectedControlled,
         ...otherArgs
     } = args
     const [openUncontrolled, setOpenUncontrolled] = useState<boolean>(initialOpen ?? openControlled ?? false)
-    const [selectedUncontrolled, setSelectedUncontrolled] = useState<Array<I>>(initialSelected ?? NoItems)
+    const [selectedUncontrolled, setSelectedUncontrolled] = useState<Array<V>>(initialSelected ?? NoItems)
 
     const open = openControlled ?? openUncontrolled
     const selected = selectedControlled ?? selectedUncontrolled
@@ -97,37 +175,70 @@ export function useSelectManyProvider<I extends SelectOptionGeneric<any>>(
         setOpenControlled?.(value)
     }, [setOpenUncontrolled, setOpenControlled])
 
-    const setSelected = useCallback((selected: Array<I>) => {
-        setSelectedUncontrolled(selected)
-        setSelectedControlled(selected)
-    }, [setSelectedUncontrolled, setSelectedControlled])
+    const setSelected = useCallback((value: Array<V>) => {
+        setSelectedUncontrolled(value)
+        setSelectedControlled?.(value, args.options ?? [])
+    }, [setSelectedUncontrolled, setSelectedControlled, args.options])
 
     const clearSelected = useCallback(() => {
         setSelected(NoItems)
     }, [setSelected])
 
-    const onOptionSelection = useCallback((option: I, optionIdx: number, event: React.UIEvent<HTMLElement>) => {
-        setSelected(
-            selected.some(it => it.value === option.value)
-                ? selected.filter(it => it.value !== option.value)
-                : [...selected, option]
+    const isSelected = useCallback((value: V) => {
+        return selected.includes(value)
+    }, [selected])
+
+    const onOptionSelection = useCallback((option: SelectOptionGeneric<V> & O, optionIdx: number, event: React.UIEvent<HTMLElement>) => {
+        const value: Array<V> = (
+            selected.includes(option.value)
+                ? selected.filter(it => it !== option.value)
+                : [...selected, option.value]
         )
+        setSelected(value)
     }, [selected, setSelected, setOpen])
 
-    return useSelectGenericProvider({
+    const context = useSelectProvider({
         ...otherArgs,
         open: open,
         selected: selected,
-        clearSelected: clearSelected,
         setOpen: setOpen,
         setSelected: setSelected,
+        clearSelected: clearSelected,
+        isSelected: isSelected,
         onOptionSelection: onOptionSelection,
     })
+
+    useLayoutEffect(() => {
+        if (context.state.placement !== 'positioned') {
+            return
+        }
+        if (context.state.teleport) {
+            return
+        }
+        if (! context.state.options) {
+            return
+        }
+        if (! context.state.open) {
+            ElementTranslate.clean(context.refs.optionsRootRef.current)
+            return
+        }
+        if (! context.state.selected) {
+            ElementTranslate.clean(context.refs.optionsRootRef.current)
+            return
+        }
+        if (context.state.selected.length === 0) {
+            ElementTranslate.clean(context.refs.optionsRootRef.current)
+            return
+        }
+        // TODO: implement positioned placement for multi select.
+    }, [context.state.placement, context.state.teleport, context.state.open, context.state.selected, args.options])
+
+    return context
 }
 
-export function useSelectGenericProvider<I extends SelectOptionGeneric<any>, S extends undefined | I | Array<I>>(
-    args: SelectProviderOptions<I, S>,
-): SelectContextValue<I, S> {
+export function useSelectProvider<V, S, O extends object = object>(
+    args: SelectProviderOptions<V, S, O>,
+): SelectContextValue<V, S, O> {
     const [PRIVATE_optionFocused, PRIVATE_setOptionFocused] = useState<number>()
     const [PRIVATE_optionTabbed, PRIVATE_setOptionTabbed] = useState<number>()
 
@@ -139,49 +250,56 @@ export function useSelectGenericProvider<I extends SelectOptionGeneric<any>, S e
         optionsRef: useRef<Array<undefined | HTMLElement>>(NoItems),
     }
 
-    const state: SelectContextValue<I, S>['state'] = {
+    const statePartial = {
+        clearSelected: args.clearSelected,
         disabled: args.disabled ?? false,
         mounted: args.mounted ?? false,
         open: args.open,
         optionFocused: PRIVATE_optionFocused,
+        options: args.options,
         optionTabbed: PRIVATE_optionTabbed,
         placement: args.placement ?? 'center',
         readonly: args.readonly ?? false,
         required: args.required ?? false,
         selected: args.selected,
-        teleport: args.teleport ?? false,
-        valid: args.valid ?? true,
-        clearSelected: args.clearSelected,
-        setOpen() {},
         setOptionFocused: PRIVATE_setOptionFocused,
         setOptionTabbed: PRIVATE_setOptionTabbed,
-        setSelected() {},
+        teleport: args.teleport ?? false,
+        valid: args.valid ?? true,
+    } satisfies Partial<SelectContextValue<V, S, O>['state']>
+
+    const state: SelectContextValue<V, S, O>['state'] = {
+        ...statePartial,
+
+        isSelected: args.isSelected,
+
+        setOpen: useCallback((open: boolean) => {
+            if (state.disabled) {
+                return
+            }
+            /*
+            * // Readonly select can be opened.
+            * if (state.readonly) {
+            *   return
+            * }
+            */
+
+            args.setOpen(open)
+        }, [args.setOpen, statePartial.disabled, statePartial.readonly]),
+
+        setSelected: useCallback((value: S) => {
+            if (state.disabled) {
+                return
+            }
+            if (state.readonly) {
+                return
+            }
+
+            args.setSelected(value)
+        }, [args.setSelected, statePartial.disabled, statePartial.readonly]),
     }
-    state.setOpen = useCallback((open: boolean) => {
-        if (state.disabled) {
-            return
-        }
-        /*
-        * // Readonly select can be opened.
-        * if (state.readonly) {
-        *   return
-        * }
-        */
 
-        args.setOpen(open)
-    }, [state.disabled, state.readonly, args.setOpen])
-    state.setSelected = useCallback((selected: S) => {
-        if (state.disabled) {
-            return
-        }
-        if (state.readonly) {
-            return
-        }
-
-        args.setSelected(selected)
-    }, [state.disabled, state.readonly, args.setSelected])
-
-    const onOptionSelection = useCallback((option: I, optionIdx: number, event: React.UIEvent<HTMLElement>) => {
+    const onOptionSelection = useCallback((option: SelectOptionGeneric<V> & O, optionIdx: number, event: React.UIEvent<HTMLElement>) => {
         if (state.disabled) {
             return
         }
@@ -193,13 +311,11 @@ export function useSelectGenericProvider<I extends SelectOptionGeneric<any>, S e
         }
 
         args.onOptionSelection(option, optionIdx, event)
-    }, [state.disabled, state.readonly, args.onOptionSelection])
+    }, [args.onOptionSelection, state.disabled, state.readonly])
 
-    const computedPropsContext: SelectComputablePropsContext<S> = {
-        open: state.open,
-        selected: state.selected,
+    const computedPropsContext: SelectProviderFragments<V, S, O>['PropsContext'] = {
+        ...statePartial,
     }
-
     const computedProps = {
         rootProps: compute(args.rootProps, computedPropsContext),
         controlProps: compute(args.controlProps, computedPropsContext),
@@ -207,10 +323,11 @@ export function useSelectGenericProvider<I extends SelectOptionGeneric<any>, S e
         optionsListProps: compute(args.optionsListProps, computedPropsContext),
         optionProps: compute(args.optionProps, computedPropsContext),
     }
+    const ids = {
+        optionsRootId: useId(),
+    }
 
-    const optionsRootId = useId()
-
-    const props: SelectContextValue<I, S>['props'] = {
+    const props: SelectContextValue<V, S, O>['props'] = {
         rootProps: {
             ...computedProps.rootProps,
             ref: useCallback((element: null | HTMLElement) => {
@@ -218,28 +335,12 @@ export function useSelectGenericProvider<I extends SelectOptionGeneric<any>, S e
                 mapSome(computedProps.rootProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
             }, [computedProps.rootProps?.ref]),
             className: classes(computedProps.rootProps?.className),
-            ['aria-controls']: optionsRootId,
+            ['aria-controls']: ids.optionsRootId,
             ['aria-disabled']: state.disabled,
             ['aria-expanded']: state.open,
             ['data-placement']: state.placement,
             style: {
-                ...call((): undefined | React.CSSProperties => {
-                    if (state.teleport) {
-                        return
-                    }
-                    if (state.open) {
-                        return {
-                            position: 'relative',
-                            zIndex: 'var(--Select-root-zindex, var(--Select-root-zindex--default, 1))',
-                        }
-                    }
-                    if (state.mounted) {
-                        return {
-                            position: 'relative',
-                        }
-                    }
-                    return
-                }),
+                ...SelectPlacementPositionedKit.rootPropsStyles(state),
                 ...computedProps.rootProps?.style,
             },
             onBlur: useCallback((event: React.FocusEvent<HTMLElement>) => {
@@ -376,66 +477,7 @@ export function useSelectGenericProvider<I extends SelectOptionGeneric<any>, S e
             }, [computedProps.optionsRootProps?.ref]),
             ['aria-hidden']: ! state.open,
             style: {
-                ...call((): undefined | React.CSSProperties => {
-                    if (state.teleport) {
-                        return
-                    }
-                    if (! state.open) {
-                        return {
-                            display: 'var(--Select-options-display--hidden, var(--Select-options-display--hidden--default, none))',
-                        }
-                    }
-
-                    switch (state.placement) {
-                        case 'top': return {
-                            position: 'var(--Select-options-position, var(--Select-options-position--default, absolute))' as React.CSSProperties['position'],
-                            zIndex: 'var(--Select-options-zindex, var(--Select-options-zindex--default, 1))',
-                            top: 'calc(-1 * var(--Select-options-gap, var(--Select-options-gap--default, 0px)))',
-                            left: 0,
-                            right: 0,
-                            width: '100%',
-                            height: 0,
-                            margin: 'auto',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'flex-end',
-                        }
-                        case 'center': return {
-                            position: 'var(--Select-options-position, var(--Select-options-position--default, absolute))' as React.CSSProperties['position'],
-                            zIndex: 'var(--Select-options-zindex, var(--Select-options-zindex--default, 1))',
-                            inset: 0,
-                            width: '100%',
-                            height: '100%',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }
-                        case 'bottom': return {
-                            position: 'var(--Select-options-position, var(--Select-options-position--default, absolute))' as React.CSSProperties['position'],
-                            zIndex: 'var(--Select-options-zindex, var(--Select-options-zindex--default, 1))',
-                            left: 0,
-                            right: 0,
-                            bottom: 'calc(-1 * var(--Select-options-gap, var(--Select-options-gap--default, 0px)))',
-                            width: '100%',
-                            height: 0,
-                            margin: 'auto',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'flex-start',
-                        }
-                        case 'positioned': return {
-                            position: 'var(--Select-options-position, var(--Select-options-position--default, absolute))' as React.CSSProperties['position'],
-                            zIndex: 'var(--Select-options-zindex, var(--Select-options-zindex--default, 1))',
-                            inset: 0,
-                            width: '100%',
-                            height: '100%',
-                            margin: 'auto',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }
-                    }
-                }),
+                ...SelectPlacementPositionedKit.optionsRootPropsStyles(state),
                 ...computedProps.optionsRootProps?.style,
             },
         },
@@ -450,7 +492,7 @@ export function useSelectGenericProvider<I extends SelectOptionGeneric<any>, S e
             role: 'listbox',
         },
 
-        optionPropsFor: (option: I, optionIdx: number) => ({
+        optionPropsFor: (option: SelectOptionGeneric<V> & O, optionIdx: number) => ({
             ...computedProps.optionProps,
             ref(element: null | HTMLElement) {
                 refs.optionsRef.current[optionIdx] = element ?? undefined
@@ -459,11 +501,7 @@ export function useSelectGenericProvider<I extends SelectOptionGeneric<any>, S e
             className: classes(),
             role: 'option',
             ['aria-disabled']: option.disabled ?? false,
-            ['aria-selected']:
-                isArray(state.selected)
-                    ? state.selected.some(it => it.value === option.value)
-                    : (option.value === state.selected?.value)
-            ,
+            ['aria-selected']: state.isSelected(option.value),
             tabIndex: optionIdx === state.optionTabbed ? 0 : -1,
             onClick(event: React.MouseEvent<HTMLElement>) {
                 if (state.disabled) {
@@ -591,82 +629,6 @@ export function useSelectGenericProvider<I extends SelectOptionGeneric<any>, S e
         refs.optionsRef.current = refs.optionsRef.current.slice(0, args.options?.length ?? 0)
     }, [args.options?.length])
 
-    useLayoutEffect(() => {
-        if (state.placement !== 'positioned') {
-            return
-        }
-        if (state.teleport) {
-            return
-        }
-        if (! args.options) {
-            return
-        }
-        if (! state.open) {
-            ElementTranslate.clean(refs.optionsRootRef.current)
-            return
-        }
-        if (! state.selected) {
-            ElementTranslate.clean(refs.optionsRootRef.current)
-            return
-        }
-        if (isArray(state.selected)) {
-            return
-        }
-
-        const selected = state.selected as I
-        const optionIdx = args.options.findIndex(it => it.value === selected.value)
-        const controlElement = refs.controlRef.current
-        const optionsRootElement = refs.optionsRootRef.current
-        const optionsListElement = refs.optionsListRef.current
-        const optionElement = refs.optionsRef.current[optionIdx]
-
-        if (optionIdx < 0) {
-            return
-        }
-        if (! controlElement) {
-            return
-        }
-        if (! optionsRootElement) {
-            return
-        }
-        if (! optionsListElement) {
-            return
-        }
-        if (! optionElement) {
-            return
-        }
-
-        const hasScrolling = (optionsListElement.scrollHeight - optionsListElement.clientHeight)
-
-        if (hasScrolling) {
-            const scrollHeight = optionsListElement.scrollHeight
-            const optionsListElementRect = optionsListElement.getBoundingClientRect()
-            const optionElementRect = optionElement.getBoundingClientRect()
-            const optionElementOffsetY = optionElement.offsetTop
-
-            const optionElementScrollY = (
-                optionElementOffsetY
-                - (optionsListElementRect.height / 2) // Centered inside the options list.
-                + (optionElementRect.height / 2) // Centered inside the options list.
-            )
-
-            optionsListElement.scrollTop = clamp(0, optionElementScrollY, scrollHeight)
-            return
-        }
-
-        const [currentXOptional, currentYOptional] = ElementTranslate.read(refs.optionsRootRef.current)
-        const currentY = currentYOptional ?? 0
-
-        const optionElementRect = optionElement.getBoundingClientRect()
-        const controlElementRect = controlElement.getBoundingClientRect()
-
-        const heightDelta = controlElementRect.height - optionElementRect.height
-        const yDelta = controlElementRect.y - optionElementRect.y
-        const transformY = currentY + yDelta + (heightDelta / 2)
-
-        ElementTranslate.write(refs.optionsRootRef.current, 0, transformY)
-    }, [state.placement, state.teleport, state.open, state.selected, args.options])
-
     return {props, refs, state}
 }
 
@@ -694,14 +656,91 @@ const ElementTranslate = {
     },
 }
 
+export const SelectPlacementPositionedKit = {
+    rootPropsStyles(state: SelectContextDefaultValue['state']): undefined | React.CSSProperties {
+        if (state.teleport) {
+            return
+        }
+        if (state.open) {
+            return {
+                position: 'relative',
+                zIndex: 'var(--Select-root-zindex, var(--Select-root-zindex--default, 1))',
+            }
+        }
+        if (state.mounted) {
+            return {
+                position: 'relative',
+            }
+        }
+        return
+    },
+    optionsRootPropsStyles(state: SelectContextDefaultValue['state']): undefined | React.CSSProperties {
+        if (state.teleport) {
+            return
+        }
+        if (! state.open) {
+            return {
+                display: 'var(--Select-options-display--hidden, var(--Select-options-display--hidden--default, none))',
+            }
+        }
+
+        switch (state.placement) {
+            case 'top': return {
+                position: 'var(--Select-options-position, var(--Select-options-position--default, absolute))' as React.CSSProperties['position'],
+                zIndex: 'var(--Select-options-zindex, var(--Select-options-zindex--default, 1))',
+                top: 'calc(-1 * var(--Select-options-gap, var(--Select-options-gap--default, 0px)))',
+                left: 0,
+                right: 0,
+                width: '100%',
+                height: 0,
+                margin: 'auto',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'flex-end',
+            }
+            case 'center': return {
+                position: 'var(--Select-options-position, var(--Select-options-position--default, absolute))' as React.CSSProperties['position'],
+                zIndex: 'var(--Select-options-zindex, var(--Select-options-zindex--default, 1))',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }
+            case 'bottom': return {
+                position: 'var(--Select-options-position, var(--Select-options-position--default, absolute))' as React.CSSProperties['position'],
+                zIndex: 'var(--Select-options-zindex, var(--Select-options-zindex--default, 1))',
+                left: 0,
+                right: 0,
+                bottom: 'calc(-1 * var(--Select-options-gap, var(--Select-options-gap--default, 0px)))',
+                width: '100%',
+                height: 0,
+                margin: 'auto',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+            }
+            case 'positioned': return {
+                position: 'var(--Select-options-position, var(--Select-options-position--default, absolute))' as React.CSSProperties['position'],
+                zIndex: 'var(--Select-options-zindex, var(--Select-options-zindex--default, 1))',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                margin: 'auto',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }
+        }
+    },
+}
+
 // Types ///////////////////////////////////////////////////////////////////////
 
-export type SelectContextValueGeneric = SelectContextValue<
-    SelectOptionGeneric<any>,
-    undefined | SelectOptionGeneric<any> | Array<SelectOptionGeneric<any>>
->
+export type SelectContextDefaultValue = SelectContextValue<any, any, object>
 
-export interface SelectContextValue<I extends SelectOptionGeneric<any>, S extends undefined | I | Array<I>> {
+export interface SelectContextValue<V, S, O extends object = object> {
     props: {
         rootProps: React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement> & {
             ref: React.RefCallback<null | HTMLElement>
@@ -736,7 +775,7 @@ export interface SelectContextValue<I extends SelectOptionGeneric<any>, S extend
             className: undefined | string
             role: AriaRole
         }
-        optionPropsFor(option: I, optionIdx: number): React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement> & {
+        optionPropsFor(option: SelectOptionGeneric<V> & O, optionIdx: number): React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement> & {
             ref(element: null | HTMLElement): void
             className: undefined | string
             role: AriaRole
@@ -750,6 +789,8 @@ export interface SelectContextValue<I extends SelectOptionGeneric<any>, S extend
     refs: {
         rootRef: React.RefObject<undefined | HTMLElement>
         controlRef: React.RefObject<undefined | HTMLElement>
+        optionsRootRef: React.RefObject<undefined | HTMLElement>
+        optionsListRef: React.RefObject<undefined | HTMLElement>
         optionsRef: React.RefObject<Array<undefined | HTMLElement>>
     }
     state: {
@@ -757,6 +798,7 @@ export interface SelectContextValue<I extends SelectOptionGeneric<any>, S extend
         mounted: boolean
         open: boolean
         optionFocused: undefined | number
+        options: undefined | Array<SelectOptionGeneric<V> & O>
         optionTabbed: undefined | number
         placement: SelectPlacement
         readonly: boolean
@@ -765,49 +807,65 @@ export interface SelectContextValue<I extends SelectOptionGeneric<any>, S extend
         teleport: boolean
         valid: boolean
         clearSelected(): void
+        isSelected(value: V): boolean
         setOpen(open: boolean): void
         setOptionFocused(optionIdx: undefined | number): void
         setOptionTabbed(optionIdx: undefined | number): void
-        setSelected(selected: S): void
+        setSelected(value: S): void
     }
 }
 
-export interface SelectProviderOptions<I extends SelectOptionGeneric<any>, S extends undefined | I | Array<I>> {
-    disabled: undefined | boolean
-    mounted: undefined | boolean
-    open: boolean
-    options: undefined | Array<I>
-    placement: undefined | SelectPlacement
-    readonly: undefined | boolean
-    required: undefined | boolean
-    selected: S
-    teleport: undefined | boolean
-    valid: undefined | boolean
-    clearSelected(): void
-    onOptionSelection(option: I, optionIdx: number, event: React.UIEvent<HTMLElement>): void
-    setOpen(open: boolean): void
-    setSelected(selected: S): void
-    rootProps?: undefined | Computable<undefined | (React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>), [SelectComputablePropsContext<S>]>
-    controlProps?: undefined | Computable<undefined | (React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>), [SelectComputablePropsContext<S>]>
-    optionsRootProps?: undefined | Computable<undefined | (React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>), [SelectComputablePropsContext<S>]>
-    optionsListProps?: undefined | Computable<undefined | (React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>), [SelectComputablePropsContext<S>]>
-    optionProps?: undefined | Computable<undefined | (React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>), [SelectComputablePropsContext<S>]>
+export interface SelectProviderFragments<V, S, O extends object = object> {
+    Props: {
+        rootProps: undefined | Computable<undefined | (React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>), [SelectProviderFragments<V, S, O>['PropsContext']]>
+        controlProps: undefined | Computable<undefined | (React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>), [SelectProviderFragments<V, S, O>['PropsContext']]>
+        optionsRootProps: undefined | Computable<undefined | (React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>), [SelectProviderFragments<V, S, O>['PropsContext']]>
+        optionsListProps: undefined | Computable<undefined | (React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>), [SelectProviderFragments<V, S, O>['PropsContext']]>
+        optionProps: undefined | Computable<undefined | (React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>), [SelectProviderFragments<V, S, O>['PropsContext']]>
+    }
+    State: {
+        disabled: undefined | boolean
+        mounted: undefined | boolean
+        open: boolean
+        options: undefined | Array<SelectOptionGeneric<V> & O>
+        placement: undefined | SelectPlacement
+        readonly: undefined | boolean
+        required: undefined | boolean
+        selected: S
+        teleport: undefined | boolean
+        valid: undefined | boolean
+    }
+    StateActions: {
+        clearSelected(): void
+        isSelected(value: V): boolean
+        onOptionSelection(option: SelectOptionGeneric<V> & O, optionIdx: number, event: React.UIEvent<HTMLElement>): void
+        setOpen(open: boolean): void
+        setSelected(value: S): void
+    }
+    PropsContext: SelectProviderFragments<V, S, O>['State']
 }
 
-type SelectProviderFactoryOverriddenOptionsKey = 'open' | 'selected' | 'clearSelected' | 'onOptionSelection' | 'setOpen'
+export type SelectProviderOptions<V, S, O extends object = object> =
+    & SelectProviderFragments<V, S, O>['Props']
+    & SelectProviderFragments<V, S, O>['State']
+    & SelectProviderFragments<V, S, O>['StateActions']
 
-export type SelectProviderFactoryOptions<I extends SelectOptionGeneric<any>, S extends undefined | I | Array<I>> =
-    & Omit<SelectProviderOptions<I, S>, SelectProviderFactoryOverriddenOptionsKey>
-    & ObjectPartial<Pick<SelectProviderOptions<I, S>, SelectProviderFactoryOverriddenOptionsKey>>
+export type SelectCommonProviderOptions<V, S, O extends object = object> =
+    & SelectProviderFragments<V, S, O>['Props']
+    & Omit<SelectProviderFragments<V, S, O>['State'], 'open' | 'selected'>
     & {
-    initialOpen: undefined | boolean
-    initialSelected: undefined | S
+    initialOpen: undefined | SelectProviderOptions<V, S, O>['open']
+    open: undefined | SelectProviderOptions<V, S, O>['open']
+    onOpen: undefined | SelectProviderOptions<V, S, O>['setOpen']
+    onSelected(value: S, options: Array<SelectOptionGeneric<V> & O>): void
 }
 
-export type SelectOneProviderOptions<I extends SelectOptionGeneric<any>> = SelectProviderFactoryOptions<I, undefined | I>
-export type SelectManyProviderOptions<I extends SelectOptionGeneric<any>> = SelectProviderFactoryOptions<I, Array<I>>
+export interface SelectOneProviderOptions<V, O extends object = object> extends SelectCommonProviderOptions<V, undefined | V, O> {
+    initialSelected: undefined | SelectProviderOptions<V, undefined | V, O>['selected']
+    selected: undefined | SelectProviderOptions<V, undefined | V, O>['selected']
+}
 
-export interface SelectComputablePropsContext<S extends undefined | SelectOptionGeneric<any> | Array<SelectOptionGeneric<any>>> {
-    open: boolean
-    selected: S
+export interface SelectManyProviderOptions<V, O extends object = object> extends SelectCommonProviderOptions<V, Array<V>, O> {
+    initialSelected: undefined | SelectProviderOptions<V, Array<V>, O>['selected']
+    selected: undefined | SelectProviderOptions<V, Array<V>, O>['selected']
 }

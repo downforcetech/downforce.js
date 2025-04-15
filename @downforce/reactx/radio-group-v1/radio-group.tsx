@@ -4,7 +4,7 @@ import {compute, type Computable} from '@downforce/std/fn-compute'
 import {useId} from 'react'
 
 export function RadioGroup(props: Props<RadioGroupProps>): React.JSX.Element {
-    const {className, items, selected, onChange, ...otherProps} = props
+    const {className, options, selected, onChange, ...otherProps} = props
     const id = useId()
 
     return (
@@ -12,7 +12,7 @@ export function RadioGroup(props: Props<RadioGroupProps>): React.JSX.Element {
             {...otherProps}
             className={classes('RadioGroup-e37b', className)}
         >
-            {items?.map((it, idx) => {
+            {options?.map((it, idx) => {
                 const labelProps = compute(it.labelProps, it.value, idx)
                 const inputProps = compute(it.inputProps, it.value, idx)
                 const spanProps = compute(it.spanProps, it.value, idx)
@@ -50,13 +50,13 @@ export function RadioGroup(props: Props<RadioGroupProps>): React.JSX.Element {
 // Types ///////////////////////////////////////////////////////////////////////
 
 export interface RadioGroupProps extends Omit<ElementProps<'div'>, 'onChange'> {
-    selected?: undefined | null | string
-    items?: undefined | null | Array<{
+    options?: undefined | Array<{
         inputProps?: undefined | Computable<ElementProps<'input'>, [string, number]>
         label: React.ReactNode
         labelProps?: undefined | Computable<ElementProps<'label'>, [string, number]>
-        value: string
         spanProps?: undefined | Computable<ElementProps<'span'>, [string, number]>
+        value: string
     }>
+    selected?: undefined | null | string
     onChange?: undefined | ((value: string, idx: number) => void)
 }

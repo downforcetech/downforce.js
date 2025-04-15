@@ -134,7 +134,7 @@ export function WidgetsView(props: Props<WidgetsViewProps>): React.JSX.Element {
                 </Checkbox>
 
                 <RadioGroup
-                    items={[
+                    options={[
                         {value: 'a', label: 'Apple'},
                         {value: 'b', label: 'Orange'},
                     ]}

@@ -1,7 +1,7 @@
 import {classes} from '@downforce/react/classes'
 import type {Props, VoidProps} from '@downforce/react/props'
 import type {Io} from '@downforce/std/fn-type'
-import {isArray} from '@downforce/std/type-is'
+import {isSome, isUndefined} from '@downforce/std/type-is'
 import type {Prettify} from '@downforce/std/type-types'
 import {useImperativeHandle} from 'react'
 import {createPortal} from 'react-dom'
@@ -11,66 +11,51 @@ import {
     useSelectManyProvider,
     useSelectOneProvider,
     type SelectContextValue,
-    type SelectContextValueGeneric,
-    type SelectProviderOptions,
+    type SelectProviderOptions
 } from './select.hook.js'
 
 export * from './select.api.js'
+export {SelectContext, useSelectManyContext, useSelectOneContext, type SelectContextValue} from './select.hook.js'
 
-export function Select<
-    I extends SelectOptionGeneric<any>,
-    S extends undefined | I | Array<I>,
->(props: Props<SelectProps<I, S>>): React.JSX.Element {
-    const {
-        className,
-        context,
-        ref,
-        options,
-        control: renderControlOptional,
-        option: renderOptionOptional,
-        portal: renderPortalOptional,
-        components,
-    } = props
+
+export function Select<V, S, O extends object = object>(props: Props<SelectProps<V, S, O>>): React.JSX.Element {
+    const {className, context, ref, slots, teleport} = props
 
     useImperativeHandle(ref, () => context, [context])
 
-    function renderControl(props: SelectControlProps<I, S>) {
-        if (renderControlOptional) {
-            return renderControlOptional(props)
-        }
-        if (components?.Control) {
-            return <components.Control {...props}/>
-        }
-        if (! props.selected) {
+    const renders = {
+        control(props: SelectControlProps<V, S, O>) {
+            if (slots.control) {
+                return slots.control(props)
+            }
+            if (slots.Control) {
+                return <slots.Control {...props}/>
+            }
             return
-        }
-        if (isArray(props.selected)) {
+        },
+        option(props: SelectOptionProps<V, S, O>) {
+            if (slots.option) {
+                return slots.option(props)
+            }
+            if (slots.Option) {
+                return <slots.Option {...props}/>
+            }
             return
-        }
-        return props.selected.label ?? String(props.selected.value)
-    }
+        },
+        portal(props: SelectPortalProps<V, S, O>) {
+            const {children} = props
 
-    function renderOption(props: SelectOptionProps<I, S>) {
-        if (renderOptionOptional) {
-            return renderOptionOptional(props)
-        }
-        if (components?.Option) {
-            return <components.Option {...props}/>
-        }
-        return props.option.label ?? String(props.option.value)
-    }
-
-    function renderPortal(props: SelectPortalProps) {
-        if (renderPortalOptional === true) {
-            return createPortal(props.children, document.body)
-        }
-        if (renderPortalOptional) {
-            return renderPortalOptional(props)
-        }
-        if (components?.Portal) {
-            return <components.Portal {...props}/>
-        }
-        return props.children
+            if (teleport === true) {
+                return createPortal(children, document.body)
+            }
+            if (slots.portal) {
+                return slots.portal(props)
+            }
+            if (slots.Portal) {
+                return <slots.Portal {...props}/>
+            }
+            return children
+        },
     }
 
     return (
@@ -83,24 +68,15 @@ export function Select<
                     {...context.props.controlProps}
                     className={classes('control-slot-cf42', context.props.controlProps.className)}
                 >
-                    {renderControl({
-                        disabled: context.state.disabled,
-                        mounted: context.state.mounted,
-                        readonly: context.state.readonly,
-                        required: context.state.required,
-                        valid: context.state.valid,
-                        open: context.state.open,
-                        selected: context.state.selected,
+                    {renders.control({
+                        ...context,
                         onClick: context.props.controlProps.onClick,
-                        onSelected: context.state.setSelected,
-                        onClearSelected: context.state.clearSelected,
                     })}
                 </div>
 
                 {(context.state.mounted || context.state.open) &&
-                    renderPortal({
-                        open: context.state.open,
-                        refs: context.refs,
+                    renders.portal({
+                        ...context,
                         children:
                             <div
                                 {...context.props.optionsRootProps}
@@ -110,7 +86,7 @@ export function Select<
                                     {...context.props.optionsListProps}
                                     className={classes('options-list-bfc5', context.props.optionsListProps.className)}
                                 >
-                                    {options?.map((option, optionIdx) => {
+                                    {context.state.options?.map((option, optionIdx) => {
                                         const optionProps = context.props.optionPropsFor(option, optionIdx)
 
                                         return (
@@ -119,15 +95,10 @@ export function Select<
                                                 key={optionIdx}
                                                 className={classes('option-slot-0fe7', optionProps.className)}
                                             >
-                                                {renderOption({
-                                                    disabled: context.state.disabled,
-                                                    mounted: context.state.mounted,
-                                                    readonly: context.state.readonly,
-                                                    required: context.state.required,
-                                                    valid: context.state.valid,
+                                                {renders.option({
+                                                    ...context,
                                                     option: option,
                                                     optionIdx: optionIdx,
-                                                    selected: context.state.selected,
                                                     onClick: optionProps.onClick,
                                                 })}
                                             </div>
@@ -143,36 +114,39 @@ export function Select<
     )
 }
 
-export function SelectOne<I extends SelectOptionGeneric<any>>(props: Props<SelectOneProps<I>>): React.JSX.Element {
+export function SelectOne<V, O extends object = object>(props: Props<SelectOneProps<V, O>>): React.JSX.Element {
     const {
         className,
-        ref,
-
         disabled,
         mounted,
+        options,
         placement,
         readonly,
+        ref,
         required,
+        teleport,
         valid,
 
         initialOpen,
-        open: openControlled,
-        onOpenChange: setOpenControlled,
+        open,
+        onOpenChange,
 
-        options,
         initialSelected,
-        selected: selectedControlled,
-        onSelectedChange: setSelectedControlled,
+        selected,
+        onSelectedChange,
 
         controlProps,
         optionsRootProps,
         optionsListProps,
         optionProps,
 
-        control: renderControl,
-        option: renderOption,
-        portal: renderPortal,
-        components,
+        Control,
+        Option,
+        Portal,
+
+        ControlComponent,
+        OptionComponent,
+        PortalComponent,
         ...rootProps
     } = props
 
@@ -181,15 +155,15 @@ export function SelectOne<I extends SelectOptionGeneric<any>>(props: Props<Selec
         initialOpen: initialOpen,
         initialSelected: initialSelected,
         mounted: mounted,
-        open: openControlled,
+        open: open,
         options: options,
         placement: placement,
         readonly: readonly,
         required: required,
-        selected: selectedControlled,
-        setOpen: setOpenControlled,
-        setSelected: setSelectedControlled,
-        teleport: Boolean(renderPortal || components?.Portal),
+        selected: selected,
+        onOpen: onOpenChange,
+        onSelected: onSelectedChange,
+        teleport: teleport,
         valid: valid,
         rootProps: rootProps,
         controlProps: controlProps,
@@ -198,50 +172,70 @@ export function SelectOne<I extends SelectOptionGeneric<any>>(props: Props<Selec
         optionProps: optionProps,
     })
 
+    const defaultRenders = {
+        control(props: SelectControlProps<V, undefined | V, O>) {
+            if (isUndefined(props.state.selected)) {
+                return
+            }
+            const option = props.state.options?.find(it => it.value === props.state.selected)
+
+            return option?.label ?? String(props.state.selected)
+        },
+        option(props: SelectOptionProps<V, undefined | V, O>) {
+            return props.option.label ?? String(props.option.value)
+        },
+    }
+
     return (
         <Select
             ref={ref}
             className={classes('SelectOne-b79c', className)}
             context={context}
-            options={options}
-            control={renderControl}
-            option={renderOption}
-            portal={renderPortal}
-            components={components}
+            slots={{
+                control: Control ?? defaultRenders.control,
+                option: Option ?? defaultRenders.option,
+                portal: Portal,
+                Control: ControlComponent,
+                Option: OptionComponent,
+                Portal: PortalComponent,
+            }}
         />
     )
 }
 
-export function SelectMany<I extends SelectOptionGeneric<any>>(props: Props<SelectManyProps<I>>): React.JSX.Element {
+export function SelectMany<V, O extends object = object>(props: Props<SelectManyProps<V, O>>): React.JSX.Element {
     const {
         className,
-        ref,
-
         disabled,
         mounted,
+        options,
         placement,
         readonly,
+        ref,
         required,
+        teleport,
         valid,
 
         initialOpen,
-        open: openControlled,
-        onOpenChange: setOpenControlled,
+        open,
+        onOpenChange,
 
-        options,
         initialSelected,
-        selected: selectedControlled,
-        onSelectedChange: setSelectedControlled,
+        selected,
+        onSelectedChange,
 
         controlProps,
         optionsRootProps,
         optionsListProps,
         optionProps,
 
-        control: renderControl,
-        option: renderOption,
-        portal: renderPortal,
-        components,
+        Control,
+        Option,
+        Portal,
+
+        ControlComponent,
+        OptionComponent,
+        PortalComponent,
         ...rootProps
     } = props
 
@@ -250,15 +244,15 @@ export function SelectMany<I extends SelectOptionGeneric<any>>(props: Props<Sele
         initialOpen: initialOpen,
         initialSelected: initialSelected,
         mounted: mounted,
-        open: openControlled,
+        open: open,
         options: options,
         placement: placement,
         readonly: readonly,
         required: required,
-        selected: selectedControlled,
-        setOpen: setOpenControlled,
-        setSelected: setSelectedControlled,
-        teleport: Boolean(renderPortal || components?.Portal),
+        selected: selected,
+        onOpen: onOpenChange,
+        onSelected: onSelectedChange,
+        teleport: teleport,
         valid: valid,
         rootProps: rootProps,
         controlProps: controlProps,
@@ -267,102 +261,108 @@ export function SelectMany<I extends SelectOptionGeneric<any>>(props: Props<Sele
         optionProps: optionProps,
     })
 
+    const defaultRenders = {
+        control(props: SelectControlProps<V, Array<V>, O>) {
+            if (isUndefined(props.state.selected)) {
+                return
+            }
+            // We map over the selected state to preserve the selection ordering.
+            const selectedOptions = props.state.selected.map(value => props.state.options?.find(it => it.value === value)).filter(isSome)
+
+            return selectedOptions.map(it => it.label ?? String(it?.value))
+        },
+        option(props: SelectOptionProps<V, Array<V>, O>) {
+            return props.option.label ?? String(props.option.value)
+        },
+    }
+
     return (
         <Select
             ref={ref}
             className={classes('SelectMany-4d4c', className)}
             context={context}
-            options={options}
-            control={renderControl}
-            option={renderOption}
-            portal={renderPortal}
-            components={components}
+            slots={{
+                control: Control ?? defaultRenders.control,
+                option: Option ?? defaultRenders.option,
+                portal: Portal,
+                Control: ControlComponent,
+                Option: OptionComponent,
+                Portal: PortalComponent,
+            }}
         />
     )
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface SelectGenericProps<I extends SelectOptionGeneric<any>, S extends undefined | I | Array<I>> extends
+export interface SelectGenericProps<V, S, O extends object = object> extends
     Prettify<
-        & Omit<VoidProps<React.JSX.IntrinsicElements['div']>, 'ref' | 'onSelectedChange'>
-        & React.RefAttributes<SelectContextValue<I, S>>
+        & Omit<VoidProps<React.JSX.IntrinsicElements['div']>, 'ref'>
+        & React.RefAttributes<SelectContextValue<V, S, O>>
     >
 {
     disabled?: undefined | boolean
     mounted?: undefined | boolean
+    options: undefined | Array<SelectOptionGeneric<V> & O>
     placement?: undefined | SelectPlacement
     readonly?: undefined | boolean
     required?: undefined | boolean
+    teleport?: undefined | boolean
     valid?: undefined | boolean
 
     initialOpen?: undefined | boolean
     open?: undefined | boolean
     onOpenChange?: undefined | ((value: boolean) => void)
+    onSelectedChange(value: S, options: Array<O>): void
 
-    options: undefined | Array<I>
-    initialSelected?: undefined | S
-    selected?: undefined | S
-    onSelectedChange(option: S): void
+    controlProps?: undefined | SelectProviderOptions<V, S, O>['controlProps']
+    optionsRootProps?: undefined | SelectProviderOptions<V, S, O>['optionsRootProps']
+    optionsListProps?: undefined | SelectProviderOptions<V, S, O>['optionsListProps']
+    optionProps?: undefined | SelectProviderOptions<V, S, O>['optionProps']
 
-    controlProps?: undefined | SelectProviderOptions<I, S>['controlProps']
-    optionsRootProps?: undefined | SelectProviderOptions<I, S>['optionsRootProps']
-    optionsListProps?: undefined | SelectProviderOptions<I, S>['optionsListProps']
-    optionProps?: undefined | SelectProviderOptions<I, S>['optionProps']
+    Control?: undefined | Io<SelectControlProps<V, S, O>, React.ReactNode>
+    Option?: undefined | Io<SelectOptionProps<V, S, O>, React.ReactNode>
+    Portal?: undefined | Io<SelectPortalProps<V, S, O>, React.ReactNode>
 
-    control?: undefined | Io<SelectControlProps<I, S>, React.ReactNode>
-    option?: undefined | Io<SelectOptionProps<I, S>, React.ReactNode>
-    portal?: undefined | boolean | Io<SelectPortalProps, React.ReactNode>
-    components?: undefined | {
-        Control?: undefined | React.ComponentType<SelectControlProps<I, S>>
-        Option?: undefined | React.ComponentType<SelectOptionProps<I, S>>
-        Portal?: undefined | React.ComponentType<SelectPortalProps>
-    }
+    ControlComponent?: undefined | React.ComponentType<SelectControlProps<V, S, O>>
+    OptionComponent?: undefined | React.ComponentType<SelectOptionProps<V, S, O>>
+    PortalComponent?: undefined | React.ComponentType<SelectPortalProps<V, S, O>>
 }
 
-export interface SelectProps<I extends SelectOptionGeneric<any>, S extends undefined | I | Array<I>> extends React.RefAttributes<SelectContextValue<I, S>> {
+export interface SelectProps<V, S, O extends object = object> extends React.RefAttributes<SelectContextValue<V, S, O>> {
     className?: undefined | string
-    context: SelectContextValue<I, S>
-    options: SelectGenericProps<I, S>['options']
-    control: SelectGenericProps<I, S>['control']
-    option: SelectGenericProps<I, S>['option']
-    portal: SelectGenericProps<I, S>['portal']
-    components: SelectGenericProps<I, S>['components']
+    context: SelectContextValue<V, S, O>
+    slots: {
+        control?: SelectGenericProps<V, S, O>['Control']
+        option?: SelectGenericProps<V, S, O>['Option']
+        portal?: SelectGenericProps<V, S, O>['Portal']
+        Control?: SelectGenericProps<V, S, O>['ControlComponent']
+        Option?: SelectGenericProps<V, S, O>['OptionComponent']
+        Portal?: SelectGenericProps<V, S, O>['PortalComponent']
+    }
+    teleport?: undefined | boolean
 }
 
-export interface SelectOneProps<I extends SelectOptionGeneric<any>> extends SelectGenericProps<I, undefined | I> {
+export interface SelectOneProps<V, O extends object = object> extends SelectGenericProps<V, undefined | V, O> {
+    initialSelected?: undefined | V
+    selected?: undefined | V
 }
 
-export interface SelectManyProps<I extends SelectOptionGeneric<any>> extends SelectGenericProps<I, Array<I>> {
+export interface SelectManyProps<V, O extends object = object> extends SelectGenericProps<V, Array<V>, O> {
+    initialSelected?: undefined | Array<V>
+    selected?: Array<V>
 }
 
-export interface SelectControlProps<I extends SelectOptionGeneric<any>, S extends undefined | I | Array<I>> {
-    disabled: boolean
-    mounted: boolean
-    readonly: boolean
-    required: boolean
-    valid: boolean
-    open: boolean
-    selected: S
+export interface SelectControlProps<V, S, O extends object = object> extends SelectContextValue<V, S, O> {
     onClick(event: React.MouseEvent<HTMLElement>): void
-    onClearSelected(): void
-    onSelected(selected: S): void
 }
 
-export interface SelectOptionProps<I extends SelectOptionGeneric<any>, S extends undefined | I | Array<I>> {
-    disabled: boolean
-    mounted: boolean
-    readonly: boolean
-    required: boolean
-    valid: boolean
-    option: I
+export interface SelectOptionProps<V, S, O extends object = object> extends SelectContextValue<V, S, O> {
+    option: SelectOptionGeneric<V> & O
     optionIdx: number
-    selected: S
     onClick(event: React.MouseEvent<HTMLElement>): void
 }
 
-export interface SelectPortalProps {
+export interface SelectPortalProps<V, S, O extends object = object> extends SelectContextValue<V, S, O> {
     children: React.ReactNode
-    open: boolean
-    refs: SelectContextValueGeneric['refs']
 }
