@@ -1,5 +1,6 @@
-packages: ['@downforce/*', 'tests']
+packages: ['@downforce/*']
 
+onlyBuiltDependencies: ['esbuild']
 ignoredBuiltDependencies: ['nx']
 
 managePackageManagerVersions: true

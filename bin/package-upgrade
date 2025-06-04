@@ -13,7 +13,7 @@ case "$(dirname "$0")" in
     *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
 esac
 
-: ${NpmUpgrade:=npx npm-upgrade}
+: ${NpmUpgrade:=pnpx npm-upgrade}
 : ${NpmUpgradeArgs:=}
 
 for pkg; do
