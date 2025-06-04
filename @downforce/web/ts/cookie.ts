@@ -1,4 +1,4 @@
-import {asDate, OneSecondInMs} from '@downforce/std/date'
+import {OneSecondInMs, asDate} from '@downforce/std/date'
 import {isSome, mapSome} from '@downforce/std/optional'
 import {escapeRegexp} from '@downforce/std/regexp'
 
