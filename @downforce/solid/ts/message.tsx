@@ -1,4 +1,4 @@
-import {compute} from '@downforce/std/fn-compute'
+import {compute} from '@downforce/std/fn'
 import {
     createMsg,
     t,
@@ -10,7 +10,8 @@ import {
     type MsgMessageKey,
     type MsgMessages,
 } from '@downforce/std/msg'
-import {isDefined, isString} from '@downforce/std/type-is'
+import {isDefined} from '@downforce/std/optional'
+import {isString} from '@downforce/std/string'
 import {createContext, createMemo, createSignal, Show, splitProps, useContext, type Accessor, type Context, type JSX, type Setter} from 'solid-js'
 import {Dynamic} from 'solid-js/web'
 import {classes} from './classes.js'

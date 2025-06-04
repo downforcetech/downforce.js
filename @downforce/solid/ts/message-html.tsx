@@ -1,4 +1,4 @@
-import {isString} from '@downforce/std/type-is'
+import {isString} from '@downforce/std/string'
 import {splitProps, type JSX} from 'solid-js'
 import {classes} from './classes.js'
 import {Html} from './html.jsx'
