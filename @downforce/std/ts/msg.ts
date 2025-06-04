@@ -1,5 +1,6 @@
+import {isFunction} from './fn.js'
 import {escapeRegexp} from './regexp.js'
-import {isFunction, isString} from './type-is.js'
+import {isString} from './string.js'
 
 export const MsgSymbolDefault = '@'
 

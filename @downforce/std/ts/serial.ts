@@ -1,9 +1,11 @@
-import type {ObjectPath} from './object-path.js'
-import {getObjectPath, mapObjectValue, setObjectPath} from './object.js'
-import {asArrayStrict, asDate} from './type-as.js'
-import {assertArray, assertDefined} from './type-assert.js'
-import {isArray, isBoolean, isNone, isNumber, isObject, isString, isSymbol} from './type-is.js'
-import type {None} from './type-types.js'
+import {arrayWrap, assertArray, isArray} from './array.js'
+import {isBoolean} from './boolean.js'
+import {asDate} from './date.js'
+import {isNumber} from './number.js'
+import {getObjectPath, isObject, mapObjectValue, setObjectPath, type ObjectPath} from './object.js'
+import {assertDefined, isNone, type None} from './optional.js'
+import {isString} from './string.js'
+import {isSymbol} from './symbol.js'
 
 export const SerialBuiltinCodec: {
     Date: SerialCodec<Date, number>
@@ -175,7 +177,7 @@ export function deserializeStruct(
 
     const payload: any = deserializeFromJson(payloadSerialized)
     const data = payload?.data
-    const meta = asArrayStrict(payload?.meta)
+    const meta = arrayWrap(payload?.meta)
 
     if (! meta) {
         return data

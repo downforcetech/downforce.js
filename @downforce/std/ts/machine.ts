@@ -1,4 +1,4 @@
-import {piping} from './fn-pipe.js'
+import {piped} from './fn.js'
 
 export function defineMachine<S, E, P extends object = {}>(
     args: MachineDefinitionOptions<S, E> & P,
@@ -6,7 +6,7 @@ export function defineMachine<S, E, P extends object = {}>(
     const {createState, effect, pipeline, reduce, ...otherProps} = args
 
     function reduceMachine(oldState: S, event: E) {
-        return piping(oldState)
+        return piped(oldState)
             (newState => reduce(newState, event))
             (newState => pipeline?.reduce((state, transform) => transform(state, oldState, event), newState) ?? newState)
             (newState => (effect?.(newState, oldState, event), newState))

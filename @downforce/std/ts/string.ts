@@ -1,7 +1,5 @@
-export function capitalizeFirst(text: string): string {
-    return text.charAt(0).toUpperCase() + text.slice(1)
-}
-
-export function capitalizeEveryWord(text: string): string {
-    return text.split(' ').map(capitalizeFirst).join(' ')
-}
+export * from './string/string-assert.js'
+export * from './string/string-ensure.js'
+export * from './string/string-is.js'
+export * from './string/string-mix.js'
+export * from './string/string-strict.js'

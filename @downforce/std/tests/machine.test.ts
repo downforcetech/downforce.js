@@ -1,4 +1,4 @@
-import {piping} from '@downforce/std/fn-pipe'
+import {piped} from '@downforce/std/fn'
 import {defineMachine} from '@downforce/std/machine'
 import Assert from 'node:assert'
 import {describe, test} from 'node:test'
@@ -60,7 +60,7 @@ describe('@downforce/std/machine', (ctx) => {
             },
         })
 
-        const machineState = piping(Machine.createState())
+        const machineState = piped(Machine.createState())
             (state => Machine.reduce(state, {type: EventType.Update, value: 'Mario'}))
         ()
 

@@ -1,4 +1,4 @@
-import {ensureDefined} from './type-ensure.js'
+import {ensureDefined} from './optional.js'
 
 export const ContainerInternalsKey: unique symbol = Symbol('ContainerInternals')
 
@@ -135,7 +135,7 @@ export type Container<M extends ContainerServicesMap = ContainerServicesMap, S =
     & {
         [key: symbol]: ContainerInternals<M, S>
         /**
-        * @throws InvalidInput
+        * @throws
         */
         require<K extends keyof M>(id: K, options?: undefined | ContainerServiceOptions): M[K]
     }

@@ -1,3 +1,2 @@
-export function escapeRegexp(string: string): string {
-    return string.replace(/[.*+?^${}[\]()|\\]/g, '\\$&')
-}
+export * from './regexp/regexp-is.js'
+export * from './regexp/regexp-mix.js'

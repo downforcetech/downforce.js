@@ -1,8 +1,7 @@
+import {isArray} from './array.js'
 import {scheduleMicroTask} from './eventloop.js'
-import {call} from './fn-call.js'
-import type {FnArgs, Task} from './fn-type.js'
+import {call, type FnArgs, type Task} from './fn.js'
 import {createReactive, readReactive, writeReactive, type ReactiveProtocol} from './reactive.js'
-import {isArray} from './type-is.js'
 
 export const BusEventRegexpCache: Record<BusEventPattern, RegExp> = {}
 

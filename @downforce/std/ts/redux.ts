@@ -1,13 +1,13 @@
-import {compute} from './fn-compute.js'
-import type {Fn, FnArgs} from './fn-type.js'
+import {isArray} from './array.js'
+import {compute} from './fn/fn-compute.js'
+import type {Fn, FnArgs} from './fn.js'
 import {areObjectsEqualShallow} from './object.js'
-import {isArray} from './type-is.js'
 import type {ValueOf} from './type.js'
 
 export let ReducerUid = 0
 
 export const ReduxActions = {
-    listReducers<S extends ReduxReducerState>(
+    entries<S extends ReduxReducerState>(
         actionsDefinitions: ReduxActionsDefinitions<S>,
     ): Array<[ReduxReducerId, ReduxActionReducer<S>]> {
         return Object.values(actionsDefinitions).map((it): [ReduxReducerId, ReduxActionReducer<S>] =>
@@ -30,27 +30,11 @@ export const ReduxReducer = {
     fromActions<S extends ReduxReducerState>(
         actionsDefinitions: ReduxActionsDefinitions<S, ReduxReducerId, Array<any>>,
     ): ReduxCompositeReducerOfEntries<[ReduxReducerId, ReduxActionReducer<S, FnArgs>][]> {
-        return ReduxReducer.fromReducers(ReduxActions.listReducers(actionsDefinitions))
+        return ReduxReducer.fromEntries(...ReduxActions.entries(actionsDefinitions))
     },
 
-    fromReducers<T extends Array<[ReduxReducerId, ReduxActionReducer<any, any>]>>(
-        reducersList: T,
-    ): ReduxCompositeReducerOfEntries<T> {
-        function reduce(state: ReduxReducerState, actionId: ReduxReducerId, ...args: ReduxReducerArgs): ReduxReducerState {
-            for (const it of reducersList) {
-                const [reducerId, reducer] = it
-
-                if (reducerId !== actionId) {
-                    continue
-                }
-
-                return reducer(state, ...args)
-            }
-
-            return state
-        }
-
-        return reduce as unknown as ReduxCompositeReducerOfEntries<T>
+    fromEntries<T extends Array<[ReduxReducerId, ReduxActionReducer<any, any>]>>(...reducersEntries: T): ReduxCompositeReducerOfEntries<T> {
+        return combineReduxReducers(...reducersEntries)
     },
 }
 
@@ -72,6 +56,30 @@ export function defineReduxAction<S extends ReduxReducerState, K extends ReduxRe
     }
 }
 
+export function combineReduxReducers<T extends Array<[ReduxReducerId, ReduxActionReducer<any, any>]>>(...reducersEntries: T): ReduxCompositeReducerOfEntries<T> {
+    function reduce(state: ReduxReducerState, actionId: ReduxReducerId, ...args: ReduxReducerArgs): ReduxReducerState {
+        for (const reducerEntry of reducersEntries) {
+            const [reducerId, reducer] = reducerEntry
+
+            if (reducerId !== actionId) {
+                continue
+            }
+
+            return reducer(state, ...args)
+        }
+
+        return state
+    }
+
+    return reduce as unknown as ReduxCompositeReducerOfEntries<T>
+}
+
+export function getReduxEvent(...args: ReduxEventPolymorphic): ReduxEvent {
+    return isArray(args[0])
+        ? args[0] as ReduxEvent // args is: [[id, ...args]]
+        : args as ReduxEvent // args is: [id, ...args]
+}
+
 export function patchState<S extends ReduxReducerState>(state: S, statePatch: ReduxStatePatch<S>): S {
     const nextState = compute(statePatch, state)
     const mergedState = {...state, ...nextState}
@@ -79,12 +87,6 @@ export function patchState<S extends ReduxReducerState>(state: S, statePatch: Re
     return areObjectsEqualShallow(state, mergedState)
         ? state
         : mergedState
-}
-
-export function asReduxEvent(...args: ReduxEventPolymorphic): ReduxEvent {
-    return isArray(args[0])
-        ? args[0] as ReduxEvent // args is: [[id, ...args]]
-        : args as ReduxEvent // args is: [id, ...args]
 }
 
 // Types ///////////////////////////////////////////////////////////////////////

@@ -1,0 +1,5 @@
+// Types ///////////////////////////////////////////////////////////////////////
+
+export type DateNumber = number
+export type Seconds = number
+export type Milliseconds = number

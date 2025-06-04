@@ -45,25 +45,25 @@ describe('@downforce/std/redux', (ctx) => {
 
         type CompositeReducerWithLiteralIds = ReduxCompositeReducerOfEntries<typeof listWithLiteralIds>
         type CompositeReducerWithGenericIds = ReduxCompositeReducerOfEntries<typeof listWithGenericIds>
-        const reducerComposedWithLiteralIds = ReduxReducer.fromReducers(listWithLiteralIds)
-        const reducerComposedWithGenericIds = ReduxReducer.fromReducers(listWithGenericIds)
+        const reducerCombinedWithLiteralIds = ReduxReducer.fromEntries(...listWithLiteralIds)
+        const reducerCombinedWithGenericIds = ReduxReducer.fromEntries(...listWithGenericIds)
 
-        reducerComposedWithLiteralIds(state, 'a', 123, '')
-        reducerComposedWithLiteralIds(state, 'b', '', true)
-        reducerComposedWithLiteralIds(state, 'c', {kind: 123})
-        reducerComposedWithLiteralIds(state, 'd')
-        reducerComposedWithLiteralIds(state, 'e')
+        reducerCombinedWithLiteralIds(state, 'a', 123, '')
+        reducerCombinedWithLiteralIds(state, 'b', '', true)
+        reducerCombinedWithLiteralIds(state, 'c', {kind: 123})
+        reducerCombinedWithLiteralIds(state, 'd')
+        reducerCombinedWithLiteralIds(state, 'e')
 
-        reducerComposedWithGenericIds(state, 'a', 123, '')
-        reducerComposedWithGenericIds(state, 'b', '', true)
-        reducerComposedWithGenericIds(state, 'c', {kind: 123})
-        reducerComposedWithGenericIds(state, 'd')
-        reducerComposedWithGenericIds(state, 'e')
-        reducerComposedWithGenericIds(state, 'a', null, false, '')
+        reducerCombinedWithGenericIds(state, 'a', 123, '')
+        reducerCombinedWithGenericIds(state, 'b', '', true)
+        reducerCombinedWithGenericIds(state, 'c', {kind: 123})
+        reducerCombinedWithGenericIds(state, 'd')
+        reducerCombinedWithGenericIds(state, 'e')
+        reducerCombinedWithGenericIds(state, 'a', null, false, '')
 
         // @ts-expect-error
-        reducerComposedWithLiteralIds(state, 'f')
+        reducerCombinedWithLiteralIds(state, 'f')
         // @ts-expect-error
-        reducerComposedWithLiteralIds(state, 'a', null, false, '')
+        reducerCombinedWithLiteralIds(state, 'a', null, false, '')
     })
 })

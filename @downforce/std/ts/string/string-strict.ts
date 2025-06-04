@@ -1,0 +1,32 @@
+import {isBoolean} from '../boolean.js'
+import {isNumber} from '../number.js'
+import type {None} from '../optional.js'
+import {isString} from './string-is.js'
+
+export function strictString<const V extends string>(value: None | V): undefined | V
+export function strictString(value: unknown): undefined | string
+export function strictString(value: unknown) {
+    if (! isString(value)) {
+        return
+    }
+    return value
+}
+
+export function strictStringNotEmpty(value: unknown): undefined | string {
+    return strictString(value)?.trim() || undefined
+}
+
+export function strictStringLike(value: boolean | number | string): string
+export function strictStringLike(value: unknown): undefined | string
+export function strictStringLike(value: unknown) {
+    if (isString(value)) {
+        return value
+    }
+    if (isBoolean(value)) {
+        return String(value)
+    }
+    if (isNumber(value)) {
+        return String(value)
+    }
+    return
+}

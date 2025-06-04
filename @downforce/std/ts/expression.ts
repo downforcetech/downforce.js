@@ -1,8 +1,13 @@
-import {fromObjectPathToParts, getObjectPath} from './object.js'
-import {throwInvalidType} from './throw.js'
-import {assertFunctionOptional, assertObject} from './type-assert.js'
-import {ensureArray, ensureBoolean, ensureFunction, ensureInteger, ensureNumber, ensureString, ensureStringOptional, InvalidTypeMessage} from './type-ensure.js'
-import {isArray, isFunction, isNone, type None} from './type.js'
+import {ensureArray, isArray} from './array.js'
+import {ensureBoolean} from './boolean.js'
+import {formatEnsureInvalidTypeMessage} from './ensure.js'
+import {assertFunctionOptional, ensureFunction, isFunction} from './fn.js'
+import {ensureInteger, ensureNumber} from './number.js'
+import {assertObject, getObjectPath} from './object.js'
+import {objectPathFromString} from './object/object-path-string.js'
+import {isNone, type None} from './optional.js'
+import {ensureString, ensureStringOptional} from './string.js'
+import {throwInvalidType} from './error.js'
 
 export function evaluateExp<C extends Ctx, R>(ctx: C, exp: Exp<C, R>): R {
     if (! isFunction(exp)) {
@@ -33,7 +38,7 @@ export function bool(ctx: Ctx, oneExp: Exp<Ctx, any>): boolean {
 */
 export function and(ctx: Ctx, ...exps: Array<Exp<Ctx, boolean>>): boolean {
     if (exps.length === 0) {
-        return throwInvalidType(InvalidTypeMessage('a Non Empty Array', exps))
+        return throwInvalidType(formatEnsureInvalidTypeMessage('a Non Empty Array', exps))
     }
     return exps.every(itExp => ensureBoolean(evaluateExp(ctx, itExp)))
 }
@@ -43,7 +48,7 @@ export function and(ctx: Ctx, ...exps: Array<Exp<Ctx, boolean>>): boolean {
 */
 export function or(ctx: Ctx, ...exps: Array<Exp<Ctx, boolean>>): boolean {
     if (exps.length === 0) {
-        return throwInvalidType(InvalidTypeMessage('a Non Empty Array', exps))
+        return throwInvalidType(formatEnsureInvalidTypeMessage('a Non Empty Array', exps))
     }
     return exps.some(itExp => ensureBoolean(evaluateExp(ctx, itExp)))
 }
@@ -139,7 +144,7 @@ export function lookup(ctx: CtxWithResolver, pathExp: Exp<Ctx, string>): unknown
         return resolver($, path)
     }
     // There is not a resolver for the path. We use the getter.
-    return getObjectPath($, fromObjectPathToParts(path))
+    return getObjectPath($, objectPathFromString(path))
 }
 
 // Evaluation Tree /////////////////////////////////////////////////////////////
@@ -206,7 +211,7 @@ export interface CtxWithArgs extends Ctx {
     args: Array<[...Array<unknown>]>
 }
 
-export interface CtxWithResolver {
+export interface CtxWithResolver extends Ctx {
     $: {},
     resolvers?: Record<string, Resolver>
 }
