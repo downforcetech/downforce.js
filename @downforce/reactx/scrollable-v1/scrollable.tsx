@@ -3,7 +3,7 @@ import {useBrowserFeatures} from '@downforce/react/browser'
 import {classes} from '@downforce/react/classes'
 import {useScrollHorizontal} from '@downforce/react/drag'
 import {useMergeRefs} from '@downforce/react/ref'
-import {isUndefined} from '@downforce/std/type-is'
+import {isUndefined} from '@downforce/std/optional'
 import {useMemo, useRef} from 'react'
 
 export function Scrollable(props: ScrollableProps): React.JSX.Element {

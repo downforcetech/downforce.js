@@ -1,7 +1,7 @@
 import {classes} from '@downforce/react/classes'
 import type {ElementProps, Props} from '@downforce/react/props'
 import {isElementType} from '@downforce/react/type'
-import {asArray} from '@downforce/std/type-as'
+import {arrayWrap} from '@downforce/std/array'
 
 /*
 * EXAMPLE
@@ -41,7 +41,7 @@ export function Table(props: Props<TableProps>): React.JSX.Element {
         scrollerProps,
         ...otherProps
     } = props
-    const childrenList = asArray(children) as Array<React.ReactNode>
+    const childrenList = arrayWrap(children) as Array<React.ReactNode>
     const tableHead = childrenList.find(it => isElementType(it, TableHead))
     const tableBody = childrenList.find(it => isElementType(it, TableBody))
     const tableFoot = childrenList.find(it => isElementType(it, TableFoot))
@@ -78,7 +78,7 @@ export function Table(props: Props<TableProps>): React.JSX.Element {
 
 export function TableHead(props: Props<TableHeadProps>): React.JSX.Element {
     const {children, className, rowProps, ...otherProps} = props
-    const childrenList = asArray(children ?? []) as Array<React.ReactNode>
+    const childrenList = arrayWrap(children ?? []) as Array<React.ReactNode>
     const columns = childrenList.filter(it => isElementType(it, TableColumn))
 
     return (
@@ -98,7 +98,7 @@ export function TableHead(props: Props<TableHeadProps>): React.JSX.Element {
 
 export function TableFoot(props: Props<TableFootProps>): React.JSX.Element {
     const {children, className, rowProps, ...otherProps} = props
-    const childrenList = asArray(children ?? []) as Array<React.ReactNode>
+    const childrenList = arrayWrap(children ?? []) as Array<React.ReactNode>
     const columns = childrenList.filter(it => isElementType(it, TableColumn))
 
     return (
@@ -136,7 +136,7 @@ export function TableColumn(props: Props<TableColumnProps>): React.JSX.Element {
 
 export function TableBody(props: Props<TableBodyProps>): React.JSX.Element {
     const {children, className, ...otherProps} = props
-    const childrenList = asArray(children ?? []) as Array<React.ReactNode>
+    const childrenList = arrayWrap(children ?? []) as Array<React.ReactNode>
     const childrenRows = childrenList.filter(it => isElementType(it, TableRow))
 
     return (
@@ -151,7 +151,7 @@ export function TableBody(props: Props<TableBodyProps>): React.JSX.Element {
 
 export function TableRow(props: Props<TableRowProps>): React.JSX.Element {
     const {children, className, ...otherProps} = props
-    const childrenList = asArray(children ?? []) as Array<React.ReactNode>
+    const childrenList = arrayWrap(children ?? []) as Array<React.ReactNode>
     const cells = childrenList.filter(it => isElementType(it, TableCell))
 
     return (

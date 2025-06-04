@@ -3,7 +3,7 @@ import {useCallbackThrottled} from '@downforce/react/event'
 import type {ElementProps, Props, VoidProps} from '@downforce/react/props'
 import {useMergeRefs} from '@downforce/react/ref'
 import {useResizeObserver} from '@downforce/react/resize-observer'
-import {isFunction} from '@downforce/std/type-is'
+import {isFunction} from '@downforce/std/fn'
 import {useCallback, useLayoutEffect, useMemo, useRef, useState} from 'react'
 
 export function SliderVirtual<I>(props: Props<SliderVirtualProps<I>>): React.JSX.Element {

@@ -1,4 +1,4 @@
-import type {Task} from '@downforce/std/fn-type'
+import type {Task} from '@downforce/std/fn'
 import {useEffect, useRef} from 'react'
 
 export function ImageLoader(props: ImageLoaderProps): undefined {

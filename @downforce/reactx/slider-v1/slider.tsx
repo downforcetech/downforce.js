@@ -1,7 +1,7 @@
 import {classes} from '@downforce/react/classes'
 import type {ElementProps, Props} from '@downforce/react/props'
+import {arrayWrap} from '@downforce/std/array'
 import type {ValueOf} from '@downforce/std/type'
-import {asArray} from '@downforce/std/type-as'
 
 export const SliderDirection = {
     Row: 'row' as const,
@@ -12,7 +12,7 @@ export const SliderDirection = {
 
 export function Slider(props: Props<SliderProps>): React.JSX.Element {
     const {className, children, selected, direction, ...otherProps} = props
-    const childrenList = asArray(children)
+    const childrenList = arrayWrap(children)
 
     return (
         <div

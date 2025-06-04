@@ -1,5 +1,6 @@
 import {useRouteArgs, useRoutePathTest} from '@downforce/react/router'
-import {isArray, isFunction} from '@downforce/std/type-is'
+import {isArray} from '@downforce/std/array'
+import {isFunction} from '@downforce/std/fn'
 import {compileRoutePatternRegexp} from '@downforce/web/route'
 import {Children, cloneElement, useMemo} from 'react'
 

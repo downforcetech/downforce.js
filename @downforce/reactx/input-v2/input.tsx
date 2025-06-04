@@ -1,7 +1,7 @@
 import {classes} from '@downforce/react/classes'
 import type {ElementProps, Props, VoidProps} from '@downforce/react/props'
 import {useMergeRefs} from '@downforce/react/ref'
-import {identity} from '@downforce/std/fn-return'
+import {identity} from '@downforce/std/fn'
 import {useRef, useState} from 'react'
 
 export {decoratingElement, decoratingElementAfter, decoratingElementBefore} from '@downforce/react/children'

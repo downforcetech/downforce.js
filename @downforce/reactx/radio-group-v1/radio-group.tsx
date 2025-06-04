@@ -1,6 +1,6 @@
 import {classes} from '@downforce/react/classes'
 import type {ElementProps, Props} from '@downforce/react/props'
-import {compute, type Computable} from '@downforce/std/fn-compute'
+import {compute, type Computable} from '@downforce/std/fn'
 import {useId} from 'react'
 
 export function RadioGroup(props: Props<RadioGroupProps>): React.JSX.Element {
