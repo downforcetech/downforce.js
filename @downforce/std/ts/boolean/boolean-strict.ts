@@ -1,25 +1,10 @@
-import {isString} from '../string.js'
-import {isBoolean} from './boolean-is.js'
+import type {None} from '../optional.js'
+import {trustBoolean, trustBooleanLike} from './boolean-trust.js'
 
-export const BooleanLikeTrue = [true, 1, '1', 'yes', 'on', 'true'] as const
-export const BooleanLikeFalse = [false, 0, '0', 'no', 'off', 'false'] as const
-export const BooleanLike = [...BooleanLikeTrue, ...BooleanLikeFalse] as [...typeof BooleanLikeTrue, ...typeof BooleanLikeFalse]
-
-export function strictBoolean(value: unknown): undefined | boolean {
-    if (! isBoolean(value)) {
-        return
-    }
-    return value
+export function strictBoolean(value: None | boolean): undefined | boolean {
+    return trustBoolean(value)
 }
 
-export function strictBooleanLike(value: unknown): undefined | boolean {
-    const valueLowercase = isString(value) ? value.toLowerCase() : value
-
-    if (BooleanLikeTrue.includes(valueLowercase as any)) {
-        return true
-    }
-    if (BooleanLikeFalse.includes(valueLowercase as any)) {
-        return false
-    }
-    return
+export function strictBooleanLike(value: None | boolean): undefined | boolean {
+    return trustBooleanLike(value)
 }
