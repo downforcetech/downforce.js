@@ -1,10 +1,10 @@
-import {call} from '@downforce/std/fn-call'
-import {createRef, type Ref} from '@downforce/std/ref'
+import {call} from '@downforce/std/fn'
+import {Ref, type ValueRef} from '@downforce/std/store'
 
 export const SuspensePromiseMap: WeakMap<SuspensePromiseMapKey, SuspenseStateRef> = new WeakMap()
 
 type SuspensePromiseMapKey<V = any> = Promise<V>
-type SuspenseStateRef<V = any> = Ref<SuspenseState<V>>
+type SuspenseStateRef<V = any> = ValueRef<SuspenseState<V>>
 
 /**
 * @throws Promise | Error
@@ -28,7 +28,7 @@ export function useSuspense<R>(promise: Promise<R>): R {
     }
 }
 
-export function createSuspenseRef<R>(promise: Promise<R>): Ref<SuspenseState<R>> {
+export function createSuspenseRef<R>(promise: Promise<R>): ValueRef<SuspenseState<R>> {
     const promiseHandled = promise.then(
         result => {
             suspense.value = {
@@ -48,7 +48,7 @@ export function createSuspenseRef<R>(promise: Promise<R>): Ref<SuspenseState<R>>
         },
     )
 
-    const suspense = createRef<SuspenseState<R>>({
+    const suspense = Ref<SuspenseState<R>>({
         stage: 'pending',
         result: undefined,
         error: undefined,

@@ -1,6 +1,6 @@
 import {createReactive, readReactive, writeReactive, type ReactiveProtocol} from '@downforce/std/reactive'
-import {asReduxEvent, type ReduxEvent, type ReduxEventPolymorphic, type ReduxReducerState} from '@downforce/std/redux'
-import type {RwSync} from '@downforce/std/rw'
+import {getReduxEvent, type ReduxEvent, type ReduxEventPolymorphic, type ReduxReducerState} from '@downforce/std/redux'
+import type {ReadWriteSync} from '@downforce/std/store'
 import {useCallback, useContext, useMemo} from 'react'
 import {defineContext} from './ctx.js'
 import {useReactiveSelect} from './reactive.js'
@@ -77,7 +77,7 @@ export function createStore<
     const state = createReactive(createState())
 
     function dispatch(...polymorphicArgs: ReduxEventPolymorphic): S {
-        const [id, ...args] = asReduxEvent(...polymorphicArgs)
+        const [id, ...args] = getReduxEvent(...polymorphicArgs)
 
         const oldState = readReactive(state)
         const newState = reduce(oldState, ...[id, ...args] as A)
@@ -117,13 +117,15 @@ export function useStore<V, S extends ReduxReducerState, A extends ReduxEvent = 
 ): V | StoreAccessor<S, A> {
     const [state, dispatch] = store
 
-    if (! selector) {
-        const readState = useCallback(() => readReactive(state), [state])
-
-        return {dispatch, readState}
+    if (selector) {
+        return useReactiveSelect(state, selector, deps)
     }
 
-    return useReactiveSelect(state, selector, deps)
+    const readState = useCallback(() => {
+        return readReactive(state)
+    }, [state])
+
+    return {dispatch, readState}
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
@@ -141,7 +143,7 @@ export interface StoreAccessor<
     readState: StoreReader<S>
 }
 
-export type StoreReader<S extends ReduxReducerState> = RwSync<S>['read']
+export type StoreReader<S extends ReduxReducerState> = ReadWriteSync<S>['read']
 export type StoreSelector<S extends ReduxReducerState, V> = (state: S) => V
 
 export interface StoreBoundCase1Options<S extends ReduxReducerState, A extends ReduxEvent = ReduxEvent> {

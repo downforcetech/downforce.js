@@ -1,5 +1,6 @@
-import type {None} from '@downforce/std/type'
-import {isFunction, isObject} from '@downforce/std/type-is'
+import {isFunction} from '@downforce/std/fn'
+import {isObject} from '@downforce/std/object'
+import type {None} from '@downforce/std/optional'
 import {useLayoutEffect, useMemo, useRef} from 'react'
 
 export function useMergeRefs<V>(...refs: Array<void | None | RefHandler<None | V>>): (element: null | V) => void {

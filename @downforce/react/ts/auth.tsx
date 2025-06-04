@@ -1,7 +1,7 @@
 import type {ValueOf} from '@downforce/std/type'
 import type {AuthAuthenticateOptions, AuthCredentials, AuthInvalidateOptions, AuthValidateOptions} from '@downforce/web/auth'
 import {authenticate, invalidateAuthentication, validateAuthentication} from '@downforce/web/auth'
-import {throwInvalidResponse} from '@downforce/web/throw'
+import {throwInvalidResponse} from '@downforce/web/error'
 import {useCallback, useMemo, useState} from 'react'
 import {useBusyLock} from './busy.js'
 

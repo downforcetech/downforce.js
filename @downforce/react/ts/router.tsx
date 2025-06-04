@@ -1,8 +1,8 @@
-import {compute, type Computable} from '@downforce/std/fn-compute'
-import type {Fn, Io, Task} from '@downforce/std/fn-type'
+import {arrayWrap} from '@downforce/std/array'
+import {compute, type Computable, type Fn, type Io, type Task} from '@downforce/std/fn'
+import {isPromise} from '@downforce/std/promise'
 import {escapeRegexp} from '@downforce/std/regexp'
-import {asArray} from '@downforce/std/type-as'
-import {isPromise, isString} from '@downforce/std/type-is'
+import {isString} from '@downforce/std/string'
 import {exact, matchRoutePattern, testRoutePattern, type RoutePattern, type RoutePatterns} from '@downforce/web/route'
 import type {Router, RouterRoute, RouterRouteChange, RouterRouteChangeParams, RouterRouteChangeParamsDict, RouterRouteParams} from '@downforce/web/router'
 import {encodeLink} from '@downforce/web/router'
@@ -69,7 +69,7 @@ export function WhenRoute(props: Props<WhenRouteProps>): undefined | React.JSX.E
     const {matchRoutePath} = useRoutePathTest()
 
     const routeArgs = useMemo((): undefined | RouteArgs => {
-        for (const pattern of asArray(is)) {
+        for (const pattern of arrayWrap(is)) {
             const routeMatches = matchRoutePath(pattern)
 
             if (! routeMatches) {
@@ -133,7 +133,7 @@ export function SwitchRoute(props: Props<SwitchRouteProps>): React.JSX.Element {
         const candidates = Children.toArray(children).filter(isCaseRouteElement)
 
         for (const candidate of candidates) {
-            const candidatePatterns = asArray(candidate.props.is)
+            const candidatePatterns = arrayWrap(candidate.props.is)
 
             for (const pattern of candidatePatterns) {
                 const routeMatches = matchRoutePath(pattern)

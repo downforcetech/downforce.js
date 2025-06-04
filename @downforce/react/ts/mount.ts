@@ -1,4 +1,4 @@
-import type {Task} from '@downforce/std/fn-type'
+import type {Task} from '@downforce/std/fn'
 import {useEffect, useLayoutEffect, useRef} from 'react'
 
 export function useMountEffect(effect: Task): void {

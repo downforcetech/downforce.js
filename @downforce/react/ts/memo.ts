@@ -1,4 +1,4 @@
-import type {Fn, FnArgs} from '@downforce/std/fn-type'
+import type {Fn, FnArgs} from '@downforce/std/fn'
 import {useCallback, useLayoutEffect, useMemo, useRef} from 'react'
 
 /*

@@ -1,4 +1,4 @@
-import {createCssTransition, playTimeline} from '@downforce/web/animation'
+import {createCssTransition, runAsyncTimeline} from '@downforce/web/animation'
 import {useEffect, useMemo, useState} from 'react'
 import {useRouteTransition} from './router.js'
 import type {StateManager} from './state.js'
@@ -119,7 +119,7 @@ export function playFadeInAnimation(selector: string, options?: {transform?: str
         },
     })
 
-    return playTimeline(animation)
+    return runAsyncTimeline(animation)
 }
 
 export function playFadeOutAnimation(selector: string): Promise<unknown> {
@@ -137,7 +137,7 @@ export function playFadeOutAnimation(selector: string): Promise<unknown> {
         // Opacity is cleaned by the render function.
     })
 
-    return playTimeline(animation)
+    return runAsyncTimeline(animation)
 }
 
 export function getViewElement(selector: string): undefined | HTMLElement {

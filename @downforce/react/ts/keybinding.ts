@@ -1,5 +1,5 @@
-import {asArray} from '@downforce/std/type-as'
-import type {None} from '@downforce/std/type-types'
+import {arrayWrap} from '@downforce/std/array'
+import type {None} from '@downforce/std/optional'
 import {useCallback, useRef} from 'react'
 import {useEvent, type EventElement, type EventHandler, type EventOptions} from './event.js'
 
@@ -16,7 +16,7 @@ export function useKey(
         ref,
         event,
         useCallback((event: KeyboardEvent) => {
-            const keys = asArray(key)
+            const keys = arrayWrap(key)
             const isTheKey = keys.includes(event.key)
 
             if (! isTheKey) {

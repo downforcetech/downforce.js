@@ -1,4 +1,4 @@
-import {asReduxEvent, type ReduxEvent, type ReduxEventPolymorphic, type ReduxReducerArgs, type ReduxReducerId, type ReduxReducerState} from '@downforce/std/redux'
+import {getReduxEvent, type ReduxEvent, type ReduxEventPolymorphic, type ReduxReducerArgs, type ReduxReducerId, type ReduxReducerState} from '@downforce/std/redux'
 import {useCallback, useContext, useMemo, useRef, useState} from 'react'
 import {defineContext} from './ctx.js'
 
@@ -31,7 +31,7 @@ export function useStoreV2Provider<
     const stateRef = useRef(state)
 
     const dispatch = useCallback((...polymorphicArgs: ReduxEventPolymorphic): S => {
-        const [id, ...args] = asReduxEvent(...polymorphicArgs)
+        const [id, ...args] = getReduxEvent(...polymorphicArgs)
 
         const oldState = stateRef.current
         const newState = reduce(oldState, ...[id, ...args] as A)

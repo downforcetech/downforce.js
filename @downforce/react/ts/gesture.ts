@@ -1,7 +1,6 @@
-import {call} from '@downforce/std/fn-call'
-import {asArray} from '@downforce/std/type-as'
-import {isSome} from '@downforce/std/type-is'
-import type {None} from '@downforce/std/type-types'
+import {arrayWrap} from '@downforce/std/array'
+import {call} from '@downforce/std/fn'
+import {isSome, type None} from '@downforce/std/optional'
 import {useCallback, useRef} from 'react'
 import {useEvent, type EventElement, type EventHandler, type EventOptions} from './event.js'
 
@@ -20,7 +19,7 @@ export function useEventOutside<E extends Event>(
         eventName,
         useCallback((event: E) => {
             const eventTarget = event.target as null | Node
-            const refs = asArray(refOrRefs)
+            const refs = arrayWrap(refOrRefs)
 
             if (! eventTarget) {
                 onEventOutside(event)

@@ -1,5 +1,5 @@
-import {compute, type Computable} from '@downforce/std/fn-compute'
-import {isDefined} from '@downforce/std/type-is'
+import {compute, type Computable} from '@downforce/std/fn'
+import {isDefined} from '@downforce/std/optional'
 import {useMemo, useRef} from 'react'
 import {useRender} from './render.js'
 

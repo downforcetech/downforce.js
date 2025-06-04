@@ -1,4 +1,4 @@
-import type {Fn, Task} from '@downforce/std/fn-type'
+import type {Fn, Task} from '@downforce/std/fn'
 import {useEffect, useRef, type EffectCallback} from 'react'
 
 export function useConditionalEffect(active: boolean, effect: EffectCallback): void {

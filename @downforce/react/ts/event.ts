@@ -1,7 +1,7 @@
-import {debounced, throttled, type EventTask} from '@downforce/std/fn-event'
-import type {Fn, FnArgs, Task} from '@downforce/std/fn-type'
-import {asArray} from '@downforce/std/type-as'
-import type {None} from '@downforce/std/type-types'
+import {arrayWrap} from '@downforce/std/array'
+import {debounced, throttled, type EventTask} from '@downforce/std/event'
+import type {Fn, FnArgs, Task} from '@downforce/std/fn'
+import type {None} from '@downforce/std/optional'
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef} from 'react'
 import {useStateTransition, type StateInit, type StateSetter} from './state.js'
 
@@ -20,7 +20,7 @@ export function useEvent<E extends Event>(
             return
         }
 
-        const targetsRefs = asArray(targetRefOrRefs)
+        const targetsRefs = arrayWrap(targetRefOrRefs)
         const eventOptions: AddEventListenerOptions = {capture: capture, passive: passive}
 
         targetsRefs.forEach(ref => {

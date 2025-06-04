@@ -1,4 +1,4 @@
-import type {Task} from '@downforce/std/fn-type'
+import type {Task} from '@downforce/std/fn'
 import {useCallback, useState} from 'react'
 
 /*
@@ -16,9 +16,9 @@ export function useRenderSignal(): [RenderSignal, Task] {
     const notify = useCallback(() => {
         // Don't use -1/1 or !boolean, which don't work on even number of consecutive calls.
         // Don't use ++number, which can overflow Number.MAX_SAFE_INTEGER.
-        // [] is faster and memory cheaper
-        // than {} which is faster
-        // than Object.create(null).
+        // [] is faster and memory cheaper than
+        // {} which is faster than
+        // Object.create(null).
         setSignal([])
     }, [])
 

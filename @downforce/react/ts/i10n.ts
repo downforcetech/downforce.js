@@ -1,4 +1,4 @@
-import {isSome} from '@downforce/std/type-is'
+import {isSome} from '@downforce/std/optional'
 import {useMemo} from 'react'
 import {useRouteParams, useRoutePathTest} from './router.js'
 

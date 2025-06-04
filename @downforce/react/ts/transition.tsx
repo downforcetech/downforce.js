@@ -1,5 +1,6 @@
-import {asArray} from '@downforce/std/type-as'
-import {isSome, isString, isUndefined} from '@downforce/std/type-is'
+import {arrayWrap} from '@downforce/std/array'
+import {isSome, isUndefined} from '@downforce/std/optional'
+import {isString} from '@downforce/std/string'
 import {flushStyles} from '@downforce/web/animation'
 import {
     Fragment,
@@ -15,6 +16,7 @@ import {
     useRef,
     useState
 } from 'react'
+import {areElementsEqual, tryElement} from './children.js'
 import {classes} from './classes.js'
 import {defineContext} from './ctx.js'
 
@@ -327,10 +329,10 @@ export function reduceTransitionChildrenChange(state: TransitionState, args: {
     const initialRender = state.initial
     const newChildren = args.children
     const oldChildren = state.children
-    const oldChild = asValidChild(oldChildren)
-    const newChild = asValidChild(newChildren)
-    const oldChildValid = isValidChild(oldChild)
-    const newChildValid = isValidChild(newChild)
+    const oldChild = tryElement(oldChildren)
+    const newChild = tryElement(newChildren)
+    const oldChildValid = isValidAnimatorChild(oldChild)
+    const newChildValid = isValidAnimatorChild(newChild)
 
     if (! oldChildValid && ! newChildValid) {
         // We have no animation to do.
@@ -351,14 +353,14 @@ export function reduceTransitionChildrenChange(state: TransitionState, args: {
         return {...state, queue}
     }
 
-    if (oldChildValid && newChildValid && ! areSameChildren(oldChild, newChild)) {
+    if (oldChildValid && newChildValid && ! areElementsEqual(oldChild, newChild)) {
         // The child has exchanged; we must unmount previous one and mount the new one.
         const queuedTasks = createExchangeTasks({state, mode, oldChild, newChild, observers})
         const queue = [...state.queue, ...queuedTasks]
         return {...state, queue}
     }
 
-    if (oldChildValid && newChildValid && areSameChildren(oldChild, newChild)) {
+    if (oldChildValid && newChildValid && areElementsEqual(oldChild, newChild)) {
         // The child has been update; we must propagate the update.
         return reduceTransitionChildUpdate(state, {child: newChild, observers})
     }
@@ -397,13 +399,13 @@ export function reduceTransitionChildUpdate(state: TransitionState, args: {
         ...state,
         children: child,
         tasks: state.tasks.map(task =>
-            areSameChildren(child, task.child)
+            areElementsEqual(child, task.child)
                 ? updateTask(task)
                 : task
         ),
         queue: state.queue.map(tasksGroup =>
             tasksGroup.map(task =>
-                areSameChildren(child, task.child)
+                areElementsEqual(child, task.child)
                     ? updateTask(task)
                     : task
             )
@@ -807,30 +809,10 @@ export function computeAnimatorStyles(
     return
 }
 
-export function asValidChild(child: TransitionChildren): undefined | TransitionElement {
-    if (! isValidChild(child)) {
-        return
-    }
-    return child
-}
-
-export function isValidChild(children: TransitionChildren): children is TransitionElement {
+export function isValidAnimatorChild(children: TransitionChildren): children is TransitionElement {
     return isValidElement(children)
 }
 
-export function areSameChildren(first?: undefined | TransitionElement, second?: undefined | TransitionElement): boolean {
-    if (! first && ! second) {
-        return true
-    }
-    if (! first || ! second) {
-        return false
-    }
-
-    const sameType = first.type === second.type
-    const sameKey = first.key === second.key
-
-    return sameType && sameKey
-}
 
 export function findAnimatorElement(handleElement: null | HTMLElement): undefined | Element {
     return handleElement?.previousElementSibling ?? undefined
@@ -846,7 +828,7 @@ export function isValidAnimatorEvent(
         return true
     }
 
-    const targets = asArray(target)
+    const targets = arrayWrap(target)
 
     if (targets.length === 0) {
         return true

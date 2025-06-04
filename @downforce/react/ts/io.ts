@@ -1,9 +1,8 @@
-import type {Fn, FnArgs, FnAsync, Task} from '@downforce/std/fn-type'
+import type {Fn, FnArgs, FnAsync, Task} from '@downforce/std/fn'
 import {areObjectsEqualShallow} from '@downforce/std/object'
+import {isDefined} from '@downforce/std/optional'
+import {Outcome, type OutcomeResultOrError} from '@downforce/std/outcome'
 import type {PromiseView} from '@downforce/std/promise'
-import type {ResultOrError} from '@downforce/std/result'
-import {Result} from '@downforce/std/result'
-import {isDefined} from '@downforce/std/type-is'
 import {useCallback, useEffect, useRef, useState} from 'react'
 
 export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?: Array<unknown>): AsyncIoManager<A, R> {
@@ -21,10 +20,10 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
     interface TaskHandle {
         cancel(): void
         canceled: boolean
-        readonly promise: Promise<ResultOrError<R, unknown>>
+        readonly promise: Promise<OutcomeResultOrError<R, unknown>>
     }
 
-    const call = useCallback(async (...args: A): Promise<undefined | ResultOrError<R, unknown>> => {
+    const call = useCallback(async (...args: A): Promise<undefined | OutcomeResultOrError<R, unknown>> => {
         // We must cancel previous task.
         taskHandleRef.current?.cancel()
 
@@ -50,12 +49,12 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
         const taskHandle: TaskHandle = {
             cancel() { taskHandle.canceled = true },
             canceled: false,
-            promise: Result.from(asyncTask(...args)),
+            promise: Outcome.from(asyncTask(...args)),
         }
 
         taskHandleRef.current = taskHandle
 
-        const resultOrError: ResultOrError<R, unknown> = await taskHandle.promise
+        const resultOrError: OutcomeResultOrError<R, unknown> = await taskHandle.promise
 
         if (taskHandle.canceled && taskHandleRef.current === taskHandle) {
             // Task has been canceled with cancel() and no new task started with call().
@@ -68,8 +67,8 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
         }
 
         setState(
-            Result.map(resultOrError, {
-                result: (result): AsyncIoState<R> => ({
+            Outcome.map(resultOrError,
+                (result): AsyncIoState<R> => ({
                     output: resultOrError,
                     error: undefined,
                     result: result,
@@ -78,7 +77,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
                     pending: false,
                     settled: true,
                 }),
-                error: (error): AsyncIoState<R> => ({
+                (error): AsyncIoState<R> => ({
                     output: resultOrError,
                     error: error,
                     result: undefined,
@@ -87,7 +86,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
                     pending: false,
                     settled: true,
                 }),
-            })
+            )
         )
 
         return resultOrError
@@ -134,7 +133,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
     const resetError = useCallback(() => {
         setState(state => {
             const nextState: AsyncIoState<R> = {
-                output: Result.isError(state.output) ? undefined : state.output,
+                output: Outcome.isError(state.output) ? undefined : state.output,
                 error: undefined,
                 result: state.result,
                 fulfilled: state.fulfilled,
@@ -152,7 +151,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
     const resetResult = useCallback(() => {
         setState(state => {
             const nextState: AsyncIoState<R> = {
-                output: Result.isResult(state.output) ? undefined : state.output,
+                output: Outcome.isResult(state.output) ? undefined : state.output,
                 error: state.error,
                 result: undefined,
                 fulfilled: false,
@@ -212,13 +211,13 @@ export function useAsyncIoAggregated(asyncIoStates: Record<string, AsyncIoState<
 // Types ///////////////////////////////////////////////////////////////////////
 
 export interface AsyncIoState<R> extends PromiseView {
-    output: undefined | ResultOrError<R, unknown>
+    output: undefined | OutcomeResultOrError<R, unknown>
     error: undefined | unknown
     result: undefined | R
 }
 
 export interface AsyncIoManager<A extends FnArgs, R> extends AsyncIoState<R> {
-    call(...args: A): Promise<undefined | ResultOrError<R, unknown>>
+    call(...args: A): Promise<undefined | OutcomeResultOrError<R, unknown>>
     cancel(): void
     reset(): void
     resetError(): void
