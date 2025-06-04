@@ -1,3 +1,4 @@
+import {isString} from '../string.js'
 import {isBoolean} from './boolean-is.js'
 
 export const BooleanLikeTrue = [true, 1, '1', 'yes', 'on', 'true'] as const
@@ -12,10 +13,12 @@ export function strictBoolean(value: unknown): undefined | boolean {
 }
 
 export function strictBooleanLike(value: unknown): undefined | boolean {
-    if (BooleanLikeTrue.includes(value as any)) {
+    const valueLowercase = isString(value) ? value.toLowerCase() : value
+
+    if (BooleanLikeTrue.includes(valueLowercase as any)) {
         return true
     }
-    if (BooleanLikeFalse.includes(value as any)) {
+    if (BooleanLikeFalse.includes(valueLowercase as any)) {
         return false
     }
     return
