@@ -1,4 +1,13 @@
-import {isDefined, isUndefined} from '../optional.js'
+import {isDefined, isUndefined, type None} from '../optional.js'
+import {strictIntegerLike, strictNumberLike} from './number-strict.js'
+
+export function asNumber(value: None | number | string): undefined | number {
+    return strictNumberLike(value)
+}
+
+export function asInteger(value: None | number | string): undefined | number {
+    return strictIntegerLike(value)
+}
 
 export function isBetween(a: number, value: number, b: number): boolean {
     return (

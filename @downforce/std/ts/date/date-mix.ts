@@ -1,9 +1,7 @@
-import {formatEnsureInvalidTypeMessage} from '../ensure.js'
-import {throwInvalidType} from '../error.js'
-import {isBetween, isNumber} from '../number.js'
+import {isBetween} from '../number.js'
 import {isDefined} from '../optional.js'
 import {isString} from '../string.js'
-import {isDate} from './date-is.js'
+import {strictDate} from './date-strict.js'
 import type {DateNumber} from './date-type.js'
 
 export const OneSecondInMs: number = 1_000
@@ -14,21 +12,17 @@ export const OneWeekInMs: number = 7 * OneDayInMs
 export const OneMonthInMs: number = 30 * OneDayInMs
 export const OneYearInMs: number = 365 * OneDayInMs
 
-export function asDate(value: number | Date): Date {
-    if (isNumber(value)) {
-        return new Date(value)
-    }
-    if (isDate(value)) {
-        return value
-    }
-    return throwInvalidType(formatEnsureInvalidTypeMessage('a number | Date', value))
+export function asDate(value: number | Date): Date
+export function asDate(value: string | number | Date): undefined | Date
+export function asDate(value: string | number | Date) {
+    return strictDate(value)
 }
 
 export function dateNow(): Date {
     return new Date()
 }
 
-export function isDateStringIsoUtc(value: unknown): value is string {
+export function isDateStringIsoUtc(value: string): boolean {
     if (! isString(value)) {
         return false
     }
