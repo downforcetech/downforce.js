@@ -5,6 +5,7 @@
         "./with-layout-lib-esm.json"
     ],
     "compilerOptions": {
+        "composite": true,
         "declaration": true,
         "importHelpers": true,
         "incremental": true,
