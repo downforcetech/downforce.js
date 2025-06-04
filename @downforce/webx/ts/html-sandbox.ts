@@ -1,4 +1,4 @@
-import {tryOrValue} from '@downforce/std/fn-try'
+import {returnUndefined, tryCatch} from '@downforce/std/fn'
 import {onMounted, useEventListener, WebElement} from '@downforce/web/element'
 
 /*
@@ -53,7 +53,7 @@ export function onContentChange(element: HTMLElement): void {
 }
 
 export function onHashChange(element: HTMLElement): void {
-    const target = tryOrValue(() => {
+    const target = tryCatch(() => {
         if (! element.shadowRoot) {
             return
         }
@@ -65,7 +65,7 @@ export function onHashChange(element: HTMLElement): void {
         const shadowElement = element.shadowRoot.querySelector<HTMLElement>(id)
 
         return shadowElement
-    }, undefined)
+    }, returnUndefined)
 
     if (! target) {
         return
