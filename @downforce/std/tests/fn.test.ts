@@ -1,6 +1,6 @@
 import {chain, compose, composed, identity, pipe, piped, pipedLazy} from '@downforce/std/fn'
-import {catchErrorTo, catchTo, chainTo, mapNoneTo, mapOptionalTo, mapPromiseTo, mapSomeTo, thenTo, tryCatchTo} from '@downforce/std/fn-to'
-import {Error, mapErrorTo, mapResultOrErrorTo, mapResultTo, type OutcomeError} from '@downforce/std/outcome'
+import {catchErrorTo, catchTo, chainTo, mapErrorTo, mapNoneTo, mapOptionalTo, mapPromiseTo, mapResultOrErrorTo, mapResultTo, mapSomeTo, thenTo, tryCatchTo} from '@downforce/std/fn-to'
+import {Error, type OutcomeError} from '@downforce/std/outcome'
 import {ensureStringNotEmpty} from '@downforce/std/string'
 import {expectType} from '@downforce/std/type'
 import Assert from 'node:assert'
