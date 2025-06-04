@@ -1,22 +1,12 @@
 import {wait} from '@downforce/std/async'
 import {OneSecondInMs} from '@downforce/std/date'
-import type {Fn, Io} from '@downforce/std/fn-type'
+import type {Fn, Io} from '@downforce/std/fn'
 import {cloneRequestWithBody} from './request-clone.js'
 
 /**
 * @throws
 **/
-export function usingRequestRetry(options?: undefined | RequestRetryOptions): Io<Request, Promise<Response>> {
-    function continuation(request: Request): Promise<Response> {
-        return useRequestRetry(request, options)
-    }
-
-    return continuation
-}
-/**
-* @throws
-**/
-export function useRequestRetry(request: Request, options?: undefined | RequestRetryOptions): Promise<Response> {
+export function setupRequestRetry(request: Request, options?: undefined | RequestRetryOptions): Promise<Response> {
     const executor: Io<Request, Promise<Response>> = options?.executor ?? fetch
     const assert = options?.assert ?? Promise.resolve<Response>
     const times = options?.times ?? 3
@@ -37,7 +27,7 @@ export function useRequestRetry(request: Request, options?: undefined | RequestR
 
         await wait(delay)
 
-        return useRequestRetry(request, {
+        return setupRequestRetry(request, {
             ...options,
             times: times - 1,
             delay: Math.min(delayMax, delay * delayFactor),
@@ -47,6 +37,16 @@ export function useRequestRetry(request: Request, options?: undefined | RequestR
     // We need to clone the request otherwise a TypeError is raised due to used body.
     // `new Request(request)` doesn't work; we need `request.clone()`.
     return executor(cloneRequestWithBody(request)).then(assert).catch(retry)
+}
+/**
+* @throws
+**/
+export function usingRequestRetry(options?: undefined | RequestRetryOptions): Io<Request, Promise<Response>> {
+    function continuation(request: Request): Promise<Response> {
+        return setupRequestRetry(request, options)
+    }
+
+    return continuation
 }
 
 /**

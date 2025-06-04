@@ -1,5 +1,6 @@
+import {isArray} from '@downforce/std/array'
+import {isRegExp} from '@downforce/std/regexp'
 import type {ElementOf} from '@downforce/std/type'
-import {isArray, isRegExp} from '@downforce/std/type-is'
 
 export const MatchStart = '^'
 export const MatchEnd = '(?:/)?$'

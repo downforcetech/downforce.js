@@ -1,4 +1,4 @@
-import {mapSome} from '@downforce/std/fn-monad'
+import {mapSome} from '@downforce/std/optional'
 import {deserializeStruct, serializeStruct} from '@downforce/std/serial'
 
 export {deserializeStruct as deserializeSsrState, serializeStruct as serializeSsrState} from '@downforce/std/serial'

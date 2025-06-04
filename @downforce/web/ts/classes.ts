@@ -1,5 +1,5 @@
-import {isObject} from '@downforce/std/type-is'
-import type {None} from '@downforce/std/type'
+import {isObject} from '@downforce/std/object'
+import type {None} from '@downforce/std/optional'
 
 export function classes(...args: Array<Classes>): string {
     // Implementation based on these benchmarks:

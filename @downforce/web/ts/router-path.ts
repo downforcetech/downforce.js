@@ -1,6 +1,6 @@
-import {createReactiveRef} from '@downforce/std/reactive-ref'
+import {createReactiveRef} from '@downforce/std/reactive'
 import {areSameRoutes, decodeRouteParams, encodeLink, mergeRouteChange, type Router, type RouterOptions, type RouterRoute, type RouterRouteChangeParams} from './router.js'
-import {asBaseUrl} from './url-path.js'
+import {asBaseUrl} from './url.js'
 
 export function createPathRouter<S = unknown>(options?: undefined | RouterOptions): Router<S> {
     const basePath = asBaseUrl(options?.basePath)

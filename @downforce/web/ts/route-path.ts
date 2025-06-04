@@ -1,5 +1,4 @@
-import {compute} from '@downforce/std/fn-compute'
-import type {FnArgs, Io} from '@downforce/std/fn-type'
+import {compute, type FnArgs, type Io} from '@downforce/std/fn'
 import {defineRouteParams, type RouteParamOptions, type RouteParamsDefinition} from './route-param.js'
 
 export function defineRoutePath<const R extends string, A extends FnArgs>(

@@ -1,4 +1,4 @@
-import {FormDataType, FormUrlType, JsonType} from './mimetype.js'
+import {FormDataType, FormUrlType, JsonType} from '../mimetype.js'
 
 /**
 * @throws

@@ -1,8 +1,6 @@
-import {OneSecondInMs} from '@downforce/std/date'
-import {mapSome} from '@downforce/std/fn-monad'
+import {asDate, OneSecondInMs} from '@downforce/std/date'
+import {isSome, mapSome} from '@downforce/std/optional'
 import {escapeRegexp} from '@downforce/std/regexp'
-import {asDate} from '@downforce/std/type-as'
-import {isSome} from '@downforce/std/type-is'
 
 export const CookieKeyRegexpCache: Record<string, RegExp> = {}
 

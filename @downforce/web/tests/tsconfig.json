@@ -1,6 +1,7 @@
 {
     "extends": "../tsconfig.json",
     "include": ["${configDir}/**/*.ts"],
+    "references": [{"path": "../tsconfig.json"}],
     "compilerOptions": {
         "baseUrl": null,
         "declaration": null,

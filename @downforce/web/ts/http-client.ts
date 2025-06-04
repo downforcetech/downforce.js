@@ -1,17 +1,22 @@
-import {awaiting} from '@downforce/std/fn-monad'
-import {piping} from '@downforce/std/fn-pipe'
-import {identity} from '@downforce/std/fn-return'
-import type {Io} from '@downforce/std/fn-type'
-import {usingRequestAuthorization} from './request-auth.js'
-import {usingRequestCache, usingRequestHeaders, usingRequestSignal} from './request-init.js'
-import {RequestMethod, creatingRequest, type RequestMethodEnum} from './request-method.js'
-import {usingRequestParams} from './request-params.js'
-import {usingRequestPayload} from './request-payload.js'
-import {usingRequestRetry, type RequestRetryOptions} from './request-retry.js'
+import {identity, piped, type Io} from '@downforce/std/fn'
+import {thenTo} from '@downforce/std/fn-to'
+import {
+    buildRequest,
+    RequestMethod,
+    usingRequestAuthorization,
+    usingRequestCache,
+    usingRequestHeaders,
+    usingRequestParams,
+    usingRequestPayload,
+    usingRequestRetry,
+    usingRequestSignal,
+    type RequestMethodEnum,
+    type RequestRetryOptions,
+} from './request.js'
 import {decodeResponseBody, rejectResponseWhenError} from './response.js'
-import type {UrlParams} from './url-params.js'
+import type {UrlParams} from './url.js'
 
-export {asFormData} from './request-init.js'
+export {createFormData} from './request.js'
 
 export const HttpClient = {
     Request<O = Response>(args: HttpClientBaseOptions<Response, O>): Promise<NoInfer<O>> {
@@ -30,7 +35,7 @@ export const HttpClient = {
             url,
         } = args
 
-        return creatingRequest(method, url, {baseUrl})
+        return buildRequest(method, url, {baseUrl})
             (params ? usingRequestParams(params) : identity)
             (cache ? usingRequestCache(cache) : identity)
             (signal ? usingRequestSignal(signal) : identity)
@@ -39,7 +44,7 @@ export const HttpClient = {
             (usingRequestPayload(body))
             (encoder ? encoder : identity)
             (usingRequestRetry(retry))
-            (decoder ? awaiting(decoder) : (identity as Io<Promise<Response>, Promise<O>>))
+            (decoder ? thenTo(decoder) : (identity as Io<Promise<Response>, Promise<O>>))
         ()
     },
     Get<O = Response>(args: HttpClientGetOptions<Response, O>): Promise<NoInfer<O>> {
@@ -88,10 +93,10 @@ export async function decodeResponseOrReject<O>(
     responsePromise: Response | Promise<Response>,
     decodeContent: Io<unknown, O | Promise<O>>,
 ): Promise<O> {
-    return piping(responsePromise)
+    return piped(responsePromise)
         (rejectResponseWhenError) // Rejects on failed response (4xx/5xx).
         (decodeResponseBody) // Decodes response to FormData/JSON/Text/UrlSearchParams.
-        (awaiting(decodeContent)) // Decodes the mixed unsafe output.
+        (thenTo(decodeContent)) // Decodes the mixed unsafe output.
     ()
 }
 

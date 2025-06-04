@@ -1,10 +1,8 @@
-import type {Task} from '@downforce/std/fn-type'
-import {Future, createFuture} from '@downforce/std/promise-future'
-import {createLinearScale, directionOf, distanceBetween} from '@downforce/std/scale'
+import type {Task} from '@downforce/std/fn'
+import {createLinearScale, directionOf, distanceBetween} from '@downforce/std/math/math-scale'
+import {Future, createFuture} from '@downforce/std/~lab/future'
 
-export {wait} from '@downforce/std/async'
-export {playTimeline} from '@downforce/std/timeline'
-export type {TimelineAsync, TimelineParallel, TimelineSequence, TimelineTask} from '@downforce/std/timeline'
+export * from '@downforce/std/async'
 
 export const SpringPrecision: number = 200
 export const SpringSnapping: number = 1 / SpringPrecision

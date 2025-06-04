@@ -1,12 +1,9 @@
-import {compute, type Computable} from '@downforce/std/fn-compute'
-import {piping} from '@downforce/std/fn-pipe'
-import type {Fn, FnArgs} from '@downforce/std/fn-type'
-import {asString} from '@downforce/std/type-as'
-import {isObject} from '@downforce/std/type-is'
-import {usingRequestJson} from './request-json.js'
-import {RequestMethod, creatingRequest} from './request-method.js'
+import {compute, piped, type Computable, type Fn, type FnArgs} from '@downforce/std/fn'
+import {isObject} from '@downforce/std/object'
+import {strictString} from '@downforce/std/string'
+import {throwInvalidResponse} from './error.js'
+import {buildRequest, RequestMethod, usingRequestJson} from './request.js'
 import {decodeResponseBody} from './response.js'
-import {throwInvalidResponse} from './throw.js'
 
 export const AuthUrlDefault = '/auth'
 
@@ -23,7 +20,7 @@ export async function authenticate(credentials: AuthCredentials, optionsComputab
     const method = methodOptional ?? RequestMethod.Post
     const requestBody = requestBodyOptional ?? createDefaultRequestBody(credentials)
 
-    const response = await creatingRequest(method, url, requestOptions)
+    const response = await buildRequest(method, url, requestOptions)
         (usingRequestJson(requestBody))
         (fetch)
         (promise => promise.catch(error => {
@@ -31,7 +28,7 @@ export async function authenticate(credentials: AuthCredentials, optionsComputab
         }))
     ()
 
-    const responseBody = await piping(response)
+    const responseBody = await piped(response)
         (decodeResponseBody)
         (promise => promise.catch(error => {
             return throwAuthInvalidResponse('authenticate', AuthMessages.failedResponseDecoding(error))
@@ -72,7 +69,7 @@ export async function validateAuthentication(token: string, optionsComputable: A
 
     const method = methodOptional ?? RequestMethod.Get
 
-    const response = await creatingRequest(method, url, requestOptions)
+    const response = await buildRequest(method, url, requestOptions)
         (fetch)
         (promise => promise.catch(error => {
             return throwAuthInvalidResponse('validateAuthentication', AuthMessages.failedResponse(error))
@@ -91,7 +88,7 @@ export async function invalidateAuthentication(token: string, optionsComputable:
 
     const method = methodOptional ?? RequestMethod.Delete
 
-    const response = await creatingRequest(method, url, requestOptions)
+    const response = await buildRequest(method, url, requestOptions)
         (fetch)
         (promise => promise.catch(error => {
             return throwAuthInvalidResponse('invalidateAuthentication', AuthMessages.failedResponse(error))
@@ -118,7 +115,7 @@ export function extractDefaultResponseError(body: unknown): unknown {
 
 export function extractDefaultResponseToken(body: unknown): undefined | string {
     return isObject(body)
-        ? (asString(body.token) || undefined)
+        ? (strictString(body.token) || undefined)
         : undefined
 }
 

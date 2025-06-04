@@ -1,8 +1,9 @@
-import {returnUndefined} from '@downforce/std/fn-return'
-import {tryCatch} from '@downforce/std/fn-try'
-import {asArrayStrict} from '@downforce/std/type-as'
-import {ensureNumber, ensureObject, ensureString} from '@downforce/std/type-ensure'
-import type {Unsafe} from '@downforce/std/type-types'
+import {strictArray} from '@downforce/std/array'
+import {returnUndefined, tryCatch} from '@downforce/std/fn'
+import {ensureNumber} from '@downforce/std/number'
+import {ensureObject} from '@downforce/std/object'
+import {ensureString} from '@downforce/std/string'
+import type {Unsafe} from '@downforce/std/type'
 
 export function asResponseEncoded(response: unknown): undefined | ResponseEncoded {
     return tryCatch(
@@ -11,7 +12,7 @@ export function asResponseEncoded(response: unknown): undefined | ResponseEncode
 
             return {
                 body: ensureString(responseEncoded.body),
-                headers: asArrayStrict(responseEncoded.headers)?.map(it =>
+                headers: strictArray(responseEncoded.headers)?.map(it =>
                     [ensureString(it?.[0]), ensureString(it?.[1])]
                 ) ?? [],
                 status: ensureNumber(responseEncoded.status),

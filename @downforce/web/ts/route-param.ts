@@ -1,7 +1,7 @@
-import {mapSome} from '@downforce/std/fn-monad'
 import {mapObjectValue, omitObjectProp, pickObjectProp} from '@downforce/std/object'
+import {mapSome} from '@downforce/std/optional'
 import type {RouterRouteParams} from './router.js'
-import type {UrlParamsDictValue} from './url-params.js'
+import type {UrlParamsDictValue} from './url.js'
 
 export function defineRouteParam<const N extends string, EI, EO extends UrlParamsDictValue, DO extends undefined | EI>(
     name: N,

@@ -1,5 +1,5 @@
-import type {ReactiveRef} from '@downforce/std/reactive-ref'
-import {isString} from '@downforce/std/type-is'
+import type {ReactiveRef} from '@downforce/std/reactive'
+import {isString} from '@downforce/std/string'
 import {
     encodeUrlParamKey,
     encodeUrlParamValue,
@@ -8,7 +8,7 @@ import {
     type UrlParams,
     type UrlParamsDict,
     type UrlParamsList,
-} from './url-params.js'
+} from './url.js'
 
 export function areSameRoutes<S>(firstRoute: RouterRoute<S>, secondRoute: RouterRoute<S>): boolean {
     const samePath = firstRoute.path === secondRoute.path

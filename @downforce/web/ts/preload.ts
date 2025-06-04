@@ -1,5 +1,5 @@
-import {mapSome} from '@downforce/std/fn-monad'
-import type {Fn} from '@downforce/std/fn-type'
+import type {Fn} from '@downforce/std/fn'
+import {mapSome} from '@downforce/std/optional'
 import type {StringAutocompleted} from '@downforce/std/type'
 import type {JsonType, TextType} from './mimetype.js'
 

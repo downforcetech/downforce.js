@@ -1,7 +1,10 @@
-import type {Fn, Io} from '@downforce/std/fn-type'
-import {throwInvalidArgument} from '@downforce/std/throw'
-import {isArray, isObject, isSome, isString} from '@downforce/std/type-is'
-import {kindOf} from '@downforce/std/type-kind'
+import {isArray} from '@downforce/std/array'
+import {isDateString} from '@downforce/std/date'
+import {throwInvalidArgument} from '@downforce/std/error'
+import type {Fn, Io} from '@downforce/std/fn'
+import {isObject} from '@downforce/std/object'
+import {isSome} from '@downforce/std/optional'
+import {kindOf} from '@downforce/std/type'
 
 export function joinUrlWithParams(url: string, params: UrlParams, options?: undefined | UrlParamsEncodeOptions): string {
     const paramsUrl = encodeUrlParams(params, options)
@@ -37,7 +40,7 @@ export function encodeUrlParams(params: undefined | UrlParams, options?: undefin
     if (! params) {
         return ''
     }
-    if (isString(params)) {
+    if (isDateString(params)) {
         // A plain string is an escape hatch and must be considered already encoded.
         // We must not use encodeURIComponent() on it.
         return params

@@ -1,4 +1,4 @@
-import {throwError, StdError} from '@downforce/std/throw'
+import {throwError, StdError} from '@downforce/std/error'
 
 export class InvalidResponse extends StdError {}
 

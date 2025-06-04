@@ -1,5 +1,5 @@
-import type {Task} from '@downforce/std/fn-type'
-import {isNumber} from '@downforce/std/type-is'
+import type {Task} from '@downforce/std/fn'
+import {isNumber} from '@downforce/std/number'
 
 export function attachDragDraggingListeners(element: DragElement, options: DragListeners): Task {
     const eventOptions = {capture: true, passive: true} satisfies AddEventListenerOptions

@@ -1,13 +1,15 @@
-import type {Io} from '@downforce/std/fn-type'
-import type {Ref} from '@downforce/std/ref'
-import {asArray} from '@downforce/std/type-as'
-import {isArray, isBoolean, isNone, isNull, isNumber, isString, isUndefined} from '@downforce/std/type-is'
+import {isArray, strictArray} from '@downforce/std/array'
+import {isBoolean} from '@downforce/std/boolean'
+import type {Io} from '@downforce/std/fn'
+import {isNumber} from '@downforce/std/number'
+import {isNone, isNull, isUndefined} from '@downforce/std/optional'
+import type {ValueRef} from '@downforce/std/store'
+import {isString} from '@downforce/std/string'
 import type {StringAutocompleted} from '@downforce/std/type'
 import {classes, type Classes} from './classes.js'
 import {removeChildren} from './dom.js'
 
-export {createRef} from '@downforce/std/ref'
-export type {Ref} from '@downforce/std/ref'
+export {Ref, type ValueRef} from '@downforce/std/store'
 
 export function createElement<E extends RenderElement>(
     tag: string,
@@ -132,7 +134,7 @@ export function passive<E>(args: RenderEventHandler<E>): RenderEventHandlerTuple
 }
 
 export function asRenderEventListener<E>(args: RenderEventHandler<E>): RenderEventHandlerTuple<E> {
-    return asArray(args) as RenderEventHandlerTuple<E>
+    return strictArray(args) as RenderEventHandlerTuple<E>
 }
 
 export function setAttribute(element: RenderElement, property: string, value: boolean | number | string): void {
@@ -194,7 +196,7 @@ export function setChildren(element: RenderElement, children: RenderChildren): v
     }
 }
 
-export function setRef(element: RenderElement, ref: Ref<undefined | RenderElement>): void {
+export function setRef(element: RenderElement, ref: ValueRef<undefined | RenderElement>): void {
     ref.value = element
 }
 
@@ -210,7 +212,7 @@ export const RenderUpdateProperties = {
     children: (element: RenderElement, property: string, value: RenderChildren): void => setChildren(element, value),
     class: (element: RenderElement, property: string, value: Classes): void => setClass(element, value),
     dataset: (element: RenderElement, property: string, value: RenderDatasetAttribute): void => setDataset(element, value),
-    ref: (element: RenderElement, property: string, value: Ref<undefined | RenderElement>): void => setRef(element, value),
+    ref: (element: RenderElement, property: string, value: ValueRef<undefined | RenderElement>): void => setRef(element, value),
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
@@ -236,7 +238,7 @@ export interface RenderExtendedProps {
 }
 
 export interface RenderRefProps<E> {
-    ref?: undefined | null | Ref<undefined | E>
+    ref?: undefined | null | ValueRef<undefined | E>
 }
 
 export type AllCustomAttrs = {

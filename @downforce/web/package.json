@@ -13,10 +13,10 @@
     },
     "scripts": {
         "clean": "rm -rf ./esm/ || true; rm -rf ./node_modules/.cache/ || true",
-        "build": "tsc --listEmittedFiles",
-        "test": "tsc --project ./tests && npx --yes tsx --test",
-        "prepack": "npm run clean; npm run build && npm run test",
-        "preversion": "npm run build && npm run test"
+        "build": "tsc --build ./tsconfig.json ./tests/tsconfig.json --listEmittedFiles",
+        "test": "pnpm run build && tsx --test",
+        "prepack": "pnpm run clean; pnpm run build && pnpm run test",
+        "preversion": "pnpm run build && pnpm run test"
     },
     "dependencies": {
         "@downforce/std": "1",
@@ -25,6 +25,7 @@
     "devDependencies": {
         "@downforce/tsconfig": "1",
         "@types/node": "22",
+        "tsx": "4",
         "typescript": "5.8"
     },
     "author": "Daniele Orlando",

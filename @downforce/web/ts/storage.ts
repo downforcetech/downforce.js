@@ -1,8 +1,8 @@
-import {tryCatch} from '@downforce/std/fn-try'
-import type {Io} from '@downforce/std/fn-type'
-import {createReadWrite, type RwSync} from '@downforce/std/rw'
-import {asBoolean, asNumber} from '@downforce/std/type-as'
-import {isUndefined} from '@downforce/std/type-is'
+import {strictBoolean} from '@downforce/std/boolean'
+import {tryCatch, type Io} from '@downforce/std/fn'
+import {strictNumber} from '@downforce/std/number'
+import {isUndefined} from '@downforce/std/optional'
+import {ReadWrite, type ReadWriteSync} from '@downforce/std/store'
 
 export function createBrowserStorageAccessor(
     key: string,
@@ -24,7 +24,7 @@ export function createBrowserStorageAccessor(
         return newValue
     }
 
-    return createReadWrite(read, write)
+    return ReadWrite(read, write)
 }
 
 export function createBrowserStorageAccessorJson<V = unknown>(
@@ -53,7 +53,7 @@ export function createBrowserStorageAccessorJson<V = unknown>(
         return newValue
     }
 
-    return createReadWrite(read, write)
+    return ReadWrite(read, write)
 }
 
 export function createBrowserStorageAccessorString(
@@ -77,7 +77,7 @@ export function createBrowserStorageAccessorNumber(
             return
         }
 
-        return asNumber(
+        return strictNumber(
             tryCatch(
                 () => JSON.parse(value) as unknown,
                 error => void onReadError(error),
@@ -91,7 +91,7 @@ export function createBrowserStorageAccessorNumber(
         return newValue
     }
 
-    return createReadWrite(read, write)
+    return ReadWrite(read, write)
 }
 
 export function createBrowserStorageAccessorBoolean(
@@ -108,7 +108,7 @@ export function createBrowserStorageAccessorBoolean(
             return
         }
 
-        return asBoolean(
+        return strictBoolean(
             tryCatch(
                 () => JSON.parse(value) as unknown,
                 error => void onReadError(error),
@@ -122,14 +122,14 @@ export function createBrowserStorageAccessorBoolean(
         return newValue
     }
 
-    return createReadWrite(read, write)
+    return ReadWrite(read, write)
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
 
 export type BrowserStorageValue<V = string> = undefined | V
 
-export interface BrowserStorageAccessorSync<V = string> extends RwSync<BrowserStorageValue<V>> {
+export interface BrowserStorageAccessorSync<V = string> extends ReadWriteSync<BrowserStorageValue<V>> {
 }
 
 export interface BrowserStorageAccessorOptions {

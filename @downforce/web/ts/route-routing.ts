@@ -1,5 +1,5 @@
-import type {Io, Task} from '@downforce/std/fn-type'
-import {asArray} from '@downforce/std/type-as'
+import {arrayWrap} from '@downforce/std/array'
+import type {Io, Task} from '@downforce/std/fn'
 import {compileRoutePatternRegexp, type RoutePattern} from './route-pattern.js'
 
 export function testRoutePattern(routePath: string, pattern: RoutePattern): boolean {
@@ -11,7 +11,7 @@ export function matchRoutePattern(routePath: string, pattern: RoutePattern): und
 }
 
 export function matchRoutePatterns(routePath: string, patterns: RoutePatterns): undefined | RegExpMatchArray {
-    for (const pattern of asArray(patterns)) {
+    for (const pattern of arrayWrap(patterns)) {
         const routeMatches = matchRoutePattern(routePath, pattern)
 
         if (! routeMatches) {
