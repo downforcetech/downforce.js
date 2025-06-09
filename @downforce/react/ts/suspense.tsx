@@ -1,4 +1,4 @@
-import {call} from '@downforce/std/fn'
+import {getMapValue} from '@downforce/std/map'
 import {Ref, type ValueRef} from '@downforce/std/store'
 
 export const SuspensePromiseMap: WeakMap<SuspensePromiseMapKey, SuspenseStateRef> = new WeakMap()
@@ -10,15 +10,8 @@ type SuspenseStateRef<V = any> = ValueRef<SuspenseState<V>>
 * @throws Promise | Error
 */
 export function useSuspense<R>(promise: Promise<R>): R {
-    const weakMap: WeakMap<SuspensePromiseMapKey<R>, SuspenseStateRef<R>> = SuspensePromiseMap
-    const suspenseRef = weakMap.get(promise) ?? call(() => {
-        const suspenseRef = createSuspenseRef(promise)
-
-        weakMap.set(promise, suspenseRef)
-
-        return suspenseRef
-    })
-
+    const weakMap = SuspensePromiseMap as WeakMap<SuspensePromiseMapKey<R>, SuspenseStateRef<R>>
+    const suspenseRef = getMapValue(weakMap, promise, () => createSuspenseRef(promise))
     const suspense = suspenseRef.value
 
     switch (suspense.stage) {

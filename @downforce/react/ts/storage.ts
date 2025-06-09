@@ -1,7 +1,7 @@
-import {strictBoolean} from '@downforce/std/boolean'
+import {trustBoolean} from '@downforce/std/boolean'
 import {scheduleMacroTaskUsingTimeout} from '@downforce/std/eventloop'
 import {identity, tryCatch, type Io, type Task} from '@downforce/std/fn'
-import {strictNumber} from '@downforce/std/number'
+import {trustNumber} from '@downforce/std/number'
 import {ReadWrite} from '@downforce/std/store'
 import type {BrowserStorageAccessorSync, BrowserStorageValue} from '@downforce/web/storage'
 import {useCallback, useMemo, useRef, useState} from 'react'
@@ -65,7 +65,7 @@ export function useBrowserStorageNumber(accessor: BrowserStorageAccessorSync<str
     return useBrowserStorageAccessor(accessor, {
         encode: value => JSON.stringify(value),
         decode: value => value
-            ? strictNumber(
+            ? trustNumber(
                 tryCatch(
                     () => JSON.parse(value) as unknown,
                     console.warn,
@@ -80,7 +80,7 @@ export function useBrowserStorageBoolean(accessor: BrowserStorageAccessorSync<st
     return useBrowserStorageAccessor(accessor, {
         encode: value => JSON.stringify(value),
         decode: value => value
-            ? strictBoolean(
+            ? trustBoolean(
                 tryCatch(
                     () => JSON.parse(value) as unknown,
                     console.warn,
