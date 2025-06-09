@@ -1,4 +1,4 @@
-import {isArray, strictArray} from '@downforce/std/array'
+import {arrayWrap, isArray} from '@downforce/std/array'
 import {isBoolean} from '@downforce/std/boolean'
 import type {Io} from '@downforce/std/fn'
 import {isNumber} from '@downforce/std/number'
@@ -134,7 +134,7 @@ export function passive<E>(args: RenderEventHandler<E>): RenderEventHandlerTuple
 }
 
 export function asRenderEventListener<E>(args: RenderEventHandler<E>): RenderEventHandlerTuple<E> {
-    return strictArray(args) as RenderEventHandlerTuple<E>
+    return arrayWrap(args) as RenderEventHandlerTuple<E>
 }
 
 export function setAttribute(element: RenderElement, property: string, value: boolean | number | string): void {

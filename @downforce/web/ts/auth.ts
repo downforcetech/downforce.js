@@ -1,6 +1,6 @@
 import {compute, piped, type Computable, type Fn, type FnArgs} from '@downforce/std/fn'
 import {isObject} from '@downforce/std/object'
-import {strictString} from '@downforce/std/string'
+import {trustString} from '@downforce/std/string'
 import {throwInvalidResponse} from './error.js'
 import {buildRequest, RequestMethod, usingRequestJson} from './request.js'
 import {decodeResponseBody} from './response.js'
@@ -115,7 +115,7 @@ export function extractDefaultResponseError(body: unknown): unknown {
 
 export function extractDefaultResponseToken(body: unknown): undefined | string {
     return isObject(body)
-        ? (strictString(body.token) || undefined)
+        ? (trustString(body.token) || undefined)
         : undefined
 }
 

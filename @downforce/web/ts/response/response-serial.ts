@@ -5,7 +5,7 @@ import {ensureObject} from '@downforce/std/object'
 import {ensureString} from '@downforce/std/string'
 import type {Unsafe} from '@downforce/std/type'
 
-export function asResponseEncoded(response: unknown): undefined | ResponseEncoded {
+export function trustResponseEncoded(response: unknown): undefined | ResponseEncoded {
     return tryCatch(
         (): ResponseEncoded => {
             const responseEncoded = ensureObject(response) as NonNullable<Unsafe<ResponseEncoded>>

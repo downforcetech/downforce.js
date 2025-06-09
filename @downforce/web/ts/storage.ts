@@ -1,6 +1,6 @@
-import {strictBoolean} from '@downforce/std/boolean'
+import {trustBoolean} from '@downforce/std/boolean'
 import {tryCatch, type Io} from '@downforce/std/fn'
-import {strictNumber} from '@downforce/std/number'
+import {trustNumber} from '@downforce/std/number'
 import {isUndefined} from '@downforce/std/optional'
 import {ReadWrite, type ReadWriteSync} from '@downforce/std/store'
 
@@ -77,7 +77,7 @@ export function createBrowserStorageAccessorNumber(
             return
         }
 
-        return strictNumber(
+        return trustNumber(
             tryCatch(
                 () => JSON.parse(value) as unknown,
                 error => void onReadError(error),
@@ -108,7 +108,7 @@ export function createBrowserStorageAccessorBoolean(
             return
         }
 
-        return strictBoolean(
+        return trustBoolean(
             tryCatch(
                 () => JSON.parse(value) as unknown,
                 error => void onReadError(error),

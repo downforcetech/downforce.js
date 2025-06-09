@@ -1,4 +1,4 @@
-import {strictObject} from '@downforce/std/object'
+import {trustObject} from '@downforce/std/object'
 import {decodeResponseBodyAsJson} from './response-body.js'
 
 /**
@@ -7,5 +7,5 @@ import {decodeResponseBodyAsJson} from './response-body.js'
 export function decodeResponseBodyAsGraphql<V = unknown>(response: Response | Promise<Response>): Promise<V> {
     return Promise.resolve(response)
         .then(decodeResponseBodyAsJson)
-        .then(it => strictObject(it)?.data as V)
+        .then(it => trustObject(it)?.data as V)
 }
