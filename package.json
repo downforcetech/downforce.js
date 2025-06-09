@@ -10,8 +10,8 @@
         "test": "nx run-many --target test"
     },
     "engines": {"node": ">= 20"},
-    "packageManager": "pnpm@10.11.1",
+    "packageManager": "pnpm@10.12.1",
     "devDependencies": {
-        "nx": "21.1.2"
+        "nx": "21.1.3"
     }
 }
