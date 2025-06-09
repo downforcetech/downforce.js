@@ -65,9 +65,9 @@ export function sorted<I, R extends undefined | number | string>(
 * EXAMPLE
 *
 * const list = [{id: 1, name: 'Mike'}]
-* list.sort(inverting(sorted(it => it.id)))
+* list.sort(inverted(sorted(it => it.id)))
 */
-export function inverting<A extends FnArgs>(
+export function inverted<A extends FnArgs>(
     fn: (...args: A) => number,
 ): (...args: A) => number {
     function onInvert(...args: A) {
