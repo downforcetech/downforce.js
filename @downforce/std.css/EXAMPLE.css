@@ -92,7 +92,6 @@
 @import '@downforce/std.css/reset/all-color.props.css' layer(std);
 @import '@downforce/std.css/reset/all-font.props.css' layer(std);
 @import '@downforce/std.css/reset/attr-hidden.props.css' layer(std);
-@import '@downforce/std.css/reset/attr-invisible.props.css' layer(std);
 @import '@downforce/std.css/reset/root-color-scheme-dark-light.props.css' layer(std);
 @import '@downforce/std.css/reset/root-font-rendering.props.css' layer(std);
 @import '@downforce/std.css/reset/root-font-size.props.css' layer(std);
