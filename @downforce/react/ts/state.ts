@@ -9,38 +9,25 @@ export function useStateAccessor<S>(initialState: StateInit<S>): StateAccessorMa
         return stateRef.current
     }, [])
 
-    const setState = useCallback((stateComputed: StateSetterArg<S>): S => {
-        const state = compute(stateComputed, stateRef.current)
+    const setState = useCallback((newStateComputed: StateWriterArg<S>): void => {
+        const newState = compute(newStateComputed, stateRef.current)
 
-        stateRef.current = state
+        stateRef.current = newState
 
-        PRIVATE_setState(state)
-
-        return state
+        PRIVATE_setState(newState)
     }, [])
 
     return [state, setState, getState]
 }
 
 export function useStateTransition<S>(initialState: StateInit<S>): StateAccessorManager<S> {
-    const [state, PRIVATE_setState] = useState(initialState)
-    const stateRef = useRef(state)
+    const [state, PRIVATE_setState, getState] = useStateAccessor(initialState)
 
-    const getState = useCallback((): S => {
-        return stateRef.current
-    }, [])
-
-    const setState = useCallback((stateComputed: StateSetterArg<S>): S => {
-        const state = compute(stateComputed, stateRef.current)
-
-        stateRef.current = state
-
+    const setState = useCallback((newStateComputed: StateWriterArg<S>): void => {
         startTransition(() => {
-            PRIVATE_setState(state)
+            PRIVATE_setState(newStateComputed)
         })
-
-        return state
-    }, [])
+    }, [PRIVATE_setState])
 
     return [state, setState, getState]
 }
@@ -59,12 +46,12 @@ export function useStateTransition<S>(initialState: StateInit<S>): StateAccessor
 *     )
 * }
 */
-export function useMergeState<S extends object>(setState: StateSetter<S>): Io<Partial<S>, void> {
-    const patchState = useCallback((statePatch: Partial<S>) => {
-        setState(mergingState(statePatch))
+export function useMergeState<S extends object>(setState: StateWriter<S>): Io<Partial<S>, void> {
+    const mergeState = useCallback((statePatch: Partial<S>) => {
+        setState(mergedState(statePatch))
     }, [setState])
 
-    return patchState
+    return mergeState
 }
 
 /*
@@ -80,7 +67,7 @@ export function useMergeState<S extends object>(setState: StateSetter<S>): Io<Pa
 *     )
 * }
 */
-export function mergingState<S extends object>(statePatch: Partial<S>): Io<S, S> {
+export function mergedState<S extends object>(statePatch: Partial<S>): Io<S, S> {
     function mergeState(state: S): S {
         return {...state, ...statePatch}
     }
@@ -91,10 +78,10 @@ export function mergingState<S extends object>(statePatch: Partial<S>): Io<S, S>
 // Types ///////////////////////////////////////////////////////////////////////
 
 export type StateInit<S> = S | (() => S)
-export type StateSetter<S> = React.Dispatch<StateSetterArg<S>>
-export type StateSetterArg<S> = React.SetStateAction<S>
+export type StateWriter<S> = React.Dispatch<StateWriterArg<S>>
+export type StateWriterArg<S> = React.SetStateAction<S>
+export type StateReader<S> = () => S
+export type StateManager<S> = [state: S, write: StateWriter<S>]
 export type StatePatcher<S extends object> = (statePatch: Partial<S>) => void
-export type StateManager<S> = [S, StateSetter<S>]
 
-export type StateAccessorWriter<S> = (state: StateSetterArg<S>) => S
-export type StateAccessorManager<S> = [S, StateAccessorWriter<S>, () => S]
+export type StateAccessorManager<S> = [...StateManager<S>, read: StateReader<S>]

@@ -1,5 +1,5 @@
 import {useCallback, useMemo, useState} from 'react'
-import type {StateSetter} from './state.js'
+import type {StateWriter} from './state.js'
 
 const NoItems: [] = []
 
@@ -48,5 +48,5 @@ export interface FilterManager<I, F> {
     filter: F
     filteredItems: Array<I>
     itemIdxOf(filteredItemIdx: number): undefined | number
-    setFilter: StateSetter<F>
+    setFilter: StateWriter<F>
 }

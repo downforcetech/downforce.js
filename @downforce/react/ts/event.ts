@@ -3,7 +3,7 @@ import {debounced, throttled, type EventTask} from '@downforce/std/event'
 import type {Fn, FnArgs, Task} from '@downforce/std/fn'
 import type {None} from '@downforce/std/optional'
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef} from 'react'
-import {useStateTransition, type StateInit, type StateSetter} from './state.js'
+import {useStateTransition, type StateAccessorManager, type StateInit} from './state.js'
 
 export function useEvent<E extends Event>(
     targetRefOrRefs: React.RefObject<None | EventElement> | Array<React.RefObject<None | EventElement>>,
@@ -94,22 +94,22 @@ export function useCallbackDelayed(callback: Function, delayMs: number): {run: T
     return {run, cancel}
 }
 
-export function useStateDebounced<T>(initialValue: undefined, delay: number): [undefined | T, StateSetter<undefined | T>]
-export function useStateDebounced<T>(initialValue: StateInit<T>, delay: number): [T, StateSetter<T>]
-export function useStateDebounced<T>(initialValue: undefined | T, delay: number): [undefined | T, StateSetter<undefined | T>] {
-    const [value, setValue] = useStateTransition(initialValue)
+export function useStateDebounced<T>(initialValue: undefined, delay: number): StateAccessorManager<undefined | T>
+export function useStateDebounced<T>(initialValue: StateInit<T>, delay: number): StateAccessorManager<T>
+export function useStateDebounced<T>(initialValue: undefined | T, delay: number): StateAccessorManager<undefined | T> {
+    const [value, setValue, getValue] = useStateTransition(initialValue)
     const setValueDebounced = useCallbackDebounced(setValue, delay)
 
-    return [value, setValueDebounced]
+    return [value, setValueDebounced, getValue]
 }
 
-export function useStateThrottled<T>(initialValue: undefined, delay: number): [undefined | T, StateSetter<undefined | T>]
-export function useStateThrottled<T>(initialValue: StateInit<T>, delay: number): [T, StateSetter<T>]
-export function useStateThrottled<T>(initialValue: undefined | StateInit<T>, delay: number): [undefined | T, StateSetter<undefined | T>] {
-    const [value, setValue] = useStateTransition(initialValue)
+export function useStateThrottled<T>(initialValue: undefined, delay: number): StateAccessorManager<undefined | T>
+export function useStateThrottled<T>(initialValue: StateInit<T>, delay: number): StateAccessorManager<T>
+export function useStateThrottled<T>(initialValue: undefined | StateInit<T>, delay: number): StateAccessorManager<undefined | T> {
+    const [value, setValue, getValue] = useStateTransition(initialValue)
     const setValueThrottled = useCallbackThrottled(setValue, delay)
 
-    return [value, setValueThrottled]
+    return [value, setValueThrottled, getValue]
 }
 
 export function useValueDebounced<V>(input: V, delay: number): V {

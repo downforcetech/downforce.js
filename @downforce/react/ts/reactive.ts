@@ -5,12 +5,12 @@ import {readReactive, watchReactive, writeReactive, type ReactiveProtocol, type 
 import type {ReadWriteSync} from '@downforce/std/store'
 import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useState} from 'react'
 import {useRenderSignal, type RenderSignal} from './render.js'
-import type {StateManager, StateSetterArg} from './state.js'
+import type {StateManager, StateWriterArg} from './state.js'
 
 export function useReactiveState<V>(reactive: ReactiveProtocol<V>): StateManager<V> {
     const [value, PRIVATE_setValue] = useState(() => readReactive(reactive))
 
-    const setValue = useCallback((value: StateSetterArg<V>) => {
+    const setValue = useCallback((value: StateWriterArg<V>) => {
         const newValue = compute(value, readReactive(reactive))
 
         startTransition(() => {
@@ -111,7 +111,7 @@ export function useReactiveStore<V>(
 ): StateManager<V> {
     const [value, PRIVATE_setValue] = useState(read())
 
-    const setValue = useCallback((value: StateSetterArg<V>) => {
+    const setValue = useCallback((value: StateWriterArg<V>) => {
         const newValue = compute(value, read())
 
         startTransition(() => {

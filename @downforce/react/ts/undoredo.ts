@@ -2,7 +2,7 @@ import {compute} from '@downforce/std/fn'
 import {createHistory} from '@downforce/std/undoredo'
 import {useCallback, useMemo} from 'react'
 import {useRender} from './render.js'
-import type {StateSetterArg} from './state.js'
+import type {StateWriterArg} from './state.js'
 
 export function useUndoRedo<S>(initState: S | (() => S)): UndoRedoManager<S> {
     const render = useRender()
@@ -29,7 +29,7 @@ export function useUndoRedo<S>(initState: S | (() => S)): UndoRedoManager<S> {
     const onUndo = useCallback(withRenderEffect(history.undo), [history])
     const onRedo = useCallback(withRenderEffect(history.redo), [history])
 
-    const onSave = useCallback(withRenderEffect((state: StateSetterArg<S>) => {
+    const onSave = useCallback(withRenderEffect((state: StateWriterArg<S>) => {
         const prevState = history.state
         const nextState = compute(state, prevState)
         return history.save(nextState)
@@ -48,5 +48,5 @@ export interface UndoRedoManager<S> {
     undoStack: Array<S>
     onUndo(): S
     onRedo(): S
-    onSave(state: StateSetterArg<S>): S
+    onSave(state: StateWriterArg<S>): S
 }

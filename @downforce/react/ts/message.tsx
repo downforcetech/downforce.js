@@ -14,7 +14,7 @@ import {Box, type BoxProps} from './box.js'
 import {classes} from './classes.js'
 import {defineContext} from './ctx.js'
 import type {Props, VoidProps} from './props.js'
-import type {StateSetter} from './state.js'
+import type {StateWriter} from './state.js'
 
 export type * from '@downforce/std/msg'
 
@@ -149,9 +149,9 @@ export interface MessageProviderProps extends MsgDefinition<string, string> {
 export interface MessageStore<L extends string = string, K extends MsgMessageKey = MsgMessageKey> extends Msg<L, K> {
     t(strings: TemplateStringsArray, ...substitutions: Array<MsgMessageArgValue>): string
     translate<KK extends K>(key: KK, values?: undefined | MsgMessageArgs): string | KK
-    setLocale: StateSetter<L>
-    setLocaleFallback: StateSetter<L>
-    setMessages: StateSetter<MsgMessages<L, K>>
+    setLocale: StateWriter<L>
+    setLocaleFallback: StateWriter<L>
+    setMessages: StateWriter<MsgMessages<L, K>>
 }
 
 export interface MessageProps extends VoidProps<BoxProps>, TranslateProps {
