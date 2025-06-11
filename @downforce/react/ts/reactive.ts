@@ -5,7 +5,7 @@ import {readReactive, watchReactive, writeReactive, type ReactiveProtocol, type 
 import type {ReadWriteSync} from '@downforce/std/store'
 import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useState} from 'react'
 import {useRenderSignal, type RenderSignal} from './render.js'
-import type {StateManager, StateWriterArg} from './state.js'
+import {useStateTransition, type StateManager, type StateWriterArg} from './state.js'
 
 export function useReactiveState<V>(reactive: ReactiveProtocol<V>): StateManager<V> {
     const [value, PRIVATE_setValue] = useState(() => readReactive(reactive))
@@ -13,20 +13,18 @@ export function useReactiveState<V>(reactive: ReactiveProtocol<V>): StateManager
     const setValue = useCallback((value: StateWriterArg<V>) => {
         const newValue = compute(value, readReactive(reactive))
 
-        startTransition(() => {
-            PRIVATE_setValue(newValue)
-        })
+        PRIVATE_setValue(newValue)
         writeReactive(reactive, newValue)
     }, [reactive])
 
     useEffect(() => {
-        function setValue(value: V) {
+        function setValueTransition(value: V) {
             startTransition(() => {
                 PRIVATE_setValue(value)
             })
         }
 
-        const onClean = watchReactive(reactive, setValue, {immediate: true})
+        const onClean = watchReactive(reactive, setValueTransition, {immediate: true})
 
         return onClean
     }, [reactive])
@@ -81,7 +79,7 @@ export function useReactiveSelect<V, R>(reactive: ReactiveProtocol<V>, selector:
 export function useReactiveSelect<V, R>(reactive: undefined | ReactiveProtocol<V>, selector: Io<undefined | V, R>, deps?: undefined | Array<unknown>): undefined | R
 export function useReactiveSelect<V, R>(reactive: undefined | ReactiveProtocol<V>, selector: Io<undefined | V, R>, deps?: undefined | Array<unknown>): undefined | R {
     const selectedValue = selector(mapSome(reactive, readReactive))
-    const [signal, setSignal] = useState(selectedValue)
+    const [signal, setSignalTransition] = useStateTransition(selectedValue)
 
     useEffect(() => {
         if (! reactive) {
@@ -91,9 +89,7 @@ export function useReactiveSelect<V, R>(reactive: undefined | ReactiveProtocol<V
         const onClean = watchReactive(
             reactive,
             newValue => {
-                startTransition(() => {
-                    setSignal(selector(newValue))
-                })
+                setSignalTransition(selector(newValue))
             },
             {immediate: true},
         )
@@ -114,20 +110,18 @@ export function useReactiveStore<V>(
     const setValue = useCallback((value: StateWriterArg<V>) => {
         const newValue = compute(value, read())
 
-        startTransition(() => {
-            PRIVATE_setValue(newValue)
-            write(newValue)
-        })
+        PRIVATE_setValue(newValue)
+        write(newValue)
     }, [read, write])
 
     useEffect(() => {
-        function setValue(value: V) {
+        function setValueTransition(value: V) {
             startTransition(() => {
                 PRIVATE_setValue(value)
             })
         }
 
-        const onClean = watch(setValue, {immediate: true})
+        const onClean = watch(setValueTransition, {immediate: true})
 
         return onClean
     }, [watch])
@@ -136,7 +130,7 @@ export function useReactiveStore<V>(
 }
 
 export function useReactiveSignal(reactive: undefined | ReactiveProtocol<any>): RenderSignal {
-    const [signal, PRIVATE_notifySignal] = useRenderSignal()
+    const [signal, notifySignal] = useRenderSignal()
 
     // We use useLayoutEffect (instead of useEffect) to watch the reactive as soon as possible,
     // avoiding missed notifications.
@@ -145,16 +139,10 @@ export function useReactiveSignal(reactive: undefined | ReactiveProtocol<any>): 
             return
         }
 
-        function notifySignal() {
-            startTransition(() => {
-                PRIVATE_notifySignal()
-            })
-        }
-
         const onClean = watchReactive(reactive, notifySignal)
 
         return onClean
-    }, [reactive, PRIVATE_notifySignal])
+    }, [reactive, notifySignal])
 
     return signal
 }
@@ -162,17 +150,11 @@ export function useReactiveSignal(reactive: undefined | ReactiveProtocol<any>): 
 export function useReactiveSignals(
     reactives: Array<ReactiveProtocol<any>> | readonly [...Array<ReactiveProtocol<any>>],
 ): RenderSignal {
-    const [signal, PRIVATE_notifySignal] = useRenderSignal()
+    const [signal, notifySignal] = useRenderSignal()
 
     // We use useLayoutEffect (instead of useEffect) to watch the reactives as soon as possible,
     // avoiding missed notifications.
     useLayoutEffect(() => {
-        function notifySignal() {
-            startTransition(() => {
-                PRIVATE_notifySignal()
-            })
-        }
-
         const cleaningTasks = reactives.map(it => watchReactive(it, notifySignal))
 
         function onClean() {
@@ -180,7 +162,7 @@ export function useReactiveSignals(
         }
 
         return onClean
-    }, [reactives, PRIVATE_notifySignal])
+    }, [reactives, notifySignal])
 
     return signal
 }

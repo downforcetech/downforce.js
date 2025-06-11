@@ -2,7 +2,7 @@ import type {ValueOf} from '@downforce/std/type'
 import type {AuthAuthenticateOptions, AuthCredentials, AuthInvalidateOptions, AuthValidateOptions} from '@downforce/web/auth'
 import {authenticate, invalidateAuthentication, validateAuthentication} from '@downforce/web/auth'
 import {throwInvalidResponse} from '@downforce/web/error'
-import {useCallback, useMemo, useState} from 'react'
+import {startTransition, useCallback, useMemo, useState} from 'react'
 import {useBusyLock} from './busy.js'
 
 export const AuthTokenState = {
@@ -18,26 +18,31 @@ export function useAuthentication(args: AuthenticationOptions): AuthenticationMa
         validate: validateOptions,
         invalidate: invalidateOptions,
     } = args
-    const [tokenState, setTokenState] = useState<AuthTokenStateEnum>()
+    const [tokenState, setTokenState] = useState<undefined | AuthTokenStateEnum>(undefined)
     const {busy, busyLock, busyRelease} = useBusyLock()
 
-    const validateToken = useCallback((token: undefined | string) => {
+    const validateToken = useCallback(async (token: undefined | string) => {
         if (! token) {
             setTokenState(AuthTokenState.Missing)
             return
         }
 
+
         setTokenState(AuthTokenState.Validating)
         busyLock()
 
-        validateAuthentication(token, validateOptions)
-            .then(tokenIsValid => {
-                setTokenState(tokenIsValid
-                    ? AuthTokenState.Valid
-                    : AuthTokenState.Invalid
-                )
+        try {
+            const tokenIsValid = await validateAuthentication(token, validateOptions)
+
+            startTransition(() => {
+                setTokenState(tokenIsValid ? AuthTokenState.Valid : AuthTokenState.Invalid)
             })
-            .finally(busyRelease)
+        }
+        finally {
+            startTransition(() => {
+                busyRelease()
+            })
+        }
     }, [validateOptions])
 
     const authenticateCredentials = useCallback(async (credentials: AuthCredentials) => {
@@ -45,12 +50,16 @@ export function useAuthentication(args: AuthenticationOptions): AuthenticationMa
         try {
             const token = await authenticate(credentials, authenticateOptions)
 
-            setTokenState(AuthTokenState.Valid)
+            startTransition(() => {
+                setTokenState(AuthTokenState.Valid)
+            })
 
             return token
         }
         finally {
-            busyRelease()
+            startTransition(() => {
+                busyRelease()
+            })
         }
     }, [authenticateOptions])
 
@@ -72,7 +81,9 @@ export function useAuthentication(args: AuthenticationOptions): AuthenticationMa
             }
         }
         finally {
-            busyRelease()
+            startTransition(() => {
+                busyRelease()
+            })
         }
     }, [invalidateOptions])
 

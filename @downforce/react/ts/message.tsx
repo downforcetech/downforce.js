@@ -9,12 +9,12 @@ import {
     type MsgMessageKey,
     type MsgMessages,
 } from '@downforce/std/msg'
-import {memo, useContext, useMemo, useState} from 'react'
+import {memo, useContext, useMemo} from 'react'
 import {Box, type BoxProps} from './box.js'
 import {classes} from './classes.js'
 import {defineContext} from './ctx.js'
 import type {Props, VoidProps} from './props.js'
-import type {StateWriter} from './state.js'
+import {useStateTransition, type StateWriter} from './state.js'
 
 export type * from '@downforce/std/msg'
 
@@ -62,9 +62,9 @@ export function Translate(props: Props<TranslateProps>): React.ReactNode {
 }
 
 export function useMessageProvider(spec: MsgDefinition<string, MsgMessageKey>): MessageStore {
-    const [locale, setLocale] = useState(spec.locale)
-    const [localeFallback, setLocaleFallback] = useState(spec.localeFallback)
-    const [messages, setMessages] = useState(spec.messages)
+    const [locale, setLocale] = useStateTransition(spec.locale)
+    const [localeFallback, setLocaleFallback] = useStateTransition(spec.localeFallback)
+    const [messages, setMessages] = useStateTransition(spec.messages)
 
     const msg = useMemo((): MessageStore => {
         const msg = createMsg({...spec, locale, localeFallback, messages})
