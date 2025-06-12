@@ -65,6 +65,7 @@
 @import '@downforce/std.css/layout-debug.classes.css' layer(std);
 @import '@downforce/std.css/layout-flex-break.classes.css' layer(std);
 @import '@downforce/std.css/layout-flex-child.classes.css' layer(std);
+@import '@downforce/std.css/layout-flex-space.classes.css' layer(std);
 @import '@downforce/std.css/layout-flex-stack.classes.css' layer(std);
 @import '@downforce/std.css/layout-flex.classes.css' layer(std);
 @import '@downforce/std.css/layout-float.classes.css' layer(std);

@@ -1,0 +1,26 @@
+.std-flex-space1,
+.std-flex-space2,
+.std-flex-space3,
+.std-flex-space4,
+.std-flex-space5,
+.std-flex-space6,
+.std-flex-space7,
+.std-flex-space8,
+.std-flex-space9,
+.std-flex-space10 {
+    min-width: var(--space-size);
+    min-height: var(--space-size);
+    flex-basis: var(--space-size);
+    flex-grow: 1;
+}
+
+.std-flex-space1 { --space-size: var(--std-gutter1); }
+.std-flex-space2 { --space-size: var(--std-gutter2); }
+.std-flex-space3 { --space-size: var(--std-gutter3); }
+.std-flex-space4 { --space-size: var(--std-gutter4); }
+.std-flex-space5 { --space-size: var(--std-gutter5); }
+.std-flex-space6 { --space-size: var(--std-gutter6); }
+.std-flex-space7 { --space-size: var(--std-gutter7); }
+.std-flex-space8 { --space-size: var(--std-gutter8); }
+.std-flex-space9 { --space-size: var(--std-gutter9); }
+.std-flex-space10 { --space-size: var(--std-gutter10); }

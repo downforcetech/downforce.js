@@ -10,9 +10,9 @@
 .std-space-h10 {
     display: inline-block;
     height: 100%;
-    min-width: var(--space-size, 1em);
-    width: var(--space-size, 1em);
-    max-width: var(--space-size, 1em);
+    min-width: var(--space-size);
+    width: var(--space-size);
+    max-width: var(--space-size);
 }
 .std-space-v1,
 .std-space-v2,
@@ -26,9 +26,9 @@
 .std-space-v10 {
     display: block;
     width: 100%;
-    min-height: var(--space-size, 1em);
-    height: var(--space-size, 1em);
-    max-height: var(--space-size, 1em);
+    min-height: var(--space-size);
+    height: var(--space-size);
+    max-height: var(--space-size);
 }
 .std-space-h1, .std-space-v1 { --space-size: var(--std-gutter1); }
 .std-space-h2, .std-space-v2 { --space-size: var(--std-gutter2); }
