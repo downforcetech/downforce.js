@@ -4,5 +4,6 @@ export function isNumber(value: unknown): value is number {
 }
 
 export function isInteger(value: unknown): value is number {
+    // return isNumber(value) && value % 1 === 0
     return Number.isInteger(value as any)
 }
