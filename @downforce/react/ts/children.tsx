@@ -21,9 +21,9 @@ export function areElementsEqual(first: undefined | ReactElement<any, any>, seco
     return sameType && sameKey
 }
 
-export function decorateElementWith(args: {
-    before?: undefined | React.ReactNode
+export function createElementDecorator(args: {
     after?: undefined | React.ReactNode
+    before?: undefined | React.ReactNode
 }): (children: React.ReactNode) => React.JSX.Element {
     function decorator(children: React.ReactNode) {
         return <>
@@ -36,12 +36,12 @@ export function decorateElementWith(args: {
     return decorator
 }
 
-export function decorateElementBeforeWith(children: React.ReactNode): (children: React.ReactNode) => React.JSX.Element {
-    return decorateElementWith({before: children})
+export function createElementAfterDecorator(children: React.ReactNode): (children: React.ReactNode) => React.JSX.Element {
+    return createElementDecorator({after: children})
 }
 
-export function decorateElementAfterWith(children: React.ReactNode): (children: React.ReactNode) => React.JSX.Element {
-    return decorateElementWith({after: children})
+export function createElementBeforeDecorator(children: React.ReactNode): (children: React.ReactNode) => React.JSX.Element {
+    return createElementDecorator({before: children})
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
