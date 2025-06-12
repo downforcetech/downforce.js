@@ -16,7 +16,7 @@ import {
     useRef,
     useState
 } from 'react'
-import {areElementsEqual, tryElement} from './children.js'
+import {areElementsEqual, strictElement} from './children.js'
 import {classes} from './classes.js'
 import {defineContext} from './ctx.js'
 
@@ -329,8 +329,8 @@ export function reduceTransitionChildrenChange(state: TransitionState, args: {
     const initialRender = state.initial
     const newChildren = args.children
     const oldChildren = state.children
-    const oldChild = tryElement(oldChildren)
-    const newChild = tryElement(newChildren)
+    const oldChild = strictElement(oldChildren)
+    const newChild = strictElement(newChildren)
     const oldChildValid = isValidAnimatorChild(oldChild)
     const newChildValid = isValidAnimatorChild(newChild)
 

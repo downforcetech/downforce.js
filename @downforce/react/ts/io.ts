@@ -1,13 +1,12 @@
 import type {Fn, FnArgs, FnAsync, Task} from '@downforce/std/fn'
 import {areObjectsEqualShallow} from '@downforce/std/object'
 import {isDefined} from '@downforce/std/optional'
-import {Outcome, type OutcomeResultOrError} from '@downforce/std/outcome'
+import {isError, isResult, mapResultOrError, ResultOrError, type OutcomeResultOrError} from '@downforce/std/outcome'
 import type {PromiseView} from '@downforce/std/promise'
-import {useCallback, useEffect, useRef} from 'react'
-import {useStateTransition} from './state.js'
+import {startTransition, useCallback, useEffect, useRef, useState} from 'react'
 
 export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?: Array<unknown>): AsyncIoManager<A, R> {
-    const [state, setStateTransition, getState] = useStateTransition<AsyncIoState<R>>({
+    const [state, setState] = useState<AsyncIoState<R>>({
         output: undefined,
         error: undefined,
         result: undefined,
@@ -31,7 +30,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
         // We must retain current result and error states.
         // Whether the developer wants to clear them, he uses the reset() API
         // before issuing a call() request.
-        setStateTransition(state => {
+        setState(state => {
             const nextState: AsyncIoState<R> = {
                 output: state.output,
                 error: state.error,
@@ -50,7 +49,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
         const taskHandle: TaskHandle = {
             cancel() { taskHandle.canceled = true },
             canceled: false,
-            promise: Outcome.from(asyncTask(...args)),
+            promise: ResultOrError(asyncTask(...args)),
         }
 
         taskHandleRef.current = taskHandle
@@ -67,28 +66,30 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
             return taskHandleRef.current?.promise
         }
 
-        setStateTransition(
-            Outcome.map(resultOrError,
-                (result): AsyncIoState<R> => ({
-                    output: resultOrError,
-                    error: undefined,
-                    result: result,
-                    fulfilled: true,
-                    rejected: false,
-                    pending: false,
-                    settled: true,
-                }),
-                (error): AsyncIoState<R> => ({
-                    output: resultOrError,
-                    error: error,
-                    result: undefined,
-                    fulfilled: false,
-                    rejected: true,
-                    pending: false,
-                    settled: true,
-                }),
+        startTransition(() => {
+            setState(
+                mapResultOrError(resultOrError,
+                    (result): AsyncIoState<R> => ({
+                        output: resultOrError,
+                        error: undefined,
+                        result: result,
+                        fulfilled: true,
+                        rejected: false,
+                        pending: false,
+                        settled: true,
+                    }),
+                    (error): AsyncIoState<R> => ({
+                        output: resultOrError,
+                        error: error,
+                        result: undefined,
+                        fulfilled: false,
+                        rejected: true,
+                        pending: false,
+                        settled: true,
+                    }),
+                )
             )
-        )
+        })
 
         return resultOrError
     }, deps ?? [])
@@ -96,7 +97,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
     const cancel = useCallback(() => {
         taskHandleRef.current?.cancel()
 
-        setStateTransition(state => {
+        setState(state => {
             const nextState: AsyncIoState<R> = {
                 output: state.output,
                 error: state.error,
@@ -114,7 +115,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
     }, [])
 
     const reset = useCallback(() => {
-        setStateTransition(state => {
+        setState(state => {
             const nextState: AsyncIoState<R> = {
                 output: undefined,
                 error: undefined,
@@ -132,9 +133,9 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
     }, [])
 
     const resetError = useCallback(() => {
-        setStateTransition(state => {
+        setState(state => {
             const nextState: AsyncIoState<R> = {
-                output: Outcome.isError(state.output) ? undefined : state.output,
+                output: isError(state.output) ? undefined : state.output,
                 error: undefined,
                 result: state.result,
                 fulfilled: state.fulfilled,
@@ -150,9 +151,9 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
     }, [])
 
     const resetResult = useCallback(() => {
-        setStateTransition(state => {
+        setState(state => {
             const nextState: AsyncIoState<R> = {
-                output: Outcome.isResult(state.output) ? undefined : state.output,
+                output: isResult(state.output) ? undefined : state.output,
                 error: state.error,
                 result: undefined,
                 fulfilled: false,
