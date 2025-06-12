@@ -4,7 +4,7 @@ import {useMergeRefs} from '@downforce/react/ref'
 import {identity} from '@downforce/std/fn'
 import {useRef, useState} from 'react'
 
-export {decoratingElement, decoratingElementAfter, decoratingElementBefore} from '@downforce/react/children'
+export {createElementAfterDecorator, createElementBeforeDecorator, createElementDecorator} from '@downforce/react/children'
 
 export function InputLabel(props: Props<InputLabelProps>): React.JSX.Element {
     const {children, className, labelClass, title, ...otherProps} = props
