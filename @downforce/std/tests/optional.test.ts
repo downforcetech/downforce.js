@@ -1,4 +1,4 @@
-import {isSome, mapNone, mapSome} from '@downforce/std/optional'
+import {isSome, whenNone, whenSome} from '@downforce/std/optional'
 import {expectType} from '@downforce/std/type'
 import Assert from 'node:assert'
 import {describe, test} from 'node:test'
@@ -29,25 +29,25 @@ describe('@downforce/std/optional', (ctx) => {
         }
     })
 
-    test('mapSome()', (ctx) => {
+    test('whenSome()', (ctx) => {
         {
-            const result = mapSome(undefined as undefined | number, it => String(it))
+            const result = whenSome(undefined as undefined | number, it => String(it))
 
             expectType<undefined | string>(result)
             Assert.strictEqual(result, undefined)
         }
 
         {
-            const result = mapSome(subject.name as undefined | string, it => ({title: it}) )
+            const result = whenSome(subject.name as undefined | string, it => ({title: it}) )
 
             expectType<undefined | {title: string}>(result)
             Assert.deepStrictEqual(result, {title: subject.name})
         }
     })
 
-    test('mapNone()', (ctx) => {
+    test('whenNone()', (ctx) => {
         {
-            const result = mapNone(undefined as undefined | number, it => subject.name)
+            const result = whenNone(undefined as undefined | number, it => subject.name)
 
             expectType<undefined | number | string>(result)
             Assert.strictEqual(result, subject.name)

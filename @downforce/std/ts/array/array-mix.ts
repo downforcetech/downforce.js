@@ -46,6 +46,10 @@ export function splitArray<I>(list: Array<I>, filter: Io<I, boolean>): [Array<I>
     return [trueList, falseList]
 }
 
+export function mapArray<I, R>(list: Array<I>, mapItem: (it: I, idx: number) => R): Array<R> {
+    return list.map(mapItem)
+}
+
 export function uniq<I>(list: Array<I>): Array<I> {
     return Array.from(new Set(list))
 }

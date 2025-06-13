@@ -1,9 +1,9 @@
 import type {Io} from '../fn.js'
 import {isError, isResult} from './outcome-is.js'
-import {mapError, mapResult, mapResultOrError} from './outcome-map.js'
 import {filterError, filterResult, splitResultOrError} from './outcome-mix.js'
 import {Error, ResultOrError} from './outcome-new.js'
 import type {OutcomeError, OutcomeErrorOf, OutcomeResultOf, OutcomeResultOrError} from './outcome-type.js'
+import {whenError, whenResult, whenResultOrError} from './outcome-when.js'
 
 export const Outcome = {
     from<V>(promise: Promise<V>): Promise<OutcomeResultOrError<V, unknown>> {
@@ -30,16 +30,16 @@ export const Outcome = {
         return splitResultOrError(resultOrError)
     },
 
-    map<R, E, O1, O2>(resultOrError: OutcomeResultOrError<R, E>, onResult: Io<R, O1>, onError: Io<E, O2>): O1 | O2 {
-        return mapResultOrError(resultOrError, onResult, onError)
+    when<R, E, O1, O2>(resultOrError: OutcomeResultOrError<R, E>, onResult: Io<R, O1>, onError: Io<E, O2>): O1 | O2 {
+        return whenResultOrError(resultOrError, onResult, onError)
     },
 
-    mapResult<R, E, O>(resultOrError: OutcomeResultOrError<R, E>, onResult: Io<R, O>): OutcomeResultOrError<O, E> {
-        return mapResult(resultOrError, onResult)
+    whenResult<R, E, O>(resultOrError: OutcomeResultOrError<R, E>, onResult: Io<R, O>): OutcomeResultOrError<O, E> {
+        return whenResult(resultOrError, onResult)
     },
 
-    mapError<R, E, O>(resultOrError: OutcomeResultOrError<R, E>, onError: Io<E, O>): R | O {
-        return mapError(resultOrError, onError)
+    whenError<R, E, O>(resultOrError: OutcomeResultOrError<R, E>, onError: Io<E, O>): R | O {
+        return whenError(resultOrError, onError)
     },
 
     Error<const E>(error: E): OutcomeError<E> {

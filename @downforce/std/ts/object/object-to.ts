@@ -1,5 +1,5 @@
 import type {Io} from '../fn.js'
-import {pickObjectProps, omitObjectProps} from './object-map.js'
+import {omitObjectProps, pickObjectProps} from './object-mix.js'
 
 export function pickObjectPropsTo<I extends object, P extends keyof I>(props: Array<P>): Io<I, Pick<I, P>> {
     return input => pickObjectProps(input, ...props)

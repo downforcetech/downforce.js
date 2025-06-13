@@ -2,7 +2,7 @@ import type {Io} from '../fn.js'
 import {isNone, isSome} from './optional-is.js'
 import type {None} from './optional-type.js'
 
-export function mapOptional<I, O1, O2>(
+export function whenOptional<I, O1, O2>(
     input: I,
     onSome: Io<NonNullable<I>, O1>,
     onNone: Io<Extract<I, None>, O2>,
@@ -12,13 +12,13 @@ export function mapOptional<I, O1, O2>(
         : onNone(input as Extract<I, None>)
 }
 
-export function mapSome<I, O>(input: I, onSome: Io<NonNullable<I>, O>): O | Extract<I, None> {
+export function whenSome<I, O>(input: I, onSome: Io<NonNullable<I>, O>): O | Extract<I, None> {
     return isSome(input)
         ? onSome(input as NonNullable<I>)
         : input as Extract<I, None>
 }
 
-export function mapNone<I, O>(input: I, onNone: Io<Extract<I, None>, O>): O | Exclude<I, void | None> {
+export function whenNone<I, O>(input: I, onNone: Io<Extract<I, None>, O>): O | Exclude<I, void | None> {
     return isNone(input)
         ? onNone(input as Extract<I, None>)
         : input as Exclude<I, void | None>
