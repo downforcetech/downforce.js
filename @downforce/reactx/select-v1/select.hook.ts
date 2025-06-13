@@ -3,7 +3,7 @@ import {useClickOutside} from '@downforce/react/gesture'
 import {setRef} from '@downforce/react/ref'
 import {compute, type Computable} from '@downforce/std/fn'
 import {clamp} from '@downforce/std/number'
-import {isDefined, isUndefined, mapSome} from '@downforce/std/optional'
+import {isDefined, isUndefined, whenSome} from '@downforce/std/optional'
 import {classes} from '@downforce/web/classes'
 import {KeyboardKey} from '@downforce/web/keybinding'
 import {useCallback, useContext, useEffect, useId, useLayoutEffect, useRef, useState, type AriaRole} from 'react'
@@ -344,7 +344,7 @@ export function useSelectProvider<V, S, O extends object = object>(
             ...computedProps.rootProps,
             ref: useCallback((element: null | HTMLElement) => {
                 refs.rootRef.current = element ?? undefined
-                mapSome(computedProps.rootProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
+                whenSome(computedProps.rootProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
             }, [computedProps.rootProps?.ref]),
             className: classes(computedProps.rootProps?.className),
             ['aria-controls']: ids.optionsRootId,
@@ -381,7 +381,7 @@ export function useSelectProvider<V, S, O extends object = object>(
             ...computedProps.controlProps,
             ref: useCallback((element: null | HTMLElement) => {
                 refs.controlRef.current = element ?? undefined
-                mapSome(computedProps.controlProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
+                whenSome(computedProps.controlProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
             }, [computedProps.controlProps?.ref]),
             className: classes(computedProps.controlProps?.className),
             role: 'combobox',
@@ -485,7 +485,7 @@ export function useSelectProvider<V, S, O extends object = object>(
             className: classes(computedProps.optionsRootProps?.className),
             ref: useCallback((element: null | HTMLElement) => {
                 refs.optionsRootRef.current = element ?? undefined
-                mapSome(computedProps.optionsRootProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
+                whenSome(computedProps.optionsRootProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
             }, [computedProps.optionsRootProps?.ref]),
             ['aria-hidden']: ! state.open,
             style: {
@@ -499,7 +499,7 @@ export function useSelectProvider<V, S, O extends object = object>(
             className: classes(computedProps.optionsListProps?.className),
             ref: useCallback((element: null | HTMLElement) => {
                 refs.optionsListRef.current = element ?? undefined
-                mapSome(computedProps.optionsListProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
+                whenSome(computedProps.optionsListProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
             }, [computedProps.optionsListProps?.ref]),
             role: 'listbox',
         },
@@ -508,7 +508,7 @@ export function useSelectProvider<V, S, O extends object = object>(
             ...computedProps.optionProps,
             ref(element: null | HTMLElement) {
                 refs.optionsRef.current[optionIdx] = element ?? undefined
-                mapSome(computedProps.optionProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
+                whenSome(computedProps.optionProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
             },
             className: classes(),
             role: 'option',
