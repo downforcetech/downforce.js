@@ -5,8 +5,8 @@
         "upgrade": "pnpx npm-upgrade@latest && pnpm run init",
         "update": "pnpm update --recursive",
         "clean": "nx run-many --target clean",
-        "build": "nx run-many --target build",
-        "build-watch": "(nx run-many --target build --skip-nx-cache || true) && nx watch --all -- pnpm run build",
+        "build": "nx run-many --target build,test",
+        "build-watch": "(nx run-many --target,test build --skip-nx-cache || true) && nx watch --all -- pnpm run build",
         "test": "nx run-many --target test"
     },
     "engines": {"node": ">= 20"},
