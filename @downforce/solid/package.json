@@ -18,8 +18,8 @@
         "preversion": "pnpm run build"
     },
     "dependencies": {
-        "@downforce/std": "1",
-        "@downforce/web": "1",
+        "@downforce/std": "1.1.11",
+        "@downforce/web": "1.1.3",
         "tslib": "2"
     },
     "peerDependencies": {
@@ -29,7 +29,7 @@
         "@babel/cli": "7",
         "@babel/core": "7",
         "@babel/preset-typescript": "7",
-        "@downforce/tsconfig": "1",
+        "@downforce/tsconfig": "1.0.3",
         "babel-preset-solid": "1",
         "typescript": "5.8"
     },
