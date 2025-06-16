@@ -1,5 +1,5 @@
 import {OneSecondInMs, asDate} from '@downforce/std/date'
-import {isSome, mapSome} from '@downforce/std/optional'
+import {isSome, whenSome} from '@downforce/std/optional'
 import {escapeRegexp} from '@downforce/std/regexp'
 
 export const CookieKeyRegexpCache: Record<string, RegExp> = {}
@@ -31,10 +31,10 @@ export function writeCookie(args: CookieOptions & {value: string}): void {
     const customParts = args.custom
     const parts = [
         `${key}=${value}`,
-        mapSome(path, path => `Path=${path}`),
-        mapSome(maxAge, maxAge => `Max-Age=${maxAge}`),
-        mapSome(expires, expires => `Expires=${expires}`),
-        mapSome(sameSite, sameSite => `SameSite=${sameSite}`),
+        whenSome(path, path => `Path=${path}`),
+        whenSome(maxAge, maxAge => `Max-Age=${maxAge}`),
+        whenSome(expires, expires => `Expires=${expires}`),
+        whenSome(sameSite, sameSite => `SameSite=${sameSite}`),
         secure ? 'Secure' : undefined,
         ...customParts ?? [],
     ].filter(isSome)

@@ -19,11 +19,11 @@
         "preversion": "pnpm run build && pnpm run test"
     },
     "dependencies": {
-        "@downforce/std": "1",
+        "@downforce/std": "1.1.11",
         "tslib": "2"
     },
     "devDependencies": {
-        "@downforce/tsconfig": "1",
+        "@downforce/tsconfig": "1.0.3",
         "@types/node": "22",
         "tsx": "4",
         "typescript": "5.8"

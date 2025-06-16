@@ -1,5 +1,5 @@
 import {mapObjectValue, omitObjectProp, pickObjectProp} from '@downforce/std/object'
-import {mapSome} from '@downforce/std/optional'
+import {whenSome} from '@downforce/std/optional'
 import type {RouterRouteParams} from './router.js'
 import type {UrlParamsDictValue} from './url.js'
 
@@ -20,11 +20,11 @@ export function defineRouteParam<const N extends string, EI, EO extends UrlParam
             return params?.[name]
         },
         selectDecode(params) {
-            return mapSome(self.select(params), decode)
+            return whenSome(self.select(params), decode)
         },
         pack(value) {
             return {
-                [name]: mapSome(value, self.encode),
+                [name]: whenSome(value, self.encode),
             } as {[key in N]: EO}
         },
         pick(params) {

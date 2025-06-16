@@ -1,4 +1,4 @@
-import {mapSome} from '@downforce/std/optional'
+import {whenSome} from '@downforce/std/optional'
 import {deserializeStruct, serializeStruct} from '@downforce/std/serial'
 
 export {deserializeStruct as deserializeSsrState, serializeStruct as serializeSsrState} from '@downforce/std/serial'
@@ -39,7 +39,7 @@ export function deserializeSsrStateFromStorageElement(
     const deserialize: SsrPayloadDeserializer = deserializeOptional ?? deserializeStruct
     const payloadSerialized = readSsrStateFromStorageElement(element)
 
-    return mapSome(payloadSerialized, deserialize)
+    return whenSome(payloadSerialized, deserialize)
 }
 
 export function findSsrStorageElement(id: string): undefined | Element {

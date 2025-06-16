@@ -1,5 +1,5 @@
 import type {Fn} from '@downforce/std/fn'
-import {mapSome} from '@downforce/std/optional'
+import {whenSome} from '@downforce/std/optional'
 import type {StringAutocompleted} from '@downforce/std/type'
 import type {JsonType, TextType} from './mimetype.js'
 
@@ -17,12 +17,12 @@ export function exposePreloadHintElement(attrs: PreloadElementAttrs, options?: u
 
 export function createPreloadHintElement(attrs: PreloadElementAttrs): HTMLLinkElement {
     const element = document.createElement('link')
-    mapSome(attrs.as, it => element.setAttribute('as', it))
-    mapSome(attrs.crossOrigin, it => element.setAttribute('crossOrigin', it))
-    mapSome(attrs.fetchPriority, it => element.setAttribute('fetchPriority', it))
-    mapSome(attrs.href, it => element.setAttribute('href', it))
-    mapSome(attrs.rel, it => element.setAttribute('rel', it))
-    mapSome(attrs.type, it => element.setAttribute('type', it))
+    whenSome(attrs.as, it => element.setAttribute('as', it))
+    whenSome(attrs.crossOrigin, it => element.setAttribute('crossOrigin', it))
+    whenSome(attrs.fetchPriority, it => element.setAttribute('fetchPriority', it))
+    whenSome(attrs.href, it => element.setAttribute('href', it))
+    whenSome(attrs.rel, it => element.setAttribute('rel', it))
+    whenSome(attrs.type, it => element.setAttribute('type', it))
     return element
 }
 
