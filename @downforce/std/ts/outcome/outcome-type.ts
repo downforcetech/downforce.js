@@ -1,15 +1,12 @@
-import {StdError} from '../error.js'
+import type {Monad} from '../monad.js'
 
-export class OutcomeError<const E> extends StdError {
-    error: E
-
-    constructor(error: E) {
-        super()
-        this.error = error
-    }
-}
+export const OutcomeErrorMonadTag = 'std/outcome/error'
 
 // Types ///////////////////////////////////////////////////////////////////////
+
+export interface OutcomeError<E> extends Monad {
+    error: E
+}
 
 export type OutcomeResultOrError<V, E> = V | OutcomeError<E>
 export type OutcomeResultOf<V> = Exclude<V, OutcomeError<unknown>>

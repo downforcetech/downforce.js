@@ -22,7 +22,7 @@
         "tslib": "2"
     },
     "devDependencies": {
-        "@downforce/tsconfig": "1",
+        "@downforce/tsconfig": "1.0.3",
         "@types/node": "22",
         "tsx": "4",
         "typescript": "5.8"
