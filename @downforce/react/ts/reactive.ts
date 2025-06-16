@@ -1,5 +1,5 @@
 import {call, compute, type Io, type Task} from '@downforce/std/fn'
-import {mapSome} from '@downforce/std/optional'
+import {whenSome} from '@downforce/std/optional'
 import type {ReactiveObserver, ReactiveWatchOptions} from '@downforce/std/reactive'
 import {readReactive, watchReactive, writeReactive, type ReactiveProtocol, type ReactiveValuesOf} from '@downforce/std/reactive'
 import type {ReadWriteSync} from '@downforce/std/store'
@@ -78,7 +78,7 @@ export function useReactiveMemo<A extends Array<ReactiveProtocol<any>>, V>(
 export function useReactiveSelect<V, R>(reactive: ReactiveProtocol<V>, selector: Io<V, R>, deps?: undefined | Array<unknown>): R
 export function useReactiveSelect<V, R>(reactive: undefined | ReactiveProtocol<V>, selector: Io<undefined | V, R>, deps?: undefined | Array<unknown>): undefined | R
 export function useReactiveSelect<V, R>(reactive: undefined | ReactiveProtocol<V>, selector: Io<undefined | V, R>, deps?: undefined | Array<unknown>): undefined | R {
-    const selectedValue = selector(mapSome(reactive, readReactive))
+    const selectedValue = selector(whenSome(reactive, readReactive))
     const [signal, setSignalTransition] = useStateTransition(selectedValue)
 
     useEffect(() => {
