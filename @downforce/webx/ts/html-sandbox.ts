@@ -1,5 +1,5 @@
-import {returnUndefined, tryCatch} from '@downforce/std/fn'
-import {onMounted, useEventListener, WebElement} from '@downforce/web/element'
+import {returnUndefined, tryCatch, type Task} from '@downforce/std/fn'
+import {useEventListener, useMounted, WebElement} from '@downforce/web/element'
 
 /*
 * EXAMPLE
@@ -15,63 +15,76 @@ import {onMounted, useEventListener, WebElement} from '@downforce/web/element'
 * </html-sandbox>
 */
 export class HtmlSandbox extends WebElement {
+    static getImplementation(): {
+        onContentChange(element: HTMLElement): void
+        onHashChange(element: HTMLElement): void
+    } {
+        return Implementation
+    }
+
     constructor() {
         super()
 
         this.attachShadow({mode: 'open'})
 
-        onMounted(this, () => {
-            const observer = new MutationObserver(() => onContentChange(this))
-            observer.observe(this, {subtree: true, characterData: true})
-
-            function onUnmount() {
-                observer.disconnect()
-            }
-
-            return onUnmount
+        useMounted(this, () => {
+            Implementation.onMounted(this)
         })
 
-        useEventListener(this, window, 'hashchange', onHashChange.bind(this, this))
+        useEventListener(this, window, 'hashchange', Implementation.onHashChange.bind(this, this))
     }
 
     override connectedCallback(): void {
-        onContentChange(this)
+        Implementation.onContentChange(this)
     }
 }
 
-export function onContentChange(element: HTMLElement): void {
-    if (! element.shadowRoot) {
-        return
-    }
+const Implementation = {
+    onMounted(element: HTMLElement): Task<void> {
+        const observer = new MutationObserver(() => Implementation.onContentChange(element))
+        observer.observe(element, {subtree: true, characterData: true})
 
-    const children = Array.from(element.childNodes)
-    const html = children.map(it => it.textContent).join('\n')
+        function onUnmount() {
+            observer.disconnect()
+        }
 
-    element.shadowRoot.innerHTML = html
+        return onUnmount
+    },
 
-    onHashChange(element)
-}
-
-export function onHashChange(element: HTMLElement): void {
-    const target = tryCatch(() => {
+    onContentChange(element: HTMLElement): void {
         if (! element.shadowRoot) {
             return
         }
-        if (! window.location.hash) {
+
+        const children = Array.from(element.childNodes)
+        const html = children.map(it => it.textContent).join('\n')
+
+        element.shadowRoot.innerHTML = html
+
+        Implementation.onHashChange(element)
+    },
+
+    onHashChange(element: HTMLElement): void {
+        const target = tryCatch(() => {
+            if (! element.shadowRoot) {
+                return
+            }
+            if (! window.location.hash) {
+                return
+            }
+
+            const id = window.location.hash
+            const shadowElement = element.shadowRoot.querySelector<HTMLElement>(id)
+
+            return shadowElement
+        }, returnUndefined)
+
+        if (! target) {
             return
         }
 
-        const id = window.location.hash
-        const shadowElement = element.shadowRoot.querySelector<HTMLElement>(id)
-
-        return shadowElement
-    }, returnUndefined)
-
-    if (! target) {
-        return
-    }
-
-    // We can't use {behavior:'smooth'} because the Safari shim/polyfill
-    // does not work inside Web Components.
-    target.scrollIntoView()
+        // We can't use {behavior:'smooth'} because the Safari shim/polyfill
+        // does not work inside Web Components.
+        target.scrollIntoView()
+    },
 }
