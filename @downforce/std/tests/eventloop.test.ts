@@ -1,4 +1,4 @@
-import {scheduleMacroTaskUsingTimeout, scheduleMicroTaskUsingPromise} from '@downforce/std/eventloop'
+import {scheduleMacroTaskUsingTimeout, scheduleMicroTask, scheduleMicroTaskUsingPromise} from '@downforce/std/eventloop'
 import Assert from 'node:assert'
 import {describe, test} from 'node:test'
 
@@ -7,31 +7,23 @@ describe('@downforce/std/eventloop', (ctx) => {
         const results: Array<string> = []
 
         await Promise.all([
-            new Promise<void>(resolve => scheduleMicroTaskUsingPromise(() => { results.push('scheduleMicroTaskUsingPromise'); resolve() })),
-            // new Promise<void>(resolve => scheduleMicroTaskUsingMutationObserver(() => { results.push('scheduleMicroTaskUsingMutationObserver'); resolve() })),
-            new Promise<void>(resolve => scheduleMacroTaskUsingTimeout(() => { results.push('scheduleMacroTaskUsingTimeout'); resolve() })),
-            // new Promise<void>(resolve => scheduleMacroTaskUsingPostMessage(() => { results.push('scheduleMacroTaskUsingPostMessage'); resolve() })),
-            // new Promise<void>(resolve => scheduleMacroTaskUsingMessageChannel(() => { results.push('scheduleMacroTaskUsingMessageChannel'); resolve() })),
+            new Promise<void>(resolve => scheduleMicroTask(() => { results.push('MICRO scheduleMicroTask 1'); resolve() })),
+            new Promise<void>(resolve => scheduleMicroTaskUsingPromise(() => { results.push('MICRO scheduleMicroTaskUsingPromise 1'); resolve() })),
+            new Promise<void>(resolve => scheduleMacroTaskUsingTimeout(() => { results.push('MACRO scheduleMacroTaskUsingTimeout 1'); resolve() })),
 
-            new Promise<void>(resolve => scheduleMicroTaskUsingPromise(() => { results.push('scheduleMicroTaskUsingPromise'); resolve() })),
-            // new Promise<void>(resolve => scheduleMicroTaskUsingMutationObserver(() => { results.push('scheduleMicroTaskUsingMutationObserver'); resolve() })),
-            new Promise<void>(resolve => scheduleMacroTaskUsingTimeout(() => { results.push('scheduleMacroTaskUsingTimeout'); resolve() })),
-            // new Promise<void>(resolve => scheduleMacroTaskUsingPostMessage(() => { results.push('scheduleMacroTaskUsingPostMessage'); resolve() })),
-            // new Promise<void>(resolve => scheduleMacroTaskUsingMessageChannel(() => { results.push('scheduleMacroTaskUsingMessageChannel'); resolve() })),
+            new Promise<void>(resolve => scheduleMicroTask(() => { results.push('MICRO scheduleMicroTask 2'); resolve() })),
+            new Promise<void>(resolve => scheduleMicroTaskUsingPromise(() => { results.push('MICRO scheduleMicroTaskUsingPromise 2'); resolve() })),
+            new Promise<void>(resolve => scheduleMacroTaskUsingTimeout(() => { results.push('MACRO scheduleMacroTaskUsingTimeout 2'); resolve() })),
         ])
 
         Assert.deepStrictEqual(results, [
-            'scheduleMicroTaskUsingPromise',
-            // 'scheduleMicroTaskUsingMutationObserver',
-            'scheduleMicroTaskUsingPromise',
-            // 'scheduleMicroTaskUsingMutationObserver',
+            'MICRO scheduleMicroTask 1',
+            'MICRO scheduleMicroTaskUsingPromise 1',
+            'MICRO scheduleMicroTask 2',
+            'MICRO scheduleMicroTaskUsingPromise 2',
 
-            'scheduleMacroTaskUsingTimeout',
-            // 'scheduleMacroTaskUsingPostMessage',
-            // 'scheduleMacroTaskUsingMessageChannel',
-            'scheduleMacroTaskUsingTimeout',
-            // 'scheduleMacroTaskUsingPostMessage',
-            // 'scheduleMacroTaskUsingMessageChannel',
+            'MACRO scheduleMacroTaskUsingTimeout 1',
+            'MACRO scheduleMacroTaskUsingTimeout 2',
         ])
     })
 })
