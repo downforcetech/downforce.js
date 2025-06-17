@@ -9,9 +9,11 @@
         "build-watch": "(nx run-many --target,test build --skip-nx-cache || true) && nx watch --all -- pnpm run build",
         "test": "nx run-many --target test"
     },
-    "engines": {"node": ">= 20"},
+    "engines": {
+        "node": ">= 20"
+    },
     "packageManager": "pnpm@10.12.1",
     "devDependencies": {
-        "nx": "21.1.3"
+        "nx": "21.2.0"
     }
 }
