@@ -75,9 +75,7 @@ export function useAuthentication(args: AuthenticationOptions): AuthenticationMa
             const ok = await invalidateAuthentication(token, invalidateOptions)
 
             if (! ok) {
-                throwInvalidResponse(
-                    `@downforce/react/auth.useAuthentication().destroySession()`
-                )
+                throwInvalidResponse('useAuthentication().destroySession()')
             }
         }
         finally {
