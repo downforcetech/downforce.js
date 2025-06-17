@@ -121,7 +121,7 @@ export function extractDefaultResponseToken(body: unknown): undefined | string {
 
 export function throwAuthInvalidResponse(fnName: string, reason: string): never {
     return throwInvalidResponse(
-        `@downforce/web/auth.${fnName}() -> ~~Response~~:\n`
+        `${fnName}() -> ~~Response~~:\n`
         + reason
     )
 }
