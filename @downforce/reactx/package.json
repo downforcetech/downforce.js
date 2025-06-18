@@ -19,16 +19,16 @@
         "preversion": "pnpm run build"
     },
     "dependencies": {
-        "@downforce/react": "1.1.8",
-        "@downforce/std": "1.1.12",
-        "@downforce/web": "1.1.4",
-        "@downforce/webx": "1.1.2",
         "@types/react": "19",
         "@types/react-dom": "19",
         "tslib": "2"
     },
     "peerDependencies": {
+        "@downforce/react": "1",
+        "@downforce/std": "1",
         "@downforce/std.css": "1",
+        "@downforce/web": "1",
+        "@downforce/webx": "1",
         "react": "19",
         "react-dom": "19"
     },
