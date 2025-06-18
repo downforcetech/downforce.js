@@ -1,0 +1,62 @@
+#!/usr/bin/env sh
+
+# USAGE
+################################################################################
+# With=dpdm|madge|skott check-circular <dpdm|madge|skott-args>
+################################################################################
+
+set -e
+set -u
+
+case $(dirname "$0") in
+  /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
+  *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
+esac
+
+: ${With:=dpdm}
+
+arg_reset=no
+if test ${1:-} = '--'; then
+  arg_reset=yes
+fi
+
+echo "USAGE: With=dpdm check-circular <dpdm-args>"
+echo "USAGE: With=madge check-circular <madge-args>"
+echo "USAGE: With=skott check-circular <skott-args>"
+echo
+
+case $With in
+  dpdm)
+    echo "USAGE ARGS: --tsconfig ./tsconfig.json --context ./ts/ ./ts/main.ts"
+    echo "USAGE ARGS: --tsconfig ./tsconfig.json --context ./ts/ --transform ./ts/main.ts"
+    echo "USAGE ARGS: --tsconfig ./tsconfig.json --context ./ts/ './ts/**/*.ts'"
+    echo "USAGE ARGS: --tsconfig ./tsconfig.json --context ./ts/ --detect-unused-files-from './ts/**/*.ts' ./ts/main.ts"
+    echo
+    if test $arg_reset = no; then
+      set -- --exit-code circular:1 --no-tree --no-warning "$@"
+    fi
+    exec npx --yes dpdm@latest "$@"
+  ;;
+  madge)
+    echo "USAGE ARGS: ./ts/main.ts"
+    echo "USAGE ARGS: --orphans './ts/**/*.ts'"
+    echo "USAGE ARGS: --leaves './ts/**/*.ts'"
+    echo
+    if test $arg_reset = no; then
+      set -- --circular "$@"
+    fi
+    exec npx --yes madge@latest "$@"
+  ;;
+  skott)
+    echo "USAGE ARGS: --displayMode raw ./ts/main.ts"
+    echo "USAGE ARGS: --displayMode graph ./ts/main.ts"
+    echo "USAGE ARGS: --displayMode raw --tsconfig ./tsconfig.json"
+    echo "USAGE ARGS: --displayMode raw --showUnusedFiles --tsconfig ./tsconfig.json --cwd ./ts/"
+    echo "USAGE ARGS: --displayMode raw --showUnusedDependencies --trackBuiltinDependencies --trackThirdPartyDependencies --tsconfig ./tsconfig.json --manifest ./package.json"
+    echo
+    if test $arg_reset = no; then
+      set -- --showCircularDependencies --trackTypeOnlyDependencies --exitCodeOnCircularDependencies 1 "$@"
+    fi
+    exec npx --yes skott@latest "$@"
+  ;;
+esac

@@ -1,0 +1,49 @@
+#!/usr/bin/env sh
+
+# USAGE
+################################################################################
+# init
+################################################################################
+
+set -e
+set -u
+
+case $(dirname "$0") in
+  /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
+  *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
+esac
+
+error_message='\e[0;38;5;9mfailed\e[0m'
+
+echo '┌─ Checking PNPM'
+if ! command -v pnpm >/dev/null 2>&1; then
+  echo "│ \"pnpm\" command not found."
+  printf "└─ $error_message\n"
+  exit 1
+fi
+pnpm_version=$(pnpm -v)
+pnpm_version_major=$(printf '%s' "$pnpm_version" | cut -d . -f 1 | { grep -o -E '[0-9]+' || true; })
+pnpm_version_minor=$(printf '%s' "$pnpm_version" | cut -d . -f 2 | { grep -o -E '[0-9]+' || true; })
+if test -z "$pnpm_version_major" -o -z "$pnpm_version_minor"; then
+  echo "│ unrecognized version format \"$pnpm_version\""
+  printf "└─ $error_message\n"
+  exit 2
+fi
+if test "$pnpm_version_major" -lt 10 -o "$pnpm_version_minor" -lt 12; then
+  echo "│ found legacy version \"$pnpm_version\""
+  echo '│ please upgrade PNPM to version >= 10.12'
+  printf "└─ $error_message\n"
+  exit 3
+fi
+echo "│ found version \"$pnpm_version\""
+echo '└─ done'
+echo
+
+echo '┌─ Installing dependencies'
+{
+  if ! pnpm --dir "$Dir/../" run init 2>&1; then
+    printf "$error_message\n"
+    exit 4
+  fi
+} | sed -e 's/^/│ /'
+echo '└─ done'
