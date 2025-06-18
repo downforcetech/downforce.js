@@ -19,13 +19,13 @@
         "preversion": "pnpm run build && pnpm run test"
     },
     "dependencies": {
-        "@downforce/std": "1.1.12",
-        "@downforce/web": "1.1.4",
         "@types/react": "19",
         "@types/react-dom": "19",
         "tslib": "2"
     },
     "peerDependencies": {
+        "@downforce/std": "1",
+        "@downforce/web": "1",
         "react": "19",
         "react-dom": "19"
     },
