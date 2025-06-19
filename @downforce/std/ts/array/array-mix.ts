@@ -46,6 +46,19 @@ export function splitArray<I>(list: Array<I>, filter: Io<I, boolean>): [Array<I>
     return [trueList, falseList]
 }
 
+export function chunkArray<I>(list: Array<I>, chunkSize: number): Array<Array<I>> {
+    const listSize = list.length
+    const chunks: Array<Array<I>> = []
+
+    for (let idx = 0; idx < listSize; idx += chunkSize) {
+        const chunk = list.slice(idx, idx + chunkSize)
+
+        chunks.push(chunk)
+    }
+
+    return chunks
+}
+
 export function mapArray<I, R>(list: Array<I>, mapItem: (it: I, idx: number) => R): Array<R> {
     return list.map(mapItem)
 }
