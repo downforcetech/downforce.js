@@ -2,7 +2,7 @@ import {classes} from '@downforce/react/classes'
 import type {DragPointerEvent, UseDragOptions} from '@downforce/react/drag'
 import {useDrag} from '@downforce/react/drag'
 import type {ElementProps, Props} from '@downforce/react/props'
-import {distanceBetween} from '@downforce/std/math/math-scale'
+import {call} from '@downforce/std/fn'
 import {clamp} from '@downforce/std/number'
 import {isNone, type None} from '@downforce/std/optional'
 import {KeyboardKey} from '@downforce/web/keybinding'
@@ -115,14 +115,14 @@ export function Range(props: Props<RangeProps>): React.JSX.Element {
                 className="slider-fb28"
                 type="button"
                 tabIndex={
-                    distanceBetween(rangeStart, rangeEnd) > 0.1
+                    Math.abs(rangeStart - rangeEnd) > 0.1
                         ? 0
                         : -1
                 }
                 onKeyDown={event => {
                     switch (event.key) {
                         case KeyboardKey.ArrowLeft: {
-                            const distance = distanceBetween(rangeStart, rangeEnd)
+                            const distance = Math.abs(rangeStart - rangeEnd)
                             const start = Math.max(0, rangeStart - keyboardStep)
                             const end = Math.max(start + distance, rangeEnd - keyboardStep)
                             const range = {start, end}
@@ -131,7 +131,7 @@ export function Range(props: Props<RangeProps>): React.JSX.Element {
                         }
                         break
                         case KeyboardKey.ArrowRight: {
-                            const distance = distanceBetween(rangeStart, rangeEnd)
+                            const distance = Math.abs(rangeStart - rangeEnd)
                             const end = Math.min(rangeEnd + keyboardStep, 1)
                             const start = Math.min(rangeStart + keyboardStep, end - distance)
                             const range = {start, end}
@@ -212,8 +212,8 @@ export function RangeNumeric(props: Props<RangeNumericProps>): undefined | React
 
     const startClamped = Math.max(start, min)
     const endClamped = Math.min(end, max)
-    const rangeStart = distanceBetween(min, startClamped) / distanceBetween(min, max)
-    const rangeEnd = distanceBetween(min, endClamped) / distanceBetween(min, max)
+    const rangeStart = Math.abs(min - startClamped) / Math.abs(min - max)
+    const rangeEnd = Math.abs(min - endClamped) / Math.abs(min - max)
 
     return (
         <Range
@@ -279,14 +279,14 @@ export function computeRangeRatio(
         return {...rect, x, left, right}
     }
 
-    const {startDistance, endDistance} = (() => {
+    const {startDistance, endDistance} = call(() => {
         switch (target) {
             case 'start': {
                 const leftLimit = rects.start.left - rects.start.width
                 const rightLimit = rects.end.left
                 const nextRect = moveRectX(rects.start, xDelta, leftLimit, rightLimit)
-                const startDistance = distanceBetween(rects.start.left, nextRect.right)
-                const endDistance = distanceBetween(rects.start.left, rects.end.left)
+                const startDistance = Math.abs(rects.start.left - nextRect.right)
+                const endDistance = Math.abs(rects.start.left - rects.end.left)
 
                 return {startDistance, endDistance}
             }
@@ -295,8 +295,8 @@ export function computeRangeRatio(
                 const rightLimit = rects.end.right
                 const xDelta = currentEvent.clientX - initialEvent.clientX
                 const nextRect = moveRectX(rects.center, xDelta, leftLimit, rightLimit)
-                const startDistance = distanceBetween(rects.start.left, nextRect.left)
-                const endDistance = distanceBetween(rects.start.left, nextRect.right)
+                const startDistance = Math.abs(rects.start.left - nextRect.left)
+                const endDistance = Math.abs(rects.start.left - nextRect.right)
 
                 return {startDistance, endDistance}
             }
@@ -304,13 +304,13 @@ export function computeRangeRatio(
                 const leftLimit = rects.start.right
                 const rightLimit = rects.end.right + rects.end.width
                 const nextRect = moveRectX(rects.end, xDelta, leftLimit, rightLimit)
-                const startDistance = distanceBetween(rects.start.left, rects.start.right)
-                const endDistance = distanceBetween(rects.start.left, nextRect.left)
+                const startDistance = Math.abs(rects.start.left - rects.start.right)
+                const endDistance = Math.abs(rects.start.left - nextRect.left)
 
                 return {startDistance, endDistance}
             }
         }
-    })()
+    })
     const startRatio = startDistance / total
     const endRatio = endDistance / total
 
@@ -318,7 +318,7 @@ export function computeRangeRatio(
 }
 
 export function computeNumericRange(min: number, max: number, range: Range): Range<number> {
-    const distance = distanceBetween(min, max)
+    const distance = Math.abs(min - max)
     const start = min + (distance * range.start)
     const end = min + (distance * range.end)
 
