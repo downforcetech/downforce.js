@@ -5,10 +5,10 @@ import {ensureObject} from '@downforce/std/object'
 import {ensureString} from '@downforce/std/string'
 import type {Unsafe} from '@downforce/std/type'
 
-export function trustResponseEncoded(response: unknown): undefined | ResponseEncoded {
+export function trustResponseEncoded(response: unknown): undefined | SerialResponseEncoded {
     return tryCatch(
-        (): ResponseEncoded => {
-            const responseEncoded = ensureObject(response) as NonNullable<Unsafe<ResponseEncoded>>
+        (): SerialResponseEncoded => {
+            const responseEncoded = ensureObject(response) as NonNullable<Unsafe<SerialResponseEncoded>>
 
             return {
                 body: ensureString(responseEncoded.body),
@@ -24,7 +24,7 @@ export function trustResponseEncoded(response: unknown): undefined | ResponseEnc
 }
 
 export const ResponseCodec = {
-    async encode(response: Response): Promise<ResponseEncoded> {
+    async encode(response: Response): Promise<SerialResponseEncoded> {
         return {
             body: await response.text(),
             headers: Array.from(response.headers.entries()),
@@ -32,7 +32,7 @@ export const ResponseCodec = {
             statusText: response.statusText,
         }
     },
-    async decode(responseEncoded: ResponseEncoded): Promise<Response> {
+    async decode(responseEncoded: SerialResponseEncoded): Promise<Response> {
         return new Response(responseEncoded.body, {
             headers: responseEncoded.headers,
             status: responseEncoded.status,
@@ -43,7 +43,7 @@ export const ResponseCodec = {
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-interface ResponseEncoded {
+export interface SerialResponseEncoded {
     body: string
     headers: Array<[string, string]>
     status: number

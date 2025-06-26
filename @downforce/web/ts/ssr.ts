@@ -1,9 +1,8 @@
-import {whenSome} from '@downforce/std/optional'
 import {deserializeStruct, serializeStruct} from '@downforce/std/serial'
 
 export {deserializeStruct as deserializeSsrState, serializeStruct as serializeSsrState} from '@downforce/std/serial'
 
-export function saveSsrState(id: string, payload: unknown, options?: undefined | SsrSaveOptions): void {
+export async function saveSsrState(id: string, payload: unknown, options?: undefined | SsrSaveOptions): Promise<void> {
     if (! payload) {
         return
     }
@@ -11,35 +10,41 @@ export function saveSsrState(id: string, payload: unknown, options?: undefined |
     const inject = options?.inject ?? injectSsrStorageElement
     const ssrStorage = findSsrStorageElement(id) ?? inject(id)
 
-    serializeSsrStateIntoStorageElement(ssrStorage, payload, options?.serializer)
+    return serializeSsrStateIntoStorageElement(ssrStorage, payload, options?.serializer)
 }
 
-export function serializeSsrStateIntoStorageElement(
+export async function serializeSsrStateIntoStorageElement(
     element: Element,
     payload: unknown,
     serializerOptional?: undefined | SsrPayloadSerializer,
-): void {
+): Promise<void> {
     const serialize: SsrPayloadSerializer = serializerOptional ?? serializeStruct
 
-    element.textContent = serialize(payload) ?? null
+    element.textContent = (await serialize(payload)) ?? null
 }
 
-export function loadSsrState(id: string, options?: undefined | SsrLoadOptions): unknown {
+export async function loadSsrState(id: string, options?: undefined | SsrLoadOptions): Promise<unknown> {
     const ssrStorage = findSsrStorageElement(id)
 
-    return ssrStorage
-        ? deserializeSsrStateFromStorageElement(ssrStorage, options?.deserializer)
-        : undefined
+    if (! ssrStorage) {
+        return
+    }
+
+    return deserializeSsrStateFromStorageElement(ssrStorage, options?.deserializer)
 }
 
-export function deserializeSsrStateFromStorageElement(
+export async function deserializeSsrStateFromStorageElement(
     element: Element,
     deserializeOptional?: undefined | SsrPayloadDeserializer,
-): unknown {
+): Promise<unknown> {
     const deserialize: SsrPayloadDeserializer = deserializeOptional ?? deserializeStruct
     const payloadSerialized = readSsrStateFromStorageElement(element)
 
-    return whenSome(payloadSerialized, deserialize)
+    if (! payloadSerialized) {
+        return
+    }
+
+    return deserialize(payloadSerialized)
 }
 
 export function findSsrStorageElement(id: string): undefined | Element {
@@ -84,9 +89,9 @@ export interface SsrLoadOptions {
 }
 
 export interface SsrPayloadSerializer {
-    (payload: unknown): undefined | string
+    (payload: unknown): Promise<undefined | string>
 }
 
 export interface SsrPayloadDeserializer {
-    (payloadSerialized: string): unknown
+    (payloadSerialized: string): Promise<unknown>
 }

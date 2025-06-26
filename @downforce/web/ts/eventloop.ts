@@ -1,5 +1,4 @@
-import {createCancelable} from '@downforce/std/cancel'
-import type {Task} from '@downforce/std/fn'
+import {createCancelable, type Task} from '@downforce/std/fn'
 
 export * from '@downforce/std/eventloop'
 

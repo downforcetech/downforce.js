@@ -1,6 +1,6 @@
 import type {Task} from '@downforce/std/fn'
-import {createLinearScale, directionOf, distanceBetween} from '@downforce/std/math/math-scale'
-import {Future, createFuture} from '@downforce/std/~lab/future'
+import {createScaleLinear} from '@downforce/std/math'
+import {createPromise} from '@downforce/std/promise'
 
 export * from '@downforce/std/async'
 
@@ -27,20 +27,11 @@ export function flushStyles(...elements: [HTMLElement, ...Array<HTMLElement>]): 
 }
 
 export function requestStylesFlush(...elements: [HTMLElement, ...Array<HTMLElement>]): Promise<void> {
-    let taskId: undefined | ReturnType<typeof requestAnimationFrame>
-
-    const promise = createFuture<void>((resolve, reject) => {
-        taskId = requestAnimationFrame(() => {
+    const promise = new Promise<void>((resolve, reject) => {
+        requestAnimationFrame(() => {
             flushStyles(...elements)
             resolve()
         })
-    })
-
-    promise.onCancel(() => {
-        if (! taskId) {
-            return
-        }
-        cancelAnimationFrame(taskId)
     })
 
     return promise
@@ -85,18 +76,15 @@ export function createCssTransition<S1, S2, T extends HTMLElement>(
     return play
 }
 
-export function createSpringAnimation(options: SpringAnimationOptions): Task<Promise<void>> {
-    let promise: undefined | Future<void>
+export function createSpringAnimation(options: SpringAnimationOptions): [Task<Promise<void>>, Task, Task<Boolean>] {
+    const {promise, reject, resolve} = createPromise()
+    let canceled = false
 
-    function loop(initialTime: number, done: Task, wasSnapped = false) {
-        if (! promise) {
-            return
-        }
-
-        if (promise.canceled) {
+    function loop(initialTime: number, wasSnapped = false) {
+        if (canceled) {
             options.onCancel?.()
             options.onFinally?.()
-            done()
+            resolve()
             return
         }
 
@@ -113,27 +101,33 @@ export function createSpringAnimation(options: SpringAnimationOptions): Task<Pro
             options.onTick(0, time)
             options.onEnd?.()
             options.onFinally?.()
-            done()
+            resolve()
             return
         }
 
         options.onTick(position, time)
 
         scheduleAnimationTask(() =>
-            loop(initialTime, done, shouldSnap)
+            loop(initialTime, shouldSnap)
         )
     }
 
     function play() {
-        promise = createFuture<void>((resolve, reject) => {
-            loop(Date.now(), resolve)
-        })
+        loop(Date.now())
 
         return promise
     }
 
-    // TODO: We should expose a `cancel` callback.
-    return play
+    function cancel() {
+        canceled = true
+        reject()
+    }
+
+    function getCanceled() {
+        return canceled
+    }
+
+    return [play, cancel, getCanceled]
 }
 
 export function createSpringScaleAnimation(
@@ -143,11 +137,11 @@ export function createSpringScaleAnimation(
 ): (element: HTMLElement, direction: 'forwards' | 'backward') => Promise<void> {
     const initialScale = initialScaleOptional ?? 1
     const animationDistance = options?.distance ?? SpringScaleDistance
-    const scaleDistance = distanceBetween(initialScale, finalScale)
-    const scaleDirection = directionOf(initialScale, finalScale)
-    const overshootScale = finalScale + scaleDirection * scaleDistance
-    const mapPositionToScale = createLinearScale([animationDistance, -animationDistance], [initialScale, overshootScale])
-    const inverseDistance = distanceBetween(finalScale, -initialScale)
+    const scaleDistance = Math.abs(finalScale - initialScale)
+    const scaleDirection = Math.sign(finalScale - initialScale)
+    const overshootScale = finalScale + (scaleDirection * scaleDistance)
+    const mapPositionToScale = createScaleLinear([animationDistance, -animationDistance], [initialScale, overshootScale])
+    const inverseDistance = Math.abs(finalScale + initialScale)
     //  5 |\
     //    | \     —
     //    |  \   / \
@@ -160,8 +154,10 @@ export function createSpringScaleAnimation(
     //    | /     —
     // -5 |/
 
-    function play(element: HTMLElement, direction: 'forwards' | 'backward') {
-        const animate = createSpringAnimation({
+    function play(element: HTMLElement, directionOptional?: undefined | 'forwards' | 'backward') {
+        const direction = directionOptional ?? 'forwards'
+
+        const [animate, cancel] = createSpringAnimation({
             damping: SpringScaleDamping,
             mass: SpringScaleMass,
             stiffness: SpringScaleStiffness,
@@ -229,7 +225,7 @@ export function scheduleAnimationTask(task: Function): void {
 
 export interface AnimationCssHooks<T extends HTMLElement, S1, S2 = S1> {
     setup?: undefined | ((target: T) => S1)
-    play: (target: T, state: S1) => S2
+    play(target: T, state: S1): S2
     clean?: undefined | ((target: T, state: S2) => void)
 }
 
@@ -243,8 +239,8 @@ export interface SpringOptions {
 
 export interface SpringAnimationOptions extends SpringOptions {
     snapping?: undefined | number
-    onTick: (position: number, tick: number) => void
-    onEnd?: undefined | (() => void)
-    onCancel?: undefined | (() => void)
-    onFinally?: undefined | (() => void)
+    onTick(position: number, tick: number): void
+    onEnd?: undefined | Task
+    onCancel?: undefined | Task
+    onFinally?: undefined | Task
 }

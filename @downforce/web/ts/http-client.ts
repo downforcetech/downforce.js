@@ -1,5 +1,5 @@
+import {awaiting} from '@downforce/std/promise'
 import {identity, piped, type Io} from '@downforce/std/fn'
-import {thenTo} from '@downforce/std/fn-to'
 import {
     buildRequest,
     RequestMethod,
@@ -44,7 +44,7 @@ export const HttpClient = {
             (usingRequestPayload(body))
             (encoder ? encoder : identity)
             (usingRequestRetry(retry))
-            (decoder ? thenTo(decoder) : (identity as Io<Promise<Response>, Promise<O>>))
+            (decoder ? awaiting(decoder) : (identity as Io<Promise<Response>, Promise<O>>))
         ()
     },
     Get<O = Response>(args: HttpClientGetOptions<Response, O>): Promise<NoInfer<O>> {
@@ -96,7 +96,7 @@ export async function decodeResponseOrReject<O>(
     return piped(responsePromise)
         (rejectResponseWhenError) // Rejects on failed response (4xx/5xx).
         (decodeResponseBody) // Decodes response to FormData/JSON/Text/UrlSearchParams.
-        (thenTo(decodeContent)) // Decodes the mixed unsafe output.
+        (awaiting(decodeContent)) // Decodes the mixed unsafe output.
     ()
 }
 
