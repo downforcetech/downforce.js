@@ -13,7 +13,7 @@
     },
     "scripts": {
         "clean": "rm -rf ./esm/ || true; rm -rf ./node_modules/.cache/ || true",
-        "build": "tsc --build ./tsconfig.json ./tests/tsconfig.json --listEmittedFiles",
+        "build": "tsc --listEmittedFiles --project ./tsconfig.json && tsc --project ./tests/tsconfig.json",
         "test": "pnpm run build && tsx --test",
         "prepack": "pnpm run clean; pnpm run build && pnpm run test",
         "preversion": "pnpm run build && pnpm run test"

@@ -1,4 +1,4 @@
-import {createReactive, readReactive, writeReactive, type ReactiveProtocol} from '@downforce/std/reactive'
+import {createReactive, readReactive, writeReactive, type ReactiveObject} from '@downforce/std/reactive'
 import {getReduxEvent, type ReduxEvent, type ReduxEventPolymorphic, type ReduxReducerState} from '@downforce/std/redux'
 import type {ReadWriteSync} from '@downforce/std/store'
 import {useCallback, useContext, useMemo} from 'react'
@@ -133,7 +133,7 @@ export function useStore<V, S extends ReduxReducerState, A extends ReduxEvent = 
 export type StoreManager<
     S extends ReduxReducerState = ReduxReducerState,
     A extends ReduxEvent = ReduxEvent,
-> = [ReactiveProtocol<S>, StoreDispatch<S, A>]
+> = [ReactiveObject<S>, StoreDispatch<S, A>]
 
 export interface StoreAccessor<
     S extends ReduxReducerState = ReduxReducerState,
