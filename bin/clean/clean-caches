@@ -4,8 +4,8 @@ set -e
 set -u
 
 case $(dirname "$0") in
-  /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
-  *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
+    /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
+    *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
 esac
 
 "$Dir/clean-nx-cache"

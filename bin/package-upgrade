@@ -1,9 +1,11 @@
 #!/usr/bin/env sh
 
+################################################################################
 # Upgrades the dependencies of the packages.
 #
 # EXAMPLE
-# ./package-upgrade ./packages/@downforce/*
+# ./package-upgrade ./@downforce/*
+################################################################################
 
 set -e # errexit
 set -u # nounset

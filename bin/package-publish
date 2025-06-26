@@ -1,12 +1,14 @@
 #!/usr/bin/env sh
 
+################################################################################
 # Bumps up a package version and publishes it.
 #
+# USAGE
+# ./package-publish version|patch|minor|major <package-dir> ...
+#
 # EXAMPLE
-# NpmPublishVersion=patch ./package-publish ./@downforce/*
-# NpmPublishVersion=minor ./package-publish ./@downforce/*
-# NpmPublishVersion=major ./package-publish ./@downforce/*
-# NpmPublishVersion= ./package-publish ./@downforce/*
+# ./package-publish patch ./@downforce/*
+################################################################################
 
 set -e # errexit
 set -u # nounset
@@ -16,12 +18,31 @@ case "$(dirname "$0")" in
     *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
 esac
 
+usage() {
+    echo
+    echo "USAGE: $(basename "$0") --help,-h"
+    echo "USAGE: $(basename "$0") version|patch|minor|major <package-dir> ..."
+    echo
+}
+
 : ${Npm:=npm}
 : ${NpmVersionCmd:=version}
 : ${NpmVersionArgs:=--no-git-tag-version}
 : ${NpmPublishCmd:=publish}
 : ${NpmPublishArgs:=--access public --auth-type legacy}
-: ${NpmPublishVersion=minor}
+
+if test $# -lt 2; then
+    usage
+    exit 1
+fi
+
+case $1 in
+    --help|-h) shift; usage; exit 0
+    ;;
+esac
+
+arg_version=$1
+shift
 
 for pkg; do
     if test ! -e "$pkg/package.json"; then
@@ -35,8 +56,8 @@ for pkg; do
             *) cd "$PWD/$pkg";;
         esac
 
-        if test -n "$NpmPublishVersion"; then
-            set -- $NpmVersionCmd $NpmVersionArgs $NpmPublishVersion
+        if test "$arg_version" != version; then
+            set -- $NpmVersionCmd $NpmVersionArgs $arg_version
             $Npm "$@"
 
             printf -- 'Press Enter to continue'

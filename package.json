@@ -12,7 +12,7 @@
     "engines": {
         "node": ">= 20"
     },
-    "packageManager": "pnpm@10.12.1",
+    "packageManager": "pnpm@10.12.3",
     "devDependencies": {
         "nx": "21.2.1"
     }

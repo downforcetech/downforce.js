@@ -4,22 +4,22 @@ set -e
 set -u
 
 case $(dirname "$0") in
-  /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
-  *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
+    /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
+    *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
 esac
 
 if test $# -eq 0; then
-  set -- "$(cd "$Dir/../.." && pwd)"
+    set -- "$(cd "$Dir/../.." && pwd)"
 fi
 
 echo 'Cleaning TypeScript tsbuildinfo'
 for dir; do
-  echo "• $dir"
+    echo "• $dir"
 
-  find "$dir" \
-    \( -name 'tsbuildinfo' -o -name '.tsbuildinfo' -o -name '*.tsbuildinfo' \) \
-    -not -path '*/node_modules/*' \
-    -print -exec rm "{}" + \
-  | sed -e 's/^/│ /'
+    find "$dir" \
+        \( -name 'tsbuildinfo' -o -name '.tsbuildinfo' -o -name '*.tsbuildinfo' \) \
+        -not -path '*/node_modules/*' \
+        -print -exec rm "{}" + \
+    | sed -e 's/^/│ /'
 done
 echo '└─ done'

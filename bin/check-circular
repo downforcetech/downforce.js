@@ -1,62 +1,76 @@
 #!/usr/bin/env sh
 
-# USAGE
 ################################################################################
-# With=dpdm|madge|skott check-circular <dpdm|madge|skott-args>
+# Detects circular dependencies.
 ################################################################################
 
 set -e
 set -u
 
 case $(dirname "$0") in
-  /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
-  *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
+    /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
+    *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
 esac
 
-: ${With:=dpdm}
+usage() {
+    echo
+    echo "USAGE: $(basename "$0") --help,-h"
+    echo "USAGE: $(basename "$0") dpdm|madge|skott [ -- ] [ <dpdm-args|madge-args|skott-args> ]"
+    echo
+    echo "  $(basename "$0") dpdm --tsconfig ./tsconfig.json --context ./ts/ ./ts/main.ts"
+    echo "  $(basename "$0") dpdm --tsconfig ./tsconfig.json --context ./ts/ --transform ./ts/main.ts"
+    echo "  $(basename "$0") dpdm --tsconfig ./tsconfig.json --context ./ts/ './ts/**/*.ts'"
+    echo "  $(basename "$0") dpdm --tsconfig ./tsconfig.json --context ./ts/ --detect-unused-files-from './ts/**/*.ts' ./ts/main.ts"
+    echo
+    echo "  $(basename "$0") madge ./ts/main.ts"
+    echo "  $(basename "$0") madge --orphans './ts/**/*.ts'"
+    echo "  $(basename "$0") madge --leaves './ts/**/*.ts'"
+    echo
+    echo "  $(basename "$0") skott --displayMode raw ./ts/main.ts"
+    echo "  $(basename "$0") skott --displayMode graph ./ts/main.ts"
+    echo "  $(basename "$0") skott --displayMode raw --tsconfig ./tsconfig.json"
+    echo "  $(basename "$0") skott --displayMode raw --showUnusedFiles --tsconfig ./tsconfig.json --cwd ./ts/"
+    echo "  $(basename "$0") skott --displayMode raw --showUnusedDependencies --trackBuiltinDependencies --trackThirdPartyDependencies --tsconfig ./tsconfig.json --manifest ./package.json"
+    echo
+}
 
-arg_reset=no
-if test ${1:-} = '--'; then
-  arg_reset=yes
+if test $# -lt 1; then
+    usage
+    exit 1
 fi
 
-echo "USAGE: With=dpdm check-circular <dpdm-args>"
-echo "USAGE: With=madge check-circular <madge-args>"
-echo "USAGE: With=skott check-circular <skott-args>"
-echo
+case $1 in
+    --help|-h) shift; usage; exit 0
+    ;;
+esac
 
-case $With in
-  dpdm)
-    echo "USAGE ARGS: --tsconfig ./tsconfig.json --context ./ts/ ./ts/main.ts"
-    echo "USAGE ARGS: --tsconfig ./tsconfig.json --context ./ts/ --transform ./ts/main.ts"
-    echo "USAGE ARGS: --tsconfig ./tsconfig.json --context ./ts/ './ts/**/*.ts'"
-    echo "USAGE ARGS: --tsconfig ./tsconfig.json --context ./ts/ --detect-unused-files-from './ts/**/*.ts' ./ts/main.ts"
-    echo
-    if test $arg_reset = no; then
-      set -- --exit-code circular:1 --no-tree --no-warning "$@"
-    fi
-    exec npx --yes dpdm@latest "$@"
-  ;;
-  madge)
-    echo "USAGE ARGS: ./ts/main.ts"
-    echo "USAGE ARGS: --orphans './ts/**/*.ts'"
-    echo "USAGE ARGS: --leaves './ts/**/*.ts'"
-    echo
-    if test $arg_reset = no; then
-      set -- --circular "$@"
-    fi
-    exec npx --yes madge@latest "$@"
-  ;;
-  skott)
-    echo "USAGE ARGS: --displayMode raw ./ts/main.ts"
-    echo "USAGE ARGS: --displayMode graph ./ts/main.ts"
-    echo "USAGE ARGS: --displayMode raw --tsconfig ./tsconfig.json"
-    echo "USAGE ARGS: --displayMode raw --showUnusedFiles --tsconfig ./tsconfig.json --cwd ./ts/"
-    echo "USAGE ARGS: --displayMode raw --showUnusedDependencies --trackBuiltinDependencies --trackThirdPartyDependencies --tsconfig ./tsconfig.json --manifest ./package.json"
-    echo
-    if test $arg_reset = no; then
-      set -- --showCircularDependencies --trackTypeOnlyDependencies --exitCodeOnCircularDependencies 1 "$@"
-    fi
-    exec npx --yes skott@latest "$@"
-  ;;
+arg_reset=no
+arg_adapter=$1
+shift
+
+case ${1:-} in
+    --) arg_reset=yes; shift
+    ;;
+esac
+
+case $arg_adapter in
+    dpdm)
+        if test $arg_reset = no; then
+            set -- --exit-code circular:1 --no-tree --no-warning "$@"
+        fi
+        exec npx --yes dpdm@latest "$@"
+    ;;
+    madge)
+        if test $arg_reset = no; then
+            set -- --circular "$@"
+        fi
+        exec npx --yes madge@latest "$@"
+    ;;
+    skott)
+        if test $arg_reset = no; then
+            set -- --showCircularDependencies --trackTypeOnlyDependencies --exitCodeOnCircularDependencies 1 "$@"
+        fi
+        exec npx --yes skott@latest "$@"
+    ;;
+    *) usage; exit 2
 esac
