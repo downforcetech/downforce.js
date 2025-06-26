@@ -1,4 +1,4 @@
-import type {Io} from '../fn.js'
+import type {Io} from '../fn/fn-type.js'
 import {isNone, isSome} from './optional-is.js'
 import type {None} from './optional-type.js'
 

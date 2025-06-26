@@ -1,4 +1,4 @@
-import {times} from './iter.js'
+import {times} from './iter/iter-mix.js'
 
 export function randomInt(minOptional?: undefined | number, maxOptional?: undefined | number): number {
     const min = minOptional ?? 0

@@ -1,5 +1,6 @@
 export * from './object/object-assert.js'
 export * from './object/object-clone.js'
+export * from './object/object-currying.js'
 export * from './object/object-ensure.js'
 export * from './object/object-equal.js'
 export * from './object/object-is.js'

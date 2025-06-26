@@ -1,5 +1,6 @@
-import type {Io} from '../fn.js'
-import {isSome, type SomeOf} from '../optional.js'
+import type {Io} from '../fn/fn-type.js'
+import {isSome} from '../optional/optional-is.js'
+import type {SomeOf} from '../optional/optional-type.js'
 import {isArray} from './array-is.js'
 
 // export function arrayWrap<V, I>(value: V | readonly I[]): [V] | readonly I[]

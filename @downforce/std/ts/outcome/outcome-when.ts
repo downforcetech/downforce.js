@@ -1,4 +1,4 @@
-import type {Io} from '../fn.js'
+import type {Io} from '../fn/fn-type.js'
 import {isError} from './outcome-is.js'
 import type {OutcomeResultOrError} from './outcome-type.js'
 

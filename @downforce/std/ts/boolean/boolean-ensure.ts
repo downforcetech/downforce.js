@@ -1,5 +1,5 @@
 import {createEnsureOptional, formatEnsureInvalidTypeMessage} from '../ensure.js'
-import {throwInvalidType} from '../error.js'
+import {throwInvalidType} from '../error/error-new.js'
 import {isBoolean} from './boolean-is.js'
 
 /**

@@ -1,12 +1,12 @@
-import {areEqualIdentity} from '../struct.js'
-import type {ReactiveObserver, ReactiveOptions, ReactiveProtocol} from './reactive-type.js'
+import {areEqualIdentity} from '../struct/struct-equal.js'
+import type {ReactiveObserver, ReactiveOptions, ReactiveObject} from './reactive-type.js'
 
 export const ReactiveStateSymbol: unique symbol = Symbol('ReactiveState')
 
 export function createReactive<V>(
     value: V,
     options?: undefined | ReactiveOptions<NoInfer<V>>,
-): ReactiveProtocol<V> {
+): ReactiveObject<V> {
     return {
         [ReactiveStateSymbol]: {
             value: value,

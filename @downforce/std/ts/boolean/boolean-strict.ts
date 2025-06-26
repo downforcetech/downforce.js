@@ -1,4 +1,4 @@
-import type {None} from '../optional.js'
+import type {None} from '../optional/optional-type.js'
 import {trustBoolean, trustBooleanLike} from './boolean-trust.js'
 
 export function strictBoolean(value: None | boolean): undefined | boolean {

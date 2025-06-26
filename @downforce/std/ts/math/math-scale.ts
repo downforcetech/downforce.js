@@ -1,39 +1,31 @@
-import type {Io} from '../fn.js'
+import type {Io} from '../fn/fn-type.js'
+import {clamp} from '../number/number-mix.js'
 
-/**
-* The linear scale returns NaN if input/output interval has same start and end values.
-*/
-export function createLinearScale(inputInterval: [number, number], outputInterval: [number, number]): Io<number, number> {
-    const [inputStart, inputEnd] = inputInterval
-    const [outputStart, outputEnd] = outputInterval
+export function createScaleLinear(
+    inputRange: [number, number],
+    outputRange: [number, number],
+): Io<number, number> {
+    const [inputRangeStart, inputRangeEnd] = inputRange
+    const [outputRangeStart, outputRangeEnd] = outputRange
 
-    function map(inputValue: number) {
-        // InputInterval:   2     8
-        //                  [-*---]
-        // InputValue:        4
-        //                     \ * -3.3
-        // OutputValue:         -3.1
-        // OutputInterval: [------*-----------]
-        //                 -10                10
-        const inputDistance = distanceBetween(inputStart, inputEnd) // 2, 8 = 6
-        const outputDistance = distanceBetween(outputStart, outputEnd) // 10, -10 = 20
-        const inputValueDistance = distanceBetween(inputStart, inputValue) // 2, 4 = 2
-        const scaleDirection = directionOf(outputStart, outputEnd) // 10, -10 = -1
-        const scaleFactor = outputDistance / inputDistance // 20 / 6 = 3.3
-        const scale = scaleFactor * scaleDirection // 3.3 * -1 = -3.3
-        const outputValueDistance = inputValueDistance * scale // 2 * -3.3 = -6.6
-        const outputValue = outputStart + outputValueDistance // 10 + -6.6 = 3.4
+    function map(inputUnbound: number) {
+        const input = clamp(inputRangeStart, inputUnbound, inputRangeEnd)
+        const inputRangeDistance = Math.abs(inputRangeStart - inputRangeEnd)
+        const outputRangeDistance = Math.abs(outputRangeStart - outputRangeEnd)
 
-        return outputValue
+        if (outputRangeDistance === 0) {
+            return outputRangeStart
+        }
+        if (inputRangeDistance === 0) {
+            return Infinity
+        }
+
+        const inputRatio = Math.abs(inputRangeStart - input) / inputRangeDistance
+        const outputRangeDirection = Math.sign(outputRangeEnd - outputRangeStart)
+        const output = outputRangeStart + outputRangeDirection * (inputRatio * outputRangeDistance)
+
+        return output
     }
 
     return map
-}
-
-export function distanceBetween(x1: number, x2: number): number {
-    return Math.abs(x1 - x2)
-}
-
-export function directionOf(x1: number, x2: number): number {
-    return x1 < x2 ? 1 : -1
 }

@@ -1,4 +1,4 @@
-import type {None} from '../optional.js'
+import type {None} from '../optional/optional-type.js'
 import {trustInteger, trustIntegerLike, trustNumber, trustNumberLike} from './number-trust.js'
 
 export function strictNumber<const V extends number>(value: None | V): undefined | V {

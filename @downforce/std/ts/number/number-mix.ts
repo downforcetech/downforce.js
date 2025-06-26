@@ -1,4 +1,5 @@
-import {isDefined, isUndefined, type None} from '../optional.js'
+import {isDefined, isUndefined} from '../optional/optional-is.js'
+import type {None} from '../optional/optional-type.js'
 import {strictIntegerLike, strictNumberLike} from './number-strict.js'
 
 export function asNumber(value: None | number | string): undefined | number {
@@ -16,7 +17,10 @@ export function isBetween(a: number, value: number, b: number): boolean {
     )
 }
 
-export function clamp(min: number, value: number, max: number): number {
+export function clamp(from: number, value: number, to: number): number {
+    const min = Math.min(from, to)
+    const max = Math.max(from, to)
+
     return Math.min(max, Math.max(min, value))
 }
 

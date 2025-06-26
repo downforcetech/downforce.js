@@ -1,5 +1,5 @@
-import {isArray} from '../array.js'
-import {isObject} from '../object.js'
+import {isArray} from '../array/array-is.js'
+import {isObject} from '../object/object-is.js'
 
 export function cloneShallow<T>(value: T): T {
     if (isArray(value)) {

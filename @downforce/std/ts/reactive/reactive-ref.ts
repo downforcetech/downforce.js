@@ -1,8 +1,8 @@
-import type {Task} from '../fn.js'
-import type {ValueRef} from '../store.js'
+import type {Task} from '../fn/fn-type.js'
+import type {ValueRef} from '../store/store-ref.js'
 import {readReactive, watchReactive, writeReactive} from './reactive-mix.js'
 import {createReactive} from './reactive-new.js'
-import type {ReactiveObserver, ReactiveOptions, ReactiveProtocol, ReactiveWatchOptions} from './reactive-type.js'
+import type {ReactiveObserver, ReactiveOptions, ReactiveObject, ReactiveWatchOptions} from './reactive-type.js'
 
 export function createReactiveRef<V>(
     value: V,
@@ -36,6 +36,6 @@ export function createReactiveRef<V>(
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface ReactiveRef<V> extends ValueRef<V>, ReactiveProtocol<V> {
+export interface ReactiveRef<V> extends ValueRef<V>, ReactiveObject<V> {
     watch(observer: ReactiveObserver<V>, options?: undefined | ReactiveWatchOptions): Task
 }

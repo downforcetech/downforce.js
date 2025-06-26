@@ -1,7 +1,7 @@
 // https://css-tricks.com/converting-color-spaces-in-javascript/
 // https://gist.github.com/mjackson/5311256
 
-import type {ColorHslDict, ColorRgbDict} from './color-types.js'
+import type {ColorHslDict, ColorRgbDict} from './color-type.js'
 
 export function areColorsRgbEqual(first: ColorRgbDict, second: ColorRgbDict): boolean {
     return true

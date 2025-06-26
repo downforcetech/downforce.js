@@ -1,16 +1,17 @@
-import {arrayWrap} from '../array.js'
-import {identity, type Io} from '../fn.js'
+import {arrayWrap} from '../array/array-mix.js'
+import {identity} from '../fn/fn-return.js'
+import type {Io} from '../fn/fn-type.js'
 import {consoleLog} from './console-mix.js'
 import type {ConsoleLogType} from './console-type.js'
 
-export function consoleLogTo<V>(
+export function consoleLogging<I>(
     typeOptional?: undefined | ConsoleLogType,
-    formatOptional?: undefined | Io<V, unknown>,
-): Io<V, V> {
+    formatOptional?: undefined | Io<I, unknown>,
+): Io<I, I> {
     const type: ConsoleLogType = typeOptional ?? 'log'
     const format = formatOptional ?? identity
 
-    function chainLog(input: V): V {
+    function chainLog(input: I): I {
         const logArgs = arrayWrap(format(input))
 
         consoleLog(type, ...logArgs)

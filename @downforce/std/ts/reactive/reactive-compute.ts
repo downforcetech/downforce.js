@@ -1,11 +1,11 @@
-import {call} from '../fn/fn-call.js'
 import {scheduleMicroTask} from '../eventloop.js'
-import type {Task} from '../fn.js'
+import {call} from '../fn/fn-call.js'
+import type {Task} from '../fn/fn-type.js'
 import {readReactive, watchReactive, writeReactive} from './reactive-mix.js'
 import {createReactive} from './reactive-new.js'
-import type {ReactiveOptions, ReactiveProtocol, ReactiveValuesOf} from './reactive-type.js'
+import type {ReactiveOptions, ReactiveObject, ReactiveValuesOf} from './reactive-type.js'
 
-export function createReactiveComputed<A extends Array<ReactiveProtocol<any>>, V>(
+export function createReactiveComputed<A extends Array<ReactiveObject<any>>, V>(
     reactives: readonly [...A],
     computer: (...args: ReactiveValuesOf<A>) => V,
     options?: undefined | ReactiveOptions<V>,
@@ -58,7 +58,7 @@ export function createReactiveComputed<A extends Array<ReactiveProtocol<any>>, V
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface ReactiveComputed<V> extends ReactiveProtocol<V> {
+export interface ReactiveComputed<V> extends ReactiveObject<V> {
     get value(): V
     read(): V
     clean(): void

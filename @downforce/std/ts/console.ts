@@ -1,3 +1,4 @@
+export * from './console/console-currying.js'
 export * from './console/console-kit.js'
 export * from './console/console-mix.js'
 export * from './console/console-new.js'

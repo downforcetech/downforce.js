@@ -22,11 +22,3 @@ export function returnTrue(): true {
 export function returnFalse(): false {
     return false
 }
-
-export function returningValue<V>(value: V): () => V {
-    return () => value
-}
-
-export function returningVoid(fn: () => any): () => void {
-    return () => void fn()
-}

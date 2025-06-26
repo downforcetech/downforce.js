@@ -1,6 +1,6 @@
 import {isArray} from '../array/array-is.js'
 import {isBoolean} from '../boolean/boolean-is.js'
-import {isDate, isDateString} from '../date/date-is.js'
+import {isDate} from '../date/date-is.js'
 import {isEnum} from '../enum/enum-is.js'
 import {isFunction} from '../fn/fn-is.js'
 import {isIterator} from '../iter/iter-is.js'
@@ -17,7 +17,6 @@ export const TypeIs: {
     isArray: typeof isArray
     isBoolean: typeof isBoolean
     isDate: typeof isDate
-    isDateString: typeof isDateString
     isDefined: typeof isDefined
     isEnum: typeof isEnum
     isError: typeof isError
@@ -41,7 +40,6 @@ export const TypeIs: {
     isArray: isArray,
     isBoolean: isBoolean,
     isDate: isDate,
-    isDateString: isDateString,
     isDefined: isDefined,
     isEnum: isEnum,
     isError: isError,

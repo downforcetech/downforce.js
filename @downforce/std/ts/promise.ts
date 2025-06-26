@@ -1,5 +1,6 @@
 export * from './promise/promise-clone.js'
+export * from './promise/promise-currying.js'
 export * from './promise/promise-is.js'
 export * from './promise/promise-mix.js'
+export * from './promise/promise-new.js'
 export * from './promise/promise-type.js'
-export * from './promise/promise-when.js'

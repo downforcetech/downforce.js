@@ -1,6 +1,7 @@
-import {identity} from '../fn.js'
-import {createMonad} from '../monad.js'
-import {OutcomeErrorMonadTag, type OutcomeError, type OutcomeResultOrError} from './outcome-type.js'
+import {identity} from '../fn/fn-return.js'
+import {createMonad} from '../monad/monad-new.js'
+import {OutcomeErrorMonadTag} from './outcome-tag.js'
+import type {OutcomeError, OutcomeResultOrError} from './outcome-type.js'
 
 export function ResultOrError<V>(promise: Promise<V>): Promise<OutcomeResultOrError<V, unknown>> {
     return promise.then(identity, Error)

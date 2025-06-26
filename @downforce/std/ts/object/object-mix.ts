@@ -1,6 +1,6 @@
-import type {Fn, Io} from '../fn.js'
-import {isDefined, isUndefined} from '../optional.js'
-import type {ObjectComplete, Prettify} from '../type.js'
+import type {Fn, Io} from '../fn/fn-type.js'
+import {isDefined, isUndefined} from '../optional/optional-is.js'
+import type {ObjectComplete, Prettify} from '../type/type-type.js'
 
 export function isObjectEmpty(object: object): boolean {
     for (const it in object) {

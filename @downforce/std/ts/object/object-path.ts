@@ -1,4 +1,5 @@
-import {isArray, lastOf} from '../array.js'
+import {isArray} from '../array/array-is.js'
+import {lastOf} from '../array/array-mix.js'
 import {isObject} from './object-is.js'
 
 export function getObjectPath(root: ObjectRoot, path: ObjectPath): unknown {

@@ -1,6 +1,6 @@
-import {isBetween} from '../number.js'
-import {isDefined} from '../optional.js'
-import {isString} from '../string.js'
+import {isBetween} from '../number/number-mix.js'
+import {isDefined} from '../optional/optional-is.js'
+import {isString} from '../string/string-is.js'
 import {strictDate} from './date-strict.js'
 import type {DateNumber} from './date-type.js'
 
@@ -22,8 +22,18 @@ export function dateNow(): Date {
     return new Date()
 }
 
+export function isDateString(value: unknown): value is string {
+    if (! value || ! isString(value) || ! Boolean(Date.parse(value))) {
+        return false
+    }
+    return true
+}
+
 export function isDateStringIsoUtc(value: string): boolean {
     if (! isString(value)) {
+        return false
+    }
+    if (! isDateString(value)) {
         return false
     }
 

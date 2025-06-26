@@ -1,5 +1,5 @@
-import {isBoolean} from '../boolean.js'
-import {isNumber} from '../number.js'
+import {isBoolean} from '../boolean/boolean-is.js'
+import {isNumber} from '../number/number-is.js'
 import {isString} from './string-is.js'
 
 export function trustString(value: unknown): undefined | string {

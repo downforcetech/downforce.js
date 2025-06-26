@@ -1,7 +1,10 @@
-import {isArray} from './array.js'
+import {isArray} from './array/array-is.js'
 import {scheduleMicroTask} from './eventloop.js'
-import {call, type FnArgs, type Task} from './fn.js'
-import {createReactive, readReactive, writeReactive, type ReactiveProtocol} from './reactive.js'
+import {call} from './fn/fn-call.js'
+import type {FnArgs, Task} from './fn/fn-type.js'
+import {readReactive, writeReactive} from './reactive/reactive-mix.js'
+import {createReactive} from './reactive/reactive-new.js'
+import type {ReactiveObject} from './reactive/reactive-type.js'
 
 export const BusEventRegexpCache: Record<BusEventPattern, RegExp> = {}
 
@@ -161,7 +164,7 @@ export interface Bus {
 export type BusEvent = string
 export type BusEventPattern = string
 export type BusEventObserver<P = unknown> = (event: BusEventPattern, matches: RegExpMatchArray, payload: P) => void
-export type BusEventObservers = ReactiveProtocol<Record<BusEventPattern, Array<BusEventObserver>>>
+export type BusEventObservers = ReactiveObject<Record<BusEventPattern, Array<BusEventObserver>>>
 
 export type BusEventPolymorphicArgs =
     | [event: BusEvent, payload?: unknown]

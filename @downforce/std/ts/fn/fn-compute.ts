@@ -1,4 +1,5 @@
-import {isFunction, type Fn, type FnArgs} from '../fn.js'
+import {isFunction} from './fn-is.js'
+import type {Fn, FnArgs} from './fn-type.js'
 
 export function compute<T, A extends Array<unknown>>(computable: Computable<T, A>, ...args: A): T {
     return isFunction(computable)

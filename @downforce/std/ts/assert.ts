@@ -1,5 +1,5 @@
+import {throwInvalidCondition} from './error/error-new.js'
 import {compute} from './fn/fn-compute.js'
-import {throwInvalidCondition} from './error.js'
 
 /**
 * @throws Error

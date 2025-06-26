@@ -1,4 +1,5 @@
-import {noop, type Task} from '../fn.js'
+import {noop} from '../fn/fn-return.js'
+import type {Task} from '../fn/fn-type.js'
 
 export function createTaskRepeater(
     task: () => void,

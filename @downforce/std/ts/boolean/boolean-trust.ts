@@ -1,4 +1,4 @@
-import {isString} from '../string.js'
+import {isString} from '../string/string-is.js'
 import {isBoolean} from './boolean-is.js'
 
 export const BooleanLikeTrue = [true, 1, '1', 'yes', 'on', 'true'] as const

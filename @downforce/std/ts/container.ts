@@ -1,4 +1,4 @@
-import {ensureDefined} from './optional.js'
+import {ensureDefined} from './optional/optional-ensure.js'
 
 export const ContainerInternalsKey: unique symbol = Symbol('ContainerInternals')
 

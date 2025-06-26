@@ -1,4 +1,4 @@
-import type {Logger, LoggerArgs} from '../log.js'
+import type {Logger, LoggerArgs} from '../log/log-type.js'
 import type {ConsoleLogType} from './console-type.js'
 
 export class ConsoleLogger<R> {

@@ -1,4 +1,4 @@
-import type {None} from '../optional.js'
+import type {None} from '../optional/optional-type.js'
 import {trustString, trustStringLike, trustStringNotEmpty} from './string-trust.js'
 
 export function strictString<const V extends string>(value: None | V): undefined | V {

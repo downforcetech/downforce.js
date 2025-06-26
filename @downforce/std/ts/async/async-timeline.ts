@@ -1,7 +1,8 @@
-import {isArray} from '../array.js'
-import {throwInvalidArgument} from '../error.js'
-import {isFunction, type TaskAsync} from '../fn.js'
-import {isObject} from '../object.js'
+import {isArray} from '../array/array-is.js'
+import {throwInvalidArgument} from '../error/error-new.js'
+import {isFunction} from '../fn/fn-is.js'
+import type {TaskAsync} from '../fn/fn-type.js'
+import {isObject} from '../object/object-is.js'
 
 export async function runAsyncTimeline(timeline: AsyncTimelineMixed): Promise<unknown> {
     if (isFunction(timeline)) {

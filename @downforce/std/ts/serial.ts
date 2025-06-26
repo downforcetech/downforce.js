@@ -1,11 +1,11 @@
-import {arrayWrap, assertArray, isArray} from './array.js'
-import {isBoolean} from './boolean.js'
-import {asDate} from './date.js'
-import {isNumber} from './number.js'
-import {getObjectPath, isObject, mapObjectValue, setObjectPath, type ObjectPath} from './object.js'
-import {assertDefined, isNone, type None} from './optional.js'
-import {isString} from './string.js'
-import {isSymbol} from './symbol.js'
+import {assertArray} from './array/array-assert.js'
+import {isArray} from './array/array-is.js'
+import {arrayWrap} from './array/array-mix.js'
+import {asDate} from './date/date-mix.js'
+import {isPrimitive} from './mix/mix-is.js'
+import {isObject} from './object/object-is.js'
+import {getObjectPath, setObjectPath, type ObjectPath} from './object/object-path.js'
+import {assertDefined} from './optional/optional-assert.js'
 
 export const SerialBuiltinCodec: {
     Date: SerialCodec<Date, number>
@@ -103,77 +103,71 @@ export const SerialBuiltinCodec: {
     },
 }
 
-export const SerialBuiltinsCodecsList: Array<SerialCodec> = Object.values(SerialBuiltinCodec)
+export const SerialBuiltinCodecsList: Array<SerialCodec> = Object.values(SerialBuiltinCodec)
 
-export function serializeStruct(
+export async function serializeStruct(
     payload: unknown,
     codecsOptional?: undefined | Array<SerialCodec>,
-): string {
-    const codecs = codecsOptional ?? SerialBuiltinsCodecsList
-    const stack: Array<[ObjectPath, string]> = []
+): Promise<string> {
+    const codecs = codecsOptional ?? SerialBuiltinCodecsList
+    const stack: Array<SerialStackEntry> = []
 
-    const data = visitStruct(payload, {codecs: codecs, path: [], stack: stack})
+    const data = await visitSerializableStruct(payload, {codecs: codecs, path: [], stack: stack})
 
     return serializeAsJson({data: data, meta: stack})
 }
 
-export function visitStruct(value: unknown, ctx: SerialCodecContext): unknown {
-    if (isPrimitive(value)) {
-        return value
+export async function visitSerializableStruct(node: unknown, ctx: SerialCodecContext): Promise<unknown> {
+    if (isPrimitive(node)) {
+        return node
+    }
+    if (isArray(node)) {
+        const list: Array<unknown> = []
+        const listSize = node.length
+
+        for (let idx = 0; idx < listSize; ++idx) {
+            const value = node[idx]
+            const valueSerialized = await visitSerializableStruct(value, {...ctx, path: [...ctx.path, idx]})
+
+            list.push(valueSerialized)
+        }
+
+        return list
     }
     for (const codec of ctx.codecs) {
-        const codecDidMatch = codec.is(value)
+        const codecDidMatch = codec.is(node)
 
         if (! codecDidMatch) {
             continue
         }
 
-        const valueEncoded = codec.encode(value, ctx)
+        const valueEncoded = await codec.encode(node, ctx)
+        const valueEncodedDeep = await visitSerializableStruct(valueEncoded, ctx)
 
-        const valueEncodedDeep = visitStruct(valueEncoded, ctx)
-
-        ctx.stack.push([ctx.path, codec.id])
+        ctx.stack.push([codec.id, ctx.path])
 
         return valueEncodedDeep
     }
-    if (isArray(value)) {
-        return value.map((it, idx) => {
-            return visitStruct(it, {...ctx, path: [...ctx.path, idx]})
-        })
+    if (isObject(node)) {
+        const object: Record<string, unknown> = {...node}
+
+        for (const [key, value] of Object.entries(node)) {
+            // Symbol keys are not supported because not serializable.
+            const valueSerialized = await visitSerializableStruct(value, {...ctx, path: [...ctx.path, key]})
+
+            object[key] = valueSerialized
+        }
+
+        return object
     }
-    if (isObject(value)) {
-        return mapObjectValue(value, (val, key) => {
-            if (isSymbol(key)) {
-                // A key of type Symbol can't be serialized.
-                return val
-            }
-            return visitStruct(val, {...ctx, path: [...ctx.path, key]})
-        })
-    }
-    return value
+    return node
 }
 
-export function isPrimitive(value: unknown): value is None | boolean | SerialCodecId {
-    if (isNone(value)) {
-        return true
-    }
-    if (isBoolean(value)) {
-        return true
-    }
-    if (isNumber(value)) {
-        return true
-    }
-    if (isString(value)) {
-        return true
-    }
-    return false
-}
-
-export function deserializeStruct(
+export async function deserializeStruct(
     payloadSerialized: string,
     codecsOptional?: undefined | Array<SerialCodec>,
-): unknown {
-    const codecs: Array<SerialCodec> = codecsOptional ?? SerialBuiltinsCodecsList
+): Promise<unknown> {
+    const codecs: Array<SerialCodec> = codecsOptional ?? SerialBuiltinCodecsList
 
     const payload: any = deserializeFromJson(payloadSerialized)
     const data = payload?.data
@@ -188,7 +182,7 @@ export function deserializeStruct(
     for (const rule of meta) {
         assertArray(rule)
 
-        const [path, codecId] = rule as [ObjectPath, SerialCodecId]
+        const [codecId, path] = rule as SerialStackEntry
 
         assertArray(path)
         assertDefined(codecId)
@@ -198,7 +192,7 @@ export function deserializeStruct(
         assertDefined(codec)
 
         const valueEncoded = getObjectPath(data, path)
-        const valueDecoded = codec.decode(valueEncoded)
+        const valueDecoded = await codec.decode(valueEncoded)
 
         setObjectPath(data, path, valueDecoded)
     }
@@ -216,17 +210,18 @@ export function deserializeFromJson(payloadSerialized: string): unknown {
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface SerialCodec<T = any, E = any> {
+export interface SerialCodec<T = unknown, E = unknown> {
     id: SerialCodecId
     is(value: unknown): value is T
-    encode(value: T, ctx: SerialCodecContext): E
-    decode(valueEncoded: E): T
+    encode(value: T, ctx: SerialCodecContext): E | Promise<E>
+    decode(valueEncoded: E): T | Promise<T>
 }
 
 export interface SerialCodecContext {
     codecs: Array<SerialCodec>
     path: ObjectPath
-    stack: Array<[ObjectPath, SerialCodecId]>
+    stack: Array<SerialStackEntry>
 }
 
 export type SerialCodecId = number | string
+export type SerialStackEntry = [SerialCodecId, ObjectPath]

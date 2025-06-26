@@ -1,4 +1,4 @@
-import {isArray} from '@downforce/std/array'
+import {isArray} from '../array/array-is.js'
 
 /**
 * EXAMPLE
@@ -30,25 +30,25 @@ import {isArray} from '@downforce/std/array'
 export function streamPromises<T extends Array<Promise<unknown>>>(
     promises: [...T],
     onError?: undefined | ((error: unknown, idx: number) => void),
-): AsyncGenerator<AwaitedListOf<[...T]>, AwaitedListOf<[...T]>, void>
+): AsyncGenerator<AwaitedStreamListOf<[...T]>, AwaitedStreamListOf<[...T]>, void>
 export function streamPromises<T extends Record<string, Promise<unknown>>>(
     promises: T,
     onError?: undefined | ((error: unknown, key: string) => void),
-): AsyncGenerator<AwaitedDictOf<T>, AwaitedDictOf<T>, void>
+): AsyncGenerator<AwaitedStreamDictOf<T>, AwaitedStreamDictOf<T>, void>
 export function streamPromises<T extends Array<Promise<unknown>> | Record<string, Promise<unknown>>>(
     promises: T,
     onError?: undefined | ((error: unknown, idxOrKey: number | string | any) => void),
-): AsyncGenerator<AwaitedOf<T>, AwaitedOf<T>, void> {
+): AsyncGenerator<AwaitedStreamOf<T>, AwaitedStreamOf<T>, void> {
     if (isArray(promises)) {
-        return streamPromisesList(promises, onError) as AsyncGenerator<AwaitedOf<T>, AwaitedOf<T>, void>
+        return streamPromisesList(promises, onError) as AsyncGenerator<AwaitedStreamOf<T>, AwaitedStreamOf<T>, void>
     }
-    return streamPromisesDict(promises, onError) as AsyncGenerator<AwaitedOf<T>, AwaitedOf<T>, void>
+    return streamPromisesDict(promises, onError) as AsyncGenerator<AwaitedStreamOf<T>, AwaitedStreamOf<T>, void>
 }
 
 export async function* streamPromisesDict<T extends Record<string, Promise<unknown>>>(
     promises: T,
     onError?: undefined | ((error: unknown, key: string) => void),
-): AsyncGenerator<AwaitedDictOf<T>, AwaitedDictOf<T>, void> {
+): AsyncGenerator<AwaitedStreamDictOf<T>, AwaitedStreamDictOf<T>, void> {
     const results: Record<string, unknown> = {}
     const queue: Set<Promise<unknown>> = new Set(Object.values(promises))
 
@@ -70,16 +70,16 @@ export async function* streamPromisesDict<T extends Record<string, Promise<unkno
     while (queue.size > 0) {
         await Promise.race(queue)
 
-        yield {...results} as AwaitedDictOf<T>
+        yield {...results} as AwaitedStreamDictOf<T>
     }
 
-    return results as AwaitedDictOf<T>
+    return results as AwaitedStreamDictOf<T>
 }
 
 export async function* streamPromisesList<T extends Array<Promise<unknown>>>(
     promises: [...T],
     onError?: undefined | ((error: unknown, idx: number) => void),
-): AsyncGenerator<AwaitedListOf<[...T]>, AwaitedListOf<[...T]>, void> {
+): AsyncGenerator<AwaitedStreamListOf<[...T]>, AwaitedStreamListOf<[...T]>, void> {
     const results: Array<unknown> = []
     const queue: Set<Promise<unknown>> = new Set(promises)
 
@@ -101,19 +101,19 @@ export async function* streamPromisesList<T extends Array<Promise<unknown>>>(
     while (queue.size > 0) {
         await Promise.race(queue)
 
-        yield [...results] as AwaitedListOf<[...T]>
+        yield [...results] as AwaitedStreamListOf<[...T]>
     }
 
-    return results as AwaitedListOf<[...T]>
+    return results as AwaitedStreamListOf<[...T]>
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export type AwaitedOf<T extends Record<string, Promise<unknown>> | Array<Promise<unknown>>> =
+export type AwaitedStreamOf<T extends Record<string, Promise<unknown>> | Array<Promise<unknown>>> =
     T extends Array<Promise<unknown>>
-        ? AwaitedListOf<T>
+        ? AwaitedStreamListOf<T>
     : T extends Record<string, Promise<unknown>>
-        ? AwaitedDictOf<T>
+        ? AwaitedStreamDictOf<T>
     : never
-export type AwaitedDictOf<T extends Record<string, Promise<unknown>>> = {[key in keyof T]: undefined | Awaited<T[key]>}
-export type AwaitedListOf<T extends Array<Promise<unknown>>> = {[key in keyof T]: undefined | Awaited<T[key]>} & {length: T['length']}
+export type AwaitedStreamDictOf<T extends Record<string, Promise<unknown>>> = {[key in keyof T]: undefined | Awaited<T[key]>}
+export type AwaitedStreamListOf<T extends Array<Promise<unknown>>> = {[key in keyof T]: undefined | Awaited<T[key]>} & {length: T['length']}

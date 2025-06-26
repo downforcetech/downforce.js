@@ -1,4 +1,4 @@
-import {isFunction} from '../fn.js'
+import {isFunction} from '../fn/fn-is.js'
 
 export function isIterator(value: unknown): value is
     | Iterator<unknown, unknown, unknown>

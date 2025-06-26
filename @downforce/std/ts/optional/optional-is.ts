@@ -1,4 +1,4 @@
-import type {None} from './optional-type.js'
+import type {None, SomeOf} from './optional-type.js'
 
 export function isDefined<V>(value: void | undefined | V): value is V {
     return ! isUndefined(value)
@@ -20,7 +20,3 @@ export function isSome<V>(value: V): value is SomeOf<V> {
 export function isUndefined(value: unknown): value is undefined {
     return value === void undefined
 }
-
-// Types ///////////////////////////////////////////////////////////////////////
-
-export type SomeOf<V> = V extends {} ? V : (V & {})

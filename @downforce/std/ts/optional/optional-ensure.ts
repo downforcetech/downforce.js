@@ -1,5 +1,5 @@
 import {formatEnsureInvalidTypeMessage} from '../ensure.js'
-import {throwInvalidType} from '../error.js'
+import {throwInvalidType} from '../error/error-new.js'
 import {isDefined, isSome, isUndefined} from './optional-is.js'
 import type {None} from './optional-type.js'
 

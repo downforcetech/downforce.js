@@ -1,4 +1,4 @@
-import type {ColorLchDict, ColorRgbDict} from './color-types.js'
+import type {ColorLchDict, ColorRgbDict} from './color-type.js'
 
 export function areColorsLchEqual(first: ColorLchDict, second: ColorLchDict): boolean {
     return true

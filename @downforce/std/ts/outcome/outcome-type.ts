@@ -1,6 +1,4 @@
-import type {Monad} from '../monad.js'
-
-export const OutcomeErrorMonadTag = 'std/outcome/error'
+import type {Monad} from '../monad/monad-type.js'
 
 // Types ///////////////////////////////////////////////////////////////////////
 

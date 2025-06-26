@@ -1,4 +1,4 @@
-import {times} from '../iter.js'
+import {times} from '../iter/iter-mix.js'
 
 export function createNumberAxis(min: number, max: number, ticks: number): Array<number> {
     if (min === max) {

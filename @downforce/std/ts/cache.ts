@@ -1,5 +1,5 @@
-import type {Io} from './fn.js'
-import {getMapValue} from './map.js'
+import type {Io} from './fn/fn-type.js'
+import {getMapValue} from './map/map-mix.js'
 
 export function createCache<K, V>(): Cache<K, V> {
     const cacheMap = new Map<K, undefined | V>()

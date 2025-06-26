@@ -1,4 +1,4 @@
-import type {FnArgs} from './fn.js'
+import type {FnArgs} from './fn/fn-type.js'
 
 export const SortCollatorOptionsDefaults: Intl.CollatorOptions = {
     numeric: true, // '1' < '2' < '10'.

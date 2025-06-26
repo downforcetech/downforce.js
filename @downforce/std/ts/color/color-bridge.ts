@@ -1,7 +1,7 @@
 import {colorHslFromRgb} from './color-hsl.js'
 import {colorLchFromRgb} from './color-lch.js'
 import {colorRgbFromHsl, colorRgbFromRgbHexString, colorRgbToRgbHexString} from './color-rgb.js'
-import type {ColorHslDict, ColorLchDict} from './color-types.js'
+import type {ColorHslDict, ColorLchDict} from './color-type.js'
 
 export function colorHslFromRgbHexString(rgbHexString: string): ColorHslDict {
     return colorHslFromRgb(colorRgbFromRgbHexString(rgbHexString))

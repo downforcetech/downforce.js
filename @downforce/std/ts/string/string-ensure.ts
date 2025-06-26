@@ -1,6 +1,6 @@
 import {createEnsureOptional, formatEnsureInvalidTypeMessage} from '../ensure.js'
-import {throwInvalidType} from '../error.js'
-import type {None} from '../optional.js'
+import {throwInvalidType} from '../error/error-new.js'
+import type {None} from '../optional/optional-type.js'
 import {isString} from './string-is.js'
 
 /**

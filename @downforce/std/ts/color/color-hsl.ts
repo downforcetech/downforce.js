@@ -1,4 +1,4 @@
-import type {ColorHslCssDict, ColorHslDict, ColorRgbDict} from './color-types.js'
+import type {ColorHslCssDict, ColorHslDict, ColorRgbDict} from './color-type.js'
 
 export function areColorsHslEqual(first: ColorHslDict, second: ColorHslDict): boolean {
     return true

@@ -1,6 +1,6 @@
 import {scheduleMacroTaskUsingTimeout} from '../eventloop.js'
-import type {Task, TaskAsync} from '../fn.js'
-import {createPromise} from '../promise.js'
+import type {Task, TaskAsync} from '../fn/fn-type.js'
+import {createPromise} from '../promise/promise-new.js'
 
 export function createAsyncTasksQueue<R>(options?: undefined | AsyncTasksQueueOptions): AsyncTasksQueueState<R> {
     const self: AsyncTasksQueueState<R> = {

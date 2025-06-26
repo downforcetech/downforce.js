@@ -1,6 +1,7 @@
-import {chain, compose, composed, identity, pipe, piped, pipedLazy} from '@downforce/std/fn'
-import {catchErrorTo, catchTo, chainTo, mapErrorTo, mapNoneTo, mapOptionalTo, mapPromiseTo, mapResultOrErrorTo, mapResultTo, mapSomeTo, thenTo, tryCatchTo} from '@downforce/std/fn-to'
-import {Error, type OutcomeError} from '@downforce/std/outcome'
+import {chain, chaining, compose, composed, identity, pipe, piped, pipedLazy, tryingCatching} from '@downforce/std/fn'
+import {matchingNone, matchingOptional, matchingSome} from '@downforce/std/optional'
+import {Error, matchingError, matchingResult, matchingResultOrError, type OutcomeError} from '@downforce/std/outcome'
+import {awaiting, catching, catchingError} from '@downforce/std/promise'
 import {ensureStringNotEmpty} from '@downforce/std/string'
 import {expectType} from '@downforce/std/type'
 import Assert from 'node:assert'
@@ -115,31 +116,39 @@ describe('@downforce/std/fn', (ctx) => {
 
         {
             const actual: Subject | OutcomeError<'VeryTooYoung' | 'Boom'> = piped(undefined as undefined | string)
-                (mapSomeTo((it: string) => it))
-                (chainTo(expectType<undefined | string>))
-                (mapSomeTo(it => ({...subject, name: `Some ${it}`})))
-                (mapNoneTo(it => subject))
-                (mapOptionalTo(it => it, it => subject))
-                (chainTo(expectType<Subject>))
+                (matchingSome((it: string) => it))
+                (chaining(expectType<undefined | string>))
+                (matchingSome(it => ({...subject, name: `Some ${it}`})))
+                (matchingNone(it => subject))
+                (matchingOptional(it => it, it => subject))
+                (chaining(expectType<Subject>))
                 (it => it.age >= 18 ? it : Error('TooYoung'))
-                (mapResultOrErrorTo(identity, Error))
-                (mapResultOrErrorTo(
+                (matchingResultOrError(identity, Error))
+                (matchingResultOrError(
                     it => (expectType<Subject>(it), ensureStringNotEmpty(it.name), it),
                     error => (expectType<string>(error), Error(`Very${ensureStringNotEmpty(error)}`)),
                 ))
-                (tryCatchTo(
-                    mapResultTo(it => (ensureStringNotEmpty(it.name), it)),
+                (tryingCatching(
+                    matchingResult(
+                        it => (ensureStringNotEmpty(it.name), it),
+                    ),
                     error => Error('Boom'),
                 ))
-                (mapResultOrErrorTo(
+                // (mappingResult(
+                //     tringCatching(
+                //         it => (ensureStringNotEmpty(it.name), it),
+                //         error => Error('Boom'),
+                //     ),
+                // ))
+                (matchingResultOrError(
                     it => expectType<Subject>(it),
                     error => Error(expectType<'VeryTooYoung' | 'Boom'>(error)),
                 ))
-                (mapResultTo(it => it))
-                (mapErrorTo(error => Error(error)))
+                (matchingResult(it => it))
+                (matchingError(error => Error(error)))
                 (identity)
                 (expectType<Subject | OutcomeError<'VeryTooYoung' | 'Boom'>>)
-                (chainTo(it => expectType<Subject | OutcomeError<'VeryTooYoung' | 'Boom'>>(it)))
+                (chaining(it => expectType<Subject | OutcomeError<'VeryTooYoung' | 'Boom'>>(it)))
             ()
 
             Assert.strictEqual(actual, subject)
@@ -147,16 +156,16 @@ describe('@downforce/std/fn', (ctx) => {
 
         {
             const actual: Subject | OutcomeError<'SomeError'> = await piped(Promise.resolve(subject))
-                (mapPromiseTo(identity, Error))
-                (thenTo(identity))
-                (thenTo(identity, Error))
+                (awaiting(identity, Error))
+                (awaiting(identity))
+                (awaiting(identity, Error))
                 (expectType<Promise<Subject | OutcomeError<unknown>>>)
-                (thenTo(expectType<Subject | OutcomeError<unknown>>))
-                (catchTo(Error))
-                (catchErrorTo()) // Same of catchTo(Error).
-                (catchErrorTo('Error'))
-                (thenTo(mapResultTo(identity)))
-                (thenTo(mapErrorTo(error => Error('SomeError' as const))))
+                (awaiting(expectType<Subject | OutcomeError<unknown>>))
+                (catching(Error))
+                (catchingError()) // Same of catching(Error).
+                (catchingError('Error'))
+                (awaiting(matchingResult(identity)))
+                (awaiting(matchingError(error => Error('SomeError' as const))))
             ()
 
             Assert.deepStrictEqual(actual, subject)
@@ -164,9 +173,9 @@ describe('@downforce/std/fn', (ctx) => {
 
         {
             const actual: undefined | Array<string> = piped(undefined as undefined | Array<undefined | string>)
-                (mapSomeTo(expectType<Array<undefined | string>>))
+                (matchingSome(expectType<Array<undefined | string>>))
                 // @ts-expect-error
-                (mapSomeTo((it: Array<string>) => it))
+                (matchingSome((it: Array<string>) => it))
             ()
         }
     })

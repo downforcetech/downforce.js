@@ -1,8 +1,8 @@
-import {isArray} from './array.js'
+import {isArray} from './array/array-is.js'
 import {compute} from './fn/fn-compute.js'
-import type {Fn, FnArgs} from './fn.js'
-import {areObjectsEqualShallow} from './object.js'
-import type {ValueOf} from './type.js'
+import type {Fn, FnArgs} from './fn/fn-type.js'
+import {areObjectsEqualShallow} from './object/object-equal.js'
+import type {ValueOf} from './type/type-type.js'
 
 export let ReducerUid = 0
 

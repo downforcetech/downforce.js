@@ -1,5 +1,5 @@
-import {isNumber} from '../number.js'
-import {isString} from '../string.js'
+import {isNumber} from '../number/number-is.js'
+import {isString} from '../string/string-is.js'
 import {isDate} from './date-is.js'
 
 export function trustDate(value: unknown): undefined | Date {

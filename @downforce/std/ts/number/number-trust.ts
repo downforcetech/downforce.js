@@ -1,5 +1,5 @@
-import {isDefined} from '../optional.js'
-import {isStringNotEmpty} from '../string.js'
+import {isDefined} from '../optional/optional-is.js'
+import {isStringNotEmpty} from '../string/string-is.js'
 import {isNumber} from './number-is.js'
 
 export function trustNumber(value: unknown): undefined | number {

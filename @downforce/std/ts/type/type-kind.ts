@@ -1,11 +1,10 @@
-import type {Io} from '../fn.js'
+import type {Io} from '../fn/fn-type.js'
 import {TypeIs} from './type-is.js'
 
 export const TypeKind: {
     array: Io<unknown, boolean>
     boolean: Io<unknown, boolean>
     date: Io<unknown, boolean>
-    dateString: Io<unknown, boolean>
     defined: Io<unknown, boolean>
     error: Io<unknown, boolean>
     function: Io<unknown, boolean>
@@ -26,7 +25,6 @@ export const TypeKind: {
     array: TypeIs.isArray,
     boolean: TypeIs.isBoolean,
     date: TypeIs.isDate,
-    dateString: TypeIs.isDateString,
     defined: TypeIs.isDefined,
     error: TypeIs.isError,
     function: TypeIs.isFunction,

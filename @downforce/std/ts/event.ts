@@ -1,5 +1,5 @@
-import type {Fn, FnArgs} from './fn.js'
-import {isDefined, isUndefined} from './optional.js'
+import type {Fn, FnArgs} from './fn/fn-type.js'
+import {isDefined, isUndefined} from './optional/optional-is.js'
 
 export function debounced<A extends FnArgs>(task: Fn<A>, delay: number): EventTask<A> {
     interface State {

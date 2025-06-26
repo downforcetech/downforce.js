@@ -42,14 +42,14 @@ describe('@downforce/std/serial', (ctx) => {
     }]
 
     const dataSerialized = '[{"Hello World":{"1":[null,true,1,946684800000,"/a|b([a-z]+)/","/a|b([a-z]+)/gi",{"map":[["a",946684800000],["b","/a|b([a-z]+)/"],["c","/a|b([a-z]+)/gi"],[1,{"key":"val","date":946684800000,"regexp":"/a|b([a-z]+)/"}],[2,[{"key":"val","date":946684800000,"regexp":"/a|b([a-z]+)/"}]]],"set":[null,true,1,946684800000,"/a|b([a-z]+)/","/a|b([a-z]+)/gi",{"key":"val","date":946684800000,"regexp":"/a|b([a-z]+)/"}]}]}}]'
-    const metaSerialized = '[[[0,"Hello World","1",3],"Date"],[[0,"Hello World","1",4],"RegExp"],[[0,"Hello World","1",5],"RegExp"],[[0,"Hello World","1",6,"map",0,1],"Date"],[[0,"Hello World","1",6,"map",1,1],"RegExp"],[[0,"Hello World","1",6,"map",2,1],"RegExp"],[[0,"Hello World","1",6,"map",3,1,"date"],"Date"],[[0,"Hello World","1",6,"map",3,1,"regexp"],"RegExp"],[[0,"Hello World","1",6,"map",4,1,0,"date"],"Date"],[[0,"Hello World","1",6,"map",4,1,0,"regexp"],"RegExp"],[[0,"Hello World","1",6,"map"],"Map"],[[0,"Hello World","1",6,"set",3],"Date"],[[0,"Hello World","1",6,"set",4],"RegExp"],[[0,"Hello World","1",6,"set",5],"RegExp"],[[0,"Hello World","1",6,"set",6,"date"],"Date"],[[0,"Hello World","1",6,"set",6,"regexp"],"RegExp"],[[0,"Hello World","1",6,"set"],"Set"]]'
+    const metaSerialized = '[["Date",[0,"Hello World","1",3]],["RegExp",[0,"Hello World","1",4]],["RegExp",[0,"Hello World","1",5]],["Date",[0,"Hello World","1",6,"map",0,1]],["RegExp",[0,"Hello World","1",6,"map",1,1]],["RegExp",[0,"Hello World","1",6,"map",2,1]],["Date",[0,"Hello World","1",6,"map",3,1,"date"]],["RegExp",[0,"Hello World","1",6,"map",3,1,"regexp"]],["Date",[0,"Hello World","1",6,"map",4,1,0,"date"]],["RegExp",[0,"Hello World","1",6,"map",4,1,0,"regexp"]],["Map",[0,"Hello World","1",6,"map"]],["Date",[0,"Hello World","1",6,"set",3]],["RegExp",[0,"Hello World","1",6,"set",4]],["RegExp",[0,"Hello World","1",6,"set",5]],["Date",[0,"Hello World","1",6,"set",6,"date"]],["RegExp",[0,"Hello World","1",6,"set",6,"regexp"]],["Set",[0,"Hello World","1",6,"set"]]]'
     const payloadSerialized = `{"data":${dataSerialized},"meta":${metaSerialized}}`
 
-    test('serializeStruct()', (ctx) => {
-        Assert.strictEqual(serializeStruct(data), payloadSerialized)
+    test('serializeStruct()', async (ctx) => {
+        Assert.strictEqual(await serializeStruct(data), payloadSerialized)
     })
 
-    test('deserializeStruct()', (ctx) => {
-        Assert.deepStrictEqual(deserializeStruct(payloadSerialized), data)
+    test('deserializeStruct()', async (ctx) => {
+        Assert.deepStrictEqual(await deserializeStruct(payloadSerialized), data)
     })
 })

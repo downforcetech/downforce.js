@@ -1,4 +1,5 @@
 export * from './array/array-assert.js'
+export * from './array/array-currying.js'
 export * from './array/array-ensure.js'
 export * from './array/array-equal.js'
 export * from './array/array-is.js'

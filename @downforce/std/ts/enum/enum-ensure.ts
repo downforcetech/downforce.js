@@ -1,7 +1,7 @@
-import {ensureArray} from '../array.js'
+import {ensureArray} from '../array/array-ensure.js'
 import {createEnsureOptional, formatEnsureInvalidTypeMessage} from '../ensure.js'
-import {throwInvalidType} from '../error.js'
-import type {None} from '../optional.js'
+import {throwInvalidType} from '../error/error-new.js'
+import type {None} from '../optional/optional-type.js'
 
 /**
 * @throws

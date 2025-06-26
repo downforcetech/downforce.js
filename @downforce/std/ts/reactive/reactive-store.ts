@@ -1,8 +1,8 @@
-import type {Task} from '../fn.js'
+import type {Task} from '../fn/fn-type.js'
 import type {ReadWriteSync} from '../store/store-rw.js'
 import {readReactive, watchReactive, writeReactive} from './reactive-mix.js'
 import {createReactive} from './reactive-new.js'
-import type {ReactiveObserver, ReactiveOptions, ReactiveProtocol, ReactiveWatchOptions} from './reactive-type.js'
+import type {ReactiveObserver, ReactiveOptions, ReactiveObject, ReactiveWatchOptions} from './reactive-type.js'
 
 export function createReactiveStore<V>(
     value: V,
@@ -27,6 +27,6 @@ export function createReactiveStore<V>(
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface ReactiveStore<V> extends ReadWriteSync<V>, ReactiveProtocol<V> {
+export interface ReactiveStore<V> extends ReadWriteSync<V>, ReactiveObject<V> {
     watch(observer: ReactiveObserver<V>, options?: undefined | ReactiveWatchOptions): Task
 }

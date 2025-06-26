@@ -1,4 +1,5 @@
 export * from './optional/optional-assert.js'
+export * from './optional/optional-currying.js'
 export * from './optional/optional-ensure.js'
 export * from './optional/optional-is.js'
 export * from './optional/optional-type.js'

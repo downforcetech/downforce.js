@@ -1,4 +1,5 @@
-import {isSome, whenNone, whenSome} from '@downforce/std/optional'
+import {returningValue} from '@downforce/std/fn'
+import {isSome, whenNone, whenOptional, whenSome} from '@downforce/std/optional'
 import {expectType} from '@downforce/std/type'
 import Assert from 'node:assert'
 import {describe, test} from 'node:test'
@@ -29,28 +30,49 @@ describe('@downforce/std/optional', (ctx) => {
         }
     })
 
+    test('whenOptional()', (ctx) => {
+        {
+            const expected = 123
+            const actual = whenOptional(
+                undefined as undefined | string,
+                expectType<string>,
+                returningValue(expected),
+            )
+
+            expectType<string | number>(actual)
+            Assert.strictEqual(actual, expected)
+        }
+    })
+
     test('whenSome()', (ctx) => {
         {
-            const result = whenSome(undefined as undefined | number, it => String(it))
+            const actual = whenSome(undefined as undefined | string, expectType<string>)
 
-            expectType<undefined | string>(result)
-            Assert.strictEqual(result, undefined)
+            expectType<undefined | string>(actual)
+            Assert.strictEqual(actual, undefined)
         }
 
         {
-            const result = whenSome(subject.name as undefined | string, it => ({title: it}) )
+            const actual = whenSome(undefined as undefined | number, it => String(it))
 
-            expectType<undefined | {title: string}>(result)
-            Assert.deepStrictEqual(result, {title: subject.name})
+            expectType<undefined | string>(actual)
+            Assert.strictEqual(actual, undefined)
+        }
+
+        {
+            const actual = whenSome(subject.name as undefined | string, it => ({title: it}) )
+
+            expectType<undefined | {title: string}>(actual)
+            Assert.deepStrictEqual(actual, {title: subject.name})
         }
     })
 
     test('whenNone()', (ctx) => {
         {
-            const result = whenNone(undefined as undefined | number, it => subject.name)
+            const actual = whenNone(undefined as undefined | number, it => subject.name)
 
-            expectType<undefined | number | string>(result)
-            Assert.strictEqual(result, subject.name)
+            expectType<undefined | number | string>(actual)
+            Assert.strictEqual(actual, subject.name)
         }
     })
 })

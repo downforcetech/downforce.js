@@ -1,9 +1,8 @@
 import {createEnsureOptional, formatEnsureInvalidTypeMessage} from '../ensure.js'
-import {throwInvalidType} from '../error.js'
-import {assertStringNotEmpty} from '../string.js'
-import {assertDateString} from './date-assert.js'
-import {isDate, isDateString} from './date-is.js'
-import {isDateStringIsoUtc} from './date-mix.js'
+import {throwInvalidType} from '../error/error-new.js'
+import {assertStringNotEmpty} from '../string/string-assert.js'
+import {isDate} from './date-is.js'
+import {isDateString, isDateStringIsoUtc} from './date-mix.js'
 
 /**
 * @throws
@@ -46,7 +45,7 @@ export function ensureDateStringOptional(value: unknown, ctx?: any): undefined |
 * @throws
 */
 export function ensureDateStringIsoUtc(value: unknown, ctx?: any): string {
-    assertDateString(value, ctx)
+    assertStringNotEmpty(value, ctx)
 
     if (! isDateStringIsoUtc(value)) {
         return throwInvalidType(formatEnsureInvalidTypeMessage('a Date as ISO string with UTC timezone', value, ctx))

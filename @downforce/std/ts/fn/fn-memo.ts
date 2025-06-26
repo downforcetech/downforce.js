@@ -1,4 +1,4 @@
-import type {Task} from '../fn.js'
+import type {Task} from './fn-type.js'
 
 export function memoize<R>(fn: Task<R>): Task<R> {
     let executed = false

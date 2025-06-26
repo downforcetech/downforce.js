@@ -1,17 +1,17 @@
 import {scheduleMicroTask} from '../eventloop.js'
-import type {Task} from '../fn.js'
+import type {Task} from '../fn/fn-type.js'
 import {ReactiveStateSymbol} from './reactive-new.js'
-import type {ReactiveObserver, ReactiveProtocol, ReactiveState, ReactiveWatchOptions} from './reactive-type.js'
+import type {ReactiveObserver, ReactiveObject, ReactiveState, ReactiveWatchOptions} from './reactive-type.js'
 
-export function getReactiveState<V>(reactive: ReactiveProtocol<V>): ReactiveState<V> {
+export function getReactiveState<V>(reactive: ReactiveObject<V>): ReactiveState<V> {
     return reactive[ReactiveStateSymbol]!
 }
 
-export function readReactive<V>(reactive: ReactiveProtocol<V>): V {
+export function readReactive<V>(reactive: ReactiveObject<V>): V {
     return getReactiveState(reactive).value
 }
 
-export function writeReactive<V>(reactive: ReactiveProtocol<V>, value: V): V {
+export function writeReactive<V>(reactive: ReactiveObject<V>, value: V): V {
     const state = getReactiveState(reactive)
     const areEqual = state.comparator
 
@@ -60,7 +60,7 @@ export function writeReactive<V>(reactive: ReactiveProtocol<V>, value: V): V {
 }
 
 export function watchReactive<V>(
-    reactive: ReactiveProtocol<V>,
+    reactive: ReactiveObject<V>,
     observer: ReactiveObserver<V>,
     options?: undefined | ReactiveWatchOptions,
 ): Task {

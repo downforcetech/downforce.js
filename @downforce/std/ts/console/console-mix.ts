@@ -1,4 +1,4 @@
-import type {LoggerArgs} from '../log.js'
+import type {LoggerArgs} from '../log/log-type.js'
 import type {ConsoleLogType} from './console-type.js'
 
 export function consoleLog(type: ConsoleLogType, ...args: LoggerArgs): void {

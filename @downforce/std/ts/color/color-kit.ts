@@ -2,7 +2,7 @@ import {colorHslFromRgbHexString, colorLchFromRgbHexString} from './color-bridge
 import {areColorsHslEqual, asColorHslCss, colorHslFromRgb} from './color-hsl.js'
 import {areColorsLchEqual, colorLchFromRgb} from './color-lch.js'
 import {areColorsRgbEqual, colorRgbFromHsl, colorRgbFromRgbHexString, colorRgbToRgbHexString} from './color-rgb.js'
-import type {ColorHslDict, ColorLchDict, ColorRgbDict} from './color-types.js'
+import type {ColorHslDict, ColorLchDict, ColorRgbDict} from './color-type.js'
 
 export const ColorRgb: {
     areEqual(first: ColorRgbDict, second: ColorRgbDict): boolean

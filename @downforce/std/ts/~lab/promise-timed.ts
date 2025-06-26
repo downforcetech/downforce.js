@@ -1,4 +1,4 @@
-import {createPromise} from '../promise.js'
+import {createPromise} from '../promise/promise-new.js'
 
 export function createPromiseTimed<V = void>(args: PromiseTimedOptions): {
     promise: Promise<V>

@@ -1,4 +1,4 @@
-import {isUndefined} from '../optional.js'
+import {isUndefined} from '../optional/optional-is.js'
 import {asDate, dateDayOf, dateHourOf, dateMillisecondOf, dateMinuteOf, dateMonthOf, dateNow, dateSecondOf, dateYearOf} from './date-mix.js'
 
 export const DateTime: {
