@@ -8,10 +8,7 @@
 .std-flex-space8,
 .std-flex-space9,
 .std-flex-space10 {
-    min-width: var(--space-size);
-    min-height: var(--space-size);
-    flex-basis: var(--space-size);
-    flex-grow: 1;
+    flex: 1 0 var(--space-size);
 }
 
 .std-flex-space1 { --space-size: var(--std-gutter1); }
