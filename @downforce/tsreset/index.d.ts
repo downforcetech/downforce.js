@@ -3,3 +3,4 @@
 /// <reference path="./boolean.d.ts"/>
 /// <reference path="./fetch-json.d.ts"/>
 /// <reference path="./json-parse.d.ts"/>
+/// <reference path="./promise-rejection.d.ts"/>
