@@ -10,10 +10,10 @@ export function asInteger(value: None | number | string): undefined | number {
     return strictIntegerLike(value)
 }
 
-export function isBetween(a: number, value: number, b: number): boolean {
+export function isBetween(from: number, value: number, to: number): boolean {
     return (
-        (a <= value && value <= b)
-        || (b <= value && value <= a)
+        (from <= value && value <= to)
+        || (to <= value && value <= from)
     )
 }
 

@@ -1,5 +1,6 @@
 import {isBetween} from '../number/number-mix.js'
 import {isDefined} from '../optional/optional-is.js'
+import type {None} from '../optional/optional-type.js'
 import {isString} from '../string/string-is.js'
 import {strictDate} from './date-strict.js'
 import type {DateNumber} from './date-type.js'
@@ -13,8 +14,8 @@ export const OneMonthInMs: number = 30 * OneDayInMs
 export const OneYearInMs: number = 365 * OneDayInMs
 
 export function asDate(value: number | Date): Date
-export function asDate(value: string | number | Date): undefined | Date
-export function asDate(value: string | number | Date) {
+export function asDate(value: None | string | number | Date): undefined | Date
+export function asDate(value: None | string | number | Date) {
     return strictDate(value)
 }
 
@@ -62,10 +63,10 @@ export function isTimeBetween(from: undefined | DateNumber, date: DateNumber, to
         return isBetween(from, date, to)
     }
     if (fromDefined) {
-        return from <= date
+        return date >= from
     }
     if (toDefined) {
-        return to >= date
+        return date <= to
     }
     return false
 }
