@@ -188,10 +188,12 @@ export type BusEventPayloadOf<
         Array<any>
     >
 > =
-    D extends BusEventDescriptor<
-        Array<any>,
-        [string, infer P],
-        Array<any>
-    >
+    D extends BusEventDescriptor<Array<any>, [string, infer P], Array<any>>
         ? P
         : undefined
+
+export type BusEventsPayloadsOf<
+    O extends Record<string, BusEventDescriptor<FnArgs, BusEventDescriptorEmitArgs, FnArgs>>
+> = {
+    [key in keyof O]: BusEventPayloadOf<O[key]>
+}
