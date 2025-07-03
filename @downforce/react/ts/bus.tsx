@@ -2,7 +2,7 @@ import {createBus, type Bus, type BusEvent, type BusEventObserver} from '@downfo
 import {useContext, useEffect, useMemo} from 'react'
 import {defineContext} from './ctx.js'
 
-export {createBus, type Bus, type BusEvent, type BusEventObserver, type BusEventPayloadOf} from '@downforce/std/bus'
+export * from '@downforce/std/bus'
 
 export function setupBus(options: BusBoundCase1Options): BusBoundCase1Exports
 export function setupBus(options?: undefined | BusBoundCase2Options): BusBoundCase2Exports
