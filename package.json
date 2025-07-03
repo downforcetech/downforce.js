@@ -12,8 +12,8 @@
     "engines": {
         "node": ">= 20"
     },
-    "packageManager": "pnpm@10.12.3",
+    "packageManager": "pnpm@10.12.4",
     "devDependencies": {
-        "nx": "21.2.1"
+        "nx": "21.2.2"
     }
 }
