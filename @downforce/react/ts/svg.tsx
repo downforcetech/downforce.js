@@ -4,14 +4,15 @@ import type {ElementProps, Props, VoidProps} from './props.js'
 export function defineSvg(definitionProps: SvgDefinitionProps): React.ComponentType<SvgProps> {
     const {
         children,
-        className: definitionClassName,
+        className: definitionClass,
         name,
+        style: definitionStyle,
         viewBox,
         ...otherDefinitionProps
     } = definitionProps
 
     function Svg(props: Props<SvgProps>) {
-        const {className, ...otherProps} = props
+        const {className, style, ...otherProps} = props
 
         return (
             <svg
@@ -21,9 +22,11 @@ export function defineSvg(definitionProps: SvgDefinitionProps): React.ComponentT
                 data-name={name}
                 {...otherDefinitionProps}
                 {...otherProps}
-                className={classes(definitionClassName, className)}
-                children={children}
-            />
+                className={classes(definitionClass, className)}
+                style={{...definitionStyle, ...style}}
+            >
+                {children}
+            </svg>
         )
     }
 
