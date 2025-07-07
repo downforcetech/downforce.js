@@ -1,45 +1,32 @@
+import {memo} from 'react'
 import {classes} from './classes.js'
 import type {ElementProps, Props, VoidProps} from './props.js'
 
-export function defineSvg(definitionProps: SvgDefinitionProps): React.ComponentType<SvgProps> {
-    const {
-        children,
-        className: definitionClass,
-        name,
-        style: definitionStyle,
-        viewBox,
-        ...otherDefinitionProps
-    } = definitionProps
-
+export function defineSvg({name, ...initialProps}: SvgDefinitionProps): React.ComponentType<SvgProps> {
     function Svg(props: Props<SvgProps>) {
-        const {className, style, ...otherProps} = props
-
         return (
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 version="1.1"
-                viewBox={viewBox}
                 data-name={name}
-                {...otherDefinitionProps}
-                {...otherProps}
-                className={classes(definitionClass, className)}
-                style={{...definitionStyle, ...style}}
-            >
-                {children}
-            </svg>
+                {...initialProps}
+                {...props}
+                className={classes(initialProps.className, props.className)}
+                style={{...initialProps.style, ...props.style}}
+                children={initialProps.children}
+            />
         )
     }
 
-    Svg.displayName = name
+    Svg.displayName = name ?? Svg.name
 
-    return Svg
+    return memo(Svg)
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
 
 export interface SvgDefinitionProps extends ElementProps<'svg'> {
     name?: undefined | string
-    viewBox: string
 }
 
 export interface SvgProps extends VoidProps<ElementProps<'svg'>> {
