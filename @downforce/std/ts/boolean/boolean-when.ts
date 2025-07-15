@@ -1,7 +1,16 @@
-import type {Io} from '../fn/fn-type.js'
+import {throwInvalidArgument} from '../error/error-new.js'
+import {compute, type Computable} from '../fn/fn-compute.js'
 
-export function whenBoolean<O1, O2>(input: boolean, onTrue: Io<true, O1>, onFalse: Io<false, O2>): O1 | O2 {
-    return input
-        ? onTrue(input)
-        : onFalse(input)
+export function whenBoolean<TRUE, FALSE>(
+    input: boolean,
+    onTrue: Computable<TRUE, [true]>,
+    onFalse: Computable<FALSE, [false]>,
+): TRUE | FALSE {
+    if (input === true) {
+        return compute(onTrue, input)
+    }
+    if (input === false) {
+        return compute(onFalse, input)
+    }
+    throwInvalidArgument(`unrecognized boolean input "${input}".`)
 }
