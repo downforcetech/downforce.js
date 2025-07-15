@@ -54,7 +54,7 @@ for pkg; do
     dirty=$($Git -C "$pkg" status --porcelain . | tail -n1)
     if test -n "$dirty"; then
         $Git -C "$pkg" add --all .
-        $Git -C "$pkg" commit --edit --message "($pkg_name) "
+        $Git -C "$pkg" commit --edit --message "[$pkg_name] "
     fi
 
     "$Dir/package-publish" $arg_version "$pkg"
@@ -64,6 +64,6 @@ for pkg; do
     dirty=$($Git -C "$pkg" status --porcelain . | tail -n1)
     if test -n "$dirty"; then
         $Git -C "$pkg" add --all .
-        $Git -C "$pkg" commit --message "($pkg_name) v$pkg_version"
+        $Git -C "$pkg" commit --message "[$pkg_name] v$pkg_version"
     fi
 done
