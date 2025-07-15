@@ -1,12 +1,11 @@
 {
     "$schema": "./node_modules/nx/schemas/nx-schema.json",
     "cacheDirectory": "./node_modules/.cache/nx",
+    "useDaemonProcess": false,
     "targetDefaults": {
         "build": {
-            "cache": true,
             "dependsOn": ["^build"],
             "inputs": [
-                "{workspaceRoot}/.npmrc",
                 "{workspaceRoot}/package.json",
                 "{workspaceRoot}/pnpm-lock.yaml",
                 "{workspaceRoot}/pnpm-workspace.yaml",
