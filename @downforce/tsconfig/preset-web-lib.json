@@ -14,6 +14,7 @@
         "moduleDetection": "auto",
         "moduleResolution": "nodenext",
         "noErrorTruncation": true,
+        "skipDefaultLibCheck": true,
         "skipLibCheck": true,
         "target": "esnext",
         "tsBuildInfoFile": "${configDir}/node_modules/.cache/tsbuildinfo"
