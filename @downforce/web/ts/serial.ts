@@ -1,10 +1,10 @@
-import type {SerialCodec} from '@downforce/std/serial'
+import type {SerialAsyncCodec} from '@downforce/std/serial'
 import {ResponseCodec, type SerialResponseEncoded} from './response.js'
 
 export * from '@downforce/std/serial'
 
 export const SerialWebCodec: {
-    Response: SerialCodec<Response, SerialResponseEncoded>
+    Response: SerialAsyncCodec<Response, SerialResponseEncoded>
 } = {
     Response: {
         id: 'Response',
@@ -20,4 +20,4 @@ export const SerialWebCodec: {
     },
 }
 
-export const SerialWebCodecsList: Array<SerialCodec> = Object.values(SerialWebCodec)
+export const SerialWebCodecsList: Array<SerialAsyncCodec> = Object.values(SerialWebCodec)

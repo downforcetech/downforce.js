@@ -1,6 +1,6 @@
-import {deserializeStruct, serializeStruct} from '@downforce/std/serial'
+import {deserializeStructAsync, serializeStructAsync} from '@downforce/std/serial'
 
-export {deserializeStruct as deserializeSsrState, serializeStruct as serializeSsrState} from '@downforce/std/serial'
+export {deserializeStructAsync as deserializeSsrState, serializeStructAsync as serializeSsrState} from '@downforce/std/serial'
 
 export async function saveSsrState(id: string, payload: unknown, options?: undefined | SsrSaveOptions): Promise<void> {
     if (! payload) {
@@ -18,7 +18,7 @@ export async function serializeSsrStateIntoStorageElement(
     payload: unknown,
     serializerOptional?: undefined | SsrPayloadSerializer,
 ): Promise<void> {
-    const serialize: SsrPayloadSerializer = serializerOptional ?? serializeStruct
+    const serialize: SsrPayloadSerializer = serializerOptional ?? serializeStructAsync
 
     element.textContent = (await serialize(payload)) ?? null
 }
@@ -37,7 +37,7 @@ export async function deserializeSsrStateFromStorageElement(
     element: Element,
     deserializeOptional?: undefined | SsrPayloadDeserializer,
 ): Promise<unknown> {
-    const deserialize: SsrPayloadDeserializer = deserializeOptional ?? deserializeStruct
+    const deserialize: SsrPayloadDeserializer = deserializeOptional ?? deserializeStructAsync
     const payloadSerialized = readSsrStateFromStorageElement(element)
 
     if (! payloadSerialized) {
