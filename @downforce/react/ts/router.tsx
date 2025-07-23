@@ -14,8 +14,6 @@ import type {ElementProps, Props} from './props.js'
 import {useReactiveSelect} from './reactive.js'
 
 export * from '@downforce/web/route'
-export * from '@downforce/web/route-param'
-export * from '@downforce/web/route-path'
 export * from '@downforce/web/router'
 
 export const RouterContext: React.Context<undefined | Router> = defineContext<Router>('RouterContext')
