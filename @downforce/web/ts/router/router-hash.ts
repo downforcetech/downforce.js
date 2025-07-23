@@ -1,5 +1,6 @@
 import {createReactiveRef} from '@downforce/std/reactive'
-import {areSameRoutes, decodeRouteParams, encodeLink, mergeRouteChange, type Router, type RouterOptions, type RouterRoute, type RouterRouteChangeParams} from './router.js'
+import {areSameRoutes, decodeRouteParams, encodeLink, mergeRouteChange} from './router-mix.js'
+import type {Router, RouterOptions, RouterRoute, RouterRouteChangeParams} from './router-type.js'
 
 export function createHashRouter<S = unknown>(options?: undefined | RouterOptions): Router<S> {
     let active = false
