@@ -18,20 +18,20 @@
         "preversion": "pnpm run build"
     },
     "dependencies": {
-        "@downforce/std": "1.1.11",
-        "@downforce/web": "1.1.3",
         "tslib": "2"
     },
     "peerDependencies": {
+        "@downforce/std": "1",
+        "@downforce/web": "1",
         "solid-js": "1"
     },
     "devDependencies": {
         "@babel/cli": "7",
         "@babel/core": "7",
         "@babel/preset-typescript": "7",
-        "@downforce/tsconfig": "1.0.3",
+        "@downforce/tsconfig": "1",
         "babel-preset-solid": "1",
-        "typescript": "5.8"
+        "typescript": "5.9"
     },
     "author": "Daniele Orlando",
     "license": "BSD-2-Clause",
