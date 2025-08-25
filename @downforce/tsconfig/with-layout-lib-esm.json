@@ -6,7 +6,6 @@
         "${configDir}/ts/**/*.tsx"
     ],
     "compilerOptions": {
-        "baseUrl": "./ts",
         "declarationMap": true,
         "outDir": "${configDir}/esm",
         "rootDir": "${configDir}/ts",
