@@ -5,7 +5,7 @@ import {isError, isResult, ResultOrError, whenResultOrError, type OutcomeResultO
 import type {PromiseView} from '@downforce/std/promise'
 import {startTransition, useCallback, useEffect, useRef, useState} from 'react'
 
-export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?: Array<unknown>): AsyncIoManager<A, R> {
+export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?: undefined | Array<unknown>): AsyncIoManager<A, R> {
     const [state, setState] = useState<AsyncIoState<R>>({
         output: undefined,
         error: undefined,
