@@ -121,8 +121,6 @@
 @import '@downforce/std.css/shadow.vars.css' layer(std);
 @import '@downforce/std.css/switch.classes.css' layer(std);
 @import '@downforce/std.css/text-align.classes.css' layer(std);
-@import '@downforce/std.css/text-descender.classes.css' layer(std);
-@import '@downforce/std.css/text-descender.vars.css' layer(std);
 @import '@downforce/std.css/text-font.classes.css' layer(std);
 @import '@downforce/std.css/text-font/roboto.css' layer(std);
 @import '@downforce/std.css/text-height.classes.css' layer(std);
@@ -162,7 +160,4 @@
     --std-color-primary-h: 250deg;
     --std-color-primary-s: 70%;
     --std-color-primary-l: 60%;
-
-    /* --std-text-descender-size: .25; */
-    /* --std-text-descender-line: .8; */
 }

@@ -1,3 +1,0 @@
-.std-root, .std-define-text-descender {
-    --std-text-descender0: calc(1em - 1em * var(--std-text-descender-size, .2));
-}
