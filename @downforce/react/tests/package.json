@@ -1,0 +1,8 @@
+{
+    "name": "@downforce/react.tests",
+    "type": "module",
+    "dependencies": {
+        "@downforce/react": "workspace:*",
+        "@types/node": "24"
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "name": "@downforce/web.tests",
+    "type": "module",
+    "dependencies": {
+        "@downforce/web": "workspace:*",
+        "@types/node": "24"
+    }
+}

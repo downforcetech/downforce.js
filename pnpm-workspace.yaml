@@ -1,4 +1,4 @@
-packages: ['@downforce/*']
+packages: ['@downforce/*', '@downforce/*/tests']
 
 onlyBuiltDependencies: ['esbuild']
 ignoredBuiltDependencies: ['nx']
