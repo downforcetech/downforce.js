@@ -25,10 +25,9 @@
         "@downforce/std": "1"
     },
     "devDependencies": {
-        "@downforce/tsconfig": "1.0.3",
-        "@types/node": "22",
+        "@downforce/tsconfig": "1",
         "tsx": "4",
-        "typescript": "5.8"
+        "typescript": "5.9"
     },
     "author": "Daniele Orlando",
     "license": "BSD-2-Clause",

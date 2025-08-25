@@ -33,8 +33,8 @@
         "react-dom": "19"
     },
     "devDependencies": {
-        "@downforce/tsconfig": "1.0.3",
-        "typescript": "5.8"
+        "@downforce/tsconfig": "1",
+        "typescript": "5.9"
     },
     "author": "Daniele Orlando",
     "license": "BSD-2-Clause",
