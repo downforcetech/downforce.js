@@ -1,1 +1,1 @@
-export const OutcomeErrorMonadTag = 'std/outcome/error'
+export const OutcomeErrorMonadTag = '@downforce/std/outcome/error'
