@@ -1,0 +1,54 @@
+@media (prefers-color-scheme: dark) {
+    .std-root:not(.std-theme-dark, .std-theme-light) {
+        /* color-scheme.props.css */
+        color-scheme: dark;
+
+        /* color-fg.vars.css */
+        --std-fg-l: var(--std-dark-color-fg-l);
+        --std-fg-ll: var(--std-dark-color-fg-ll);
+
+        --std-color-fg1-h: var(--std-dark-color-fg1-h);
+        --std-color-fg1-s: var(--std-dark-color-fg1-s);
+        --std-color-fg1-l: var(--std-dark-color-fg1-l);
+        --std-color-fg1: var(--std-dark-color-fg1);
+
+        --std-color-fg2-h: var(--std-dark-color-fg2-h);
+        --std-color-fg2-s: var(--std-dark-color-fg2-s);
+        --std-color-fg2-l: var(--std-dark-color-fg2-l);
+        --std-color-fg2: var(--std-dark-color-fg2);
+
+        --std-color-fg3-h: var(--std-dark-color-fg3-h);
+        --std-color-fg3-s: var(--std-dark-color-fg3-s);
+        --std-color-fg3-l: var(--std-dark-color-fg3-l);
+        --std-color-fg3: var(--std-dark-color-fg3);
+
+        /* color-bg.vars.css */
+        --std-bg-l: var(--std-dark-color-bg-l);
+        --std-bg-ll: var(--std-dark-color-bg-ll);
+
+        --std-color-bg1-h: var(--std-dark-color-bg1-h);
+        --std-color-bg1-s: var(--std-dark-color-bg1-s);
+        --std-color-bg1-l: var(--std-dark-color-bg1-l);
+        --std-color-bg1: var(--std-dark-color-bg1);
+
+        --std-color-bg2-h: var(--std-dark-color-bg2-h);
+        --std-color-bg2-s: var(--std-dark-color-bg2-s);
+        --std-color-bg2-l: var(--std-dark-color-bg2-l);
+        --std-color-bg2: var(--std-dark-color-bg2);
+
+        --std-color-bg3-h: var(--std-dark-color-bg3-h);
+        --std-color-bg3-s: var(--std-dark-color-bg3-s);
+        --std-color-bg3-l: var(--std-dark-color-bg3-l);
+        --std-color-bg3: var(--std-dark-color-bg3);
+
+        --std-color-bg4-h: var(--std-dark-color-bg4-h);
+        --std-color-bg4-s: var(--std-dark-color-bg4-s);
+        --std-color-bg4-l: var(--std-dark-color-bg4-l);
+        --std-color-bg4: var(--std-dark-color-bg4);
+
+        /* color-fg-accent-primary.vars.css */
+        --std-color-primary-fg1: var(--std-dark-color-primary-fg1);
+        --std-color-primary-fg2: var(--std-dark-color-primary-fg2);
+        --std-color-primary-fg3: var(--std-dark-color-primary-fg3);
+    }
+}

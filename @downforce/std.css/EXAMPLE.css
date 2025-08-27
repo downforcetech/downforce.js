@@ -145,10 +145,12 @@
 @import '@downforce/std.css/theme-dark/color-fg-accent-primary.vars.css' layer(std);
 @import '@downforce/std.css/theme-dark/color-fg.vars.css' layer(std);
 @import '@downforce/std.css/theme-dark/color-scheme.props.css' layer(std);
+@import '@downforce/std.css/theme-dark/preference.props.css' layer(std);
 @import '@downforce/std.css/theme-light/color-bg.vars.css' layer(std);
 @import '@downforce/std.css/theme-light/color-fg-accent-primary.vars.css' layer(std);
 @import '@downforce/std.css/theme-light/color-fg.vars.css' layer(std);
 @import '@downforce/std.css/theme-light/color-scheme.props.css' layer(std);
+@import '@downforce/std.css/theme-light/preference.props.css' layer(std);
 @import '@downforce/std.css/transition/fade.classes.css' layer(std);
 @import '@downforce/std.css/transition/leak.classes.css' layer(std);
 @import '@downforce/std.css/transition/none.classes.css' layer(std);
