@@ -4,15 +4,12 @@
         "check-outdated": "pnpm outdated --recursive",
         "upgrade": "pnpx npm-upgrade@latest && pnpm run init",
         "update": "pnpm update --recursive",
-        "clean": "nx run-many --target clean --tuiAutoExit",
         "build": "nx run-many --target build,test --tuiAutoExit",
-        "test": "nx run-many --target test --tuiAutoExit"
+        "clean": "nx run-many --target clean --tuiAutoExit"
     },
-    "engines": {
-        "node": ">= 20"
-    },
-    "packageManager": "pnpm@10.15.0",
     "devDependencies": {
-        "nx": "21.4.1"
-    }
+        "nx": "21.6.4"
+    },
+    "packageManager": "pnpm@10.18.2",
+    "engines": { "node": ">= 22" }
 }

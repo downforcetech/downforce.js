@@ -4,6 +4,7 @@
     "useDaemonProcess": false,
     "targetDefaults": {
         "build": {
+            "cache": false,
             "dependsOn": ["^build"],
             "inputs": [
                 "{workspaceRoot}/package.json",
@@ -18,12 +19,10 @@
                 "!{projectRoot}/cjs/**/*",
                 "!{projectRoot}/esm/**/*"
             ],
-            "outputs": [
-                "{projectRoot}/cjs/**/*",
-                "{projectRoot}/esm/**/*"
-            ]
+            "outputs": []
         },
         "test": {
+            "cache": false,
             "dependsOn": ["build"]
         }
     }
