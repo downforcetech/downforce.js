@@ -1,4 +1,4 @@
-import type {Fn, FnArgs, FnAsync, Task} from '@downforce/std/fn'
+import type {FnArgs, FnAsync, Io, Task} from '@downforce/std/fn'
 import {areObjectsEqualShallow} from '@downforce/std/object'
 import {isDefined} from '@downforce/std/optional'
 import {isError, isResult, ResultOrError, whenResultOrError, type OutcomeResultOrError} from '@downforce/std/outcome'
@@ -171,27 +171,27 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
     return {...state, call, cancel, reset, resetError, resetResult}
 }
 
-export function useAsyncIoEffect<R>(
-    ioContext: AsyncIoState<R>,
-    effect: Fn<[AsyncIoState<R>], void | Task>,
+export function useAsyncIoEffect<I extends AsyncIoState<any>>(
+    io: I,
+    effect: Io<I, void | Task>,
     deps?: undefined | Array<any>,
   ): void {
     useEffect(
-      () => effect(ioContext),
-      [
-        ioContext.pending,
-        ioContext.settled,
-        ioContext.fulfilled,
-        ioContext.rejected,
-        ioContext.output,
-        ioContext.result,
-        ioContext.error,
-        ...deps ?? [],
-      ],
+        () => effect(io),
+        [
+            io.pending,
+            io.settled,
+            io.fulfilled,
+            io.rejected,
+            io.output,
+            io.result,
+            io.error,
+            ...deps ?? [],
+        ],
     )
-  }
+}
 
-export function useAsyncIoAggregated(asyncIoStates: Record<string, AsyncIoState<unknown>>): {
+export function useAsyncIoAggregated(asyncIoDict: Record<string, AsyncIoState<unknown>>): {
     errors: Array<unknown>
     results: Array<unknown>
     pending: boolean
@@ -199,7 +199,7 @@ export function useAsyncIoAggregated(asyncIoStates: Record<string, AsyncIoState<
     settled: boolean
     hasError: boolean
 } {
-    const values = Object.values(asyncIoStates)
+    const values = Object.values(asyncIoDict)
     const errors = values.map(it => it.error).filter(isDefined)
     const results = values.map(it => it.result)
     const pending = values.some(it => it.pending)
@@ -208,6 +208,20 @@ export function useAsyncIoAggregated(asyncIoStates: Record<string, AsyncIoState<
     const hasError = errors.length > 0
 
     return {errors, results, pending, settled, rejected, hasError}
+}
+
+export function pickAsyncIoState<S>(io: AsyncIoState<S>): AsyncIoState<S> {
+    return {
+        // PromiseView.
+        pending: io.pending,
+        settled: io.settled,
+        fulfilled: io.fulfilled,
+        rejected: io.rejected,
+        // Outcome.
+        output: io.output,
+        result: io.result,
+        error: io.error,
+    }
 }
 
 // Types ///////////////////////////////////////////////////////////////////////

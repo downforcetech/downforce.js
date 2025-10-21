@@ -1,9 +1,9 @@
-import {call, compute, type Io, type Task} from '@downforce/std/fn'
+import {call, compute, noop, type Io, type Task} from '@downforce/std/fn'
 import {whenSome} from '@downforce/std/optional'
 import type {ReactiveObserver, ReactiveWatchOptions} from '@downforce/std/reactive'
 import {readReactive, watchReactive, writeReactive, type ReactiveObject, type ReactiveValuesOf} from '@downforce/std/reactive'
 import type {ReadWriteSync} from '@downforce/std/store'
-import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useState} from 'react'
+import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useState, useSyncExternalStore} from 'react'
 import {useRenderSignal, type RenderSignal} from './render.js'
 import {useStateTransition, type StateManager, type StateWriterArg} from './state.js'
 
@@ -81,21 +81,33 @@ export function useReactiveSelect<V, R>(reactive: undefined | ReactiveObject<V>,
     const selectedValue = selector(whenSome(reactive, readReactive))
     const [signal, setSignalTransition] = useStateTransition(selectedValue)
 
-    useEffect(() => {
+    const subscribe = useCallback(() => {
         if (! reactive) {
-            return
+            return noop
         }
 
         const onClean = watchReactive(
             reactive,
             newValue => {
-                setSignalTransition(selector(newValue))
+                startTransition(() => {
+                    setSignalTransition(selector(newValue))
+                })
             },
             {immediate: true},
         )
 
         return onClean
     }, [reactive, ...(deps ?? [])])
+
+    const readState = useCallback(() => {
+        if (! reactive) {
+            return noop
+        }
+
+        return readReactive(reactive)
+    }, [reactive])
+
+    useSyncExternalStore(subscribe, readState, readState)
 
     return selectedValue
 }
