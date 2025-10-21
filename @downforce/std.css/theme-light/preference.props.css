@@ -1,5 +1,5 @@
 @media (prefers-color-scheme: light) {
-    .std-root:not(.std-theme-light, .std-theme-light) {
+    .std-root:not(.std-theme-dark, .std-theme-light) {
         /* color-scheme.props.css */
         color-scheme: light;
 
