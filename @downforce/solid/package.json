@@ -14,8 +14,8 @@
     "scripts": {
         "clean": "rm -rf ./esm/ || true; rm -rf ./node_modules/.cache/ || true",
         "build": "babel ./ts/ --out-dir ./esm/ --extensions '.ts,.tsx' --ignore '**/*.d.ts','node_modules/**/*' && tsc --listEmittedFiles",
-        "prepack": "pnpm run clean; pnpm run build",
-        "preversion": "pnpm run build"
+        "prepack": "node --run clean; node --run build",
+        "preversion": "node --run build"
     },
     "dependencies": {
         "tslib": "2"

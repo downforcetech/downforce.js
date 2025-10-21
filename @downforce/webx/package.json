@@ -13,9 +13,9 @@
     },
     "scripts": {
         "clean": "rm -rf ./esm/ || true; rm -rf ./node_modules/.cache/ || true",
-        "build": "tsc --listEmittedFiles",
-        "prepack": "pnpm run clean; pnpm run build",
-        "preversion": "pnpm run build"
+        "build": "tsc --project ./tsconfig.json --listEmittedFiles",
+        "prepack": "node --run clean; node --run build",
+        "preversion": "node --run build"
     },
     "dependencies": {
         "tslib": "2"

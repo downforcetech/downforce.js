@@ -2,7 +2,7 @@
     "scripts": {
         "init": "pnpm install",
         "check-outdated": "pnpm outdated --recursive",
-        "upgrade": "pnpx npm-upgrade@latest && pnpm run init",
+        "upgrade": "pnpx npm-upgrade@latest && node --run init",
         "update": "pnpm update --recursive",
         "build": "nx run-many --target build,test --tuiAutoExit",
         "clean": "nx run-many --target clean --tuiAutoExit"

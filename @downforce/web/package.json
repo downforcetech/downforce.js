@@ -13,10 +13,10 @@
     },
     "scripts": {
         "clean": "rm -rf ./esm/ || true; rm -rf ./node_modules/.cache/ || true",
-        "build": "tsc --listEmittedFiles --project ./tsconfig.json && tsc --project ./tests/tsconfig.json",
-        "test": "pnpm run build && tsx --test",
-        "prepack": "pnpm run clean; pnpm run build && pnpm run test",
-        "preversion": "pnpm run build && pnpm run test"
+        "build": "tsc --project ./tsconfig.json --listEmittedFiles && tsc --project ./tests/tsconfig.json",
+        "test": "node --run build && tsx --test",
+        "prepack": "node --run clean; node --run build && node --run test",
+        "preversion": "node --run build && node --run test"
     },
     "dependencies": {
         "tslib": "2"
