@@ -15,5 +15,12 @@ export function createReactive<V>(
             observers: new Set<ReactiveObserver<V>>(),
             notification: undefined,
         },
+        // @ts-ignore
+        get [Symbol.toStringTag]() {
+            return 'ReactiveState'
+        },
+        toString() {
+            return JSON.stringify(value)
+        },
     }
 }

@@ -1,69 +1,126 @@
 import {
-    ReduxReducer,
+    createReduxDispatcher,
     defineReduxAction,
+    defineReduxActions,
+    exportReduxActions,
+    ReduxReducers,
     withId,
-    type ReduxActionReducer,
-    type ReduxCompositeReducerOfEntries,
-    type ReduxReducerId,
+    type ReduxReducersDefinitionsDict,
+    type ReduxReducersDefinitionsList,
 } from '@downforce/std/redux'
+import {deepStrictEqual, notStrictEqual, strictEqual} from 'assert'
 import {describe, test} from 'node:test'
 
 describe('@downforce/std/redux', (ctx) => {
+    type State = {state: string}
+    const state: State = {state: ''}
+
     test('defineReduxAction()', (ctx) => {
-        type State = {state: number}
-        const state = {state: 1}
+        const actions = {
+            a: defineReduxAction('actionId', (state: State): State => state),
+            b: defineReduxAction('actionId', (state: State, a: number, b: string): State => state),
+        }
 
-        const actionLiteral1 = defineReduxAction('a', (state: State, a: number, b: string) => state)
-        const actionLiteral2 = defineReduxAction('b', (state: State, a: string, b: boolean) => state)
-        const actionLiteral3 = defineReduxAction('c', (state: State, a: {kind: number}) => state)
-        const actionLiteral4 = defineReduxAction('d', (state: State) => state)
-        const actionLiteral5 = defineReduxAction('e', (state: State) => state)
-        const actionLiteral6 = defineReduxAction('z', (state: State, o: {type: number}) => state)
-        const actionGeneric1 = defineReduxAction(withId('a'), (state: State, a: number, b: string) => state)
-        const actionGeneric2 = defineReduxAction(withId('b'), (state: State, a: string, b: boolean) => state)
-        const actionGeneric3 = defineReduxAction(withId('c'), (state: State, a: {kind: number}) => state)
-        const actionGeneric4 = defineReduxAction(withId('d'), (state: State) => state)
-        const actionGeneric5 = defineReduxAction(withId('e'), (state: State) => state)
-        const actionGeneric6 = defineReduxAction(withId('z'), (state: State, o: {type: number}) => state)
+        strictEqual(actions.a.id, 'actionId')
+        strictEqual(actions.a.action()[0], 'actionId')
 
-        const listWithLiteralIds = [
-            [actionLiteral1.id, actionLiteral1.reducer],
-            [actionLiteral2.id, actionLiteral2.reducer],
-            [actionLiteral3.id, actionLiteral3.reducer],
-            [actionLiteral4.id, actionLiteral4.reducer],
-            [actionLiteral5.id, actionLiteral5.reducer],
-            [actionLiteral6.id, actionLiteral6.reducer],
-        ] satisfies Array<[ReduxReducerId, ReduxActionReducer<any, Array<any>>]>
-        const listWithGenericIds: Array<[ReduxReducerId, ReduxActionReducer<State, Array<any>>]> = [
-            [actionGeneric1.id, actionGeneric1.reducer],
-            [actionGeneric2.id, actionGeneric2.reducer],
-            [actionGeneric3.id, actionGeneric3.reducer],
-            [actionGeneric4.id, actionGeneric4.reducer],
-            [actionGeneric5.id, actionGeneric5.reducer],
-            [actionGeneric6.id, actionGeneric6.reducer],
-        ]
+        strictEqual(actions.b.id, 'actionId')
+        strictEqual(actions.b.action(123, 'abc')[0], 'actionId')
+        deepStrictEqual(actions.b.action(123, 'abc').slice(1), [123, 'abc'])
+    })
 
-        type CompositeReducerWithLiteralIds = ReduxCompositeReducerOfEntries<typeof listWithLiteralIds>
-        type CompositeReducerWithGenericIds = ReduxCompositeReducerOfEntries<typeof listWithGenericIds>
-        const reducerCombinedWithLiteralIds = ReduxReducer.fromEntries(...listWithLiteralIds)
-        const reducerCombinedWithGenericIds = ReduxReducer.fromEntries(...listWithGenericIds)
+    test('defineReduxActions()', (ctx) => {
+        const actionsWithNameId = defineReduxActions({
+            a(state: State) { return {...state, state: 'state of a'} },
+            b(state: State, a: number) { return {...state, state: `state of b ${a}`} },
+            c(state: State, a: string, b: boolean) { return {...state, state: `state of c ${a} ${b}`} },
+        })
+        const actionsWithCustomId = defineReduxActions({
+            a(state: State) { return {...state, state: 'state of a'} },
+            b(state: State, a: number) { return {...state, state: `state of b ${a}`} },
+            c(state: State, a: string, b: boolean) { return {...state, state: `state of c ${a} ${b}`} },
+        }, name => `~> ${name}`)
+        const actionsWithAutoId = defineReduxActions({
+            a(state: State) { return {...state, state: 'state of a'} },
+            b(state: State, a: number) { return {...state, state: `state of b ${a}`} },
+            c(state: State, a: string, b: boolean) { return {...state, state: `state of c ${a} ${b}`} },
+        }, withId)
 
-        reducerCombinedWithLiteralIds(state, 'a', 123, '')
-        reducerCombinedWithLiteralIds(state, 'b', '', true)
-        reducerCombinedWithLiteralIds(state, 'c', {kind: 123})
-        reducerCombinedWithLiteralIds(state, 'd')
-        reducerCombinedWithLiteralIds(state, 'e')
+        strictEqual(actionsWithNameId.a.id, 'a')
+        strictEqual(actionsWithNameId.b.id, 'b')
+        strictEqual(actionsWithCustomId.a.id, '~> a')
+        strictEqual(actionsWithCustomId.b.id, '~> b')
+        notStrictEqual(actionsWithAutoId.a.id, 'a')
+        notStrictEqual(actionsWithAutoId.b.id, 'b')
+    })
 
-        reducerCombinedWithGenericIds(state, 'a', 123, '')
-        reducerCombinedWithGenericIds(state, 'b', '', true)
-        reducerCombinedWithGenericIds(state, 'c', {kind: 123})
-        reducerCombinedWithGenericIds(state, 'd')
-        reducerCombinedWithGenericIds(state, 'e')
-        reducerCombinedWithGenericIds(state, 'a', null, false, '')
+    test('exportReduxActions()', (ctx) => {
+        const actions = defineReduxActions({
+            a(state: State) { return {...state, state: 'state of a'} },
+            b(state: State, a: number) { return {...state, state: `state of b ${a}`} },
+            c(state: State, a: string, b: boolean) { return {...state, state: `state of c ${a} ${b}`} },
+        })
 
-        // @ts-expect-error
-        reducerCombinedWithLiteralIds(state, 'f')
-        // @ts-expect-error
-        reducerCombinedWithLiteralIds(state, 'a', null, false, '')
+        const Action = exportReduxActions(actions)
+
+        strictEqual(Action.a()[0], 'a')
+        strictEqual(Action.b(123)[0], 'b')
+        strictEqual(Action.c('abc', true)[0], 'c')
+        deepStrictEqual(Action.a().slice(1), [])
+        deepStrictEqual(Action.b(123).slice(1), [123])
+        deepStrictEqual(Action.c('abc', true).slice(1), ['abc', true])
+    })
+
+    test('createReduxDispatcher()', (ctx) => {
+        {
+            const actionLiteral = defineReduxAction('actionId', (state: State, a: number) => ({...state, state: `literal(${a})`}))
+            const actionGeneric = defineReduxAction(withId('actionId'), (state: State, a: string, b: boolean) => ({...state, state: `generic(${a}, ${b})`}))
+
+            const reducersList: ReduxReducersDefinitionsList<State> = [
+                [actionLiteral.id, actionLiteral.reducer],
+                [actionGeneric.id, actionGeneric.reducer],
+            ]
+            const reducersDict: ReduxReducersDefinitionsDict<State> = {
+                [actionLiteral.id]: actionLiteral.reducer,
+                [actionGeneric.id]: actionGeneric.reducer,
+            }
+
+            const reduce1 = createReduxDispatcher(reducersList)
+            const reduce2 = createReduxDispatcher(reducersDict)
+
+            deepStrictEqual(
+                reduce1(state, ...actionLiteral.action(123)),
+                {state: 'literal(123)'},
+            )
+            deepStrictEqual(
+                reduce2(state, ...actionGeneric.action('abc', true)),
+                {state: 'generic(abc, true)'},
+            )
+        }
+
+        {
+            const reducers = {
+                a(state: State) { return {...state, state: 'state of a'} },
+                b(state: State, a: number) { return {...state, state: `state of b ${a}`} },
+                c(state: State, a: string, b: boolean) { return {...state, state: `state of c ${a} ${b}`} },
+            }
+            const actions = defineReduxActions(reducers)
+            const reducersEntries = ReduxReducers.fromActions(actions)
+
+            const reduceState = createReduxDispatcher(reducersEntries)
+
+            deepStrictEqual(
+                reduceState(state, ...actions.a.action()),
+                {state: 'state of a'},
+            )
+            deepStrictEqual(
+                reduceState(state, ...actions.b.action(1)),
+                {state: 'state of b 1'},
+            )
+            deepStrictEqual(
+                reduceState(state, ...actions.c.action('abc', true)),
+                {state: 'state of c abc true'},
+            )
+        }
     })
 })
