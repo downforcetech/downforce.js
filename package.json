@@ -8,8 +8,8 @@
         "clean": "nx run-many --target clean --tuiAutoExit"
     },
     "devDependencies": {
-        "nx": "21.6.4"
+        "nx": "21.6.5"
     },
-    "packageManager": "pnpm@10.18.2",
-    "engines": { "node": ">= 22" }
+    "engines": {"node": ">= 24"},
+    "packageManager": "pnpm@10.18.3"
 }
