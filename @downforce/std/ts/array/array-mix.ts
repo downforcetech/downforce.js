@@ -1,4 +1,5 @@
 import type {Io} from '../fn/fn-type.js'
+import {getMapValue} from '../map/map-mix.js'
 import {isSome} from '../optional/optional-is.js'
 import type {SomeOf} from '../optional/optional-type.js'
 import {isArray} from './array-is.js'
@@ -89,15 +90,9 @@ export function groupMapBy<I, K>(
 ): Map<K, Array<I>> {
     const groupsMap = new Map<K, Array<I>>()
 
-    function setupKey(key: K) {
-        const group: Array<I> = []
-        groupsMap.set(key, group)
-        return group
-    }
-
     for (const it of list) {
         const key = keyOf(it)
-        const group = groupsMap.get(key) ?? setupKey(key)
+        const group = getMapValue(groupsMap, key, () => [])
         group?.push(it)
     }
 
