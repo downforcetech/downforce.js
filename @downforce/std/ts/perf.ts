@@ -1,6 +1,22 @@
 import type {Task, TaskAsync, TaskSync} from './fn/fn-type.js'
 import {isPromise} from './promise.js'
 
+export function startMeasure(): () => PerfMeasureTime {
+    const timeStart = performance.now()
+
+    function stopMeasure(): PerfMeasureTime {
+        const timeEnd = performance.now()
+
+        return {
+            start: timeStart,
+            end: timeEnd,
+            durationMs: timeEnd - timeStart,
+        }
+    }
+
+    return stopMeasure
+}
+
 export function measure<R = void>(block: Task<Promise<R>>): Promise<[PerfMeasureTime, R]>
 export function measure<R = void>(block: Task<R>): [PerfMeasureTime, R]
 export function measure<R = void>(block: Task<R> | Task<Promise<R>>): [PerfMeasureTime, R] | Promise<[PerfMeasureTime, R]> {
