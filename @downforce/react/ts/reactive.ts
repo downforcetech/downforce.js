@@ -78,17 +78,17 @@ export function useReactiveMemo<A extends Array<ReactiveObject<any>>, V>(
 export function useReactiveSelect<V, R>(
     reactive: ReactiveObject<V>,
     selector: Io<V, R>,
-    deps?: undefined | Array<any> | ReadonlyArray<any>,
+    deps?: undefined | ReactiveSelectorDeps,
 ): R
 export function useReactiveSelect<V, R>(
     reactive: undefined | ReactiveObject<V>,
     selector: Io<undefined | V, R>,
-    deps?: undefined | Array<any> | ReadonlyArray<any>,
+    deps?: undefined | ReactiveSelectorDeps,
 ): undefined | R
 export function useReactiveSelect<V, R>(
     reactive: undefined | ReactiveObject<V>,
     selector: Io<undefined | V, R>,
-    deps?: undefined | Array<any> | ReadonlyArray<any>,
+    deps?: undefined | ReactiveSelectorDeps,
 ): undefined | R {
     const selectedValue = selector(whenSome(reactive, readReactive))
     const [signal, setSignalTransition] = useStateTransition(selectedValue)
@@ -225,3 +225,5 @@ export interface ReactiveValuesProps<A extends Array<ReactiveObject<any>>> {
     of: readonly [...A]
     children(values: ReactiveValuesOf<A>): React.ReactNode
 }
+
+export type ReactiveSelectorDeps = Array<any> | ReadonlyArray<any>

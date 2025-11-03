@@ -3,7 +3,7 @@ import {getReduxEvent, type ReduxEvent, type ReduxEventPolymorphic, type ReduxRe
 import type {ReadWriteSync} from '@downforce/std/store'
 import {useCallback, useContext, useMemo} from 'react'
 import {defineContext} from './ctx.js'
-import {useReactiveSelect} from './reactive.js'
+import {useReactiveSelect, type ReactiveSelectorDeps} from './reactive.js'
 import type {StoreDefinitionV2 as StoreDefinition, StoreDispatchV2 as StoreDispatch} from './store-v2.js'
 
 export * from '@downforce/std/redux'
@@ -30,7 +30,7 @@ export function setupStoreUsingSingleton<S extends ReduxReducerState, A extends 
     const {store} = options
 
     return {
-        useStore<V>(selector?: undefined | StoreSelector<S, V>, deps?: undefined | Array<unknown>) {
+        useStore<V>(selector?: undefined | StoreSelector<S, V>, deps?: undefined | StoreSelectorDeps) {
             if (selector) {
                 return useStore(store, selector, deps)
             }
@@ -59,7 +59,7 @@ export function setupStoreUsingContext<S extends ReduxReducerState, A extends Re
             return useContext(Context)
         },
         useStoreProvider: useStoreProvider<S, A>,
-        useStore<V>(selector?: undefined | StoreSelector<S, V>, deps?: undefined | Array<unknown>) {
+        useStore<V>(selector?: undefined | StoreSelector<S, V>, deps?: undefined | StoreSelectorDeps) {
             if (selector) {
                 return useStore(useContext(Context)!, selector, deps)
             }
@@ -108,12 +108,12 @@ export function useStore<S extends ReduxReducerState, A extends ReduxEvent = Red
 export function useStore<V, S extends ReduxReducerState, A extends ReduxEvent = ReduxEvent>(
     store: StoreManager<S, A>,
     selector: StoreSelector<S, V>,
-    deps?: undefined | Array<unknown> | ReadonlyArray<unknown>,
+    deps?: undefined | StoreSelectorDeps,
 ): V
 export function useStore<V, S extends ReduxReducerState, A extends ReduxEvent = ReduxEvent>(
     store: StoreManager<S, A>,
     selector?: undefined | StoreSelector<S, V>,
-    deps?: undefined | Array<unknown> | ReadonlyArray<unknown>,
+    deps?: undefined | StoreSelectorDeps,
 ): V | StoreAccessor<S, A> {
     const [state, dispatch] = store
 
@@ -145,6 +145,7 @@ export interface StoreAccessor<
 
 export type StoreReader<S extends ReduxReducerState> = ReadWriteSync<S>['read']
 export type StoreSelector<S extends ReduxReducerState, V> = (state: S) => V
+export type StoreSelectorDeps = ReactiveSelectorDeps
 
 export interface StoreBoundCase1Options<S extends ReduxReducerState, A extends ReduxEvent = ReduxEvent> {
     store: StoreManager<S, A>
@@ -152,7 +153,7 @@ export interface StoreBoundCase1Options<S extends ReduxReducerState, A extends R
 export interface StoreBoundCase1Exports<S extends ReduxReducerState, A extends ReduxEvent = ReduxEvent> {
     useStore: {
         (selector?: undefined, deps?: undefined): StoreAccessor<S, A>
-        <V>(selector: StoreSelector<S, V>, deps?: undefined | Array<unknown>): V
+        <V>(selector: StoreSelector<S, V>, deps?: undefined | StoreSelectorDeps): V
     }
 }
 
