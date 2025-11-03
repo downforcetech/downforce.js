@@ -108,12 +108,12 @@ export function useStore<S extends ReduxReducerState, A extends ReduxEvent = Red
 export function useStore<V, S extends ReduxReducerState, A extends ReduxEvent = ReduxEvent>(
     store: StoreManager<S, A>,
     selector: StoreSelector<S, V>,
-    deps?: undefined | Array<unknown>,
+    deps?: undefined | Array<unknown> | ReadonlyArray<unknown>,
 ): V
 export function useStore<V, S extends ReduxReducerState, A extends ReduxEvent = ReduxEvent>(
     store: StoreManager<S, A>,
     selector?: undefined | StoreSelector<S, V>,
-    deps?: undefined | Array<unknown>,
+    deps?: undefined | Array<unknown> | ReadonlyArray<unknown>,
 ): V | StoreAccessor<S, A> {
     const [state, dispatch] = store
 

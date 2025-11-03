@@ -75,9 +75,21 @@ export function useReactiveMemo<A extends Array<ReactiveObject<any>>, V>(
     return computedValue
 }
 
-export function useReactiveSelect<V, R>(reactive: ReactiveObject<V>, selector: Io<V, R>, deps?: undefined | Array<unknown>): R
-export function useReactiveSelect<V, R>(reactive: undefined | ReactiveObject<V>, selector: Io<undefined | V, R>, deps?: undefined | Array<unknown>): undefined | R
-export function useReactiveSelect<V, R>(reactive: undefined | ReactiveObject<V>, selector: Io<undefined | V, R>, deps?: undefined | Array<unknown>): undefined | R {
+export function useReactiveSelect<V, R>(
+    reactive: ReactiveObject<V>,
+    selector: Io<V, R>,
+    deps?: undefined | Array<any> | ReadonlyArray<any>,
+): R
+export function useReactiveSelect<V, R>(
+    reactive: undefined | ReactiveObject<V>,
+    selector: Io<undefined | V, R>,
+    deps?: undefined | Array<any> | ReadonlyArray<any>,
+): undefined | R
+export function useReactiveSelect<V, R>(
+    reactive: undefined | ReactiveObject<V>,
+    selector: Io<undefined | V, R>,
+    deps?: undefined | Array<any> | ReadonlyArray<any>,
+): undefined | R {
     const selectedValue = selector(whenSome(reactive, readReactive))
     const [signal, setSignalTransition] = useStateTransition(selectedValue)
 
