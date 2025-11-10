@@ -137,6 +137,7 @@
 @import '@downforce/std.css/text-space.classes.css' layer(std);
 @import '@downforce/std.css/text-space.vars.css' layer(std);
 @import '@downforce/std.css/text-transform.classes.css' layer(std);
+@import '@downforce/std.css/text-trim.classes.css' layer(std);
 @import '@downforce/std.css/text-weight.classes.css' layer(std);
 @import '@downforce/std.css/text-weight.vars.css' layer(std);
 @import '@downforce/std.css/text-wrap.classes.css' layer(std);
