@@ -76,6 +76,7 @@
 @import '@downforce/std.css/layout-gutter-spacing.classes.css' layer(std);
 @import '@downforce/std.css/layout-gutter.vars.css' layer(std);
 @import '@downforce/std.css/layout-inline.classes.css' layer(std);
+@import '@downforce/std.css/layout-invisible.classes.css' layer(std);
 @import '@downforce/std.css/layout-layer.classes.css' layer(std);
 @import '@downforce/std.css/layout-margin-auto.classes.css' layer(std);
 @import '@downforce/std.css/layout-margin.classes.css' layer(std);
