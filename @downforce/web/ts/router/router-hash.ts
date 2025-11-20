@@ -2,14 +2,14 @@ import {createReactiveRef} from '@downforce/std/reactive'
 import {areSameRoutes, decodeRouteParams, encodeLink, mergeRouteChange} from './router-mix.js'
 import type {Router, RouterOptions, RouterRoute, RouterRouteChangeParams} from './router-type.js'
 
-export function createHashRouter<S = unknown>(options?: undefined | RouterOptions): Router<S> {
+export function createHashRouter<S = unknown>(options?: undefined | RouterOptions): Router {
     let active = false
 
     function onRouteChange() {
         self.route.value = decodeHashRoute()
     }
 
-    const self: Router<S> = {
+    const self: Router = {
         route: createReactiveRef(decodeHashRoute()),
 
         get started() {
@@ -41,12 +41,12 @@ export function createHashRouter<S = unknown>(options?: undefined | RouterOption
 
             // The History mutation does not trigger the HashChange event.
             if (routeChange.replace) {
-                history.replaceState(self.route.value.state, '', routeString)
+                history.replaceState(null, '', routeString)
             }
             else {
                 // Algorithm 1:
                 // BEGIN
-                history.pushState(self.route.value.state, '', routeString)
+                history.pushState(null, '', routeString)
                 // END
 
                 // // Algorithm 2 (legacy):
@@ -65,14 +65,13 @@ export function createHashRouter<S = unknown>(options?: undefined | RouterOption
     return self
 }
 
-export function decodeHashRoute<S>(): RouterRoute<S> {
+export function decodeHashRoute(): RouterRoute {
     const {hash} = window.location
     const [pathOptional, paramsString] = hash
         .substring(1) // Without the initial '#'.
         .split('?')
     const path = pathOptional || '/' // The empty string is casted to the root path.
     const params = decodeRouteParams(paramsString)
-    const {state} = history
 
-    return {path, params, state}
+    return {path, params}
 }

@@ -2,14 +2,13 @@ import {createReactiveRef} from '@downforce/std/reactive'
 import {areSameRoutes, encodeLink, mergeRouteChange} from './router-mix.js'
 import type {Router, RouterOptions, RouterRouteChangeParams, RouterRouteParams} from './router-type.js'
 
-export function createMemoryRouter<S = unknown>(options?: undefined | RouterMemoryOptions<S>): Router<S> {
+export function createMemoryRouter<S = unknown>(options?: undefined | RouterMemoryOptions): Router {
     let active = false
 
-    const self: Router<S> = {
+    const self: Router = {
         route: createReactiveRef({
             path: options?.initialPath ?? '/',
             params: options?.initialParams,
-            state: options?.initialState,
         }),
         get started() {
             return active
@@ -39,8 +38,7 @@ export function createMemoryRouter<S = unknown>(options?: undefined | RouterMemo
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface RouterMemoryOptions<S = unknown> extends RouterOptions {
+export interface RouterMemoryOptions extends RouterOptions {
     initialPath?: undefined | string
     initialParams?: undefined | RouterRouteParams
-    initialState?: undefined | S
 }

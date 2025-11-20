@@ -1,10 +1,10 @@
-import {isUrlAbsolute, joinUrlPaths} from '../url.js'
+import {isUrlWithScheme, joinUrlPaths} from '../url.js'
 
 export function joinRequestPath(baseUrl: undefined | string, path: string): string {
     if (! baseUrl) {
         return path
     }
-    if (isUrlAbsolute(path)) {
+    if (isUrlWithScheme(path)) {
         return path
     }
     return joinUrlPaths(baseUrl, path)

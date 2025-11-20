@@ -3,28 +3,27 @@ import type {UrlParams, UrlParamsDict, UrlParamsList} from '../url/url-params.js
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface Router<S = unknown> {
-    readonly route: ReactiveRef<RouterRoute<S>>
+export interface Router {
+    readonly route: ReactiveRef<RouterRoute>
     readonly started: boolean
     start(): void
     stop(): void
     /**
     * @throws InvalidArgument
     **/
-    changeRoute(change: RouterRouteChange<S>): void
+    changeRoute(change: RouterRouteChange): void
     /**
     * @throws InvalidArgument
     **/
     createLink(path: string, params?: undefined | RouterRouteChangeParams): string
 }
 
-export interface RouterRoute<S = unknown> {
+export interface RouterRoute {
     readonly path: string
     readonly params: undefined | RouterRouteParams
-    readonly state: undefined | S
 }
 
-export type RouterObserver<S = unknown> = (route: RouterRoute<S>) => void
+export type RouterObserver = (route: RouterRoute) => void
 
 export interface RouterOptions {
     basePath?: undefined | string
@@ -32,10 +31,9 @@ export interface RouterOptions {
 
 export type RouterRouteParams = Record<string, undefined | string>
 
-export interface RouterRouteChange<S = unknown> {
+export interface RouterRouteChange {
     path?: undefined | string
     params?: undefined | RouterRouteChangeParams
-    state?: undefined | undefined | S
     replace?: undefined | boolean
 }
 

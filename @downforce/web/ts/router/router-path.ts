@@ -3,7 +3,7 @@ import {asBaseUrl} from '../url/url-path.js'
 import {mergeRouteChange, areSameRoutes, encodeLink, decodeRouteParams} from './router-mix.js'
 import type {RouterOptions, Router, RouterRouteChangeParams, RouterRoute} from './router-type.js'
 
-export function createPathRouter<S = unknown>(options?: undefined | RouterOptions): Router<S> {
+export function createPathRouter<S = unknown>(options?: undefined | RouterOptions): Router {
     const basePath = asBaseUrl(options?.basePath)
     let active = false
 
@@ -11,7 +11,7 @@ export function createPathRouter<S = unknown>(options?: undefined | RouterOption
         self.route.value = decodePathRoute(basePath)
     }
 
-    const self: Router<S> = {
+    const self: Router = {
         route: createReactiveRef(decodePathRoute(basePath)),
 
         get started() {
@@ -43,10 +43,10 @@ export function createPathRouter<S = unknown>(options?: undefined | RouterOption
 
             // The History mutation does not trigger the PopState event.
             if (routeChange.replace) {
-                history.replaceState(self.route.value.state, '', routeString)
+                history.replaceState(null, '', routeString)
             }
             else {
-                history.pushState(self.route.value.state, '', routeString)
+                history.pushState(null, '', routeString)
             }
         },
         createLink(path: string, params?: undefined | RouterRouteChangeParams) {
@@ -57,7 +57,7 @@ export function createPathRouter<S = unknown>(options?: undefined | RouterOption
     return self
 }
 
-export function decodePathRoute<S>(basePath: string): RouterRoute<S> {
+export function decodePathRoute(basePath: string): RouterRoute {
     const {pathname, search} = window.location
     const path = basePath
         ? pathname.slice(basePath.length) // pathname.replace(basePath, '')
@@ -65,7 +65,5 @@ export function decodePathRoute<S>(basePath: string): RouterRoute<S> {
     const params = decodeRouteParams(
         search.substring(1) // Without the initial '?'.
     )
-    const {state} = history
-
-    return {path, params, state}
+    return {path, params}
 }

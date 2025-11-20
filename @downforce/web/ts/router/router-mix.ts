@@ -2,27 +2,25 @@ import {isString} from '@downforce/std/string'
 import {encodeUrlParamKey, encodeUrlParams, encodeUrlParamValue, joinUrlWithParamsString} from '../url/url-params.js'
 import type {RouterRoute, RouterRouteChange, RouterRouteChangeParams, RouterRouteParams} from './router-type.js'
 
-export function areSameRoutes<S>(firstRoute: RouterRoute<S>, secondRoute: RouterRoute<S>): boolean {
+export function areSameRoutes(firstRoute: RouterRoute, secondRoute: RouterRoute): boolean {
     const samePath = firstRoute.path === secondRoute.path
     const sameParams = encodeUrlParams(firstRoute.params) === encodeUrlParams(secondRoute.params)
-    const sameState = firstRoute.state === secondRoute.state
-    return samePath && sameParams && sameState
+    return samePath && sameParams
 }
 
-export function mergeRouteChange<S>(route: RouterRoute<S>, routeChange: RouterRouteChange<S>): RouterRoute<S> {
+export function mergeRouteChange(route: RouterRoute, routeChange: RouterRouteChange): RouterRoute {
     const [changePath, changePathParamsString] = routeChange.path?.split('?') ?? []
     const changePathParams = decodeRouteParams(changePathParamsString)
     const changeParams = flattenRouteParams(routeChange.params)
 
     return {
         path: changePath || route.path, // changePath can be an empty string.
-        // Params and State, if not provided, must be set to undefined.
+        // Params, if not provided, must be set to undefined.
         params: changePathParams && changeParams
             // changeParams has precedence over (overwrites) changePathParams.
             ? {...changePathParams, ...changeParams} // Merge.
-            : (changeParams ?? changePathParams) // First one defined "wins".
+            : (changeParams ?? changePathParams) // First one defined wins.
         ,
-        state: routeChange.state,
     }
 }
 
