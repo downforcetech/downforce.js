@@ -1,12 +1,12 @@
 import {arrayWrap} from '@downforce/std/array'
 import {compute, type Computable, type Fn, type Io, type Task} from '@downforce/std/fn'
+import {isDefined} from '@downforce/std/optional'
 import {isPromise} from '@downforce/std/promise'
 import {escapeRegexp} from '@downforce/std/regexp'
-import {isString} from '@downforce/std/string'
 import {exact, matchRoutePattern, testRoutePattern, type RoutePattern, type RoutePatterns} from '@downforce/web/route'
 import type {Router, RouterRoute, RouterRouteChange, RouterRouteChangeParams, RouterRouteChangeParamsDict, RouterRouteParams} from '@downforce/web/router'
 import {encodeLink} from '@downforce/web/router'
-import {isUrlAbsolute} from '@downforce/web/url'
+import {isUrlWithScheme} from '@downforce/web/url'
 import {Children, isValidElement, useCallback, useContext, useEffect, useMemo, useRef} from 'react'
 import {classes} from './classes.js'
 import {defineContext} from './ctx.js'
@@ -167,13 +167,13 @@ export function CaseRoute(props: Props<CaseRouteProps>): undefined {
 /*
 * EXAMPLE
 *
-* <Route to="/book/123" if={formSaved}>
+* <Route path="/book/123" if={formSaved}>
 *     <button>Click</button>
 * </Route>
-* <Route to="/book/123" if={() => formSaved ? true : false}>
+* <Route path="/book/123" if={() => formSaved ? true : false}>
 *     <button>Click</button>
 * </Route>
-* <Route to="/book/123" if={() => Promise.resolve(formSaved)}>
+* <Route path="/book/123" if={() => Promise.resolve(formSaved)}>
 *     <button>Click</button>
 * </Route>`
 * <Route params={{...route.params, id: 123}}>
@@ -187,29 +187,31 @@ export function Route(props: Props<RouteProps>): React.JSX.Element {
         if: guard,
         params,
         replace: replaceOptional,
-        state,
-        to,
+        path,
         ...otherProps
     } = props
+    const replace = replaceOptional ?? false
+
     const {changeRoute, link} = useRouter()
     const {testRoutePath} = useRoutePathTest()
-    const routePath = useRoutePath()
-    const hrefPath = to ?? routePath
+    const currentRoutePath = useRoutePath()
+
+    const pathOrCurrentPath = path ?? currentRoutePath
 
     const href = useMemo(() => {
-        return link(hrefPath, params)
-    }, [hrefPath, params])
+        return link(pathOrCurrentPath, params)
+    }, [pathOrCurrentPath, params])
 
     const active = useMemo(() => {
-        if (! to) {
+        if (! path) {
             return false
         }
 
-        const pathEscaped = escapeRegexp(to)
+        const pathEscaped = escapeRegexp(path)
         const pathPattern = activeExact ? exact(pathEscaped) : pathEscaped
 
         return testRoutePath(pathPattern)
-    }, [to, testRoutePath])
+    }, [path, testRoutePath])
 
     const onClick = useCallback((event: React.MouseEvent) => {
         if (event.defaultPrevented) {
@@ -225,9 +227,7 @@ export function Route(props: Props<RouteProps>): React.JSX.Element {
                 return
             }
 
-            const replace = replaceOptional ?? false
-
-            changeRoute({path: to, params, state, replace})
+            changeRoute({path: path, params, replace})
         }
 
         const guardResult = compute(guard)
@@ -240,7 +240,7 @@ export function Route(props: Props<RouteProps>): React.JSX.Element {
             // Sync behavior.
             tryRouting(guardResult)
         }
-    }, [changeRoute, to, params, state, replaceOptional, guard])
+    }, [changeRoute, path, params, replace, guard])
 
     return (
         <a
@@ -255,17 +255,18 @@ export function Route(props: Props<RouteProps>): React.JSX.Element {
 }
 
 export function Link(props: Props<LinkProps>): React.JSX.Element {
-    const {className, params, replace, state, to, ...otherProps} = props
-    const isLink = isString(to) && isUrlAbsolute(to)
+    const {className, params, path, replace, ...otherProps} = props
 
-    if (isLink) {
+    const pathIsUrlWithScheme = isDefined(path) && isUrlWithScheme(path)
+
+    if (pathIsUrlWithScheme) {
         return (
             <a
                 target="_blank"
                 data-link-type="link"
                 {...otherProps}
                 className={classes('Link-b705', className)}
-                href={encodeLink(to, params)}
+                href={encodeLink(path, params)}
             />
         )
     }
@@ -275,40 +276,40 @@ export function Link(props: Props<LinkProps>): React.JSX.Element {
             data-link-type="route"
             {...otherProps}
             className={classes('Link-b705', className)}
-            to={to}
+            path={path}
             params={params}
-            state={state}
             replace={replace}
         />
     )
 }
 
 export function Redirect(props: Props<RedirectProps>): React.ReactNode {
-    const {children, params, replace: replaceOptional, state, to: path} = props
-    const {changeRoute} = useRouter()
+    const {children, params, path, replace: replaceOptional} = props
     const replace = replaceOptional ?? true
+
+    const {changeRoute} = useRouter()
 
     useEffect(() => {
         if (! path && ! params) {
             return
         }
 
-        changeRoute({path, params, state, replace})
+        changeRoute({path: path, params: params, replace: replace})
     }, [])
 
     return children
 }
 
-export function useRouterContext<S = unknown>(): undefined | Router<S> {
-    return useContext(RouterContext as React.Context<undefined | Router<S>>)
+export function useRouterContext(): undefined | Router {
+    return useContext(RouterContext as React.Context<undefined | Router>)
 }
 
-export function useRouter<S = unknown>(): RouterManager<S> {
-    const routerContext = useRouterContext<S>()!
+export function useRouter(): RouterManager {
+    const routerContext = useRouterContext()!
 
-    const readRoute = useRouteRead<S>()
+    const readRoute = useRouteRead()
 
-    const changeRoute = useCallback((args: RouterRouteChangeComputable<S>) => {
+    const changeRoute = useCallback((args: RouterRouteChangeComputable) => {
         const {params, ...otherArgs} = args
         const paramsComputed = compute(params, readRoute().params)
 
@@ -346,17 +347,16 @@ export function useRouterLink(): (path: string, params?: undefined | RouterRoute
     return routerContext.createLink
 }
 
-export function useRoute<S = unknown>(): RouteManager<S> {
+export function useRoute(): RouteManager {
     return {
         routePath: useRoutePath(),
         routeParams: useRouteParams(),
-        routeState: useRouteState<S>(),
         routeArgs: useRouteArgs(),
     }
 }
 
-export function useRouteRead<S = unknown>(): Task<RouterRoute<S>> {
-    const routerContext = useRouterContext<S>()!
+export function useRouteRead(): Task<RouterRoute> {
+    const routerContext = useRouterContext()!
 
     const readRoute = useCallback(() => {
         return routerContext.route.value
@@ -389,13 +389,6 @@ export function useRouteParams(): RouterRoute['params'] {
     const routeParams = useReactiveSelect(routerContext.route, RouterSelectors.selectRouteParams)
 
     return routeParams
-}
-
-export function useRouteState<S = unknown>(): RouterRoute<S>['state'] {
-    const routerContext = useRouterContext<S>()!
-    const routeState = useReactiveSelect(routerContext.route, RouterSelectors.selectRouteState<S>)
-
-    return routeState
 }
 
 export function useRouteArgs(): RouteArgs {
@@ -457,21 +450,18 @@ export const RouterSelectors = {
     selectRouteParams(route: RouterRoute): undefined | RouterRouteParams {
         return route.params
     },
-    selectRouteState<S>(route: RouterRoute<S>): undefined | S {
-        return route.state
-    },
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface RouterProviderProps<S = unknown> {
+export interface RouterProviderProps {
     children: undefined | React.ReactNode
-    router: Router<S>
+    router: Router
 }
 
-export interface RouterProviderProps<S = unknown> {
+export interface RouterProviderProps {
     children: undefined | React.ReactNode
-    router: Router<S>
+    router: Router
 }
 
 export interface RouteArgsProviderProps {
@@ -508,19 +498,20 @@ export interface RedirectProps extends RoutingProps {
 }
 
 export interface RoutingProps extends Omit<RouterRouteChange, 'path'> {
-    to?: undefined | RouterRouteChange['path']
+    path?: undefined | RouterRouteChange['path']
+    params?: undefined | RouterRouteChange['params']
+    replace?: undefined | RouterRouteChange['replace']
 }
 
-export interface RouterManager<S = unknown> {
-    changeRoute(args: RouterRouteChangeComputable<S>): void
+export interface RouterManager {
+    changeRoute(args: RouterRouteChangeComputable): void
     link(path: string, params?: undefined | RouterRouteChangeParams): string
-    readRoute(): RouterRoute<S>
+    readRoute(): RouterRoute
 }
 
-export interface RouteManager<S = unknown> {
-    routePath: RouterRoute<S>['path']
-    routeParams: RouterRoute<S>['params']
-    routeState: RouterRoute<S>['state']
+export interface RouteManager {
+    routePath: RouterRoute['path']
+    routeParams: RouterRoute['params']
     routeArgs: RouteArgs
 }
 
@@ -530,7 +521,7 @@ export interface RoutePathTester {
     matchRoutePath(pattern: RoutePattern): undefined | RegExpMatchArray
 }
 
-export interface RouterRouteChangeComputable<S = unknown> extends Omit<RouterRouteChange<S>, 'params'> {
+export interface RouterRouteChangeComputable extends Omit<RouterRouteChange, 'params'> {
     params?: undefined | Computable<
         undefined | RouterRouteChangeParams,
         [routeParams: undefined | RouterRouteParams]
