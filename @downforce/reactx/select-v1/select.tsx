@@ -11,12 +11,11 @@ import {
     useSelectManyProvider,
     useSelectOneProvider,
     type SelectContextValue,
-    type SelectProviderOptions
+    type SelectProviderOptions,
 } from './select.hook.js'
 
 export * from './select.api.js'
 export {SelectContext, useSelectManyContext, useSelectOneContext, type SelectContextValue} from './select.hook.js'
-
 
 export function Select<V, S, O extends object = object>(props: Props<SelectProps<V, S, O>>): React.JSX.Element {
     const {className, context, ref, slots, teleport} = props

@@ -42,7 +42,7 @@
     transition: all var(--std-duration2);
     transform-origin: 0 0;
 }
-.item-988a.selected {
+.item-988a[data-selected=true] {
     transform: scale(1.1);
     color: var(--std-color-primary-accent);
     border-bottom-color: currentColor;
@@ -71,7 +71,7 @@
     .item-988a {
         white-space: nowrap;
     }
-    .item-988a.selected {
+    .item-988a[data-selected=true] {
         transform: unset;
     }
 }

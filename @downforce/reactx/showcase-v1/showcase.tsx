@@ -60,11 +60,10 @@ export function Showcase(props: ShowcaseProps): React.JSX.Element {
                 {items.map((it, idx) =>
                     <Route
                         key={idx}
-                        className={classes('item-988a', {
-                            selected: idOfShowcase(it) === selected,
-                        })}
-                        to={routePath}
+                        className="item-988a"
+                        path={routePath}
                         params={{...routeParams, id: idOfShowcase(it)}}
+                        data-selected={idOfShowcase(it) === selected}
                     >
                         {it[0]}
                     </Route>
