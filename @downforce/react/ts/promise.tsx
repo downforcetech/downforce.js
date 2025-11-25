@@ -1,6 +1,6 @@
 import {compute, type Computable} from '@downforce/std/fn'
 import {isDefined} from '@downforce/std/optional'
-import {useMemo, useRef} from 'react'
+import {startTransition, useMemo, useRef} from 'react'
 import {useRender} from './render.js'
 
 export function Await<V>(props: AwaitProps<V>): React.ReactNode {
@@ -36,11 +36,17 @@ export function usePromise<V>(promise: undefined | Promise<V>): undefined | Prom
         promise.then(
             result => {
                 registryRef.current.set(promise, {stage: 'fulfilled', result: result})
-                render()
+
+                startTransition(() => {
+                    render()
+                })
             },
             error => {
                 registryRef.current.set(promise, {stage: 'rejected', error: error})
-                render()
+
+                startTransition(() => {
+                    render()
+                })
             },
         )
         return {stage: 'pending'} satisfies PromiseState<V>

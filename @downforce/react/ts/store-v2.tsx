@@ -1,7 +1,6 @@
 import {getReduxEvent, type ReduxEvent, type ReduxEventPolymorphic, type ReduxReducerArgs, type ReduxReducerId, type ReduxReducerState} from '@downforce/std/redux'
-import {useCallback, useContext, useMemo, useRef} from 'react'
+import {startTransition, useCallback, useContext, useMemo, useRef, useState} from 'react'
 import {defineContext} from './ctx.js'
-import {useStateTransition} from './state.js'
 
 export const StoreContextV2: React.Context<undefined | StoreV2> = defineContext<StoreV2>('StoreContextV2')
 
@@ -28,7 +27,7 @@ export function useStoreV2Provider<
     A extends ReduxEvent,
 >(args: StoreDefinitionV2<S, A>): StoreV2<S, A> {
     const {createState, reduce, observer} = args
-    const [state, setState] = useStateTransition(createState)
+    const [state, setState] = useState(createState)
     const stateRef = useRef(state)
 
     const dispatch = useCallback((...polymorphicArgs: ReduxEventPolymorphic): S => {
@@ -39,7 +38,9 @@ export function useStoreV2Provider<
 
         stateRef.current = newState
 
-        setState(newState)
+        startTransition(() => {
+            setState(newState)
+        })
 
         observer?.(id, args, newState, oldState)
 

@@ -1,6 +1,5 @@
 import {hasBrowserTouch} from '@downforce/web/browser'
-import {useEffect} from 'react'
-import {useStateTransition} from './state.js'
+import {startTransition, useEffect, useState} from 'react'
 
 export function useBrowserFeaturesClassesProvider(activeOptional?: undefined | boolean): void {
     const features = useBrowserFeatures()
@@ -25,13 +24,15 @@ export function useBrowserFeaturesClassesProvider(activeOptional?: undefined | b
 }
 
 export function useBrowserFeatures(): BrowserFeatures {
-    const [features, setFeatures] = useStateTransition(listBrowserFeatures)
+    const [features, setFeatures] = useState(listBrowserFeatures)
 
     useEffect(() => {
         // Compatibility with DevTools:
         // supports switching between desktop and mobile inspectors.
         function updateFeatures() {
-            setFeatures(listBrowserFeatures())
+            startTransition(() => {
+                setFeatures(listBrowserFeatures())
+            })
         }
 
         window.addEventListener('resize', updateFeatures)

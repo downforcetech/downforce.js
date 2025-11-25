@@ -1,5 +1,5 @@
 import {compute, type Io} from '@downforce/std/fn'
-import {startTransition, useCallback, useRef, useState} from 'react'
+import {useCallback, useRef, useState} from 'react'
 
 export function useStateAccessor<S>(initialState: StateInit<S>): StateAccessorManager<S> {
     const [state, PRIVATE_setState] = useState(initialState)
@@ -16,18 +16,6 @@ export function useStateAccessor<S>(initialState: StateInit<S>): StateAccessorMa
 
         PRIVATE_setState(newState)
     }, [])
-
-    return [state, setState, getState]
-}
-
-export function useStateTransition<S>(initialState: StateInit<S>): StateAccessorManager<S> {
-    const [state, PRIVATE_setState, getState] = useStateAccessor(initialState)
-
-    const setState = useCallback((newStateComputed: StateWriterArg<S>): void => {
-        startTransition(() => {
-            PRIVATE_setState(newStateComputed)
-        })
-    }, [PRIVATE_setState])
 
     return [state, setState, getState]
 }

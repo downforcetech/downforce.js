@@ -2,8 +2,8 @@ import {arrayWrap} from '@downforce/std/array'
 import {debounced, throttled, type EventTask} from '@downforce/std/event'
 import type {Fn, FnArgs, Task} from '@downforce/std/fn'
 import type {None} from '@downforce/std/optional'
-import {useCallback, useEffect, useLayoutEffect, useMemo, useRef} from 'react'
-import {useStateTransition, type StateAccessorManager, type StateInit} from './state.js'
+import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react'
+import {useStateAccessor, type StateAccessorManager, type StateInit} from './state.js'
 
 export function useEvent<E extends Event>(
     targetRefOrRefs: React.RefObject<None | EventElement> | Array<React.RefObject<None | EventElement>>,
@@ -97,7 +97,7 @@ export function useCallbackDelayed(callback: Function, delayMs: number): {run: T
 export function useStateDebounced<T>(initialValue: undefined, delay: number): StateAccessorManager<undefined | T>
 export function useStateDebounced<T>(initialValue: StateInit<T>, delay: number): StateAccessorManager<T>
 export function useStateDebounced<T>(initialValue: undefined | T, delay: number): StateAccessorManager<undefined | T> {
-    const [value, setValue, getValue] = useStateTransition(initialValue)
+    const [value, setValue, getValue] = useStateAccessor(initialValue)
     const setValueDebounced = useCallbackDebounced(setValue, delay)
 
     return [value, setValueDebounced, getValue]
@@ -106,18 +106,20 @@ export function useStateDebounced<T>(initialValue: undefined | T, delay: number)
 export function useStateThrottled<T>(initialValue: undefined, delay: number): StateAccessorManager<undefined | T>
 export function useStateThrottled<T>(initialValue: StateInit<T>, delay: number): StateAccessorManager<T>
 export function useStateThrottled<T>(initialValue: undefined | StateInit<T>, delay: number): StateAccessorManager<undefined | T> {
-    const [value, setValue, getValue] = useStateTransition(initialValue)
+    const [value, setValue, getValue] = useStateAccessor(initialValue)
     const setValueThrottled = useCallbackThrottled(setValue, delay)
 
     return [value, setValueThrottled, getValue]
 }
 
 export function useValueDebounced<V>(input: V, delay: number): V {
-    const [output, setOutput] = useStateTransition(input)
+    const [output, setOutput] = useState(input)
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
-            setOutput(input)
+            startTransition(() => {
+                setOutput(input)
+            })
         }, delay)
 
         function onClean() {

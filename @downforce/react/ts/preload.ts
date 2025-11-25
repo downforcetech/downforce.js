@@ -1,14 +1,18 @@
 import {exposePreloadHintElement, type PreloadElementAttrs, type PreloadElementOptions} from '@downforce/web/preload'
-import {useConditionalEffect} from './effect.js'
+import {useEffect} from 'react'
 
 export type {PreloadElementAttrs} from '@downforce/web/preload'
 
 export function usePreloadHint(attrs: PreloadElementAttrs, options?: undefined | UsePreloadHintOptions): void {
     const active = options?.active ?? true
 
-    useConditionalEffect(active, () => {
+    useEffect(() => {
+        if (! active) {
+            return
+        }
+
         exposePreloadHintElement(attrs, options)
-    })
+    }, [active])
 }
 
 // Types ///////////////////////////////////////////////////////////////////////

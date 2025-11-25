@@ -1,6 +1,5 @@
 import type {Task} from '@downforce/std/fn'
-import {useCallback} from 'react'
-import {useStateTransition} from './state.js'
+import {useCallback, useState} from 'react'
 
 /*
 * Used to force the rendering of a component.
@@ -12,18 +11,18 @@ export function useRender(): Task {
 }
 
 export function useRenderSignal(): [RenderSignal, Task] {
-    const [signal, setSignalTransition] = useStateTransition([])
+    const [signal, setSignal] = useState([])
 
-    const notify = useCallback(() => {
+    const render = useCallback(() => {
         // Don't use -1/1 or !boolean, which don't work on even number of consecutive calls.
         // Don't use ++number, which can overflow Number.MAX_SAFE_INTEGER.
         // [] is faster and memory cheaper than
         // {} which is faster than
         // Object.create(null).
-        setSignalTransition([])
+        setSignal([])
     }, [])
 
-    return [signal, notify]
+    return [signal, render]
 }
 
 // Types ///////////////////////////////////////////////////////////////////////

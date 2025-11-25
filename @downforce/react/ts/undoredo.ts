@@ -1,6 +1,6 @@
 import {compute} from '@downforce/std/fn'
 import {createHistory} from '@downforce/std/undoredo'
-import {useCallback, useMemo} from 'react'
+import {startTransition, useCallback, useMemo} from 'react'
 import {useRender} from './render.js'
 import type {StateWriterArg} from './state.js'
 
@@ -13,7 +13,9 @@ export function useUndoRedo<S>(initState: S | (() => S)): UndoRedoManager<S> {
             const currentState = fn(...args)
 
             if (currentState !== previousState) {
-                render()
+                startTransition(() => {
+                    render()
+                })
             }
 
             return currentState

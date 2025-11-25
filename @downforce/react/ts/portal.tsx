@@ -2,7 +2,7 @@ import {useContext, useMemo} from 'react'
 import {createPortal} from 'react-dom'
 import {Box, type BoxProps} from './box.js'
 import {defineContext} from './ctx.js'
-import {useStateTransition, type StateAccessorManager} from './state.js'
+import {useStateAccessor, type StateAccessorManager} from './state.js'
 
 export const PortalContext: React.Context<undefined | StateAccessorManager<null | PortalElement>> = defineContext<StateAccessorManager<null | PortalElement>>('PortalContext')
 
@@ -61,7 +61,7 @@ export function Teleport(props: TeleportProps): undefined | React.ReactPortal {
 }
 
 export function usePortalProvider(): StateAccessorManager<null | PortalElement> {
-    const [element, setElement, getElement] = useStateTransition<null | PortalElement>(null)
+    const [element, setElement, getElement] = useStateAccessor<null | PortalElement>(null)
 
     return useMemo(() => [element, setElement, getElement], [element, setElement, getElement])
 }

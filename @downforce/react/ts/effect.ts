@@ -1,16 +1,6 @@
 import type {Fn, Task} from '@downforce/std/fn'
 import {useEffect, useRef, type EffectCallback} from 'react'
 
-export function useConditionalEffect(active: boolean, effect: EffectCallback): void {
-    useEffect(() => {
-        if (! active) {
-            return
-        }
-
-        return effect()
-    }, [active])
-}
-
 /*
 * useEffect(fn, deps) but with inverted arguments (deps, fn) and deps as function arguments.
 */
