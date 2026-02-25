@@ -3,7 +3,6 @@
     "include": ["${configDir}/**/*.ts"],
     "references": [{"path": "../tsconfig.json"}],
     "compilerOptions": {
-        "baseUrl": null,
         "declaration": null,
         "declarationMap": null,
         "incremental": null,

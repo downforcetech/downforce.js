@@ -3,7 +3,6 @@
     "include": ["./**/*.ts", "./**/*.tsx"],
     "exclude": ["./**/*.d.ts"],
     "compilerOptions": {
-        "baseUrl": ".",
         "declarationMap": false,
         "outDir": ".",
         "rootDir": ".",
