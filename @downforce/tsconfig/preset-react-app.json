@@ -4,6 +4,7 @@
         "./with-api-web.json"
     ],
     "compilerOptions": {
+        "allowImportingTsExtensions": true,
         "allowSyntheticDefaultImports": true,
         "incremental": true,
         "jsx": "react-jsx",
