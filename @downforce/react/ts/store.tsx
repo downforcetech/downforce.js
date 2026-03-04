@@ -148,6 +148,13 @@ export function useStore<V, S extends ReduxReducerState, A extends ReduxEvent = 
     return {dispatch, readState}
 }
 
+export function defineSelector<S extends object, V>(
+    selector: StoreSelector<S, V>,
+    ...deps: StoreSelectorDeps
+): StoreSelectorWithDeps<S, V> {
+    return [selector, deps]
+}
+
 // Types ///////////////////////////////////////////////////////////////////////
 
 export type StoreManager<
@@ -165,10 +172,10 @@ export interface StoreAccessor<
 
 export type StoreReader<S extends ReduxReducerState> = ReadWriteSync<S>['read']
 export type StoreSelector<S extends ReduxReducerState, V> = (state: S) => V
+export type StoreSelectorWithDeps<S extends ReduxReducerState, V> = [selector: StoreSelector<S, V>, StoreSelectorDeps]
+export type StoreSelectorWithDepsRo<S extends ReduxReducerState, V> = readonly [selector: StoreSelector<S, V>, StoreSelectorDeps]
 export type StoreSelectorDeps = ReactiveSelectorDeps
-export type StoreSelectorArgs<S extends ReduxReducerState, V> =
-    | [selector: StoreSelector<S, V>, StoreSelectorDeps]
-    | readonly [selector: StoreSelector<S, V>, StoreSelectorDeps]
+export type StoreSelectorArgs<S extends ReduxReducerState, V> = StoreSelectorWithDeps<S, V> | StoreSelectorWithDepsRo<S, V>
 
 export interface StoreBoundCase1Options<S extends ReduxReducerState, A extends ReduxEvent = ReduxEvent> {
     store: StoreManager<S, A>
