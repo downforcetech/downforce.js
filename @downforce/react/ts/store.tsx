@@ -1,3 +1,4 @@
+import {isArray} from '@downforce/std/array'
 import {createReactive, readReactive, writeReactive, type ReactiveObject} from '@downforce/std/reactive'
 import {getReduxEvent, type ReduxEvent, type ReduxEventPolymorphic, type ReduxReducerState} from '@downforce/std/redux'
 import type {ReadWriteSync} from '@downforce/std/store'
@@ -30,9 +31,15 @@ export function setupStoreUsingSingleton<S extends ReduxReducerState, A extends 
     const {store} = options
 
     return {
-        useStore<V>(selector?: undefined | StoreSelector<S, V>, deps?: undefined | StoreSelectorDeps) {
-            if (selector) {
-                return useStore(store, selector, deps)
+        useStore<V>(
+            selectorOrArgs?: undefined | StoreSelector<S, V> | StoreSelectorArgs<S, V>,
+            depsOptional?: undefined | StoreSelectorDeps,
+        ) {
+            if (selectorOrArgs && isArray(selectorOrArgs)) {
+                return useStore(store, selectorOrArgs[0], selectorOrArgs[1])
+            }
+            if (selectorOrArgs) {
+                return useStore(store, selectorOrArgs, depsOptional)
             }
             return useStore(store)
         },
@@ -59,9 +66,15 @@ export function setupStoreUsingContext<S extends ReduxReducerState, A extends Re
             return useContext(Context)
         },
         useStoreProvider: useStoreProvider<S, A>,
-        useStore<V>(selector?: undefined | StoreSelector<S, V>, deps?: undefined | StoreSelectorDeps) {
-            if (selector) {
-                return useStore(useContext(Context)!, selector, deps)
+        useStore<V>(
+            selectorOrArgs?: undefined | StoreSelector<S, V> | StoreSelectorArgs<S, V>,
+            depsOptional?: undefined | StoreSelectorDeps,
+        ) {
+            if (selectorOrArgs && isArray(selectorOrArgs)) {
+                return useStore(useContext(Context)!, selectorOrArgs[0], selectorOrArgs[1])
+            }
+            if (selectorOrArgs) {
+                return useStore(useContext(Context)!, selectorOrArgs, depsOptional)
             }
             return useStore(useContext(Context)!)
         },
@@ -112,13 +125,20 @@ export function useStore<V, S extends ReduxReducerState, A extends ReduxEvent = 
 ): V
 export function useStore<V, S extends ReduxReducerState, A extends ReduxEvent = ReduxEvent>(
     store: StoreManager<S, A>,
-    selector?: undefined | StoreSelector<S, V>,
-    deps?: undefined | StoreSelectorDeps,
+    args: StoreSelectorArgs<S, V>,
+): V
+export function useStore<V, S extends ReduxReducerState, A extends ReduxEvent = ReduxEvent>(
+    store: StoreManager<S, A>,
+    selectorOrArgs?: undefined | StoreSelector<S, V> | StoreSelectorArgs<S, V>,
+    depsOptional?: undefined | StoreSelectorDeps,
 ): V | StoreAccessor<S, A> {
     const [state, dispatch] = store
 
-    if (selector) {
-        return useReactiveSelect(state, selector, deps)
+    if (selectorOrArgs && isArray(selectorOrArgs)) {
+        return useReactiveSelect(state, selectorOrArgs[0], selectorOrArgs[1])
+    }
+    if (selectorOrArgs) {
+        return useReactiveSelect(state, selectorOrArgs, depsOptional)
     }
 
     const readState = useCallback(() => {
@@ -146,14 +166,18 @@ export interface StoreAccessor<
 export type StoreReader<S extends ReduxReducerState> = ReadWriteSync<S>['read']
 export type StoreSelector<S extends ReduxReducerState, V> = (state: S) => V
 export type StoreSelectorDeps = ReactiveSelectorDeps
+export type StoreSelectorArgs<S extends ReduxReducerState, V> =
+    | [selector: StoreSelector<S, V>, StoreSelectorDeps]
+    | readonly [selector: StoreSelector<S, V>, StoreSelectorDeps]
 
 export interface StoreBoundCase1Options<S extends ReduxReducerState, A extends ReduxEvent = ReduxEvent> {
     store: StoreManager<S, A>
 }
 export interface StoreBoundCase1Exports<S extends ReduxReducerState, A extends ReduxEvent = ReduxEvent> {
     useStore: {
-        (selector?: undefined, deps?: undefined): StoreAccessor<S, A>
+        (): StoreAccessor<S, A>
         <V>(selector: StoreSelector<S, V>, deps?: undefined | StoreSelectorDeps): V
+        <V>(args: StoreSelectorArgs<S, V>): V
     }
 }
 
