@@ -1,13 +1,13 @@
 packages: ['@downforce/*', '@downforce/*/tests']
 
-onlyBuiltDependencies: ['esbuild']
-ignoredBuiltDependencies: ['nx']
+allowBuilds:
+    'esbuild': true
+    'nx': false
 
 managePackageManagerVersions: true
 packageManagerStrictVersion: true
 
 optimisticRepeatInstall: true
-verifyDepsBeforeRun: install
 
 autoInstallPeers: true
 strictDepBuilds: true
