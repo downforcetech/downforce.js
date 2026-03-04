@@ -29,8 +29,8 @@ export function mergeRequestHeaders(...headersList: Array<HeadersInit>): Record<
         }
         else {
             return throwInvalidArgument(
-                '@downforce/web/request-headers.mergeRequestHeaders(...list: Array<headers>):\n'
-                + `headers must be undefined | null | Object | Array | Headers, given "${headers}".`
+                '@downforce/web/request.mergeRequestHeaders(...list: Array<HeadersInit>):\n'
+                + `HeadersInit must be undefined | null | Object | Array | Headers, given "${headers}".`
             )
         }
     }
