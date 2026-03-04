@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+set -e
+set -u
+
+case $(dirname "$0") in
+  /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
+  *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
+esac
+
+repo_dir=$(cd "$Dir/.." && pwd)
+
+echo '╭─ Cleaning NX cache'
+"$Dir/nx" reset | sed -e 's/^/│ /'
+# echo "├─ $PWD/.nx/"
+# (cd "$repo_dir" && rm -rf "$PWD/.nx/")
+# echo "├─ $PWD/.cache/nx/"
+# (cd "$repo_dir" && rm -rf "$PWD/.cache/nx/")
+echo '╰─ ✓ done'
