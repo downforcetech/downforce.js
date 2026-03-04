@@ -150,7 +150,7 @@ export function useStore<V, S extends ReduxReducerState, A extends ReduxEvent = 
 
 export function defineSelector<S extends object, V>(
     selector: StoreSelector<S, V>,
-    ...deps: StoreSelectorDeps
+    deps: StoreSelectorDeps,
 ): StoreSelectorWithDeps<S, V> {
     return [selector, deps]
 }
