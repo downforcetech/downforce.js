@@ -1,4 +1,4 @@
-export function isArray(value: unknown): value is Array<unknown> {
+export function isArray(value: unknown): value is Array<unknown> | ReadonlyArray<unknown> {
     if (! value) {
         return false
     }
