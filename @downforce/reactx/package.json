@@ -15,7 +15,7 @@
     "scripts": {
         "clean": "rm -rf ./node_modules/.cache/ || true",
         "build": "tsc --project ./tsconfig.json --listEmittedFiles",
-        "prepack": "node --run clean; node --run build",
+        "prepack": "node --run clean && node --run build",
         "preversion": "node --run build"
     },
     "dependencies": {

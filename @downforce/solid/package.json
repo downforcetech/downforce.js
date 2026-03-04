@@ -12,9 +12,9 @@
         "./*": "./esm/*.js"
     },
     "scripts": {
-        "clean": "rm -rf ./esm/ || true; rm -rf ./node_modules/.cache/ || true",
+        "clean": "rm -rf ./esm/ ./node_modules/.cache/ || true",
         "build": "babel ./ts/ --out-dir ./esm/ --extensions '.ts,.tsx' --ignore '**/*.d.ts','node_modules/**/*' && tsc --listEmittedFiles",
-        "prepack": "node --run clean; node --run build",
+        "prepack": "node --run clean && node --run build",
         "preversion": "node --run build"
     },
     "dependencies": {

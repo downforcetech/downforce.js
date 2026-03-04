@@ -12,10 +12,10 @@
         "./*": "./esm/*.js"
     },
     "scripts": {
-        "clean": "rm -rf ./esm/ || true; rm -rf ./node_modules/.cache/ || true",
+        "clean": "rm -rf ./esm/ ./node_modules/.cache/ || true",
         "build": "tsc --project ./tsconfig.json --listEmittedFiles && tsc --project ./tests/tsconfig.json",
         "test": "node --run build && tsx --test",
-        "prepack": "node --run clean; node --run build && node --run test",
+        "prepack": "node --run clean && node --run build && node --run test",
         "preversion": "node --run build && node --run test"
     },
     "dependencies": {
