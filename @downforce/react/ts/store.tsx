@@ -1,4 +1,4 @@
-import {isArray} from '@downforce/std/array'
+import {isArrayReadonly} from '@downforce/std/array'
 import {createReactive, readReactive, writeReactive, type ReactiveObject} from '@downforce/std/reactive'
 import {getReduxEvent, type ReduxEvent, type ReduxEventPolymorphic, type ReduxReducerState} from '@downforce/std/redux'
 import type {ReadWriteSync} from '@downforce/std/store'
@@ -35,7 +35,7 @@ export function setupStoreUsingSingleton<S extends ReduxReducerState, A extends 
             selectorOrArgs?: undefined | StoreSelector<S, V> | StoreSelectorArgs<S, V>,
             depsOptional?: undefined | StoreSelectorDeps,
         ) {
-            if (selectorOrArgs && isArray(selectorOrArgs)) {
+            if (selectorOrArgs && isArrayReadonly(selectorOrArgs)) {
                 return useStore(store, selectorOrArgs[0], selectorOrArgs[1])
             }
             if (selectorOrArgs) {
@@ -70,7 +70,7 @@ export function setupStoreUsingContext<S extends ReduxReducerState, A extends Re
             selectorOrArgs?: undefined | StoreSelector<S, V> | StoreSelectorArgs<S, V>,
             depsOptional?: undefined | StoreSelectorDeps,
         ) {
-            if (selectorOrArgs && isArray(selectorOrArgs)) {
+            if (selectorOrArgs && isArrayReadonly(selectorOrArgs)) {
                 return useStore(useContext(Context)!, selectorOrArgs[0], selectorOrArgs[1])
             }
             if (selectorOrArgs) {
@@ -134,7 +134,7 @@ export function useStore<V, S extends ReduxReducerState, A extends ReduxEvent = 
 ): V | StoreAccessor<S, A> {
     const [state, dispatch] = store
 
-    if (selectorOrArgs && isArray(selectorOrArgs)) {
+    if (selectorOrArgs && isArrayReadonly(selectorOrArgs)) {
         return useReactiveSelect(state, selectorOrArgs[0], selectorOrArgs[1])
     }
     if (selectorOrArgs) {
