@@ -1,4 +1,4 @@
-import {isArray} from '../array/array-is.js'
+import {isArray, isArrayOrReadonly, isArrayReadonly} from '../array/array-is.js'
 import {isBoolean} from '../boolean/boolean-is.js'
 import {isDate} from '../date/date-is.js'
 import {isEnum} from '../enum/enum-is.js'
@@ -7,14 +7,16 @@ import {isIterator} from '../iter/iter-is.js'
 import {isInteger, isNumber} from '../number/number-is.js'
 import {isObject} from '../object/object-is.js'
 import {isDefined, isNone, isNull, isSome, isUndefined} from '../optional/optional-is.js'
+import {isError, isResult} from '../outcome/outcome-is.js'
 import {isPromise, isPromiseSettledFulfilled, isPromiseSettledRejected} from '../promise/promise-is.js'
 import {isRegExp} from '../regexp/regexp-is.js'
-import {isError, isResult} from '../outcome/outcome-is.js'
 import {isString} from '../string/string-is.js'
 import {isSymbol} from '../symbol/symbol-is.js'
 
 export const TypeIs: {
     isArray: typeof isArray
+    isArrayOrReadonly: typeof isArrayOrReadonly
+    isArrayReadonly: typeof isArrayReadonly
     isBoolean: typeof isBoolean
     isDate: typeof isDate
     isDefined: typeof isDefined
@@ -38,6 +40,8 @@ export const TypeIs: {
     isUndefined: typeof isUndefined
 } = {
     isArray: isArray,
+    isArrayOrReadonly: isArrayOrReadonly,
+    isArrayReadonly: isArrayReadonly,
     isBoolean: isBoolean,
     isDate: isDate,
     isDefined: isDefined,

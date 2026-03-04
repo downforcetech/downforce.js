@@ -204,7 +204,7 @@ export type Atom = NoneAtom | ScalarAtom | ComplexAtom
 export type Exp<C extends Ctx, R> = R | ExpFn<C, R>
 export type ExpFn<C extends Ctx, R> = (ctx: C) => R
 
-export type Tree = Array<any> | ReadonlyArray<any>
+export type Tree = Array<any>
 
 export interface Operator {
     (ctx: any, ...args: Array<any>): unknown
