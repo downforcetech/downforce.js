@@ -27,8 +27,3 @@ export function whenBoolean<O1, O2 = undefined>(
     }
     throwInvalidArgument(`unrecognized boolean input "${input}".`)
 }
-
-/**
-* @throws InvalidArgument
-*/
-export const when: typeof whenBoolean = whenBoolean
