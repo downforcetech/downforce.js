@@ -9,7 +9,7 @@
     ],
     "types": "./index.d.ts",
     "author": "Daniele Orlando",
-    "license": "BSD-2-Clause",
+    "license": "MIT",
     "description": "TypeScript resets",
     "keywords": [
         "TypeScript",

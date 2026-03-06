@@ -30,7 +30,7 @@
         "typescript": "5.9"
     },
     "author": "Daniele Orlando",
-    "license": "BSD-2-Clause",
+    "license": "MIT",
     "description": "Awesome TypeScript and JavaScript for the Web",
     "keywords": [
         "TypeScript",

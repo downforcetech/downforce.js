@@ -29,7 +29,7 @@
         "typescript": "5.9"
     },
     "author": "Daniele Orlando",
-    "license": "BSD-2-Clause",
+    "license": "MIT",
     "description": "Awesome Web Components and Custom Elements",
     "keywords": [
         "TypeScript",
