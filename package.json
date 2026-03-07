@@ -8,7 +8,7 @@
         "clean": "nx run-many --target clean --tuiAutoExit"
     },
     "devDependencies": {
-        "nx": "22.5.3"
+        "nx": "22.5.4"
     },
     "engines": {
         "node": ">= 24"

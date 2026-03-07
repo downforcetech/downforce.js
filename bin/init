@@ -78,7 +78,7 @@ if test -z "$node_version_major" -o -z "$node_version_minor"; then
 fi
 if \
   test "$node_version_major" -lt 22 \
-  || test "$node_version_major" -eq 22 -a "$node_version_minor" -lt 3 \
+  || test "$node_version_major" -eq 22 -a "$node_version_minor" -lt 14 \
 ; then
   printf '╰─ ✕ failed\n'
   printf 1>&2 "$failure_marker legacy nodejs version\n"

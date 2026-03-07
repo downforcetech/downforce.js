@@ -1,8 +1,8 @@
 packages: ['@downforce/*', '@downforce/*/tests']
 
 allowBuilds:
-    'esbuild': true
-    'nx': false
+  'esbuild': true
+  'nx': false
 
 managePackageManagerVersions: true
 packageManagerStrictVersion: true
