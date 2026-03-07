@@ -11,10 +11,10 @@ import {
 import {deepStrictEqual, notStrictEqual, strictEqual} from 'assert'
 import {describe, test} from 'node:test'
 
-describe('@downforce/std/redux', (ctx) => {
-    type State = {state: string}
-    const state: State = {state: ''}
+type State = {state: string}
+const state: State = {state: ''}
 
+describe('@downforce/std/redux', (ctx) => {
     test('defineReduxAction()', (ctx) => {
         const actions = {
             a: defineReduxAction('actionId', (state: State): State => state),

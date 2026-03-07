@@ -4,7 +4,7 @@ import {Error, matchingError, matchingResult, matchingResultOrError, type Outcom
 import {awaiting, catching, catchingError} from '@downforce/std/promise'
 import {ensureStringNotEmpty} from '@downforce/std/string'
 import {expectType} from '@downforce/std/type'
-import Assert from 'node:assert'
+import Assert from 'node:assert/strict'
 import {describe, test} from 'node:test'
 
 export type Subject = {id: number, name: string, age: number, admin: boolean}
@@ -20,7 +20,7 @@ describe('@downforce/std/fn', (ctx) => {
             )
 
             expectType<Subject>(actual)
-            Assert.strictEqual(actual, subject)
+            Assert.equal(actual, subject)
         }
     })
 
@@ -35,7 +35,7 @@ describe('@downforce/std/fn', (ctx) => {
         )
 
         expectType<string>(fn(state))
-        Assert.strictEqual(fn(state), '123')
+        Assert.equal(fn(state), '123')
     })
 
     test('composed()', (ctx) => {
@@ -46,14 +46,14 @@ describe('@downforce/std/fn', (ctx) => {
         ()
 
         expectType<string>(fn(state))
-        Assert.strictEqual(fn(state), '123')
+        Assert.equal(fn(state), '123')
     })
 
     test('pipe()', async (ctx) => {
         {
             const actual: Subject = pipe(subject)
 
-            Assert.strictEqual(actual, subject)
+            Assert.equal(actual, subject)
         }
 
         {
@@ -72,7 +72,7 @@ describe('@downforce/std/fn', (ctx) => {
             )
 
             expectType<55>(actual)
-            Assert.strictEqual(actual, 55)
+            Assert.equal(actual, 55)
         }
 
         {
@@ -83,7 +83,7 @@ describe('@downforce/std/fn', (ctx) => {
             )
 
             expectType<string>(actual)
-            Assert.strictEqual(actual, `Hello ${subject.name}!`)
+            Assert.equal(actual, `Hello ${subject.name}!`)
         }
     })
 
@@ -94,7 +94,7 @@ describe('@downforce/std/fn', (ctx) => {
                 .to(identity)
             .end
 
-            Assert.strictEqual(actual, subject)
+            Assert.equal(actual, subject)
         }
     })
 
@@ -102,7 +102,7 @@ describe('@downforce/std/fn', (ctx) => {
         {
             const actual: Subject = piped(subject)()
 
-            Assert.strictEqual(actual, subject)
+            Assert.equal(actual, subject)
         }
 
         {
@@ -111,7 +111,7 @@ describe('@downforce/std/fn', (ctx) => {
                 (it => `Hello ${it}!`)
             ()
 
-            Assert.strictEqual(actual, `Hello ${subject.name}!`)
+            Assert.equal(actual, `Hello ${subject.name}!`)
         }
 
         {
@@ -151,7 +151,7 @@ describe('@downforce/std/fn', (ctx) => {
                 (chaining(it => expectType<Subject | OutcomeError<'VeryTooYoung' | 'Boom'>>(it)))
             ()
 
-            Assert.strictEqual(actual, subject)
+            Assert.equal(actual, subject)
         }
 
         {
@@ -168,7 +168,7 @@ describe('@downforce/std/fn', (ctx) => {
                 (awaiting(matchingError(error => Error('SomeError' as const))))
             ()
 
-            Assert.deepStrictEqual(actual, subject)
+            Assert.deepEqual(actual, subject)
         }
 
         {

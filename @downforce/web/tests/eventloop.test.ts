@@ -1,5 +1,5 @@
 import {scheduleMacroTaskUsingTimeout, scheduleMicroTask, scheduleMicroTaskUsingPromise} from '@downforce/web/eventloop'
-import Assert from 'node:assert'
+import Assert from 'node:assert/strict'
 import {describe, test} from 'node:test'
 
 describe('@downforce/web/eventloop', (ctx) => {
@@ -22,7 +22,7 @@ describe('@downforce/web/eventloop', (ctx) => {
             // new Promise<void>(resolve => scheduleMacroTaskUsingMessageChannel(() => { results.push('MACRO scheduleMacroTaskUsingMessageChannel 2'); resolve() })),
         ])
 
-        Assert.deepStrictEqual(results, [
+        Assert.deepEqual(results, [
             'MICRO scheduleMicroTask 1',
             'MICRO scheduleMicroTaskUsingPromise 1',
             // 'MICRO scheduleMicroTaskUsingMutationObserver 1',

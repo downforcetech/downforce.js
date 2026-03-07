@@ -1,9 +1,9 @@
 import {arrayWrap} from '@downforce/std/array'
 import {expectType, TypeAssert, TypeEnsure, TypeStrict} from '@downforce/std/type'
-import Assert from 'node:assert'
+import Assert from 'node:assert/strict'
 import {describe, test} from 'node:test'
 
-describe('@downforce/std/type TypeAssert', (ctx) => {
+describe('@downforce/std/type', (ctx) => {
     test('TypeAssert.assertEnum()', (ctx) => {
         const enumList = ['A' as const, 'B' as const]
 
@@ -29,25 +29,25 @@ describe('@downforce/std/type TypeAssert', (ctx) => {
     })
 })
 
-describe('@downforce/std/type TypeEnsure', (ctx) => {
+describe('@downforce/std/type', (ctx) => {
     test('TypeEnsure.ensureEnum()', (ctx) => {
         const enumList = ['A' as const, 'B' as const]
         const input: undefined | 'A' = 'A'
 
         {
-            Assert.strictEqual(
+            Assert.equal(
                 expectType<'A'>(TypeEnsure.ensureEnum(input, enumList as Array<'A' | 'B'>)),
                 enumList[0],
             )
         }
         {
-            Assert.strictEqual(
+            Assert.equal(
                 expectType<'A'>(TypeEnsure.ensureEnum(input, enumList as ['A', 'B'])),
                 enumList[0],
             )
         }
         {
-            Assert.strictEqual(
+            Assert.equal(
                 expectType<'A'>(TypeEnsure.ensureEnum(input, enumList as unknown as (readonly ['A', 'B']))),
                 enumList[0],
             )
@@ -63,7 +63,7 @@ describe('@downforce/std/type TypeEnsure', (ctx) => {
         {
             const input: undefined | Input = {hello: 'world'}
 
-            Assert.deepStrictEqual(
+            Assert.deepEqual(
                 expectType<Input>(TypeEnsure.ensureObject(input)),
                 input,
             )
@@ -78,8 +78,8 @@ describe('@downforce/std/type TypeEnsure', (ctx) => {
     })
 })
 
-describe('@downforce/std/type TypeStrict', (ctx) => {
-    test('tryArray()', (ctx) => {
+describe('@downforce/std/type', (ctx) => {
+    test('TypeStrict.strictArray()', (ctx) => {
         expectType<undefined | [number]>(TypeStrict.strictArray([] as unknown as [number]))
         expectType<undefined | number[]>(TypeStrict.strictArray([] as unknown as number[]))
         expectType<undefined | Array<number>>(TypeStrict.strictArray([] as unknown as Array<number>))

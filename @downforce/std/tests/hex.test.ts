@@ -1,8 +1,8 @@
 import {decodeStringFromHex, encodeStringToHex} from '@downforce/std/hex'
-import Assert from 'node:assert'
+import Assert from 'node:assert/strict'
 import {describe, test} from 'node:test'
 
-const data = {
+const HexDataTests = {
     case1: {
         decodedString: '[abcd 😀 123]',
         encodedHex: '5b6162636420f09f9880203132335d',
@@ -15,12 +15,12 @@ const data = {
 
 describe('@downforce/std/hex', (ctx) => {
     test('encodeStringToHex()', (ctx) => {
-        Assert.strictEqual(encodeStringToHex(data.case1.decodedString), data.case1.encodedHex)
-        Assert.strictEqual(encodeStringToHex(data.case2.decodedString), data.case2.encodedHex)
+        Assert.equal(encodeStringToHex(HexDataTests.case1.decodedString), HexDataTests.case1.encodedHex)
+        Assert.equal(encodeStringToHex(HexDataTests.case2.decodedString), HexDataTests.case2.encodedHex)
     })
 
     test('decodeStringFromHex()', (ctx) => {
-        Assert.strictEqual(decodeStringFromHex(data.case1.encodedHex), data.case1.decodedString)
-        Assert.strictEqual(decodeStringFromHex(data.case2.encodedHex), data.case2.decodedString)
+        Assert.equal(decodeStringFromHex(HexDataTests.case1.encodedHex), HexDataTests.case1.decodedString)
+        Assert.equal(decodeStringFromHex(HexDataTests.case2.encodedHex), HexDataTests.case2.decodedString)
     })
 })

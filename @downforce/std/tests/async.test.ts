@@ -2,7 +2,7 @@ import {streamPromises, wait} from '@downforce/std/async'
 import {call} from '@downforce/std/fn'
 import {randomInt} from '@downforce/std/random'
 import {expectType} from '@downforce/std/type'
-import Assert from 'node:assert'
+import Assert from 'node:assert/strict'
 import {describe, test} from 'node:test'
 
 describe('@downforce/std/async', (ctx) => {
@@ -22,7 +22,7 @@ describe('@downforce/std/async', (ctx) => {
                 actualIterations += 1
             }
 
-            Assert.strictEqual(actualIterations, 1)
+            Assert.equal(actualIterations, 1)
         }
 
         {
@@ -35,7 +35,7 @@ describe('@downforce/std/async', (ctx) => {
                 actualIterations += 1
             }
 
-            Assert.strictEqual(actualIterations, 2)
+            Assert.equal(actualIterations, 2)
         }
 
         {
@@ -49,7 +49,7 @@ describe('@downforce/std/async', (ctx) => {
                 actualIterations += 1
             }
 
-            Assert.strictEqual(actualIterations, 2)
+            Assert.equal(actualIterations, 2)
         }
 
         {
@@ -70,14 +70,14 @@ describe('@downforce/std/async', (ctx) => {
                 expectType<undefined | typeof expected['second']>(second)
 
                 if (first) {
-                    Assert.strictEqual(first, expected.first)
+                    Assert.equal(first, expected.first)
                 }
                 if (second) {
-                    Assert.strictEqual(second, expected.second)
+                    Assert.equal(second, expected.second)
                 }
             }
 
-            Assert.strictEqual(actualIterations, expectedIterations)
+            Assert.equal(actualIterations, expectedIterations)
         }
 
         {
@@ -98,14 +98,14 @@ describe('@downforce/std/async', (ctx) => {
                 expectType<undefined | typeof expected['second']>(second)
 
                 if (first) {
-                    Assert.strictEqual(first, expected.first)
+                    Assert.equal(first, expected.first)
                 }
                 if (second) {
-                    Assert.strictEqual(second, expected.second)
+                    Assert.equal(second, expected.second)
                 }
             }
 
-            Assert.strictEqual(actualIterations, expectedIterations)
+            Assert.equal(actualIterations, expectedIterations)
         }
 
         {
@@ -133,9 +133,9 @@ describe('@downforce/std/async', (ctx) => {
             expectType<undefined | typeof expected['first']>(first)
             expectType<undefined | typeof expected['second']>(second)
 
-            Assert.strictEqual(actualIterations, expectedIterations)
-            Assert.strictEqual(first, expected.first)
-            Assert.strictEqual(second, expected.second)
+            Assert.equal(actualIterations, expectedIterations)
+            Assert.equal(first, expected.first)
+            Assert.equal(second, expected.second)
         }
 
         {
@@ -163,9 +163,9 @@ describe('@downforce/std/async', (ctx) => {
             expectType<undefined | typeof expected['first']>(first)
             expectType<undefined | typeof expected['second']>(second)
 
-            Assert.strictEqual(actualIterations, expectedIterations)
-            Assert.strictEqual(first, expected.first)
-            Assert.strictEqual(second, expected.second)
+            Assert.equal(actualIterations, expectedIterations)
+            Assert.equal(first, expected.first)
+            Assert.equal(second, expected.second)
         }
     })
 })

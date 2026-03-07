@@ -1,27 +1,27 @@
 import {piped} from '@downforce/std/fn'
 import {defineMachine} from '@downforce/std/machine'
-import Assert from 'node:assert'
+import Assert from 'node:assert/strict'
 import {describe, test} from 'node:test'
+
+enum StateType {
+    Init = 'init',
+    Ready = 'ready',
+}
+enum EventType {
+    Update = 'update',
+    Delete = 'delete',
+}
+
+type State =
+    | {type: StateType.Init}
+    | {type: StateType.Ready, name: string, message: string}
+
+type Event =
+    | {type: EventType.Update, value: string}
+    | {type: EventType.Delete, id: string}
 
 describe('@downforce/std/machine', (ctx) => {
     test('defineMachine()', (ctx) => {
-        enum StateType {
-            Init = 'init',
-            Ready = 'ready',
-        }
-        enum EventType {
-            Update = 'update',
-            Delete = 'delete',
-        }
-
-        type State =
-            | {type: StateType.Init}
-            | {type: StateType.Ready, name: string, message: string}
-
-        type Event =
-            | {type: EventType.Update, value: string}
-            | {type: EventType.Delete, id: string}
-
         const Machine = defineMachine({
             StateType,
             EventType,
@@ -64,7 +64,7 @@ describe('@downforce/std/machine', (ctx) => {
             (state => Machine.reduce(state, {type: EventType.Update, value: 'Mario'}))
         ()
 
-        Assert.deepStrictEqual(machineState, {
+        Assert.deepEqual(machineState, {
             type: StateType.Ready,
             name: 'Mario',
             message: 'Hello Mario',

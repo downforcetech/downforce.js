@@ -1,5 +1,5 @@
 import {range, sequence} from '@downforce/std/iter'
-import Assert from 'node:assert'
+import Assert from 'node:assert/strict'
 import {describe, test} from 'node:test'
 
 describe('@downforce/std/iter', (ctx) => {
@@ -14,7 +14,7 @@ describe('@downforce/std/iter', (ctx) => {
                 Assert(actual.length <= expected.length)
             }
 
-            Assert.deepStrictEqual(actual, expected)
+            Assert.deepEqual(actual, expected)
         }
         {
             const actual: Array<number> = []
@@ -26,7 +26,7 @@ describe('@downforce/std/iter', (ctx) => {
                 Assert(actual.length <= expected.length)
             }
 
-            Assert.deepStrictEqual(actual, expected)
+            Assert.deepEqual(actual, expected)
         }
         {
             const actual: Array<number> = []
@@ -38,7 +38,7 @@ describe('@downforce/std/iter', (ctx) => {
                 Assert(actual.length <= expected.length)
             }
 
-            Assert.deepStrictEqual(actual, expected)
+            Assert.deepEqual(actual, expected)
         }
         {
             const actual: Array<number> = []
@@ -50,7 +50,7 @@ describe('@downforce/std/iter', (ctx) => {
                 Assert(actual.length <= expected.length)
             }
 
-            Assert.deepStrictEqual(actual, expected)
+            Assert.deepEqual(actual, expected)
         }
         {
             const actual: Array<number> = []
@@ -62,7 +62,7 @@ describe('@downforce/std/iter', (ctx) => {
                 Assert(actual.length <= expected.length)
             }
 
-            Assert.deepStrictEqual(actual, expected)
+            Assert.deepEqual(actual, expected)
         }
         {
             const actual: Array<number> = []
@@ -74,7 +74,7 @@ describe('@downforce/std/iter', (ctx) => {
                 Assert(actual.length <= expected.length)
             }
 
-            Assert.deepStrictEqual(actual, expected)
+            Assert.deepEqual(actual, expected)
         }
         {
             const actual: Array<number> = []
@@ -86,7 +86,7 @@ describe('@downforce/std/iter', (ctx) => {
                 Assert(actual.length <= expected.length)
             }
 
-            Assert.deepStrictEqual(actual, expected)
+            Assert.deepEqual(actual, expected)
         }
     })
 
@@ -101,7 +101,7 @@ describe('@downforce/std/iter', (ctx) => {
                 Assert(actual.length <= expected.length)
             }
 
-            Assert.deepStrictEqual(actual, expected)
+            Assert.deepEqual(actual, expected)
         }
         {
             const actual: Array<number> = []
@@ -113,7 +113,7 @@ describe('@downforce/std/iter', (ctx) => {
                 Assert(actual.length <= expected.length)
             }
 
-            Assert.deepStrictEqual(actual, expected)
+            Assert.deepEqual(actual, expected)
         }
         {
             const actual: Array<number> = []
@@ -125,7 +125,7 @@ describe('@downforce/std/iter', (ctx) => {
                 Assert(actual.length <= expected.length)
             }
 
-            Assert.deepStrictEqual(actual, expected)
+            Assert.deepEqual(actual, expected)
         }
         {
             const actual: Array<number> = []
@@ -137,7 +137,7 @@ describe('@downforce/std/iter', (ctx) => {
                 Assert(actual.length <= expected.length)
             }
 
-            Assert.deepStrictEqual(actual, expected)
+            Assert.deepEqual(actual, expected)
         }
         {
             const actual: Array<number> = []
@@ -149,7 +149,7 @@ describe('@downforce/std/iter', (ctx) => {
                 Assert(actual.length <= expected.length)
             }
 
-            Assert.deepStrictEqual(actual, expected)
+            Assert.deepEqual(actual, expected)
         }
     })
 })

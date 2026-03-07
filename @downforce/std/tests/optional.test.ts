@@ -1,7 +1,7 @@
 import {returningValue} from '@downforce/std/fn'
 import {isSome, whenNone, whenOptional, whenSome} from '@downforce/std/optional'
 import {expectType} from '@downforce/std/type'
-import Assert from 'node:assert'
+import Assert from 'node:assert/strict'
 import {describe, test} from 'node:test'
 
 export type Subject = {id: number, name: string, age: number, admin: boolean}
@@ -40,7 +40,7 @@ describe('@downforce/std/optional', (ctx) => {
             )
 
             expectType<string | number>(actual)
-            Assert.strictEqual(actual, expected)
+            Assert.equal(actual, expected)
         }
     })
 
@@ -49,14 +49,14 @@ describe('@downforce/std/optional', (ctx) => {
             const actual = whenSome(undefined as undefined | string, expectType<string>)
 
             expectType<undefined | string>(actual)
-            Assert.strictEqual(actual, undefined)
+            Assert.equal(actual, undefined)
         }
 
         {
             const actual = whenSome(undefined as undefined | number, it => String(it))
 
             expectType<undefined | string>(actual)
-            Assert.strictEqual(actual, undefined)
+            Assert.equal(actual, undefined)
         }
 
         {
@@ -72,7 +72,7 @@ describe('@downforce/std/optional', (ctx) => {
             const actual = whenNone(undefined as undefined | number, it => subject.name)
 
             expectType<undefined | number | string>(actual)
-            Assert.strictEqual(actual, subject.name)
+            Assert.equal(actual, subject.name)
         }
     })
 })

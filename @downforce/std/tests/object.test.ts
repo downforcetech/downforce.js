@@ -1,30 +1,25 @@
 import {getObjectPath, setObjectPath} from '@downforce/std/object'
 import {cloneDeep} from '@downforce/std/struct'
-import Assert from 'node:assert'
+import Assert from 'node:assert/strict'
 import {describe, test} from 'node:test'
 
-describe('@downforce/std/object', (ctx) => {
-    const leaf = 'initial value'
-    const tree = [
-        {
-            'Hello World': {
-                1: {
-                    key: leaf,
-                },
-            },
-        },
-    ]
+const objectPathKey = [0, 'Hello World', 1, 'key']
+const objectPathValue = 'initial value'
+const object = [
+    {'Hello World': {1: {key: objectPathValue}}},
+]
 
+describe('@downforce/std/object', (ctx) => {
     test('getObjectPath()', (ctx) => {
-        Assert.strictEqual(getObjectPath(tree, [0, 'Hello World', 1, 'key']), leaf)
+        Assert.equal(getObjectPath(object, objectPathKey), objectPathValue)
     })
 
     test('setObjectPath()', (ctx) => {
-        const newTree = cloneDeep(tree)
+        const newObject = cloneDeep(object)
         const newValue = 'replaced value'
-        const oldValue = setObjectPath(newTree, [0, 'Hello World', 1, 'key'], newValue)
+        const oldValue = setObjectPath(newObject, objectPathKey, newValue)
 
-        Assert.strictEqual(oldValue, leaf)
-        Assert.strictEqual(newTree[0]!['Hello World'][1].key, newValue)
+        Assert.equal(oldValue, objectPathValue)
+        Assert.equal(newObject[0]!['Hello World'][1].key, newValue)
     })
 })
