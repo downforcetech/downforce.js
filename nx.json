@@ -1,6 +1,6 @@
 {
     "$schema": "./node_modules/nx/schemas/nx-schema.json",
-    "cacheDirectory": "./node_modules/.cache/nx",
+    "cacheDirectory": "./.cache/nx",
     "useDaemonProcess": false,
     "targetDefaults": {
         "build": {
