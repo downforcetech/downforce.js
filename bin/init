@@ -77,16 +77,15 @@ if test -z "$node_version_major" -o -z "$node_version_minor"; then
   exit 1
 fi
 if \
-  test "$node_version_major" -lt 22 \
-  || test "$node_version_major" -eq 22 -a "$node_version_minor" -lt 14 \
+  test "$node_version_major" -lt 24 \
+  || test "$node_version_major" -eq 24 -a "$node_version_minor" -lt 14 \
 ; then
   printf '╰─ ✕ failed\n'
-  printf 1>&2 "$failure_marker legacy nodejs version\n"
+  printf 1>&2 "$failure_marker unsupported nodejs version\n"
   printf 1>&2 'version: %s\n' "$node_version"
   printf 1>&2 'path: %s\n' "$(which node)"
   printf 1>&2 '\n'
-  printf 1>&2 'Legacy NodeJS versions are not supported.\n'
-  printf 1>&2 'Please upgrade to a version >= 22.3.\n'
+  printf 1>&2 'Please upgrade to a version >= 24.14.\n'
   exit 1
 fi
 printf '│ found version %s\n' "$node_version"
