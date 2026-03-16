@@ -12,8 +12,8 @@
         "./*": "./esm/*.js"
     },
     "scripts": {
-        "clean": "rm -rf ./esm/ ./node_modules/.cache/ || true",
-        "build": "tsc --project ./tsconfig.json --listEmittedFiles",
+        "clean": "rm -rf ./esm/ ./.cache/ || true",
+        "build": "tsc --project ./tsconfig.json",
         "prepack": "node --run clean && node --run build",
         "preversion": "node --run build"
     },

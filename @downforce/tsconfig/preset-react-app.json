@@ -17,6 +17,6 @@
         "skipDefaultLibCheck": true,
         "skipLibCheck": true,
         "target": "esnext",
-        "tsBuildInfoFile": "${configDir}/node_modules/.cache/tsbuildinfo"
+        "tsBuildInfoFile": "${configDir}/.cache/tsbuildinfo"
     }
 }

@@ -12,8 +12,8 @@
         "./*": "./esm/*.js"
     },
     "scripts": {
-        "clean": "rm -rf ./esm/ ./node_modules/.cache/ || true",
-        "build": "babel ./ts/ --out-dir ./esm/ --extensions '.ts,.tsx' --ignore '**/*.d.ts','node_modules/**/*' && tsc --listEmittedFiles",
+        "clean": "rm -rf ./esm/ ./.cache/ || true",
+        "build": "babel ./ts/ --out-dir ./esm/ --extensions '.ts,.tsx' --ignore '**/*.d.ts','node_modules/**/*' && tsc --project ./tsconfig.json",
         "prepack": "node --run clean && node --run build",
         "preversion": "node --run build"
     },
