@@ -1,0 +1,5 @@
+address = 'local.toml'
+log = false
+log_file = 'log.toml'
+mode = 'production'
+port = 8080

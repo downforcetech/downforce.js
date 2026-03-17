@@ -1,0 +1,6 @@
+address: local.yaml
+log: false
+log_file: log.yaml
+mode: development
+port: 80
+secret: yaml-secret

@@ -1,0 +1,8 @@
+{
+    "name": "@downforce/cable.tests",
+    "type": "module",
+    "dependencies": {
+        "@downforce/cable": "workspace:*",
+        "@types/node": "24"
+    }
+}

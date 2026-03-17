@@ -1,0 +1,8 @@
+export default {
+    address: 'localhost',
+    log: true,
+    log_file: 'out.log',
+    mode: 'production',
+    port: 8080,
+    secret: 'very-secret'
+}

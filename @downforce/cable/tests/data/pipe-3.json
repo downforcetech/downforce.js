@@ -1,0 +1,5 @@
+{
+    "address": "local.json",
+    "log": false,
+    "log_file": "log.json"
+}

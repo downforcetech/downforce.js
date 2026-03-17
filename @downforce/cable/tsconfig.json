@@ -1,0 +1,5 @@
+{
+    "extends": "@downforce/tsconfig/preset-node-lib.json",
+    "compilerOptions": {
+    },
+}

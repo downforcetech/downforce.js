@@ -1,0 +1,51 @@
+{
+    "name": "@downforce/cable",
+    "version": "1.0.0",
+    "type": "module",
+    "sideEffects": false,
+    "files": [
+        "/LICENSE.txt",
+        "/esm/",
+        "/ts/"
+    ],
+    "exports": {
+        ".": "./esm/index.js",
+        "./*": "./esm/*.js"
+    },
+    "scripts": {
+        "clean": "rm -rf ./esm/ ./.cache/ || true",
+        "build": "tsc --project ./tsconfig.json && tsc --project ./tests/tsconfig.json",
+        "test": "node --test --test-reporter ${NODE_TEST_REPORTER:-spec} --enable-source-maps --experimental-transform-types ./tests/**/*.test.ts",
+        "prepack": "node --run clean && node --run build && node --run test",
+        "preversion": "node --run build && node --run test"
+    },
+    "dependencies": {
+        "@downforce/std": "1.2.17",
+        "@types/node": "24",
+        "tslib": "2"
+    },
+    "optionalDependencies": {
+        "smol-toml": "1.6",
+        "yaml": "2.8"
+    },
+    "devDependencies": {
+        "@downforce/tsconfig": "1",
+        "typescript": "5.9"
+    },
+    "author": "Daniele Orlando",
+    "license": "MIT",
+    "description": "Awesome TypeScript and JavaScript configuration library for NodeJS",
+    "keywords": [
+        "TypeScript",
+        "JavaScript",
+        "Configuration"
+    ],
+    "homepage": "https://github.com/downforcetech/downforce.js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/downforcetech/downforce.js.git"
+    },
+    "bugs": {
+        "url": "https://github.com/downforcetech/downforce.js/issues"
+    }
+}
