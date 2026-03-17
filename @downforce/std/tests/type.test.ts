@@ -89,6 +89,25 @@ describe('@downforce/std/type', (ctx) => {
         expectType<undefined | [number, string]>(TypeStrict.strictArray([] as unknown as [number, string]))
         expectType<undefined | Array<number|string>>(TypeStrict.strictArray([] as unknown as [number, string]))
     })
+
+    test('TypeStrict.strictEnum()', (ctx) => {
+        const AbcEnumType = {
+            A: 'A' as const,
+            B: 'B' as const,
+        }
+        const AbcEnumList = Object.values(AbcEnumType)
+        type AbcEnumType = typeof AbcEnumList[number]
+
+        const string: string = 'abc'
+        const stringOptional: undefined | string = 'abc'
+        const stringAbc: AbcEnumType = 'A'
+        const stringAbcOptional: undefined | AbcEnumType = 'A'
+
+        expectType<undefined | AbcEnumType>(TypeStrict.strictEnum(string, ['A', 'B']))
+        expectType<undefined | AbcEnumType>(TypeStrict.strictEnum(stringOptional, AbcEnumList))
+        expectType<undefined | AbcEnumType>(TypeStrict.strictEnum(stringAbc, AbcEnumList))
+        expectType<undefined | AbcEnumType>(TypeStrict.strictEnum(stringAbcOptional, AbcEnumList))
+    })
 })
 
 describe('@downforce/std/array', (ctx) => {

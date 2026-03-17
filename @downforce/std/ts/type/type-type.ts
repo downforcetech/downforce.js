@@ -28,6 +28,13 @@ export type Unsafe<T> =
 
 export type UnsafeObject<T extends object> = NonNullable<Unsafe<T>>
 
+export type Untrusted<T> =
+    T extends Array<infer I>
+        ? undefined | null | boolean | number | string | symbol | object | {} | Partial<Array<Untrusted<I>>>
+    : T extends object
+        ? undefined | null | boolean | number | string | symbol | object | {} | Partial<{[key in keyof T]?: Untrusted<T[key]>}>
+    : unknown
+
 export type ValueOf<T> = T[keyof T]
 
 // export type ElementOf<A extends Array<unknown>> = A[number]
