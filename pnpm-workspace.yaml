@@ -1,4 +1,4 @@
-packages: ['@downforce/*', '@downforce/*/tests']
+packages: ['@downforce/*/', '@downforce/*/tests/']
 
 allowBuilds:
   'esbuild': true
