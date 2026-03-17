@@ -15,3 +15,11 @@ export function tryCatch<R, F>(
         onFinally?.()
     }
 }
+
+export function tryCatching<I, O1, O2>(
+    block: Io<I, O1>,
+    onCatch: Io<unknown, O2>,
+    onFinally?: undefined | Task,
+): Io<I, O1 | O2> {
+    return (input: I) => tryCatch(() => block(input), onCatch, onFinally)
+}

@@ -1,4 +1,4 @@
-import {chain, chaining, compose, composed, identity, pipe, piped, pipedLazy, tryingCatching} from '@downforce/std/fn'
+import {chain, chaining, compose, composed, identity, pipe, piped, pipedLazy, tryCatching} from '@downforce/std/fn'
 import {matchingNone, matchingOptional, matchingSome} from '@downforce/std/optional'
 import {Error, matchingError, matchingResult, matchingResultOrError, type OutcomeError} from '@downforce/std/outcome'
 import {awaiting, catching, catchingError} from '@downforce/std/promise'
@@ -128,7 +128,7 @@ describe('@downforce/std/fn', (ctx) => {
                     it => (expectType<Subject>(it), ensureStringNotEmpty(it.name), it),
                     error => (expectType<string>(error), Error(`Very${ensureStringNotEmpty(error)}`)),
                 ))
-                (tryingCatching(
+                (tryCatching(
                     matchingResult(
                         it => (ensureStringNotEmpty(it.name), it),
                     ),
