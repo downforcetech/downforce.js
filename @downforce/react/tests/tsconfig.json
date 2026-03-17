@@ -2,6 +2,7 @@
     "extends": "../tsconfig.json",
     "include": ["${configDir}/"],
     "compilerOptions": {
+        "allowImportingTsExtensions": true,
         "declaration": null,
         "declarationMap": null,
         "incremental": null,
