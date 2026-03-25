@@ -20,13 +20,14 @@
         "preversion": "node --run build && node --run test"
     },
     "dependencies": {
-        "@downforce/std": "1.2.17",
-        "@types/node": "24",
-        "tslib": "2"
+        "@downforce/std": "1.2.18"
     },
     "optionalDependencies": {
         "smol-toml": "1.6",
         "yaml": "2.8"
+    },
+    "peerDependencies": {
+        "@types/node": "24 || 25"
     },
     "devDependencies": {
         "@downforce/tsconfig": "1",
