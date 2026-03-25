@@ -17,9 +17,6 @@
         "prepack": "node --run clean && node --run build",
         "preversion": "node --run build"
     },
-    "dependencies": {
-        "tslib": "2"
-    },
     "peerDependencies": {
         "@downforce/std": "1",
         "@downforce/web": "1"
