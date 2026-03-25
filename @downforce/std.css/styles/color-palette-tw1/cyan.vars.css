@@ -1,0 +1,13 @@
+.std-root, .std-define-color-palette {
+    --std-color-tw1-cyan-50: oklch(98.4% 0.019 200.873);
+    --std-color-tw1-cyan-100: oklch(95.6% 0.045 203.388);
+    --std-color-tw1-cyan-200: oklch(91.7% 0.08 205.041);
+    --std-color-tw1-cyan-300: oklch(86.5% 0.127 207.078);
+    --std-color-tw1-cyan-400: oklch(78.9% 0.154 211.53);
+    --std-color-tw1-cyan-500: oklch(71.5% 0.143 215.221);
+    --std-color-tw1-cyan-600: oklch(60.9% 0.126 221.723);
+    --std-color-tw1-cyan-700: oklch(52% 0.105 223.128);
+    --std-color-tw1-cyan-800: oklch(45% 0.085 224.283);
+    --std-color-tw1-cyan-900: oklch(39.8% 0.07 227.392);
+    --std-color-tw1-cyan-950: oklch(30.2% 0.056 229.695);
+}

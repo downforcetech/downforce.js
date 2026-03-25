@@ -3,7 +3,10 @@
       "type:lib"
     ],
     "implicitDependencies": [
-        "repository"
+        "repository",
+        "@downforce/std",
+        "@downforce/tsconfig",
+        "@downforce/web"
     ],
     "targets": {
         "init": {

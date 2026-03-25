@@ -5,13 +5,33 @@
     "sideEffects": false,
     "files": [
         "./LICENSE.txt",
-        "./**/*.css",
-        "./**/*.d.ts",
-        "./**/*.woff*"
+        "./esm/",
+        "./styles/",
+        "./ts/",
+        "./types/"
     ],
+    "exports": {
+        ".": "./esm/all.js",
+        "./*": "./styles/*",
+        "./types/*": "./types/*.d.ts"
+    },
+    "scripts": {
+        "prepack": "./bin/clean.sh && ./bin/build.sh && ./bin/test.sh",
+        "preversion": "./bin/build.sh && ./bin/test.sh"
+    },
+    "peerDependencies": {
+        "@downforce/std": "workspace:1",
+        "@downforce/web": "workspace:1"
+    },
+    "devDependencies": {
+        "@downforce/std": "workspace:1",
+        "@downforce/tsconfig": "workspace:1",
+        "@downforce/web": "workspace:1",
+        "typescript": "catalog:"
+    },
     "author": "Daniele Orlando",
     "license": "MIT",
-    "description": "Awesome CSS design system and UI widgets",
+    "description": "Awesome CSS design system",
     "keywords": [
         "CSS",
         "UI",

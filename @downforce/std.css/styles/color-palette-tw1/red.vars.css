@@ -1,0 +1,13 @@
+.std-root, .std-define-color-palette {
+    --std-color-tw1-red-50: oklch(97.1% 0.013 17.38);
+    --std-color-tw1-red-100: oklch(93.6% 0.032 17.717);
+    --std-color-tw1-red-200: oklch(88.5% 0.062 18.334);
+    --std-color-tw1-red-300: oklch(80.8% 0.114 19.571);
+    --std-color-tw1-red-400: oklch(70.4% 0.191 22.216);
+    --std-color-tw1-red-500: oklch(63.7% 0.237 25.331);
+    --std-color-tw1-red-600: oklch(57.7% 0.245 27.325);
+    --std-color-tw1-red-700: oklch(50.5% 0.213 27.518);
+    --std-color-tw1-red-800: oklch(44.4% 0.177 26.899);
+    --std-color-tw1-red-900: oklch(39.6% 0.141 25.723);
+    --std-color-tw1-red-950: oklch(25.8% 0.092 26.042);
+}

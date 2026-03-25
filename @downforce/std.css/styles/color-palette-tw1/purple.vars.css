@@ -1,0 +1,13 @@
+.std-root, .std-define-color-palette {
+    --std-color-tw1-purple-50: oklch(97.7% 0.014 308.299);
+    --std-color-tw1-purple-100: oklch(94.6% 0.033 307.174);
+    --std-color-tw1-purple-200: oklch(90.2% 0.063 306.703);
+    --std-color-tw1-purple-300: oklch(82.7% 0.119 306.383);
+    --std-color-tw1-purple-400: oklch(71.4% 0.203 305.504);
+    --std-color-tw1-purple-500: oklch(62.7% 0.265 303.9);
+    --std-color-tw1-purple-600: oklch(55.8% 0.288 302.321);
+    --std-color-tw1-purple-700: oklch(49.6% 0.265 301.924);
+    --std-color-tw1-purple-800: oklch(43.8% 0.218 303.724);
+    --std-color-tw1-purple-900: oklch(38.1% 0.176 304.987);
+    --std-color-tw1-purple-950: oklch(29.1% 0.149 302.717);
+}

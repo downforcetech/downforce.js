@@ -1,0 +1,10 @@
+[std-flex-space='1'] { flex: 1 0 var(--std-gutter1); }
+[std-flex-space='2'] { flex: 1 0 var(--std-gutter2); }
+[std-flex-space='3'] { flex: 1 0 var(--std-gutter3); }
+[std-flex-space='4'] { flex: 1 0 var(--std-gutter4); }
+[std-flex-space='5'] { flex: 1 0 var(--std-gutter5); }
+[std-flex-space='6'] { flex: 1 0 var(--std-gutter6); }
+[std-flex-space='7'] { flex: 1 0 var(--std-gutter7); }
+[std-flex-space='8'] { flex: 1 0 var(--std-gutter8); }
+[std-flex-space='9'] { flex: 1 0 var(--std-gutter9); }
+[std-flex-space='10'] { flex: 1 0 var(--std-gutter10); }

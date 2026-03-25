@@ -1,0 +1,13 @@
+.std-root, .std-define-color-palette {
+    --std-color-tw1-mist-50: oklch(98.7% 0.002 197.1);
+    --std-color-tw1-mist-100: oklch(96.3% 0.002 197.1);
+    --std-color-tw1-mist-200: oklch(92.5% 0.005 214.3);
+    --std-color-tw1-mist-300: oklch(87.2% 0.007 219.6);
+    --std-color-tw1-mist-400: oklch(72.3% 0.014 214.4);
+    --std-color-tw1-mist-500: oklch(56% 0.021 213.5);
+    --std-color-tw1-mist-600: oklch(45% 0.017 213.2);
+    --std-color-tw1-mist-700: oklch(37.8% 0.015 216);
+    --std-color-tw1-mist-800: oklch(27.5% 0.011 216.9);
+    --std-color-tw1-mist-900: oklch(21.8% 0.008 223.9);
+    --std-color-tw1-mist-950: oklch(14.8% 0.004 228.8);
+}

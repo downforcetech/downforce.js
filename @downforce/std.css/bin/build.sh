@@ -14,3 +14,5 @@ export PATH="$ProjectDir/node_modules/.bin:$RepositoryDir/bin:$PATH"
 
 cd "$ProjectDir"
 set -x
+tsc --project "$ProjectDir/tsconfig.json"
+tsc --project "$ProjectDir/tests/tsconfig.json"

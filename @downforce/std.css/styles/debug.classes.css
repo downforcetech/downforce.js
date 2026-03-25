@@ -1,0 +1,17 @@
+.std-debug,
+.std-debug\=1 > *,
+.std-debug\=\* *,
+.std-debug\=deep * {
+    outline-width: var(--std-debug-outline-size, 1px) !important;
+    outline-style: var(--std-debug-outline-style, solid) !important;
+    outline-color: var(--std-debug-outline-color, DeepPink) !important;
+    outline-offset: var(--std-debug-outline-offset, 0) !important;
+    background: var(--std-debug-outline-background,
+        hsl(
+            var(--std-debug-bg-h, 328deg)
+            var(--std-debug-bg-s, 100%)
+            var(--std-debug-bg-l, 50%)
+            / var(--std-debug-bg-a, 0.05)
+        )
+    );
+}

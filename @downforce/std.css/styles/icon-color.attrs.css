@@ -1,0 +1,12 @@
+[std-icon-color='true'] *:not([fill]) {
+    fill: currentColor;
+}
+[std-icon-color='true'] *:not([stroke]) {
+    stroke: currentColor;
+}
+[std-icon-color='true'][fill='none'] *:not([fill]) {
+    fill: none;
+}
+[std-icon-color='true'][stroke='none'] *:not([stroke]) {
+    stroke: none;
+}

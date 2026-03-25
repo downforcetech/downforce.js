@@ -1,0 +1,32 @@
+.std-gap\=1 { gap: var(--std-gutter1); }
+.std-gap\=2 { gap: var(--std-gutter2); }
+.std-gap\=3 { gap: var(--std-gutter3); }
+.std-gap\=4 { gap: var(--std-gutter4); }
+.std-gap\=5 { gap: var(--std-gutter5); }
+.std-gap\=6 { gap: var(--std-gutter6); }
+.std-gap\=7 { gap: var(--std-gutter7); }
+.std-gap\=8 { gap: var(--std-gutter8); }
+.std-gap\=9 { gap: var(--std-gutter9); }
+.std-gap\=10 { gap: var(--std-gutter10); }
+
+.std-gap-row\=1 { row-gap: var(--std-gutter1); }
+.std-gap-row\=2 { row-gap: var(--std-gutter2); }
+.std-gap-row\=3 { row-gap: var(--std-gutter3); }
+.std-gap-row\=4 { row-gap: var(--std-gutter4); }
+.std-gap-row\=5 { row-gap: var(--std-gutter5); }
+.std-gap-row\=6 { row-gap: var(--std-gutter6); }
+.std-gap-row\=7 { row-gap: var(--std-gutter7); }
+.std-gap-row\=8 { row-gap: var(--std-gutter8); }
+.std-gap-row\=9 { row-gap: var(--std-gutter9); }
+.std-gap-row\=10 { row-gap: var(--std-gutter10); }
+
+.std-gap-column\=1 { column-gap: var(--std-gutter1); }
+.std-gap-column\=2 { column-gap: var(--std-gutter2); }
+.std-gap-column\=3 { column-gap: var(--std-gutter3); }
+.std-gap-column\=4 { column-gap: var(--std-gutter4); }
+.std-gap-column\=5 { column-gap: var(--std-gutter5); }
+.std-gap-column\=6 { column-gap: var(--std-gutter6); }
+.std-gap-column\=7 { column-gap: var(--std-gutter7); }
+.std-gap-column\=8 { column-gap: var(--std-gutter8); }
+.std-gap-column\=9 { column-gap: var(--std-gutter9); }
+.std-gap-column\=10 { column-gap: var(--std-gutter10); }

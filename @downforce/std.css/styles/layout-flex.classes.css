@@ -1,0 +1,9 @@
+.std-flex-direction\=row { flex-direction: row; }
+.std-flex-direction\=row-reverse { flex-direction: row-reverse; }
+.std-flex-direction\=column { flex-direction: column; }
+.std-flex-direction\=column-reverse { flex-direction: column-reverse; }
+
+.std-flex-wrap { flex-wrap: wrap; }
+.std-flex-wrap\=false { flex-wrap: nowrap; }
+.std-flex-wrap\=true { flex-wrap: wrap; }
+.std-flex-wrap\=reverse { flex-wrap: wrap-reverse; }

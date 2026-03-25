@@ -1,9 +1,0 @@
-*, *::after, *::before {
-    font: inherit;
-    /* font-family: inherit; */
-    /* font-size: inherit; */
-    /* font-weight: inherit; */
-    /* font-style: inherit; */
-    text-decoration: inherit;
-    text-box-trim: inherit;
-}

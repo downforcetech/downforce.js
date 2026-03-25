@@ -205,7 +205,7 @@ export function computeDampedSimpleHarmonicMotion(time: number, options: SpringO
 
     if (isNaN(position)) {
         console.warn(
-            '@downforce/web/animation.computeDampedSimpleHarmonicMotion(time, ~~options~~):\n'
+            '@downforce/web/animation.computeDampedSimpleHarmonicMotion(time, ~options~):\n'
             + 'spring has an invalid configuration because\n'
             + `a stiffness of ${stiffness} is insufficient compared to a damping of ${damping};\n`
             + 'try increasing the stiffness or decreasing the damping\n'

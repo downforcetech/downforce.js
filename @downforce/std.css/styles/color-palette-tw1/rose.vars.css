@@ -1,0 +1,13 @@
+.std-root, .std-define-color-palette {
+    --std-color-tw1-rose-50: oklch(96.9% 0.015 12.422);
+    --std-color-tw1-rose-100: oklch(94.1% 0.03 12.58);
+    --std-color-tw1-rose-200: oklch(89.2% 0.058 10.001);
+    --std-color-tw1-rose-300: oklch(81% 0.117 11.638);
+    --std-color-tw1-rose-400: oklch(71.2% 0.194 13.428);
+    --std-color-tw1-rose-500: oklch(64.5% 0.246 16.439);
+    --std-color-tw1-rose-600: oklch(58.6% 0.253 17.585);
+    --std-color-tw1-rose-700: oklch(51.4% 0.222 16.935);
+    --std-color-tw1-rose-800: oklch(45.5% 0.188 13.697);
+    --std-color-tw1-rose-900: oklch(41% 0.159 10.272);
+    --std-color-tw1-rose-950: oklch(27.1% 0.105 12.094);
+}

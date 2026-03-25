@@ -14,3 +14,5 @@ export PATH="$ProjectDir/node_modules/.bin:$RepositoryDir/bin:$PATH"
 
 cd "$ProjectDir"
 set -x
+rm -rf "$ProjectDir/.cache/"
+rm -rf "$ProjectDir/esm/"

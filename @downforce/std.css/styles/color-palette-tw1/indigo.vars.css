@@ -1,0 +1,13 @@
+.std-root, .std-define-color-palette {
+    --std-color-tw1-indigo-50: oklch(96.2% 0.018 272.314);
+    --std-color-tw1-indigo-100: oklch(93% 0.034 272.788);
+    --std-color-tw1-indigo-200: oklch(87% 0.065 274.039);
+    --std-color-tw1-indigo-300: oklch(78.5% 0.115 274.713);
+    --std-color-tw1-indigo-400: oklch(67.3% 0.182 276.935);
+    --std-color-tw1-indigo-500: oklch(58.5% 0.233 277.117);
+    --std-color-tw1-indigo-600: oklch(51.1% 0.262 276.966);
+    --std-color-tw1-indigo-700: oklch(45.7% 0.24 277.023);
+    --std-color-tw1-indigo-800: oklch(39.8% 0.195 277.366);
+    --std-color-tw1-indigo-900: oklch(35.9% 0.144 278.697);
+    --std-color-tw1-indigo-950: oklch(25.7% 0.09 281.288);
+}

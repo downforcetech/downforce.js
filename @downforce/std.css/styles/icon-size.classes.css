@@ -1,0 +1,11 @@
+.std-icon-size\=1 { --icon-size: var(--std-icon-size1); font-size: var(--icon-size); }
+.std-icon-size\=2 { --icon-size: var(--std-icon-size2); font-size: var(--icon-size); }
+.std-icon-size\=3 { --icon-size: var(--std-icon-size3); font-size: var(--icon-size); }
+.std-icon-size\=4 { --icon-size: var(--std-icon-size4); font-size: var(--icon-size); }
+.std-icon-size\=5 { --icon-size: var(--std-icon-size5); font-size: var(--icon-size); }
+.std-icon-size\=6 { --icon-size: var(--std-icon-size6); font-size: var(--icon-size); }
+.std-icon-size\=7 { --icon-size: var(--std-icon-size7); font-size: var(--icon-size); }
+.std-icon-size\=8 { --icon-size: var(--std-icon-size8); font-size: var(--icon-size); }
+.std-icon-size\=9 { --icon-size: var(--std-icon-size9); font-size: var(--icon-size); }
+.std-icon-size\=10 { --icon-size: var(--std-icon-size10); font-size: var(--icon-size); }
+.std-icon-size\=cover { --icon-size: 100%; }

@@ -1,0 +1,13 @@
+.std-layout\=flex-stack { display: flex; }
+.std-layout\=flex-stack-block { display: flex; }
+.std-layout\=flex-stack-inline { display: inline-flex; }
+
+.std-layout\=flex-stack,
+.std-layout\=flex-stack-block,
+.std-layout\=flex-stack-inline {
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    place-items: center;
+    place-content: center;
+}

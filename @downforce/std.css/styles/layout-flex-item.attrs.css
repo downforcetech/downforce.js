@@ -1,0 +1,7 @@
+[std-flex-basis='0'] { flex-basis: 0; }
+[std-flex-basis='100'] { flex-basis: 100%; }
+[std-flex-grow='no-grow'] { flex-grow: 0; }
+[std-flex-grow='true'] { flex-grow: 1; }
+[std-flex-grow]:not([std-flex-grow='false']):not([std-flex-grow='true']):not([std-flex-grow='no-grow']) { flex-grow: attr(std-flex-grow type(<integer>), 1); }
+[std-flex-shrink='no-shrink'] { flex-shrink: 0; }
+[std-flex-shrink='true'] { flex-shrink: 1; }

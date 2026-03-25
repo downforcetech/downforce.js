@@ -1,0 +1,6 @@
+.std-root, .std-define-text-size {
+    /* Respects user's rem choice. */
+    --std-text-size1-accessible: .8rem;
+    --std-text-size2-accessible: .9rem;
+    --std-text-size3-accessible: 1rem;
+}

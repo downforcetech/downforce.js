@@ -1,0 +1,5 @@
+[std-grid-direction='row'] { grid-auto-flow: row; }
+[std-grid-direction='column'] { grid-auto-flow: column; }
+
+[std-grid-auto-flow='row'] { grid-auto-flow: row; }
+[std-grid-auto-flow='column'] { grid-auto-flow: column; }

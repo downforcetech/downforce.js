@@ -1,0 +1,15 @@
+.std-display\=none { display: none; }
+.std-display\=contents { display: contents; }
+.std-display\=flow-root { display: flow-root; }
+
+.std-display\=inline { display: inline; }
+.std-display\=block { display: block; }
+.std-display\=block-inline { display: inline-block; }
+
+.std-display\=flex { display: flex; }
+.std-display\=flex-block { display: flex; }
+.std-display\=flex-inline { display: inline-flex; }
+
+.std-display\=grid { display: grid; }
+.std-display\=grid-block { display: grid; }
+.std-display\=grid-inline { display: inline-grid; }

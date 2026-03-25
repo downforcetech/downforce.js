@@ -1,0 +1,13 @@
+[std-layout='flex-break'] {
+    display: inherit;
+    flex-direction: inherit;
+    justify-content: inherit;
+    align-items: inherit;
+    align-content: inherit;
+}
+[std-layout='flex-break']:not([std-flex-wrap]) {
+    flex-wrap: inherit;
+}
+[std-layout='flex-break']:not([std-gap]):not([std-gap-row]):not([std-gap-column]) {
+    gap: inherit;
+}

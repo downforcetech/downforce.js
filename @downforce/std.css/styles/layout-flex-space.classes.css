@@ -1,0 +1,10 @@
+.std-flex-space1 { flex: 1 0 var(--std-gutter1); }
+.std-flex-space2 { flex: 1 0 var(--std-gutter2); }
+.std-flex-space3 { flex: 1 0 var(--std-gutter3); }
+.std-flex-space4 { flex: 1 0 var(--std-gutter4); }
+.std-flex-space5 { flex: 1 0 var(--std-gutter5); }
+.std-flex-space6 { flex: 1 0 var(--std-gutter6); }
+.std-flex-space7 { flex: 1 0 var(--std-gutter7); }
+.std-flex-space8 { flex: 1 0 var(--std-gutter8); }
+.std-flex-space9 { flex: 1 0 var(--std-gutter9); }
+.std-flex-space10 { flex: 1 0 var(--std-gutter10); }

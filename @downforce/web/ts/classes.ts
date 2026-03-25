@@ -38,7 +38,7 @@ export function classes(...args: Array<Classes>): string {
         }
 
         console.error(
-            '@downforce/web/classes.classes(~~...args~~):\n'
+            '@downforce/web/classes.classes(...~args~):\n'
             + `args must be of type String | Object | Array, given "${arg}".`
         )
     }

@@ -14,3 +14,4 @@ export PATH="$ProjectDir/node_modules/.bin:$RepositoryDir/bin:$PATH"
 
 cd "$ProjectDir"
 set -x
+exec node --test --test-reporter ${NODE_TEST_REPORTER:-spec} --enable-source-maps "$ProjectDir/tests/**/*.test.ts"

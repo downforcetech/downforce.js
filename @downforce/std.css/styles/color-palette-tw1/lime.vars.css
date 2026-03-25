@@ -1,0 +1,13 @@
+.std-root, .std-define-color-palette {
+    --std-color-tw1-lime-50: oklch(98.6% 0.031 120.757);
+    --std-color-tw1-lime-100: oklch(96.7% 0.067 122.328);
+    --std-color-tw1-lime-200: oklch(93.8% 0.127 124.321);
+    --std-color-tw1-lime-300: oklch(89.7% 0.196 126.665);
+    --std-color-tw1-lime-400: oklch(84.1% 0.238 128.85);
+    --std-color-tw1-lime-500: oklch(76.8% 0.233 130.85);
+    --std-color-tw1-lime-600: oklch(64.8% 0.2 131.684);
+    --std-color-tw1-lime-700: oklch(53.2% 0.157 131.589);
+    --std-color-tw1-lime-800: oklch(45.3% 0.124 130.933);
+    --std-color-tw1-lime-900: oklch(40.5% 0.101 131.063);
+    --std-color-tw1-lime-950: oklch(27.4% 0.072 132.109);
+}

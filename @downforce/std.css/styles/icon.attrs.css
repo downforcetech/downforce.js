@@ -1,0 +1,16 @@
+[std-icon='true'] {
+    display: var(--icon-display, inline-block);
+    width: var(--icon-size, 1em);
+    height: var(--icon-size, 1em);
+
+    /* Compatibility with Unicode characters. */
+    font-size: var(--icon-size, 1em);
+    line-height: var(--icon-size, 1em);
+}
+[std-icon-stiff='true'] {
+    /* Stops growing or shrinking inside a flex container. */
+    min-width: var(--icon-size, 1em);
+    max-width: var(--icon-size, 1em);
+    min-height: var(--icon-size, 1em);
+    max-height: var(--icon-size, 1em);
+}

@@ -1,0 +1,13 @@
+.std-root, .std-define-color-palette {
+    --std-color-tw1-fuchsia-50: oklch(97.7% 0.017 320.058);
+    --std-color-tw1-fuchsia-100: oklch(95.2% 0.037 318.852);
+    --std-color-tw1-fuchsia-200: oklch(90.3% 0.076 319.62);
+    --std-color-tw1-fuchsia-300: oklch(83.3% 0.145 321.434);
+    --std-color-tw1-fuchsia-400: oklch(74% 0.238 322.16);
+    --std-color-tw1-fuchsia-500: oklch(66.7% 0.295 322.15);
+    --std-color-tw1-fuchsia-600: oklch(59.1% 0.293 322.896);
+    --std-color-tw1-fuchsia-700: oklch(51.8% 0.253 323.949);
+    --std-color-tw1-fuchsia-800: oklch(45.2% 0.211 324.591);
+    --std-color-tw1-fuchsia-900: oklch(40.1% 0.17 325.612);
+    --std-color-tw1-fuchsia-950: oklch(29.3% 0.136 325.661);
+}

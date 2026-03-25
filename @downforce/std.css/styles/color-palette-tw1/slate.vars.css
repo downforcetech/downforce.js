@@ -1,0 +1,13 @@
+.std-root, .std-define-color-palette {
+    --std-color-tw1-slate-50: oklch(98.4% 0.003 247.858);
+    --std-color-tw1-slate-100: oklch(96.8% 0.007 247.896);
+    --std-color-tw1-slate-200: oklch(92.9% 0.013 255.508);
+    --std-color-tw1-slate-300: oklch(86.9% 0.022 252.894);
+    --std-color-tw1-slate-400: oklch(70.4% 0.04 256.788);
+    --std-color-tw1-slate-500: oklch(55.4% 0.046 257.417);
+    --std-color-tw1-slate-600: oklch(44.6% 0.043 257.281);
+    --std-color-tw1-slate-700: oklch(37.2% 0.044 257.287);
+    --std-color-tw1-slate-800: oklch(27.9% 0.041 260.031);
+    --std-color-tw1-slate-900: oklch(20.8% 0.042 265.755);
+    --std-color-tw1-slate-950: oklch(12.9% 0.042 264.695);
+}

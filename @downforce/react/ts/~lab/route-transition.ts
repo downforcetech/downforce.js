@@ -166,7 +166,7 @@ export function getViewElement(selector: string): undefined | HTMLElement {
 
     if (! element) {
         console.warn(
-            '@downforce/react/route-transition.getViewElement(~~selector~~)\n'
+            '@downforce/react/route-transition.getViewElement(~selector~)\n'
             + `missing view's animated element "${selector}".`
         )
     }

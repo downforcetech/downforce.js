@@ -1,167 +1,44 @@
 @layer std;
 
-@import '@downforce/std.css/animated.classes.css' layer(std);
-@import '@downforce/std.css/button-with-outline.classes.css' layer(std);
-@import '@downforce/std.css/button.classes.css' layer(std);
-@import '@downforce/std.css/button/dye.css' layer(std);
-@import '@downforce/std.css/button/flat.css' layer(std);
-@import '@downforce/std.css/button/halo.css' layer(std);
-@import '@downforce/std.css/button/plain.css' layer(std);
-@import '@downforce/std.css/color-accent-primary-variants.classes.css' layer(std);
-@import '@downforce/std.css/color-accent-primary-variants.vars.css' layer(std);
-@import '@downforce/std.css/color-accent-primary.classes.css' layer(std);
-@import '@downforce/std.css/color-accent-primary.props.css' layer(std);
-@import '@downforce/std.css/color-accent-primary.vars.css' layer(std);
-@import '@downforce/std.css/color-bg-z.classes.css' layer(std);
-@import '@downforce/std.css/color-bg.classes.css' layer(std);
-@import '@downforce/std.css/color-fg.classes.css' layer(std);
-@import '@downforce/std.css/color-icon.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/amber.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/blue-light.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/blue.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/brown.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/cyan.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/gray-blue.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/gray.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/green-light.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/green.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/indigo.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/lime.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/orange-deep.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/orange.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/pink.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/purple-deep.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/purple.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/red.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/teal.vars.css' layer(std);
-@import '@downforce/std.css/color-material1/yellow.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/blue.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/forest.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/gray-bright.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/gray-cool.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/gray-flat.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/gray-neutral.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/green.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/indigo.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/magenta.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/maroon.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/orange.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/pool-blue.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/purple.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/red.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/squash.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/teal.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/ultramarine.vars.css' layer(std);
-@import '@downforce/std.css/color-palette1/violet.vars.css' layer(std);
-@import '@downforce/std.css/color-state.classes.css' layer(std);
-@import '@downforce/std.css/color-state.vars.css' layer(std);
-@import '@downforce/std.css/duration.vars.css' layer(std);
-@import '@downforce/std.css/icon-color.classes.css' layer(std);
-@import '@downforce/std.css/icon-size.classes.css' layer(std);
-@import '@downforce/std.css/icon-size.vars.css' layer(std);
-@import '@downforce/std.css/icon.classes.css' layer(std);
-@import '@downforce/std.css/layout-block.classes.css' layer(std);
-@import '@downforce/std.css/layout-box.classes.css' layer(std);
-@import '@downforce/std.css/layout-debug.classes.css' layer(std);
-@import '@downforce/std.css/layout-flex-break.classes.css' layer(std);
-@import '@downforce/std.css/layout-flex-child.classes.css' layer(std);
-@import '@downforce/std.css/layout-flex-space.classes.css' layer(std);
-@import '@downforce/std.css/layout-flex-stack.classes.css' layer(std);
-@import '@downforce/std.css/layout-flex.classes.css' layer(std);
-@import '@downforce/std.css/layout-float.classes.css' layer(std);
-@import '@downforce/std.css/layout-grid-layers.classes.css' layer(std);
-@import '@downforce/std.css/layout-grid.classes.css' layer(std);
-@import '@downforce/std.css/layout-gutter-gap.classes.css' layer(std);
-@import '@downforce/std.css/layout-gutter-space.classes.css' layer(std);
-@import '@downforce/std.css/layout-gutter-spacing.classes.css' layer(std);
-@import '@downforce/std.css/layout-gutter.vars.css' layer(std);
-@import '@downforce/std.css/layout-inline.classes.css' layer(std);
-@import '@downforce/std.css/layout-invisible.classes.css' layer(std);
-@import '@downforce/std.css/layout-layer.classes.css' layer(std);
-@import '@downforce/std.css/layout-margin-auto.classes.css' layer(std);
-@import '@downforce/std.css/layout-margin.classes.css' layer(std);
-@import '@downforce/std.css/layout-padding.classes.css' layer(std);
-@import '@downforce/std.css/layout-self.classes.css' layer(std);
-@import '@downforce/std.css/layout-size.classes.css' layer(std);
-@import '@downforce/std.css/layout-width.classes.css' layer(std);
-@import '@downforce/std.css/layout-width.vars.css' layer(std);
-@import '@downforce/std.css/media.classes.css' layer(std);
-@import '@downforce/std.css/modal.classes.css' layer(std);
-@import '@downforce/std.css/pointer.classes.css' layer(std);
-@import '@downforce/std.css/radius.classes.css' layer(std);
-@import '@downforce/std.css/radius.vars.css' layer(std);
-@import '@downforce/std.css/reset/all-box.props.css' layer(std);
-@import '@downforce/std.css/reset/all-color.props.css' layer(std);
-@import '@downforce/std.css/reset/all-font.props.css' layer(std);
-@import '@downforce/std.css/reset/attr-hidden.props.css' layer(std);
-@import '@downforce/std.css/reset/root-color-scheme-dark-light.props.css' layer(std);
-@import '@downforce/std.css/reset/root-font-rendering.props.css' layer(std);
-@import '@downforce/std.css/reset/root-font-size.props.css' layer(std);
-@import '@downforce/std.css/reset/root-overflow-touch.props.css' layer(std);
-@import '@downforce/std.css/reset/tag-a.props.css' layer(std);
-@import '@downforce/std.css/reset/tag-b-strong.props.css' layer(std);
-@import '@downforce/std.css/reset/tag-button.props.css' layer(std);
-@import '@downforce/std.css/reset/tag-h.props.css' layer(std);
-@import '@downforce/std.css/reset/tag-html5-display-block.props.css' layer(std);
-@import '@downforce/std.css/reset/tag-i-em.props.css' layer(std);
-@import '@downforce/std.css/reset/tag-img-picture-svg-video.props.css' layer(std);
-@import '@downforce/std.css/reset/tag-input.props.css' layer(std);
-@import '@downforce/std.css/reset/tag-label.props.css' layer(std);
-@import '@downforce/std.css/reset/tag-ol-ul.props.css' layer(std);
-@import '@downforce/std.css/reset/tag-q-blockquote.props.css' layer(std);
-@import '@downforce/std.css/reset/tag-select.props.css' layer(std);
-@import '@downforce/std.css/reset/tag-span.props.css' layer(std);
-@import '@downforce/std.css/reset/tag-textarea.props.css' layer(std);
-@import '@downforce/std.css/scroll.classes.css' layer(std);
-@import '@downforce/std.css/scrollbar.classes.css' layer(std);
-@import '@downforce/std.css/shadow-extra.classes.css' layer(std);
-@import '@downforce/std.css/shadow-extra.vars.css' layer(std);
-@import '@downforce/std.css/shadow-material.classes.css' layer(std);
-@import '@downforce/std.css/shadow-material.vars.css' layer(std);
-@import '@downforce/std.css/shadow-primary.vars.css' layer(std);
-@import '@downforce/std.css/shadow.vars.css' layer(std);
-@import '@downforce/std.css/switch.classes.css' layer(std);
-@import '@downforce/std.css/text-align.classes.css' layer(std);
-@import '@downforce/std.css/text-font.classes.css' layer(std);
-@import '@downforce/std.css/text-font/roboto.css' layer(std);
-@import '@downforce/std.css/text-height.classes.css' layer(std);
-@import '@downforce/std.css/text-height.vars.css' layer(std);
-@import '@downforce/std.css/text-overflow.classes.css' layer(std);
-@import '@downforce/std.css/text-size-material-extended.classes.css' layer(std);
-@import '@downforce/std.css/text-size-material.classes.css' layer(std);
-@import '@downforce/std.css/text-size-material.tags.css' layer(std);
-@import '@downforce/std.css/text-size-material.vars.css' layer(std);
-@import '@downforce/std.css/text-size.classes.css' layer(std);
-@import '@downforce/std.css/text-size.tags.css' layer(std);
-@import '@downforce/std.css/text-size.vars.css' layer(std);
-@import '@downforce/std.css/text-size(with-accessible).vars.css' layer(std);
-@import '@downforce/std.css/text-space.classes.css' layer(std);
-@import '@downforce/std.css/text-space.vars.css' layer(std);
-@import '@downforce/std.css/text-transform.classes.css' layer(std);
-@import '@downforce/std.css/text-trim.classes.css' layer(std);
-@import '@downforce/std.css/text-weight.classes.css' layer(std);
-@import '@downforce/std.css/text-weight.vars.css' layer(std);
-@import '@downforce/std.css/text-wrap.classes.css' layer(std);
-@import '@downforce/std.css/text.classes.css' layer(std);
-@import '@downforce/std.css/theme-dark/color-bg.vars.css' layer(std);
-@import '@downforce/std.css/theme-dark/color-fg-accent-primary.vars.css' layer(std);
-@import '@downforce/std.css/theme-dark/color-fg.vars.css' layer(std);
-@import '@downforce/std.css/theme-dark/color-scheme.props.css' layer(std);
-@import '@downforce/std.css/theme-dark/preference.props.css' layer(std);
-@import '@downforce/std.css/theme-light/color-bg.vars.css' layer(std);
-@import '@downforce/std.css/theme-light/color-fg-accent-primary.vars.css' layer(std);
-@import '@downforce/std.css/theme-light/color-fg.vars.css' layer(std);
-@import '@downforce/std.css/theme-light/color-scheme.props.css' layer(std);
-@import '@downforce/std.css/theme-light/preference.props.css' layer(std);
-@import '@downforce/std.css/transition/fade.classes.css' layer(std);
-@import '@downforce/std.css/transition/leak.classes.css' layer(std);
-@import '@downforce/std.css/transition/none.classes.css' layer(std);
-@import '@downforce/std.css/transition/skid-left.classes.css' layer(std);
-@import '@downforce/std.css/transition/zoom.classes.css' layer(std);
+@import '@downforce/std.css/TODO.css' layer(std);
+/*
+* find . -not -path '*/node_modules/*' -a -name '*.css' \
+* | sort -n \
+* | sed -e 's:^./::' \
+* | while IFS= read -r file; do \
+*     printf "@import '@downforce/std.css/%s.css' layer(std);\n" "$file"; \
+* done
+*/
 
 .std-root {
     --std-font-primary: Roboto, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, Futura, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    --std-color-primary-h: 250deg;
-    --std-color-primary-s: 70%;
-    --std-color-primary-l: 60%;
+}
+
+.std-root {
+    --std-text-size1: var(--std-text-size1-accessible);
+    --std-text-size2: var(--std-text-size2-accessible);
+    --std-text-size3: var(--std-text-size3-accessible);
+}
+
+.std-root { --std-color-primary-h: 250deg; }
+.std-root.std-theme\=dark { --std-color-primary-s: 70%; --std-color-primary-l: 60%; }
+.std-root.std-theme\=light { --std-color-primary-s: 70%; --std-color-primary-l: 60%; }
+
+@media (prefers-color-scheme: dark) {
+    .std-root:not(.std-theme\=dark, .std-theme\=light) {
+        /*
+        * Use inline JavaScript to detect on page load, before first paint,
+        * the user preference and set the .std-theme\={dark,light} class.
+        * As alternative, paste here the .std-theme\=dark class definition.
+        */
+    }
+}
+@media (prefers-color-scheme: light) {
+    .std-root:not(.std-theme\=dark, .std-theme\=light) {
+        /*
+        * Use inline JavaScript to detect on page load, before first paint,
+        * the user preference and set the .std-theme\={dark,light} class.
+        * As alternative, paste here the .std-theme\=light class definition.
+        */
+    }
 }
