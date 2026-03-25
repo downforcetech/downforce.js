@@ -4,9 +4,9 @@
     "type": "module",
     "sideEffects": false,
     "files": [
-        "/LICENSE.txt",
-        "/esm/",
-        "/ts/"
+        "./LICENSE.txt",
+        "./esm/",
+        "./ts/"
     ],
     "exports": {
         "./*": "./esm/*.js"

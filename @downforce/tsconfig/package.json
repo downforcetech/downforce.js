@@ -4,8 +4,8 @@
     "type": "module",
     "sideEffects": false,
     "files": [
-        "/LICENSE.txt",
-        "/**/*.json"
+        "./LICENSE.txt",
+        "./**/*.json"
     ],
     "author": "Daniele Orlando",
     "license": "MIT",

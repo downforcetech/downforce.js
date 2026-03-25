@@ -4,9 +4,10 @@
     "type": "module",
     "sideEffects": false,
     "files": [
-        "/LICENSE.txt",
-        "/**/*.css",
-        "/**/*.woff*"
+        "./LICENSE.txt",
+        "./**/*.css",
+        "./**/*.d.ts",
+        "./**/*.woff*"
     ],
     "author": "Daniele Orlando",
     "license": "MIT",

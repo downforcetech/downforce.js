@@ -4,10 +4,10 @@
     "type": "module",
     "sideEffects": false,
     "files": [
-        "/LICENSE.txt",
-        "/**/*.css",
-        "/**/*.js",
-        "/**/*.d.ts"
+        "./LICENSE.txt",
+        "./**/*.css",
+        "./**/*.js",
+        "./**/*.d.ts"
     ],
     "exports": {
         "./*": "./*"

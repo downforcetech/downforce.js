@@ -4,8 +4,8 @@
     "type": "module",
     "sideEffects": false,
     "files": [
-        "/LICENSE.txt",
-        "/**/*.d.ts"
+        "./LICENSE.txt",
+        "./**/*.d.ts"
     ],
     "types": "./index.d.ts",
     "author": "Daniele Orlando",
