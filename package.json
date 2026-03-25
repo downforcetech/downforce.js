@@ -7,10 +7,10 @@
         "clean": "nx run-many --target clean --tuiAutoExit"
     },
     "devDependencies": {
-        "nx": "22.5.4"
+        "nx": "22.6.1"
     },
     "engines": {
         "node": ">= 24.14"
     },
-    "packageManager": "pnpm@10.32.1"
+    "packageManager": "pnpm@10.33.0"
 }
