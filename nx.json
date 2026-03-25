@@ -1,29 +1,44 @@
 {
     "$schema": "./node_modules/nx/schemas/nx-schema.json",
+    "analytics": true,
     "cacheDirectory": "./.cache/nx",
     "useDaemonProcess": false,
+    "namedInputs": {
+        "$build-pnpm-inputs": [
+            "{workspaceRoot}/package.json",
+            "{workspaceRoot}/pnpm-lock.yaml",
+            "{workspaceRoot}/pnpm-workspace.yaml",
+            "{projectRoot}/package.json"
+        ],
+        "$build-node-inputs": [
+            "{projectRoot}/tsconfig.json",
+            "{projectRoot}/**/*.ts",
+            "{projectRoot}/**/*.tsx",
+            "{projectRoot}/ts/**/*",
+            "!{projectRoot}/**/*.d.ts",
+            "!{projectRoot}/cjs/**/*",
+            "!{projectRoot}/esm/**/*"
+        ]
+    },
     "targetDefaults": {
         "build": {
             "cache": false,
-            "dependsOn": ["^build"],
+            "dependsOn": [
+                "^build"
+            ],
             "inputs": [
-                "{workspaceRoot}/package.json",
-                "{workspaceRoot}/pnpm-lock.yaml",
-                "{workspaceRoot}/pnpm-workspace.yaml",
-                "{projectRoot}/package.json",
-                "{projectRoot}/tsconfig.json",
-                "{projectRoot}/**/*.ts",
-                "{projectRoot}/**/*.tsx",
-                "{projectRoot}/ts/**/*",
-                "!{projectRoot}/**/*.d.ts",
-                "!{projectRoot}/cjs/**/*",
-                "!{projectRoot}/esm/**/*"
+                "$build-pnpm-inputs",
+                "$build-node-inputs"
             ],
             "outputs": []
         },
         "test": {
             "cache": false,
-            "dependsOn": ["build"]
+            "dependsOn": [
+                "build"
+            ],
+            "inputs": [],
+            "outputs": []
         }
     }
 }
