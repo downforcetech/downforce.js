@@ -8,8 +8,8 @@ set -e
 set -u
 
 case $(dirname "$0") in
-  /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
-  *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
+    /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
+    *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
 esac
 
 repo_dir=$(cd "$Dir/.." && pwd)
@@ -17,30 +17,30 @@ repo_dir=$(cd "$Dir/.." && pwd)
 : ${INIT_QUIET:=false}
 
 is_true() {
-  test $1 = true \
-    -o $1 = yes \
-    -o $1 = on \
-    -o $1 = 1 \
-  ;
+    test $1 = true \
+        -o $1 = yes \
+        -o $1 = on \
+        -o $1 = 1 \
+    ;
 }
 
 is_false() {
-  test $1 = false \
-    -o $1 = no \
-    -o $1 = off \
-    -o $1 = 0 \
-  ;
+    test $1 = false \
+        -o $1 = no \
+        -o $1 = off \
+        -o $1 = 0 \
+    ;
 }
 
 match_semantic_version() {
-  grep --only-matching --extended-regexp --regexp '[0-9]+\.[0-9]+\.[0-9]+' | head -n 1
+    grep --only-matching --extended-regexp --regexp '[0-9]+\.[0-9]+\.[0-9]+' | head -n 1
 }
 
 get_version_major() {
-  printf '%s' "$1" | cut -d . -f 1 | grep --only-matching --extended-regexp --regexp '[0-9]+' || true
+    printf '%s' "$1" | cut -d . -f 1 | grep --only-matching --extended-regexp --regexp '[0-9]+' || true
 }
 get_version_minor() {
-  printf '%s' "$1" | cut -d . -f 2 | grep --only-matching --extended-regexp --regexp '[0-9]+' || true
+    printf '%s' "$1" | cut -d . -f 2 | grep --only-matching --extended-regexp --regexp '[0-9]+' || true
 }
 
 failure_message=' error '
@@ -49,11 +49,11 @@ failure_marker="\e[0;1;48;5;124;38;5;9m${failure_message}\e[0m"
 
 args_quiet=false
 if is_true $INIT_QUIET; then
-  args_quiet=true
+    args_quiet=true
 fi
 
 if is_true $args_quiet; then
-  exec 1>/dev/null # Redirects standard output to nowhere.
+    exec 1>/dev/null # Redirects standard output to nowhere.
 fi
 
 printf '╭─ initializing workspace\n'
@@ -62,31 +62,31 @@ printf '│\n'
 printf '├─[1/3] checking NodeJS\n'
 printf '│\n'
 if ! command -v node 1>/dev/null 2>&1; then
-  printf '╰─ ✕ failed\n'
-  printf 1>&2 "$failure_marker command \"node\" not found\n"
-  printf 1>&2 '\n'
-  printf 1>&2 'Please install NodeJS.\n'
-  exit 1
+    printf '╰─ ✕ failed\n'
+    printf 1>&2 "$failure_marker command \"node\" not found\n"
+    printf 1>&2 '\n'
+    printf 1>&2 'Please install NodeJS.\n'
+    exit 1
 fi
 node_version=$(node --version | sed -e 's/^v//' | match_semantic_version)
 node_version_major=$(get_version_major "$node_version")
 node_version_minor=$(get_version_minor "$node_version")
 if test -z "$node_version_major" -o -z "$node_version_minor"; then
-  printf '╰─ ✕ failed\n'
-  printf 1>&2 "$failure_marker unrecognized version format \"%s\"\n" "$node_version"
-  exit 1
+    printf '╰─ ✕ failed\n'
+    printf 1>&2 "$failure_marker unrecognized version format \"%s\"\n" "$node_version"
+    exit 1
 fi
 if \
-  test "$node_version_major" -lt 24 \
-  || test "$node_version_major" -eq 24 -a "$node_version_minor" -lt 14 \
+    test "$node_version_major" -lt 24 \
+    || test "$node_version_major" -eq 24 -a "$node_version_minor" -lt 14 \
 ; then
-  printf '╰─ ✕ failed\n'
-  printf 1>&2 "$failure_marker unsupported nodejs version\n"
-  printf 1>&2 'version: %s\n' "$node_version"
-  printf 1>&2 'path: %s\n' "$(which node)"
-  printf 1>&2 '\n'
-  printf 1>&2 'Please upgrade to a version >= 24.14.\n'
-  exit 1
+    printf '╰─ ✕ failed\n'
+    printf 1>&2 "$failure_marker unsupported nodejs version\n"
+    printf 1>&2 'version: %s\n' "$node_version"
+    printf 1>&2 'path: %s\n' "$(which node)"
+    printf 1>&2 '\n'
+    printf 1>&2 'Please upgrade to a version >= 24.14.\n'
+    exit 1
 fi
 printf '│ found version %s\n' "$node_version"
 printf "│ $success_marker ok\n"
@@ -95,38 +95,38 @@ printf '│\n'
 printf '├─[2/3] checking PNPM\n'
 printf '│\n'
 if ! command -v pnpm 1>/dev/null 2>&1; then
-  printf '╰─ ✕ failed\n'
-  printf 1>&2 "$failure_marker command \"pnpm\" not found\n"
-  printf 1>&2 '\n'
-  printf 1>&2 'Please install PNPM.\n'
-  printf 1>&2 '$ npm install --global pnpm\n'
-  exit 1
+    printf '╰─ ✕ failed\n'
+    printf 1>&2 "$failure_marker command \"pnpm\" not found\n"
+    printf 1>&2 '\n'
+    printf 1>&2 'Please install PNPM.\n'
+    printf 1>&2 '$ npm install --global pnpm\n'
+    exit 1
 fi
 pnpm_version=$(pnpm --version | match_semantic_version)
 pnpm_version_major=$(get_version_major "$pnpm_version")
 pnpm_version_minor=$(get_version_minor "$pnpm_version")
 if test -z "$pnpm_version_major" -o -z "$pnpm_version_minor"; then
-  printf '╰─ ✕ failed\n'
-  printf 1>&2 "$failure_marker unrecognized pnpm version\n"
-  printf 1>&2 'version: %s\n' "$pnpm_version"
-  printf 1>&2 '\n'
-  printf 1>&2 'Please install a recent PNPM version.\n'
-  printf 1>&2 '$ npm install --global pnpm\n'
-  exit 1
+    printf '╰─ ✕ failed\n'
+    printf 1>&2 "$failure_marker unrecognized pnpm version\n"
+    printf 1>&2 'version: %s\n' "$pnpm_version"
+    printf 1>&2 '\n'
+    printf 1>&2 'Please install a recent PNPM version.\n'
+    printf 1>&2 '$ npm install --global pnpm\n'
+    exit 1
 fi
 if \
-  test "$pnpm_version_major" -lt 10 \
-  || test "$pnpm_version_major" -eq 10 -a "$pnpm_version_minor" -lt 12 \
+    test "$pnpm_version_major" -lt 10 \
+    || test "$pnpm_version_major" -eq 10 -a "$pnpm_version_minor" -lt 12 \
 ; then
-  printf '╰─ ✕ failed\n'
-  printf 1>&2 "$failure_marker legacy pnpm version\n"
-  printf 1>&2 'version: %s\n' "$pnpm_version"
-  printf 1>&2 'path: %s\n' "$(which pnpm)"
-  printf 1>&2 '\n'
-  printf 1>&2 'Legacy PNPM versions are not supported.\n'
-  printf 1>&2 'Please upgrade to a version >= 10.12.\n'
-  printf 1>&2 '$ npm install --global pnpm\n'
-  exit 1
+    printf '╰─ ✕ failed\n'
+    printf 1>&2 "$failure_marker legacy pnpm version\n"
+    printf 1>&2 'version: %s\n' "$pnpm_version"
+    printf 1>&2 'path: %s\n' "$(which pnpm)"
+    printf 1>&2 '\n'
+    printf 1>&2 'Legacy PNPM versions are not supported.\n'
+    printf 1>&2 'Please upgrade to a version >= 10.12.\n'
+    printf 1>&2 '$ npm install --global pnpm\n'
+    exit 1
 fi
 printf '│ found version %s\n' "$pnpm_version"
 printf "│ $success_marker ok\n"
@@ -140,10 +140,10 @@ command_exit=$?
 set -e
 printf '%s\n' "$command_output" | sed -e 's/^/│ /'
 if test $command_exit -ne 0; then
-  printf '╰─ ✕ failed\n'
-  printf 1>&2 "$failure_marker installation failed\n"
-  printf 1>&2 '%s\n' "$command_output"
-  exit 1
+    printf '╰─ ✕ failed\n'
+    printf 1>&2 "$failure_marker installation failed\n"
+    printf 1>&2 '%s\n' "$command_output"
+    exit 1
 fi
 printf "│ $success_marker ok\n"
 printf '│\n'

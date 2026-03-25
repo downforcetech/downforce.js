@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 
 ################################################################################
-# USAGE
-# nx <nx-args>
+# Checks outdated dependencies.
 ################################################################################
 
 set -e
@@ -15,4 +14,4 @@ esac
 
 repo_dir=$(cd "$Dir/.." && pwd)
 
-exec "$repo_dir/node_modules/.bin/nx" "$@"
+exec "$Dir/pnpm" outdated -r

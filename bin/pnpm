@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+# USAGE ########################################################################
+# pnpm <pnpm-args> ...
+################################################################################
+
+set -e
+set -u
+
+case $(dirname "$0") in
+  /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
+  *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
+esac
+
+repo_dir=$(cd "$Dir/.." && pwd)
+
+exec npx --yes --package pnpm@10.33.0 pnpm "$@"
