@@ -18,14 +18,11 @@
         "prepack": "node --run clean && node --run build && node --run test",
         "preversion": "node --run build && node --run test"
     },
-    "dependencies": {
-        "@types/react": "19",
-        "@types/react-dom": "19",
-        "tslib": "2"
-    },
     "peerDependencies": {
         "@downforce/std": "1",
         "@downforce/web": "1",
+        "@types/react": "19",
+        "@types/react-dom": "19",
         "react": "19",
         "react-dom": "19"
     },
