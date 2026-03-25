@@ -3,6 +3,6 @@
     "type": "module",
     "dependencies": {
         "@downforce/std": "workspace:*",
-        "@types/node": "24"
+        "@types/node": "25"
     }
 }
