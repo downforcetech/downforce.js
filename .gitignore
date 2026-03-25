@@ -1,19 +1,11 @@
 .cache/
 .DS_Store
-.tsbuildinfo
-*.code-workspace
+*.tsbuildinfo
 node_modules/
-package-lock.json
 pnpm-lock.yaml
-tsconfig.tsbuildinfo
 
 /.nx/
 /@downforce/*/cjs/
 /@downforce/*/esm/
-/@downforce/**/*.cjs
-/@downforce/**/*.d.cts
-/@downforce/**/*.d.mts
-/@downforce/**/*.d.ts
-/@downforce/**/*.js
-/@downforce/**/*.map
-/@downforce/**/*.mjs
+/@downforce/reactx/**/*.d.ts
+/@downforce/reactx/**/*.js
