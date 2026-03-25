@@ -18,9 +18,6 @@
         "prepack": "node --run clean && node --run build && node --run test",
         "preversion": "node --run build && node --run test"
     },
-    "dependencies": {
-        "tslib": "2"
-    },
     "devDependencies": {
         "@downforce/tsconfig": "1",
         "typescript": "5.9"
