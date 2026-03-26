@@ -1,9 +1,0 @@
-{
-    "extends": [
-        "./preset-web-lib.json"
-    ],
-    "compilerOptions": {
-        "allowSyntheticDefaultImports": true,
-        "jsx": "react-jsx"
-    }
-}

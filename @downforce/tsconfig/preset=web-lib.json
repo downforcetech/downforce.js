@@ -1,0 +1,9 @@
+{
+    "extends": [
+        "./use-defaults=sane.json",
+        "./use-platform=web.json",
+        "./use-layout=esm.json"
+    ],
+    "compilerOptions": {
+    }
+}

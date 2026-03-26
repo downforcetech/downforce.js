@@ -1,9 +1,0 @@
-{
-    "extends": [
-        "./preset-react-app.json"
-    ],
-    "compilerOptions": {
-        "jsx": "preserve",
-        "jsxImportSource": "solid-js"
-    }
-}

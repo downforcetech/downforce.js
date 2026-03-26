@@ -1,0 +1,10 @@
+{
+    "extends": [
+        "./use-defaults=sane.json",
+        "./use-platform=js.json",
+        "./use-layout=esm.json"
+    ],
+    "compilerOptions": {
+        "types": ["node"]
+    }
+}

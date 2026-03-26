@@ -1,0 +1,13 @@
+{
+    "extends": [
+        "./use-defaults=sane.json",
+        "./use-platform=web.json"
+    ],
+    "compilerOptions": {
+        "allowImportingTsExtensions": true,
+        "jsx": "preserve",
+        "jsxImportSource": "solid-js",
+        "noEmit": true,
+        "types": ["solid-js"]
+    }
+}

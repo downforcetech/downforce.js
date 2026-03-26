@@ -1,0 +1,12 @@
+{
+    "extends": [
+        "./use-defaults=sane.json",
+        "./use-platform=web.json",
+        "./use-layout=esm.json"
+    ],
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "jsxImportSource": "react",
+        "types": ["react", "react-dom"]
+    }
+}

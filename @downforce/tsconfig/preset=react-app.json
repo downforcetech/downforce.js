@@ -1,0 +1,13 @@
+{
+    "extends": [
+        "./use-defaults=sane.json",
+        "./use-platform=web.json"
+    ],
+    "compilerOptions": {
+        "allowImportingTsExtensions": true,
+        "jsx": "react-jsx",
+        "jsxImportSource": "react",
+        "noEmit": true,
+        "types": ["react", "react-dom"]
+    }
+}
