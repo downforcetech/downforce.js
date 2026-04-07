@@ -1,4 +1,5 @@
 import {arrayWrap} from '@downforce/std/array'
+import type {Task} from '@downforce/std/fn'
 import {isSome, isUndefined} from '@downforce/std/optional'
 import {isString} from '@downforce/std/string'
 import {flushStyles} from '@downforce/web/animation'
@@ -49,7 +50,7 @@ export function Transition(props: TransitionProps): React.JSX.Element {
         })
     }
 
-    const onTaskEnd = useCallback((taskId: TransitionTaskId, observers: undefined | TransitionObservers) => {
+    const onTaskEnd = useCallback((taskId: TransitionTaskId, observers: undefined | TransitionObservers): undefined => {
         observers?.onEntered?.()
         observers?.onExited?.()
         observers?.onEnd?.()
@@ -105,7 +106,7 @@ export function Animator(props: AnimatorProps): React.JSX.Element {
             : 'initial'
     )
 
-    const setTaskLifecycle = useCallback((taskId: TransitionTaskId, state: AnimatorTaskLifecycle) => {
+    const setTaskLifecycle = useCallback((taskId: TransitionTaskId, state: AnimatorTaskLifecycle): undefined => {
         setTasksLifecycle({[taskId]: state})
     }, [])
 
@@ -130,7 +131,7 @@ export function Animator(props: AnimatorProps): React.JSX.Element {
         setTaskLifecycle(taskId, 'animated')
     }
 
-    const onAnimated = useCallback((event: AnimatorCompletionEvent) => {
+    const onAnimated = useCallback((event: AnimatorCompletionEvent): undefined => {
         if (eventsRef.current >= taskEvents) {
             // The task completed. We skip additional notifications.
             return
@@ -868,7 +869,7 @@ export interface AnimatorProps extends TransitionConfig {
     taskChild: TransitionElement
     taskId: TransitionTaskId
     taskObservers: undefined | TransitionObservers
-    onEnd(taskId: TransitionTaskId, observers: undefined | TransitionObservers): void
+    onEnd(taskId: TransitionTaskId, observers: undefined | TransitionObservers): undefined
 }
 
 export interface TransitionConfig {
@@ -886,9 +887,9 @@ export type TransitionEventTarget = string | Element | Array<string | Element>
 export type TransitionMode = 'cross' | 'out-in' | 'in-out'
 
 export interface TransitionObservers {
-    onEntered?: undefined | (() => void)
-    onExited?: undefined | (() => void)
-    onEnd?: undefined | (() => void)
+    onEntered?: undefined | Task
+    onExited?: undefined | Task
+    onEnd?: undefined | Task
 }
 
 export type TransitionContext =
@@ -904,8 +905,8 @@ export interface AnimatorAnimatableProps {
 }
 
 export interface AnimatorAnimatableEvents {
-    onAnimationEnd?: undefined | ((event: React.AnimationEvent<HTMLElement>) => void)
-    onTransitionEnd?: undefined | ((event:  React.TransitionEvent<HTMLElement>) => void)
+    onAnimationEnd?: undefined | ((event: React.AnimationEvent<HTMLElement>) => undefined)
+    onTransitionEnd?: undefined | ((event:  React.TransitionEvent<HTMLElement>) => undefined)
 }
 
 export type AnimatorCompletionEvent = React.AnimationEvent<HTMLElement> | React.TransitionEvent<HTMLElement>
@@ -925,9 +926,9 @@ export type TransitionEvent =
         children: undefined | TransitionChildren
         initial: undefined | boolean
         mode: undefined | TransitionMode
-        onEntered: undefined | (() => void)
-        onExited: undefined | (() => void)
-        onEnd: undefined | (() => void)
+        onEntered: undefined | Task
+        onExited: undefined | Task
+        onEnd: undefined | Task
     }
     | {type: 'TaskCompleted', taskId: TransitionTaskId}
     | {type: 'QueueChanged'}

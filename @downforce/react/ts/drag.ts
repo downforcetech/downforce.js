@@ -1,3 +1,4 @@
+import type {Task} from '@downforce/std/fn'
 import type {None} from '@downforce/std/optional'
 import {
     asDragPointerEvent,
@@ -37,7 +38,7 @@ export function useDrag<S, P>(targetRef: React.RefObject<None | DragMoveElement>
     const [dragging, setDragging] = useState<boolean>(false)
     const stateRef = useRef<UseDragState<S, P>>({})
 
-    const onPointerMove = useCallback((event: DragPointerEvent) => {
+    const onPointerMove = useCallback((event: DragPointerEvent): undefined => {
         const state = stateRef.current
 
         setDragging(true)
@@ -47,7 +48,7 @@ export function useDrag<S, P>(targetRef: React.RefObject<None | DragMoveElement>
         }
     }, [options?.onProgress])
 
-    const onPointerEnd = useCallback((event: DragPointerEvent) => {
+    const onPointerEnd = useCallback((event: DragPointerEvent): undefined => {
         const state = stateRef.current
 
         setDragging(false)
@@ -64,7 +65,7 @@ export function useDrag<S, P>(targetRef: React.RefObject<None | DragMoveElement>
         return onPointerEnd(event)
     }, [onPointerEnd])
 
-    const onPointerStart = useCallback((event: MouseEvent | TouchEvent) => {
+    const onPointerStart = useCallback((event: MouseEvent | TouchEvent): undefined => {
         const MouseButtonPrimary = 0
 
         if (event.type === 'mousedown' && (event as MouseEvent).button !== MouseButtonPrimary) {
@@ -87,7 +88,7 @@ export function useDrag<S, P>(targetRef: React.RefObject<None | DragMoveElement>
 
         const startState = options?.onStart?.(asDragPointerEvent(event))
 
-        function onClean() {
+        function onClean(): undefined {
             removeListeners()
         }
 
@@ -167,7 +168,7 @@ export function useMove(targetRef: React.RefObject<None | DragMoveElement>, opti
         return progressState
     }, [options?.onProgress])
 
-    const onEnd = useCallback((event: DragPointerEvent, progressState: undefined | DragMoveChange, startState: DragMoveState<DragMoveElement, DragMoveElement>) => {
+    const onEnd = useCallback((event: DragPointerEvent, progressState: undefined | DragMoveChange, startState: DragMoveState<DragMoveElement, DragMoveElement>): undefined => {
         if (progressState) {
             options?.onEnd?.(event, progressState, startState)
         }
@@ -205,7 +206,7 @@ export function useResize(targetRef: React.RefObject<None | DragResizeElement>, 
         return progressState
     }, [options?.onProgress])
 
-    const onEnd = useCallback((event: DragPointerEvent, progressState: undefined | DragResizeChange, startState: DragResizeState) => {
+    const onEnd = useCallback((event: DragPointerEvent, progressState: undefined | DragResizeChange, startState: DragResizeState): undefined => {
         if (progressState) {
             options?.onEnd?.(event, progressState, startState)
         }
@@ -242,7 +243,7 @@ export function useScrollHorizontal<E extends HTMLElement>(targetRef: React.RefO
         return progressState
     }, [options?.onProgress])
 
-    const onEnd = useCallback((event: DragPointerEvent, progressState: undefined | DragScrollChange, startState: DragScrollState<E>) => {
+    const onEnd = useCallback((event: DragPointerEvent, progressState: undefined | DragScrollChange, startState: DragScrollState<E>): undefined => {
         options?.onEnd?.(event, progressState, startState)
     }, [options?.onEnd])
 
@@ -256,33 +257,33 @@ export function useScrollHorizontal<E extends HTMLElement>(targetRef: React.RefO
 export interface UseDragState<S, P> {
     startState?: undefined | S
     progressState?: undefined | P
-    unmount?: undefined | (() => void)
+    unmount?: undefined | Task
 }
 
 export interface UseDragOptions<S, P> extends DragOptions {
     onStart?: undefined | ((event: DragPointerEvent) => undefined | S)
     onProgress?: undefined | ((event: DragPointerEvent, startState: S) => undefined | P)
-    onEnd?: undefined | ((event: DragPointerEvent, progressState: undefined | P, startState: S) => void)
+    onEnd?: undefined | ((event: DragPointerEvent, progressState: undefined | P, startState: S) => undefined)
 }
 
 export interface UseMoveOptions extends DragMoveOptions<DragMoveElement> {
     boundRef?: undefined | React.RefObject<None | DragMoveElement>
     initOptions?: undefined | (() => undefined | DragMoveOptions<DragMoveElement>)
-    onStart?: undefined | ((event: DragPointerEvent, startState: DragMoveState<DragMoveElement, DragMoveElement>) => void)
-    onProgress?: undefined | ((event: DragPointerEvent, progressState: DragMoveChange, startState: DragMoveState<DragMoveElement, DragMoveElement>) => void)
-    onEnd?: undefined | ((event: DragPointerEvent, progressState: undefined | DragMoveChange, startState: DragMoveState<DragMoveElement, DragMoveElement>) => void)
+    onStart?: undefined | ((event: DragPointerEvent, startState: DragMoveState<DragMoveElement, DragMoveElement>) => undefined)
+    onProgress?: undefined | ((event: DragPointerEvent, progressState: DragMoveChange, startState: DragMoveState<DragMoveElement, DragMoveElement>) => undefined)
+    onEnd?: undefined | ((event: DragPointerEvent, progressState: undefined | DragMoveChange, startState: DragMoveState<DragMoveElement, DragMoveElement>) => undefined)
 }
 
 export interface UseResizeOptions extends DragResizeOptions {
     initOptions?: undefined | (() => undefined | DragResizeOptions)
-    onStart?: undefined | ((event: DragPointerEvent, startState: DragResizeState) => void)
-    onProgress?: undefined | ((event: DragPointerEvent, progressState: DragResizeChange, startState: DragResizeState) => void)
-    onEnd?: undefined | ((event: DragPointerEvent, progressState: undefined | DragResizeChange, startState: DragResizeState) => void)
+    onStart?: undefined | ((event: DragPointerEvent, startState: DragResizeState) => undefined)
+    onProgress?: undefined | ((event: DragPointerEvent, progressState: DragResizeChange, startState: DragResizeState) => undefined)
+    onEnd?: undefined | ((event: DragPointerEvent, progressState: undefined | DragResizeChange, startState: DragResizeState) => undefined)
 }
 
 export interface UseScrollOptions<E extends HTMLElement> extends DragScrollOptions {
     initOptions?: undefined | (() => undefined | DragScrollOptions)
-    onStart?: undefined | ((event: DragPointerEvent, startState: DragScrollState<E>) => void)
-    onProgress?: undefined | ((event: DragPointerEvent, progressState: DragScrollChange, startState: DragScrollState<E>) => void)
-    onEnd?: undefined | ((event: DragPointerEvent, progressState: undefined | DragScrollChange, startState: DragScrollState<E>) => void)
+    onStart?: undefined | ((event: DragPointerEvent, startState: DragScrollState<E>) => undefined)
+    onProgress?: undefined | ((event: DragPointerEvent, progressState: DragScrollChange, startState: DragScrollState<E>) => undefined)
+    onEnd?: undefined | ((event: DragPointerEvent, progressState: undefined | DragScrollChange, startState: DragScrollState<E>) => undefined)
 }

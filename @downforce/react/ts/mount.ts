@@ -1,7 +1,7 @@
 import type {Task} from '@downforce/std/fn'
 import {useEffect, useLayoutEffect, useRef} from 'react'
 
-export function useMountEffect(effect: Task): void {
+export function useMountEffect(effect: Task): undefined {
     useEffect(effect, [])
 }
 

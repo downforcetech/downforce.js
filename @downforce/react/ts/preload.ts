@@ -3,7 +3,7 @@ import {useEffect} from 'react'
 
 export type {PreloadElementAttrs} from '@downforce/web/preload'
 
-export function usePreloadHint(attrs: PreloadElementAttrs, options?: undefined | UsePreloadHintOptions): void {
+export function usePreloadHint(attrs: PreloadElementAttrs, options?: undefined | UsePreloadHintOptions): undefined {
     const active = options?.active ?? true
 
     useEffect(() => {

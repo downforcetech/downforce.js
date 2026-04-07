@@ -21,7 +21,7 @@ export function useFilter<I, F>(
         return resolveFilteredItemIdx(items ?? NoItems, filteredItems, filteredItemIdx)
     }, [items, filteredItems])
 
-    return {filter, filteredItems, itemIdxOf, setFilter}
+    return {filter, filteredItems, itemIdxOf, setFilter: setFilter as StateWriter<F>}
 }
 
 export function resolveFilteredItemIdx<I>(

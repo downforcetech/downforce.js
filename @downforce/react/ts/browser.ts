@@ -1,7 +1,7 @@
 import {hasBrowserTouch} from '@downforce/web/browser'
 import {startTransition, useEffect, useState} from 'react'
 
-export function useBrowserFeaturesClassesProvider(activeOptional?: undefined | boolean): void {
+export function useBrowserFeaturesClassesProvider(activeOptional?: undefined | boolean): undefined {
     const features = useBrowserFeatures()
     const active = activeOptional ?? true
 

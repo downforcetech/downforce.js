@@ -1,6 +1,6 @@
 import {useEffect} from 'react'
 
-export function usePageScroll(onScroll: ScrollListener): void {
+export function usePageScroll(onScroll: ScrollListener): undefined {
     useEffect(() => {
         function onPageScroll(event: Event) {
             if (event.target !== event.currentTarget) {
@@ -23,5 +23,5 @@ export function usePageScroll(onScroll: ScrollListener): void {
 // Types ///////////////////////////////////////////////////////////////////////
 
 export interface ScrollListener {
-    (element: HTMLElement): void
+    (element: HTMLElement): undefined
 }

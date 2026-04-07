@@ -1,7 +1,7 @@
 import type {FnArgs, FnAsync, Io, Task} from '@downforce/std/fn'
 import {areObjectsEqualShallow} from '@downforce/std/object'
 import {isDefined} from '@downforce/std/optional'
-import {isError, isResult, ResultOrError, whenResultOrError, type OutcomeResultOrError} from '@downforce/std/outcome'
+import {isError, isResult, catchPromise, matchOutcome, type OutcomeResultOrError} from '@downforce/std/outcome'
 import type {PromiseView} from '@downforce/std/promise'
 import {startTransition, useCallback, useEffect, useRef, useState} from 'react'
 
@@ -18,7 +18,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
     const taskHandleRef = useRef<TaskHandle>(undefined)
 
     interface TaskHandle {
-        cancel(): void
+        cancel(): undefined
         canceled: boolean
         readonly promise: Promise<OutcomeResultOrError<R, unknown>>
     }
@@ -49,7 +49,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
         const taskHandle: TaskHandle = {
             cancel() { taskHandle.canceled = true },
             canceled: false,
-            promise: ResultOrError(asyncTask(...args)),
+            promise: catchPromise(asyncTask(...args)),
         }
 
         taskHandleRef.current = taskHandle
@@ -68,7 +68,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
 
         startTransition(() => {
             setState(
-                whenResultOrError(resultOrError,
+                matchOutcome(resultOrError,
                     (result): AsyncIoState<R> => ({
                         output: resultOrError,
                         error: undefined,
@@ -94,7 +94,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
         return resultOrError
     }, deps ?? [])
 
-    const cancel = useCallback(() => {
+    const cancel = useCallback((): undefined => {
         taskHandleRef.current?.cancel()
 
         setState(state => {
@@ -114,7 +114,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
         })
     }, [])
 
-    const reset = useCallback(() => {
+    const reset = useCallback((): undefined => {
         setState(state => {
             const nextState: AsyncIoState<R> = {
                 output: undefined,
@@ -132,7 +132,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
         })
     }, [])
 
-    const resetError = useCallback(() => {
+    const resetError = useCallback((): undefined => {
         setState(state => {
             const nextState: AsyncIoState<R> = {
                 output: isError(state.output) ? undefined : state.output,
@@ -150,7 +150,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
         })
     }, [])
 
-    const resetResult = useCallback(() => {
+    const resetResult = useCallback((): undefined => {
         setState(state => {
             const nextState: AsyncIoState<R> = {
                 output: isResult(state.output) ? undefined : state.output,
@@ -173,9 +173,9 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
 
 export function useAsyncIoEffect<I extends AsyncIoState<any>>(
     io: I,
-    effect: Io<I, void | Task>,
+    effect: Io<I, undefined | Task>,
     deps?: undefined | Array<any>,
-  ): void {
+  ): undefined {
     useEffect(
         () => effect(io),
         [
@@ -234,8 +234,8 @@ export interface AsyncIoState<R> extends PromiseView {
 
 export interface AsyncIoManager<A extends FnArgs, R> extends AsyncIoState<R> {
     call(...args: A): Promise<undefined | OutcomeResultOrError<R, unknown>>
-    cancel(): void
-    reset(): void
-    resetError(): void
-    resetResult(): void
+    cancel(): undefined
+    reset(): undefined
+    resetError(): undefined
+    resetResult(): undefined
 }

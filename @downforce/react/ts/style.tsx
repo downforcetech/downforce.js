@@ -71,7 +71,7 @@ export function useStyleContext(): undefined | StyleContextValue {
     return useContext(StyleContext)
 }
 
-export function useStyle(style: string): void {
+export function useStyle(style: string): undefined {
     const stylesManager = useStyleContext()!
 
     useInsertionEffect(() => {
@@ -93,7 +93,7 @@ export function computeSimpleFastHash(string: string): string {
     return String(string.length) + '-' + (hash >>> 0).toString(36)
 }
 
-export function attachStyleInsideHead(style: string, hash: string): void {
+export function attachStyleInsideHead(style: string, hash: string): undefined {
     const existingStyleElement = document.querySelector(`style[data-style-id="${hash}"]`)
 
     if (existingStyleElement) {
@@ -106,7 +106,7 @@ export function attachStyleInsideHead(style: string, hash: string): void {
     document.head.appendChild(styleElement)
 }
 
-export function cleanStyleInsideHead(style: string, hash: string): void {
+export function cleanStyleInsideHead(style: string, hash: string): undefined {
     const styleElement = document.querySelector(`style[data-style-id="${hash}"]`)
 
     if (! styleElement) {
@@ -126,10 +126,10 @@ export interface StyleProviderProps {
 
 export interface StyleContextValue {
     stylesMap: StylesMap
-    cleanStyle(style: string): void
-    useStyle(style: string): void
+    cleanStyle(style: string): undefined
+    useStyle(style: string): undefined
 }
 
-export type StyleDelegate = (style: string, hash: string) => void
+export type StyleDelegate = (style: string, hash: string) => undefined
 export type StylesMap = Map<string, StylesMapValue>
 export type StylesMapValue = {hash: string, references: number}

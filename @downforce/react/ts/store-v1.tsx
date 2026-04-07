@@ -26,7 +26,7 @@ export function StoreProviderV1(props: StoreProviderV1Props<ReduxReducerState>):
 export function useStoreCreatorV1<S extends ReduxReducerState>(spec: StoreDefinitionV1<S>): StoreV1<S> {
     const {createState} = spec
 
-    return useState(createState)
+    return useState(createState) as StoreV1<S>
 }
 
 export function useStoreV1<S extends ReduxReducerState>(): StoreV1<S> {

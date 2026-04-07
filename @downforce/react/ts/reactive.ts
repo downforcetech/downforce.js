@@ -1,5 +1,5 @@
 import {call, compute, noop, type Io, type Task} from '@downforce/std/fn'
-import {whenSome} from '@downforce/std/optional'
+import {matchSome} from '@downforce/std/optional'
 import type {ReactiveObserver, ReactiveWatchOptions} from '@downforce/std/reactive'
 import {readReactive, watchReactive, writeReactive, type ReactiveObject, type ReactiveValuesOf} from '@downforce/std/reactive'
 import type {ReadWriteSync} from '@downforce/std/store'
@@ -10,7 +10,7 @@ import type {StateManager, StateWriterArg} from './state.js'
 export function useReactiveState<V>(reactive: ReactiveObject<V>): StateManager<V> {
     const [value, PRIVATE_setValue] = useState(() => readReactive(reactive))
 
-    const setValue = useCallback((value: StateWriterArg<V>) => {
+    const setValue = useCallback((value: StateWriterArg<V>): undefined => {
         const newValue = compute(value, readReactive(reactive))
 
         PRIVATE_setValue(newValue)
@@ -92,7 +92,7 @@ export function useReactiveSelect<V, R>(
     selector: Io<undefined | V, R>,
     deps?: undefined | ReactiveSelectorDeps,
 ): undefined | R {
-    const selectedValue = selector(whenSome(reactive, readReactive))
+    const selectedValue = selector(matchSome(reactive, readReactive))
     const [signal, setSignal] = useState(selectedValue)
 
     const subscribe = useCallback(() => {
@@ -133,7 +133,7 @@ export function useReactiveStore<V>(
 ): StateManager<V> {
     const [value, PRIVATE_setValue] = useState(read())
 
-    const setValue = useCallback((value: StateWriterArg<V>) => {
+    const setValue = useCallback((value: StateWriterArg<V>): undefined => {
         const newValue = compute(value, read())
 
         startTransition(() => {
@@ -143,7 +143,7 @@ export function useReactiveStore<V>(
     }, [read, write])
 
     useEffect(() => {
-        function setValueTransition(value: V) {
+        function setValueTransition(value: V): undefined {
             startTransition(() => {
                 PRIVATE_setValue(value)
             })
@@ -190,7 +190,7 @@ export function useReactiveSignals(
     // We use useLayoutEffect (instead of useEffect) to watch the reactives as soon as possible,
     // avoiding missed notifications.
     useLayoutEffect(() => {
-        function notify() {
+        function notify(): undefined {
             startTransition(() => {
                 render()
             })

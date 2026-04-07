@@ -21,12 +21,11 @@ export function useAuthentication(args: AuthenticationOptions): AuthenticationMa
     const [tokenState, setTokenState] = useState<undefined | AuthTokenStateEnum>(undefined)
     const {busy, busyLock, busyRelease} = useBusyLock()
 
-    const validateToken = useCallback(async (token: undefined | string) => {
+    const validateToken = useCallback(async (token: undefined | string): Promise<undefined> => {
         if (! token) {
             setTokenState(AuthTokenState.Missing)
             return
         }
-
 
         setTokenState(AuthTokenState.Validating)
         busyLock()
@@ -63,7 +62,7 @@ export function useAuthentication(args: AuthenticationOptions): AuthenticationMa
         }
     }, [authenticateOptions])
 
-    const destroySession = useCallback(async (token: string) => {
+    const destroySession = useCallback(async (token: string): Promise<undefined> => {
         setTokenState(AuthTokenState.Missing)
 
         if (! token) {
@@ -119,9 +118,9 @@ export interface AuthenticationManager {
     tokenState: undefined | AuthTokenStateEnum
     isAuthenticated: boolean
     pending: boolean
-    validateToken: (token: undefined | string) => void
+    validateToken: (token: undefined | string) => Promise<undefined>
     authenticateCredentials: (credentials: AuthCredentials) => Promise<string>
-    destroySession: (token: string) => Promise<void>
+    destroySession: (token: string) => Promise<undefined>
 }
 
 export type AuthTokenStateEnum = ValueOf<typeof AuthTokenState> & string

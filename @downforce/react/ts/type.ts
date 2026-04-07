@@ -9,12 +9,12 @@ export function isElementType<T extends React.JSXElementConstructor<any>>(
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface ValueMutator<V, C = V, R = void> {
+export interface ValueMutator<V, C = V, R = undefined> {
     value: V
     onChange: (value: C) => R
 }
 
-export interface ItemSelector<I, V, C = V, R = void> {
+export interface ItemSelector<I, V, C = V, R = undefined> {
     items: Array<I>
     selected: V
     onSelect: (value: C, idx: number) => R

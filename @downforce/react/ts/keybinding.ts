@@ -7,7 +7,7 @@ export function useKey(
     key: KeybindingKey,
     onKey: EventHandler<KeyboardEvent>,
     options?: undefined | KeybindingOptions,
-): void {
+): undefined {
     const documentRef = useRef(document)
     const event = options?.event ?? 'keydown'
     const ref = options?.ref ?? documentRef

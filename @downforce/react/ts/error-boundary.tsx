@@ -7,7 +7,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         return {hasError: true, error}
     }
 
-    override componentDidCatch(error: unknown, errorInfo: unknown): void {
+    override componentDidCatch(error: unknown, errorInfo: unknown): undefined {
         this.props.onError?.(error, errorInfo)
     }
 
@@ -36,5 +36,5 @@ export interface ErrorBoundaryState {
 }
 
 export interface ErrorBoundaryHandler {
-    (error: unknown, errorInfo: unknown): void
+    (error: unknown, errorInfo: unknown): undefined
 }

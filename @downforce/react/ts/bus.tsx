@@ -59,7 +59,7 @@ export function useBusProvider(): Bus {
     return bus
 }
 
-export function useBusEvent<P = unknown>(bus: Bus, event: BusEvent, observer: undefined | BusEventObserver<P>): void {
+export function useBusEvent<P = unknown>(bus: Bus, event: BusEvent, observer: undefined | BusEventObserver<P>): undefined {
     useEffect(() => {
         if (! observer) {
             return
@@ -85,8 +85,8 @@ export interface BusBoundCase1Exports {
         (): Bus
     }
     useBusEvent: {
-        <P = unknown>(event: BusEvent, observer: BusEventObserver<P>): void
-        <P = unknown>(event: BusEvent, observer: undefined | BusEventObserver<P>): void
+        <P = unknown>(event: BusEvent, observer: BusEventObserver<P>): undefined
+        <P = unknown>(event: BusEvent, observer: undefined | BusEventObserver<P>): undefined
     }
 }
 

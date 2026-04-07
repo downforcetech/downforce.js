@@ -1,16 +1,16 @@
 import type {Fn, Task} from '@downforce/std/fn'
-import {useEffect, useRef, type EffectCallback} from 'react'
+import {useEffect, useRef} from 'react'
 
 /*
 * useEffect(fn, deps) but with inverted arguments (deps, fn) and deps as function arguments.
 */
-export function useWatch<A extends Array<unknown>>(deps: readonly [...A], effect: Fn<NoInfer<A>, void | Task>): void {
+export function useWatch<A extends Array<unknown>>(deps: readonly [...A], effect: Fn<NoInfer<A>, undefined | Task>): undefined {
     useEffect(() => {
         return effect(...deps)
     }, deps)
 }
 
-export function useWatchChange<A extends Array<unknown>>(deps: readonly [...A], effect: Fn<NoInfer<A>, void | Task>): void {
+export function useWatchChange<A extends Array<unknown>>(deps: readonly [...A], effect: Fn<NoInfer<A>, undefined | Task>): undefined {
     const initRef = useRef(false)
 
     useEffect(() => {

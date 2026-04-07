@@ -4,7 +4,7 @@ import {useEffect} from 'react'
 export function useResizeObserver(
     containerRef: React.RefObject<None | HTMLElement>,
     onResize: ResizeObserverCallback,
-): void {
+): undefined {
     useEffect(() => {
         const containerEl = containerRef.current
 

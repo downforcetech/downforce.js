@@ -9,7 +9,7 @@ export function useStateAccessor<S>(initialState: StateInit<S>): StateAccessorMa
         return stateRef.current
     }, [])
 
-    const setState = useCallback((newStateComputed: StateWriterArg<S>): void => {
+    const setState = useCallback((newStateComputed: StateWriterArg<S>): undefined => {
         const newState = compute(newStateComputed, stateRef.current)
 
         stateRef.current = newState
@@ -34,8 +34,8 @@ export function useStateAccessor<S>(initialState: StateInit<S>): StateAccessorMa
 *     )
 * }
 */
-export function useMergeState<S extends object>(setState: StateWriter<S>): Io<Partial<S>, void> {
-    const mergeState = useCallback((statePatch: Partial<S>) => {
+export function useMergeState<S extends object>(setState: StateWriter<S> | React.Dispatch<React.SetStateAction<S>>): Io<Partial<S>, undefined> {
+    const mergeState = useCallback((statePatch: Partial<S>): undefined => {
         setState(mergedState(statePatch))
     }, [setState])
 
@@ -66,10 +66,10 @@ export function mergedState<S extends object>(statePatch: Partial<S>): Io<S, S> 
 // Types ///////////////////////////////////////////////////////////////////////
 
 export type StateInit<S> = S | (() => S)
-export type StateWriter<S> = React.Dispatch<StateWriterArg<S>>
+export type StateWriter<S> = (value: StateWriterArg<S>) => undefined
 export type StateWriterArg<S> = React.SetStateAction<S>
 export type StateReader<S> = () => S
 export type StateManager<S> = [state: S, write: StateWriter<S>]
-export type StatePatcher<S extends object> = (statePatch: Partial<S>) => void
+export type StatePatcher<S extends object> = (statePatch: Partial<S>) => undefined
 
 export type StateAccessorManager<S> = [...StateManager<S>, read: StateReader<S>]

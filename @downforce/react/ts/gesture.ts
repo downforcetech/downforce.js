@@ -9,7 +9,7 @@ export function useEventOutside<E extends Event>(
     eventName: string,
     onEventOutside: EventHandler<E>,
     options?: undefined | ClickOutsideOptions,
-): void {
+): undefined {
     const documentRef = useRef<EventElement>(document.documentElement)
     const behavior = options?.behavior ?? 'every'
     const rootRef = options?.rootRef ?? documentRef
@@ -51,7 +51,7 @@ export function useClickOutside(
     refOrRefs: React.RefObject<None | Element> | Array<React.RefObject<None | Element>>,
     onClickOutside: EventHandler<MouseEvent>,
     options?: undefined | ClickOutsideOptions,
-): void {
+): undefined {
     const event = options?.event ?? 'click'
 
     useEventOutside(refOrRefs, event, onClickOutside, options)

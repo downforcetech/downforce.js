@@ -83,4 +83,4 @@ export interface StoreDispatchV2<S extends ReduxReducerState, A extends ReduxEve
     (...args: A): S
 }
 
-export type StoreV2Observer<S extends ReduxReducerState> = (id: ReduxReducerId, args: ReduxReducerArgs, newState: S, oldState: S) => void
+export type StoreV2Observer<S extends ReduxReducerState> = (id: ReduxReducerId, args: ReduxReducerArgs, newState: S, oldState: S) => undefined

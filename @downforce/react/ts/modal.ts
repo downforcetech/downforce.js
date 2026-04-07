@@ -3,7 +3,7 @@
 import {strictIntegerLike} from '@downforce/std/number'
 import {useEffect} from 'react'
 
-export function useScrollLock(activeOptional?: undefined | boolean): void {
+export function useScrollLock(activeOptional?: undefined | boolean): undefined {
     const active = activeOptional ?? true
 
     useEffect(() => {
@@ -21,13 +21,13 @@ export function useScrollLock(activeOptional?: undefined | boolean): void {
     }, [active])
 }
 
-export function lockScroll(): void {
+export function lockScroll(): undefined {
     const locks = strictIntegerLike(document.scrollingElement?.getAttribute('no-scroll') ?? '') ?? 0
 
     document.scrollingElement?.setAttribute('no-scroll', String(locks + 1))
 }
 
-export function unlockScroll(): void {
+export function unlockScroll(): undefined {
     const locks = strictIntegerLike(document.scrollingElement?.getAttribute('no-scroll') ?? '') ?? 0
 
     if (locks > 1) {

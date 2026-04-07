@@ -10,7 +10,7 @@ export function useEvent<E extends Event>(
     eventName: string,
     onEventHandler: EventHandler<E>,
     options?: undefined | EventOptions,
-): void {
+): undefined {
     const active = options?.active ?? true
     const capture = options?.phase === 'capturing' // Bubbling by default.
     const passive = options?.passive ?? true
@@ -72,7 +72,7 @@ export function useCallbackThrottled<A extends FnArgs>(callback: Fn<A>, delayMs:
 export function useCallbackDelayed(callback: Function, delayMs: number): {run: Task, cancel: Task} {
     const taskRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
-    const cancel = useCallback(() => {
+    const cancel = useCallback((): undefined => {
         if (! taskRef.current) {
             return
         }
@@ -80,7 +80,7 @@ export function useCallbackDelayed(callback: Function, delayMs: number): {run: T
         taskRef.current = void clearTimeout(taskRef.current)
     }, [])
 
-    const run = useCallback(() => {
+    const run = useCallback((): undefined => {
         cancel()
 
         taskRef.current = setTimeout(callback, delayMs)
@@ -141,4 +141,4 @@ export interface EventOptions {
 }
 
 export type EventElement = Element | EventTarget
-export type EventHandler<E> = (event: E) => void
+export type EventHandler<E> = (event: E) => undefined

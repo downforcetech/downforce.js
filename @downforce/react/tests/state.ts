@@ -1,7 +1,7 @@
 import {mergedState, useMergeState, type StateWriterArg} from '@downforce/react/state'
 
 type State = {a: number, b: string}
-function setState(state: StateWriterArg<State>) {
+function setState(state: StateWriterArg<State>): undefined {
 }
 
 const patch = useMergeState(setState)

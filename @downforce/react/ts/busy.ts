@@ -4,10 +4,10 @@ export function useBusyLock(initial?: undefined | number): BusyLockManager {
     const [busy, setBusy] = useState(initial ?? 0)
     const isBusy = busy > 0
 
-    const busyLock = useCallback(() => {
+    const busyLock = useCallback((): undefined => {
         setBusy(state => state + 1)
     }, [])
-    const busyRelease = useCallback(() => {
+    const busyRelease = useCallback((): undefined => {
         setBusy(state => state - 1)
     }, [])
 
@@ -19,7 +19,7 @@ export function useBusyLock(initial?: undefined | number): BusyLockManager {
 export interface BusyLockManager {
     busy: number
     isBusy: boolean
-    busyLock(): void
-    busyRelease(): void
+    busyLock(): undefined
+    busyRelease(): undefined
     setBusy: React.Dispatch<React.SetStateAction<number>>
 }

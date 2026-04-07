@@ -309,7 +309,7 @@ export function useRouter(): RouterManager {
 
     const readRoute = useRouteRead()
 
-    const changeRoute = useCallback((args: RouterRouteChangeComputable) => {
+    const changeRoute = useCallback((args: RouterRouteChangeComputable): undefined => {
         const {params, ...otherArgs} = args
         const paramsComputed = compute(params, readRoute().params)
 
@@ -321,10 +321,10 @@ export function useRouter(): RouterManager {
     return {changeRoute, link, readRoute}
 }
 
-export function useRouteParamsPatch(): (paramsPatch: undefined | RouterRouteChangeParamsDict, replace?: undefined | boolean) => void {
+export function useRouteParamsPatch(): (paramsPatch: undefined | RouterRouteChangeParamsDict, replace?: undefined | boolean) => undefined {
     const {changeRoute} = useRouter()
 
-    const patchRoute = useCallback((paramsPatch: undefined | RouterRouteChangeParamsDict, replace?: undefined | boolean) => {
+    const patchRoute = useCallback((paramsPatch: undefined | RouterRouteChangeParamsDict, replace?: undefined | boolean): undefined => {
         if (! paramsPatch) {
             return
         }
@@ -504,7 +504,7 @@ export interface RoutingProps extends Omit<RouterRouteChange, 'path'> {
 }
 
 export interface RouterManager {
-    changeRoute(args: RouterRouteChangeComputable): void
+    changeRoute(args: RouterRouteChangeComputable): undefined
     link(path: string, params?: undefined | RouterRouteChangeParams): string
     readRoute(): RouterRoute
 }

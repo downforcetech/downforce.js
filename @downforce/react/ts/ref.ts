@@ -3,7 +3,7 @@ import {isObject} from '@downforce/std/object'
 import type {None} from '@downforce/std/optional'
 import {useLayoutEffect, useMemo, useRef} from 'react'
 
-export function useMergeRefs<V>(...refs: Array<void | None | RefHandler<None | V>>): (element: null | V) => void {
+export function useMergeRefs<V>(...refs: Array<void | None | RefHandler<None | V>>): (instance: null | V) => undefined {
     const onRef = useMemo(() => {
         return mergingRefs(...refs)
     }, refs)
@@ -11,20 +11,20 @@ export function useMergeRefs<V>(...refs: Array<void | None | RefHandler<None | V
     return onRef
 }
 
-export function mergingRefs<V>(...refs: Array<void | None | RefHandler<None | V>>): React.RefCallback<null | V> {
-    function onRef(element: null | V) {
+export function mergingRefs<V>(...refs: Array<void | None | RefHandler<None | V>>): (instance: null | V) => undefined {
+    function onRef(instance: null | V): undefined {
         for (const ref of refs) {
             if (! ref) {
                 continue
             }
 
-            setRef<None | V>(ref, element)
+            setRef<None | V>(ref, instance)
         }
     }
     return onRef
 }
 
-export function setRef<V>(ref: RefHandler<V>, value: V): void {
+export function setRef<V>(ref: RefHandler<V>, value: V): undefined {
     if (isFunction(ref)) {
         ref(value)
         return
