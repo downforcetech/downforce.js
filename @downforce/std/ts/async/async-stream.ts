@@ -29,26 +29,26 @@ import {isArray} from '../array/array-is.js'
 */
 export function streamPromises<T extends Array<Promise<unknown>>>(
     promises: [...T],
-    onError?: undefined | ((error: unknown, idx: number) => void),
-): AsyncGenerator<AwaitedStreamListOf<[...T]>, AwaitedStreamListOf<[...T]>, void>
+    onError?: undefined | ((error: unknown, idx: number) => undefined),
+): AsyncGenerator<AwaitedStreamListOf<[...T]>, AwaitedStreamListOf<[...T]>, undefined>
 export function streamPromises<T extends Record<string, Promise<unknown>>>(
     promises: T,
-    onError?: undefined | ((error: unknown, key: string) => void),
-): AsyncGenerator<AwaitedStreamDictOf<T>, AwaitedStreamDictOf<T>, void>
+    onError?: undefined | ((error: unknown, key: string) => undefined),
+): AsyncGenerator<AwaitedStreamDictOf<T>, AwaitedStreamDictOf<T>, undefined>
 export function streamPromises<T extends Array<Promise<unknown>> | Record<string, Promise<unknown>>>(
     promises: T,
-    onError?: undefined | ((error: unknown, idxOrKey: number | string | any) => void),
-): AsyncGenerator<AwaitedStreamOf<T>, AwaitedStreamOf<T>, void> {
+    onError?: undefined | ((error: unknown, idxOrKey: number | string | any) => undefined),
+): AsyncGenerator<AwaitedStreamOf<T>, AwaitedStreamOf<T>, undefined> {
     if (isArray(promises)) {
-        return streamPromisesList(promises, onError) as AsyncGenerator<AwaitedStreamOf<T>, AwaitedStreamOf<T>, void>
+        return streamPromisesList(promises, onError) as AsyncGenerator<AwaitedStreamOf<T>, AwaitedStreamOf<T>, undefined>
     }
-    return streamPromisesDict(promises, onError) as AsyncGenerator<AwaitedStreamOf<T>, AwaitedStreamOf<T>, void>
+    return streamPromisesDict(promises, onError) as AsyncGenerator<AwaitedStreamOf<T>, AwaitedStreamOf<T>, undefined>
 }
 
 export async function* streamPromisesDict<T extends Record<string, Promise<unknown>>>(
     promises: T,
-    onError?: undefined | ((error: unknown, key: string) => void),
-): AsyncGenerator<AwaitedStreamDictOf<T>, AwaitedStreamDictOf<T>, void> {
+    onError?: undefined | ((error: unknown, key: string) => undefined),
+): AsyncGenerator<AwaitedStreamDictOf<T>, AwaitedStreamDictOf<T>, undefined> {
     const results: Record<string, unknown> = {}
     const queue: Set<Promise<unknown>> = new Set(Object.values(promises))
 
@@ -78,8 +78,8 @@ export async function* streamPromisesDict<T extends Record<string, Promise<unkno
 
 export async function* streamPromisesList<T extends Array<Promise<unknown>>>(
     promises: [...T],
-    onError?: undefined | ((error: unknown, idx: number) => void),
-): AsyncGenerator<AwaitedStreamListOf<[...T]>, AwaitedStreamListOf<[...T]>, void> {
+    onError?: undefined | ((error: unknown, idx: number) => undefined),
+): AsyncGenerator<AwaitedStreamListOf<[...T]>, AwaitedStreamListOf<[...T]>, undefined> {
     const results: Array<unknown> = []
     const queue: Set<Promise<unknown>> = new Set(promises)
 

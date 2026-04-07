@@ -1,9 +1,16 @@
-import {arrayWrap} from '@downforce/std/array'
 import {expectType, TypeAssert, TypeEnsure, TypeStrict} from '@downforce/std/type'
 import Assert from 'node:assert/strict'
 import {describe, test} from 'node:test'
 
 describe('@downforce/std/type', (ctx) => {
+    test('expectType()', (ctx) => {
+        expectType<undefined | null | number | string>(undefined as | undefined | null | number | string)
+        // @ts-expect-error
+        expectType<number | string>(undefined as | undefined | null | number | string)
+        // @off-ts-expect-error
+        expectType<undefined | null | number | string>(undefined as | undefined | null)
+    })
+
     test('TypeAssert.assertEnum()', (ctx) => {
         const enumList = ['A' as const, 'B' as const]
 
@@ -27,9 +34,7 @@ describe('@downforce/std/type', (ctx) => {
             TypeAssert.assertEnum('X', enumList)
         })
     })
-})
 
-describe('@downforce/std/type', (ctx) => {
     test('TypeEnsure.ensureEnum()', (ctx) => {
         const enumList = ['A' as const, 'B' as const]
         const input: undefined | 'A' = 'A'
@@ -76,9 +81,7 @@ describe('@downforce/std/type', (ctx) => {
             })
         }
     })
-})
 
-describe('@downforce/std/type', (ctx) => {
     test('TypeStrict.strictArray()', (ctx) => {
         expectType<undefined | [number]>(TypeStrict.strictArray([] as unknown as [number]))
         expectType<undefined | number[]>(TypeStrict.strictArray([] as unknown as number[]))
@@ -109,32 +112,3 @@ describe('@downforce/std/type', (ctx) => {
         expectType<undefined | AbcEnumType>(TypeStrict.strictEnum(stringAbcOptional, AbcEnumList))
     })
 })
-
-describe('@downforce/std/array', (ctx) => {
-    test('arrayWrap()', (ctx) => {
-        expectType<[number]>(arrayWrap([] as unknown as (number | [number])))
-        expectType<number[]>(arrayWrap([] as unknown as (number | number[])))
-        expectType<Array<number>>(arrayWrap([] as unknown as (number | Array<number>)))
-        expectType<readonly [number]>(arrayWrap([] as unknown as (number | readonly [number])))
-        expectType<readonly number[]>(arrayWrap([] as unknown as (number | readonly number[])))
-        expectType<ReadonlyArray<number>>(arrayWrap([] as unknown as (number | ReadonlyArray<number>)))
-        expectType<[number] | [number, string]>(arrayWrap([] as unknown as (number | [number, string])))
-        expectType<Array<number> | Array<number|string>>(arrayWrap([] as unknown as (number | Array<number|string>)))
-        expectType<[number, ...Array<unknown>]>(arrayWrap([] as unknown as (number | [number, string])))
-    })
-})
-
-// export function tryArray<V, I>(value: V | I):
-//     V extends Array<infer I> ? // [T] | T[] | Array<T>
-//         number extends V['length'] ?
-//             'T[] | Array<T>' | I// T[] | Array<T>
-//         : '[T]' // [T]
-//     : V extends readonly (infer I)[] ? // readonly T[] | readonly [T] | ReadonlyArray<T>
-//         number extends V['length'] ?
-//             'readonly T[] | ReadonlyArray<T>' // readonly T[] | ReadonlyArray<T>
-//         : 'readonly [T]' // readonly [T]
-//     : 'T' // T
-// export function tryArray<V, T extends unknown[]>(value: V | [...T]): [V] | [...T]
-// export function tryArray<V, T extends unknown[]>(value: V | readonly [...T]): [V] | readonly [...T]
-// export function tryArray<V, I>(value: V | readonly I[]): [V] | readonly I[]
-// export function tryArray<V, I>(value: V | I[]): V[] | I[]

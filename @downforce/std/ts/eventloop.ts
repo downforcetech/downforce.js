@@ -20,7 +20,7 @@ export function scheduleMicroTaskUsingPromise(task: Task): Task {
 export function scheduleMacroTaskUsingTimeout(task: Task): Task {
     const timeoutId = setTimeout(task, 0)
 
-    function cancelTask() {
+    function cancelTask(): undefined {
         clearTimeout(timeoutId)
     }
 

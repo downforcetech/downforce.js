@@ -65,7 +65,7 @@ export function getContainerInternals<M extends ContainerServicesMap, S>(contain
 function defineContainerService<M extends ContainerServicesMap, S, I extends keyof M>(
     container: Container<M, S>,
     serviceId: I,
-): void {
+): undefined {
     // We define a proxy property that returns the service.
     Object.defineProperty(container, serviceId, {
         configurable: false,

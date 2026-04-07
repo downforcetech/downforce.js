@@ -2,7 +2,7 @@ import {noop} from '../fn/fn-return.js'
 import type {Task} from '../fn/fn-type.js'
 
 export function createTaskRepeater(
-    task: () => void,
+    task: Task,
     delay: number,
     options?: undefined | TaskRepeaterOptions,
 ): TaskRepeater {
@@ -42,7 +42,7 @@ export function startTaskRepeater(self: TaskRepeater): Task {
     return self.stop
 }
 
-export function stopTaskRepeater(self: TaskRepeater): void {
+export function stopTaskRepeater(self: TaskRepeater): undefined {
     self.running = false
 
     self.clean()
@@ -57,14 +57,14 @@ export function scheduleTaskRepeaterTask(self: TaskRepeater): Task {
 
     const id = setTimeout(executeTaskRepeaterTask, self.delay, self)
 
-    function clean() {
+    function clean(): undefined {
         clearTimeout(id)
     }
 
     return clean
 }
 
-export function executeTaskRepeaterTask(self: TaskRepeater): void {
+export function executeTaskRepeaterTask(self: TaskRepeater): undefined {
     const result = self.task()
     const promise = Promise.resolve(result)
 
@@ -81,10 +81,10 @@ export interface TaskRepeater {
     delay: number
     immediate: boolean
     running: boolean
-    task(): void
-    clean(): void
-    start(): void
-    stop(): void
+    task(): undefined
+    clean(): undefined
+    start(): Task
+    stop(): undefined
 }
 
 export interface TaskRepeaterOptions {

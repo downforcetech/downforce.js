@@ -9,6 +9,8 @@ export function strictNumberLike(value: None | number | string): undefined | num
     return trustNumberLike(value)
 }
 
+export const asNumber: typeof strictNumberLike = strictNumberLike
+
 export function strictInteger<const V extends number>(value: None | V): undefined | V {
     return trustInteger(value) as undefined | V
 }
@@ -16,3 +18,5 @@ export function strictInteger<const V extends number>(value: None | V): undefine
 export function strictIntegerLike(value: None | number | string): undefined | number {
     return trustIntegerLike(value)
 }
+
+export const asInteger: typeof strictIntegerLike = strictIntegerLike

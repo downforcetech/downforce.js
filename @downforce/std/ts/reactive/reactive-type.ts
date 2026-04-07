@@ -15,7 +15,7 @@ export interface ReactiveState<V> {
 }
 
 export type ReactiveMiddleware<V> = (newValue: V, oldValue: V) => V
-export type ReactiveObserver<V> = (newValue: V, oldValue: V) => void
+export type ReactiveObserver<V> = (newValue: V, oldValue: V) => undefined
 export type ReactiveComparator<V> = (newValue: V, oldValue: V) => boolean
 
 export interface ReactiveOptions<V> {

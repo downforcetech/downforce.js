@@ -19,8 +19,8 @@
         "preversion": "node --run build && node --run test"
     },
     "devDependencies": {
-        "@downforce/tsconfig": "1",
-        "typescript": "5.9"
+        "@downforce/tsconfig": "workspace:*",
+        "typescript": "6"
     },
     "author": "Daniele Orlando",
     "license": "MIT",

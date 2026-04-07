@@ -8,7 +8,6 @@ export const TypeKind: {
     defined: Io<unknown, boolean>
     error: Io<unknown, boolean>
     function: Io<unknown, boolean>
-    integer: Io<unknown, boolean>
     iterator: Io<unknown, boolean>
     none: Io<unknown, boolean>
     null: Io<unknown, boolean>
@@ -28,7 +27,6 @@ export const TypeKind: {
     defined: TypeIs.isDefined,
     error: TypeIs.isError,
     function: TypeIs.isFunction,
-    integer: TypeIs.isInteger,
     iterator: TypeIs.isIterator,
     none: TypeIs.isNone,
     null: TypeIs.isNull,

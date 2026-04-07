@@ -4,11 +4,11 @@ import {isDate} from '../date/date-is.js'
 import {isEnum} from '../enum/enum-is.js'
 import {isFunction} from '../fn/fn-is.js'
 import {isIterator} from '../iter/iter-is.js'
-import {isPrimitive} from '../mix/mix-is.js'
-import {isInteger, isNumber} from '../number/number-is.js'
+import {isNumber} from '../number/number-is.js'
 import {isObject} from '../object/object-is.js'
 import {isDefined, isNone, isNull, isSome, isUndefined} from '../optional/optional-is.js'
 import {isError, isResult} from '../outcome/outcome-is.js'
+import {isPrimitive} from '../primitive/primitive-is.js'
 import {isPromise, isPromiseSettledFulfilled, isPromiseSettledRejected} from '../promise/promise-is.js'
 import {isRegExp} from '../regexp/regexp-is.js'
 import {isString} from '../string/string-is.js'
@@ -24,7 +24,6 @@ export const TypeIs: {
     isEnum: typeof isEnum
     isError: typeof isError
     isFunction: typeof isFunction
-    isInteger: typeof isInteger
     isIterator: typeof isIterator
     isNone: typeof isNone
     isNull: typeof isNull
@@ -50,7 +49,6 @@ export const TypeIs: {
     isEnum: isEnum,
     isError: isError,
     isFunction: isFunction,
-    isInteger: isInteger,
     isIterator: isIterator,
     isNone: isNone,
     isNull: isNull,

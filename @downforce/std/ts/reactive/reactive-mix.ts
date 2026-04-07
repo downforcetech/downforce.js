@@ -74,7 +74,7 @@ export function watchReactive<V>(
         observer(state.value, state.value)
     }
 
-    function stop() {
+    function stop(): undefined {
         observers.delete(observer)
     }
 

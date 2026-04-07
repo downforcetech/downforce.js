@@ -1,13 +1,45 @@
-import {returningValue} from '@downforce/std/fn'
-import {isSome, whenNone, whenOptional, whenSome} from '@downforce/std/optional'
+import {isDefined, isSome, matchNone, matchOptional, matchSome} from '@downforce/std/optional'
 import {expectType} from '@downforce/std/type'
 import Assert from 'node:assert/strict'
 import {describe, test} from 'node:test'
 
-export type Subject = {id: number, name: string, age: number, admin: boolean}
-export const subject: Subject = {id: 1, name: 'Mario', age: 18, admin: false}
+type Data = {id: number, name: string, age: number, admin: boolean, value: number}
+const data: Data = {id: 1, name: 'Mario', age: 18, admin: false, value: 123}
 
 describe('@downforce/std/optional', (ctx) => {
+    test('isDefined()', (ctx) => {
+        {
+            const input = undefined as unknown
+
+            if (isDefined(input)) {
+                expectType<{}>(input)
+            }
+        }
+        {
+            const input = undefined as void | undefined | null | boolean | number | string
+
+            if (isDefined(input)) {
+                expectType<(arg: null | boolean | number | string) => null>((arg: typeof input) => null)
+
+                expectType<null | boolean | number | string>(input)
+                expectType<(null extends typeof input ? true : false)>(true)
+                expectType<(boolean extends typeof input ? true : false)>(true)
+                expectType<(number extends typeof input ? true : false)>(true)
+                expectType<(string extends typeof input ? true : false)>(true)
+
+                // @ts-expect-error
+                expectType<(arg: undefined | null | boolean | number | string) => null>((arg: typeof input) => null)
+                // @ts-expect-error
+                expectType<(undefined extends typeof input ? true : false)>(true)
+            }
+        }
+        {
+            const input = [undefined, null, true, 123, 'abc'].filter(isDefined)
+
+            expectType<Array<null | boolean | number | string>>(input)
+        }
+    })
+
     test('isSome()', (ctx) => {
         {
             const input = undefined as unknown
@@ -17,62 +49,57 @@ describe('@downforce/std/optional', (ctx) => {
             }
         }
         {
-            const input = undefined as  undefined | boolean | number | string
+            const input = undefined as void | undefined | null | boolean | number | string
 
             if (isSome(input)) {
-                expectType<boolean | boolean | number | string>(input)
+                expectType<boolean | number | string>(input)
             }
         }
         {
-            const input = [undefined, null, true, 123, 'string'].filter(isSome)
+            const input = [undefined, null, true, 123, 'abc'].filter(isSome)
 
-            expectType<Array<boolean | boolean | number | string>>(input)
+            expectType<Array<boolean | number | string>>(input)
         }
     })
 
-    test('whenOptional()', (ctx) => {
+    test('matchOptional()', (ctx) => {
         {
             const expected = 123
-            const actual = whenOptional(
+            const actual: string | number = matchOptional(
                 undefined as undefined | string,
                 expectType<string>,
-                returningValue(expected),
+                () => expected,
             )
 
-            expectType<string | number>(actual)
             Assert.equal(actual, expected)
         }
     })
 
-    test('whenSome()', (ctx) => {
+    test('matchSome()', (ctx) => {
         {
-            const actual = whenSome(undefined as undefined | string, expectType<string>)
+            const actual: undefined | string = matchSome(undefined as undefined | string, expectType<string>)
 
-            expectType<undefined | string>(actual)
             Assert.equal(actual, undefined)
         }
 
         {
-            const actual = whenSome(undefined as undefined | number, it => String(it))
+            const actual: undefined | string = matchSome(undefined as undefined | number, it => String(it))
 
-            expectType<undefined | string>(actual)
             Assert.equal(actual, undefined)
         }
 
         {
-            const actual = whenSome(subject.name as undefined | string, it => ({title: it}) )
+            const actual: undefined | {title: string} = matchSome(data.name as undefined | string, it => ({title: it}) )
 
-            expectType<undefined | {title: string}>(actual)
-            Assert.deepStrictEqual(actual, {title: subject.name})
+            Assert.deepStrictEqual(actual, {title: data.name})
         }
     })
 
-    test('whenNone()', (ctx) => {
+    test('matchNone()', (ctx) => {
         {
-            const actual = whenNone(undefined as undefined | number, it => subject.name)
+            const actual: undefined | number | string = matchNone(undefined as undefined | number, it => data.name)
 
-            expectType<undefined | number | string>(actual)
-            Assert.equal(actual, subject.name)
+            Assert.equal(actual, data.name)
         }
     })
 })

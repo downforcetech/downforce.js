@@ -2,7 +2,7 @@ import {call} from '../fn/fn-call.js'
 import type {FnCancelableProtocol, FnCancelableState} from '../fn/fn-cancel.js'
 import type {Task} from '../fn/fn-type.js'
 import type {PromiseView} from '../promise/promise-type.js'
-import type {Writable} from '../type/type-type.js'
+import type {Void, Writable} from '../type/type-type.js'
 
 export class Future<R, E = unknown> {
     static from<P, E = unknown>(promise: P): Future<Awaited<P>, E> {
@@ -11,9 +11,9 @@ export class Future<R, E = unknown> {
 
     static new<V, E = unknown>(
         executor: (
-            resolve: (value: V | PromiseLike<V>) => void,
-            reject: (error?: E) => void,
-        ) => void,
+            resolve: (value: V | PromiseLike<V>) => Void,
+            reject: (error?: E) => Void,
+        ) => undefined,
     ): Future<Awaited<V>, E> {
         return createFuture(executor)
     }
@@ -21,9 +21,9 @@ export class Future<R, E = unknown> {
 
 export function createFuture<R, E = unknown>(
     executor: (
-        resolve: (value: R | PromiseLike<R>) => void,
-        reject: (error?: E) => void,
-    ) => void,
+        resolve: (value: R | PromiseLike<R>) => Void,
+        reject: (error?: E) => Void,
+    ) => undefined,
 ): Future<Awaited<R>, E> {
     return futureWrap(new Promise<R>(executor))
 }
@@ -123,7 +123,7 @@ export function futureWrap<P, E = unknown>(value: P | PromiseLike<P>): Future<Aw
         onCancel(onCancel) {
             state.onCancelObservers.push(onCancel)
 
-            function offCancel() {
+            function offCancel(): undefined {
                 state.onCancelObservers = state.onCancelObservers.filter(it => it !== onCancel)
             }
 

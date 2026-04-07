@@ -3,7 +3,7 @@ import Assert from 'node:assert/strict'
 import {describe, test} from 'node:test'
 
 describe('@downforce/std/iter', (ctx) => {
-    test('iterate()', (ctx) => {
+    test('sequence()', (ctx) => {
         {
             const actual: Array<number> = []
             const expected: Array<number> = [0, 1, 2]

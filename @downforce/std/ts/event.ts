@@ -14,7 +14,7 @@ export function debounced<A extends FnArgs>(task: Fn<A>, delay: number): EventTa
         timeoutId: undefined,
     }
 
-    function call(...args: A) {
+    function call(...args: A): undefined {
         if (! call.enabled) {
             return
         }
@@ -29,7 +29,7 @@ export function debounced<A extends FnArgs>(task: Fn<A>, delay: number): EventTa
         state.timeoutId = setTimeout(run, delay)
     }
 
-    function run() {
+    function run(): undefined {
         state.timeoutId = undefined
 
         if (isUndefined(state.lastCallArgs)) {
@@ -51,7 +51,7 @@ export function debounced<A extends FnArgs>(task: Fn<A>, delay: number): EventTa
         task(...state.lastCallArgs)
     }
 
-    function cancel() {
+    function cancel(): undefined {
         if (isUndefined(state.timeoutId)) {
             return
         }
@@ -60,12 +60,12 @@ export function debounced<A extends FnArgs>(task: Fn<A>, delay: number): EventTa
         state.timeoutId = undefined
     }
 
-    function disable() {
+    function disable(): undefined {
         call.enabled = false
         cancel()
     }
 
-    function enable() {
+    function enable(): undefined {
         call.enabled = true
     }
 
@@ -88,7 +88,7 @@ export function throttled<A extends FnArgs>(task: Fn<A>, delay: number): EventTa
         timeoutId: undefined,
     }
 
-    function call(...args: A) {
+    function call(...args: A): undefined {
         if (! call.enabled) {
             return
         }
@@ -102,7 +102,7 @@ export function throttled<A extends FnArgs>(task: Fn<A>, delay: number): EventTa
         state.timeoutId = setTimeout(run, delay)
     }
 
-    function run() {
+    function run(): undefined {
         state.timeoutId = undefined
 
         if (isUndefined(state.lastCallArgs)) {
@@ -112,7 +112,7 @@ export function throttled<A extends FnArgs>(task: Fn<A>, delay: number): EventTa
         task(...state.lastCallArgs)
     }
 
-    function cancel() {
+    function cancel(): undefined {
         if (isUndefined(state.timeoutId)) {
             return
         }
@@ -121,12 +121,12 @@ export function throttled<A extends FnArgs>(task: Fn<A>, delay: number): EventTa
         state.timeoutId = undefined
     }
 
-    function disable() {
+    function disable(): undefined {
         call.enabled = false
         cancel()
     }
 
-    function enable() {
+    function enable(): undefined {
         call.enabled = true
     }
 
@@ -140,9 +140,9 @@ export function throttled<A extends FnArgs>(task: Fn<A>, delay: number): EventTa
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface EventTask<A extends FnArgs = [], R = void> extends Fn<A, R> {
-    cancel(): void
-    disable(): void
-    enable(): void
+export interface EventTask<A extends FnArgs = [], R = undefined> extends Fn<A, R> {
+    cancel(): undefined
+    disable(): undefined
+    enable(): undefined
     readonly enabled: boolean
 }

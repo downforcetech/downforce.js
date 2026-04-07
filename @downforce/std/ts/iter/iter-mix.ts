@@ -16,18 +16,18 @@ export function sequence(options?: undefined | {
     from?: undefined | number
     to?: undefined | number
     increment?: undefined | number
-}): Generator<number, void, void>
+}): Generator<number, undefined, undefined>
 export function sequence(options?: undefined | {
     from?: undefined | number
     times?: undefined | number
     increment?: undefined | number
-}): Generator<number, void, void>
+}): Generator<number, undefined, undefined>
 export function* sequence(options?: undefined | {
     from?: undefined | number
     to?: undefined | number
     times?: undefined | number
     increment?: undefined | number
-}): Generator<number, void, void> {
+}): Generator<number, undefined, undefined> {
     const from = options?.from ?? 0
     const to = options?.to
     const times = options?.times
@@ -75,6 +75,6 @@ export function* sequence(options?: undefined | {
 * for (const it of range(10, 20)) {
 * }
 */
-export function range(from: number, to: number, increment?: undefined | number): Generator<number, void, void> {
+export function range(from: number, to: number, increment?: undefined | number): Generator<number, undefined, undefined> {
     return sequence({from: from, to: to, increment: increment})
 }

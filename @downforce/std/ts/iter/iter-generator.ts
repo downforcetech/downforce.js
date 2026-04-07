@@ -1,4 +1,4 @@
-export async function generateAsync<Y, R>(generator: AsyncGenerator<Y, R, void>): Promise<[R, Array<Y>]> {
+export async function generateAsync<Y, R>(generator: AsyncGenerator<Y, R, undefined>): Promise<[R, Array<Y>]> {
     const yields: Array<Y> = []
 
     while (true) {

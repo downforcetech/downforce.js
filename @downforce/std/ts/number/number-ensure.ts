@@ -1,7 +1,8 @@
 import {createEnsureOptional, formatEnsureInvalidTypeMessage} from '../ensure.js'
 import {throwInvalidType} from '../error/error-new.js'
 import type {None} from '../optional/optional-type.js'
-import {isInteger, isNumber} from './number-is.js'
+import {isNumber} from './number-is.js'
+import {isInteger} from './number-mix.js'
 
 /**
 * @throws

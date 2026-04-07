@@ -17,9 +17,9 @@ export function startMeasure(): () => PerfMeasureTime {
     return stopMeasure
 }
 
-export function measure<R = void>(block: Task<Promise<R>>): Promise<[PerfMeasureTime, R]>
-export function measure<R = void>(block: Task<R>): [PerfMeasureTime, R]
-export function measure<R = void>(block: Task<R> | Task<Promise<R>>): [PerfMeasureTime, R] | Promise<[PerfMeasureTime, R]> {
+export function measure<R = undefined>(block: Task<Promise<R>>): Promise<[PerfMeasureTime, R]>
+export function measure<R = undefined>(block: Task<R>): [PerfMeasureTime, R]
+export function measure<R = undefined>(block: Task<R> | Task<Promise<R>>): [PerfMeasureTime, R] | Promise<[PerfMeasureTime, R]> {
     const timeStart = performance.now()
     const blockReturn = block()
 
@@ -50,7 +50,7 @@ export function measure<R = void>(block: Task<R> | Task<Promise<R>>): [PerfMeasu
     ]
 }
 
-export async function measureAsync<R = void>(block: TaskAsync<R>): Promise<[PerfMeasureTime, R]> {
+export async function measureAsync<R = undefined>(block: TaskAsync<R>): Promise<[PerfMeasureTime, R]> {
     const timeStart = performance.now()
     const result = await block()
     const timeEnd = performance.now()
@@ -65,7 +65,7 @@ export async function measureAsync<R = void>(block: TaskAsync<R>): Promise<[Perf
     ]
 }
 
-export function measureSync<R = void>(block: TaskSync<R>): [PerfMeasureTime, R] {
+export function measureSync<R = undefined>(block: TaskSync<R>): [PerfMeasureTime, R] {
     const timeStart = performance.now()
     const result = block()
     const timeEnd = performance.now()

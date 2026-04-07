@@ -1,15 +1,14 @@
-export {returnInput as identity, returnVoid as noop}
-
 export function returnInput<V>(input: V): V {
     return input
 }
 
-export function returnVoid(): void {
-}
+export const identity: typeof returnInput = returnInput
 
 export function returnUndefined(): undefined {
     return void undefined
 }
+
+export const noop: typeof returnUndefined = returnUndefined
 
 export function returnNull(): null {
     return null
@@ -23,10 +22,6 @@ export function returnFalse(): false {
     return false
 }
 
-export function returningValue<V>(value: V): () => V {
-    return () => value
-}
-
-export function returningVoid(fn: () => any): () => void {
-    return () => void fn()
-}
+// export function returningValue<V>(value: V): () => V {
+//     return () => value
+// }

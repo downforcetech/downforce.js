@@ -17,7 +17,7 @@ export const AsyncTasksQueue = {
     enqueueTask<R>(self: AsyncTasksQueueState<R>, task: TaskAsync<R>): Promise<R> {
         const {promise, resolve, reject} = createPromise<R>()
 
-        function taskRunner(): Promise<void | R> {
+        function taskRunner(): Promise<undefined | R> {
             return task().then(resolve, reject)
         }
 
@@ -28,7 +28,7 @@ export const AsyncTasksQueue = {
         return promise
     },
 
-    tryConsumingQueue(self: AsyncTasksQueueState<any>): void {
+    tryConsumingQueue(self: AsyncTasksQueueState<any>): undefined {
         self.queueLock ??= scheduleMacroTaskUsingTimeout(() => {
             self.queueLock = undefined
 
@@ -69,7 +69,7 @@ export const AsyncTasksQueue = {
 export interface AsyncTasksQueueState<R> {
     active: number
     limit: number
-    queue: Array<TaskAsync<void | R>>
+    queue: Array<TaskAsync<undefined | R>>
     queueLock: undefined | Task
 }
 

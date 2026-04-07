@@ -38,7 +38,7 @@ export function createDateTime(args: {
         [5]: args.second,
         [6]: args.millisecond,
 
-        [Symbol.iterator](): Iterator<number, void, void> {
+        [Symbol.iterator](): Iterator<number, undefined, undefined> {
             let idx: 0 | 1 | 2 | 3 | 4 | 5 | 6 = 0
 
             return {
@@ -48,12 +48,12 @@ export function createDateTime(args: {
                     idx += 1
 
                     if (isUndefined(value)) {
-                        return {done: true, value: void undefined}
+                        return {done: true, value: undefined}
                     }
                     return {done: false, value}
                 },
                 return() {
-                    return {done: true, value: void undefined}
+                    return {done: true, value: undefined}
                 },
             }
         },
@@ -94,7 +94,7 @@ export function dateTimeUnwrap(datetime: DateTimeMixed): Date {
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface DateTimeMixed extends DateTimeList, DateTimeDict, Iterable<number, void, void> {
+export interface DateTimeMixed extends DateTimeList, DateTimeDict, Iterable<number, undefined, undefined> {
 }
 
 export interface DateTimeList {

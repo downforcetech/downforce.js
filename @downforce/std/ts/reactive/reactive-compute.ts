@@ -3,7 +3,7 @@ import {call} from '../fn/fn-call.js'
 import type {Task} from '../fn/fn-type.js'
 import {readReactive, watchReactive, writeReactive} from './reactive-mix.js'
 import {createReactive} from './reactive-new.js'
-import type {ReactiveOptions, ReactiveObject, ReactiveValuesOf} from './reactive-type.js'
+import type {ReactiveObject, ReactiveOptions, ReactiveValuesOf} from './reactive-type.js'
 
 export function createReactiveComputed<A extends Array<ReactiveObject<any>>, V>(
     reactives: readonly [...A],
@@ -19,11 +19,11 @@ export function createReactiveComputed<A extends Array<ReactiveObject<any>>, V>(
         return computer(...args)
     }
 
-    function update(): void {
+    function update(): undefined {
         writeReactive(reactive, compute())
     }
 
-    function scheduleUpdate(): void {
+    function scheduleUpdate(): undefined {
         cancelScheduledUpdate ??= scheduleMicroTask(() => {
             cancelScheduledUpdate = undefined
             update()
@@ -41,7 +41,7 @@ export function createReactiveComputed<A extends Array<ReactiveObject<any>>, V>(
         return readReactive(reactive)
     }
 
-    function clean(): void {
+    function clean(): undefined {
         cancelScheduledUpdate?.()
         cleanUpList.forEach(call)
     }
@@ -61,5 +61,5 @@ export function createReactiveComputed<A extends Array<ReactiveObject<any>>, V>(
 export interface ReactiveComputed<V> extends ReactiveObject<V> {
     get value(): V
     read(): V
-    clean(): void
+    clean(): undefined
 }

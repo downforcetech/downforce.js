@@ -28,10 +28,10 @@ export function createBus(): Bus {
     return self
 }
 
-export function emitBusEvent(reactiveObservers: BusEventObservers, event: BusEvent, payload?: unknown): void
-export function emitBusEvent(reactiveObservers: BusEventObservers, args: [event: BusEvent, payload?: unknown]): void
-export function emitBusEvent(reactiveObservers: BusEventObservers, ...polymorphicArgs: BusEventPolymorphicArgs): void
-export function emitBusEvent(reactiveObservers: BusEventObservers, ...polymorphicArgs: BusEventPolymorphicArgs): void {
+export function emitBusEvent(reactiveObservers: BusEventObservers, event: BusEvent, payload?: unknown): undefined
+export function emitBusEvent(reactiveObservers: BusEventObservers, args: [event: BusEvent, payload?: unknown]): undefined
+export function emitBusEvent(reactiveObservers: BusEventObservers, ...polymorphicArgs: BusEventPolymorphicArgs): undefined
+export function emitBusEvent(reactiveObservers: BusEventObservers, ...polymorphicArgs: BusEventPolymorphicArgs): undefined {
     const observersMap = readReactive(reactiveObservers)
     const observersToNotify: Array<[Array<BusEventObserver>, RegExpMatchArray]> = []
 
@@ -95,7 +95,7 @@ export function observeBusEvent(reactiveObservers: BusEventObservers, event: Bus
     return unobserve
 }
 
-export function unobserveBusEvent(reactiveObservers: BusEventObservers, event: BusEventPattern, observer: BusEventObserver<any>): void {
+export function unobserveBusEvent(reactiveObservers: BusEventObservers, event: BusEventPattern, observer: BusEventObserver<any>): undefined {
     const observersMap = readReactive(reactiveObservers)
     const eventObservers = observersMap[event]
 
@@ -154,16 +154,16 @@ export function compileBusEventRegexp(pattern: BusEventPattern): RegExp {
 
 export interface Bus {
     observers: BusEventObservers
-    emit(event: BusEvent, payload?: any): void
-    emit(args: [event: BusEvent, payload?: any]): void
-    emit(...args: BusEventPolymorphicArgs): void
+    emit(event: BusEvent, payload?: any): undefined
+    emit(args: [event: BusEvent, payload?: any]): undefined
+    emit(...args: BusEventPolymorphicArgs): undefined
     observe<P = unknown>(event: BusEventPattern, observer: BusEventObserver<P>): Task
-    unobserve(event: BusEventPattern, observer: BusEventObserver<any>): void
+    unobserve(event: BusEventPattern, observer: BusEventObserver<any>): undefined
 }
 
 export type BusEvent = string
 export type BusEventPattern = string
-export type BusEventObserver<P = unknown> = (event: BusEventPattern, matches: RegExpMatchArray, payload: P) => void
+export type BusEventObserver<P = unknown> = (event: BusEventPattern, matches: RegExpMatchArray, payload: P) => undefined
 export type BusEventObservers = ReactiveObject<Record<BusEventPattern, Array<BusEventObserver>>>
 
 export type BusEventPolymorphicArgs =

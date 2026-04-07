@@ -1,19 +1,16 @@
 export function isObject<V extends object = Record<PropertyKey, unknown>>(value: unknown): value is V {
-    // Remember, remember, the fifth of November.
-    // typeof null === 'object'. God damn JavaScript!
+    // Remember, remember, the fifth of November. God damn JavaScript!
+    // typeof null === 'object'
 
     if (! value) {
         return false
     }
 
-    const proto = Object.getPrototypeOf(value)
+    const prototype = Object.getPrototypeOf(value)
 
-    if (! proto) {
-        // Note: We don't handle/care of Object.create(null).
+    if (! prototype) {
+        // We don't care about 'Object.create(null)'.
         return false
     }
-    if (proto.constructor !== Object) {
-        return false
-    }
-    return true
+    return prototype.constructor === Object
 }

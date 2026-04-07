@@ -12,5 +12,6 @@
         "outDir": ".",
         "rootDir": ".",
         "sourceMap": false,
+        "types": ["node"]
     },
 }

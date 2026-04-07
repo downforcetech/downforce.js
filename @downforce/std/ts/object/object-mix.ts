@@ -38,12 +38,12 @@ export function mapObject<K extends PropertyKey, V, RK extends PropertyKey, RV>(
 
 export function mapObjectEntry<K extends PropertyKey, V, RK extends PropertyKey, RV>(
     object: Record<K, V>,
-    fn: ObjectEntryMapper<K, V, RK, RV>,
+    mapKeyValue: ObjectEntryMapper<K, V, RK, RV>,
 ): Record<RK, RV> {
 
     function mapEntry(it: [K, V]): [RK, RV] {
         const [key, value] = it
-        return fn(key, value)
+        return mapKeyValue(key, value)
     }
 
     const entries = Object.entries(object) as Array<[K, V]>
@@ -54,30 +54,30 @@ export function mapObjectEntry<K extends PropertyKey, V, RK extends PropertyKey,
 
 export function mapObjectKey<K extends PropertyKey, V, RK extends PropertyKey>(
     object: Record<K, V>,
-    fn: ObjectKeyMapper<K, V, RK>,
+    mapKey: ObjectKeyMapper<K, V, RK>,
 ): Record<RK, V> {
-    function mapKey(it: [K, V]): [RK, V] {
+    function mapEntry(it: [K, V]): [RK, V] {
         const [key, value] = it
-        return [fn(key, value), value]
+        return [mapKey(key, value), value]
     }
 
     const entries = Object.entries(object) as Array<[K, V]>
-    const outputObject = Object.fromEntries(entries.map(mapKey))
+    const outputObject = Object.fromEntries(entries.map(mapEntry))
 
     return outputObject as unknown as Record<RK, V>
 }
 
 export function mapObjectValue<K extends PropertyKey, V, RV>(
     object: Record<K, V>,
-    fn: ObjectValueMapper<V, K, RV>,
+    mapValue: ObjectValueMapper<V, K, RV>,
 ): Record<K, RV> {
-    function mapValue(it: [K, V]): [K, RV] {
+    function mapEntry(it: [K, V]): [K, RV] {
         const [key, value] = it
-        return [key, fn(value, key)]
+        return [key, mapValue(value, key)]
     }
 
     const entries = Object.entries(object) as Array<[K, V]>
-    const outputObject = Object.fromEntries(entries.map(mapValue))
+    const outputObject = Object.fromEntries(entries.map(mapEntry))
 
     return outputObject as unknown as Record<K, RV>
 }

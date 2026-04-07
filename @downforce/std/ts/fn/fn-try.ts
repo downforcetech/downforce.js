@@ -1,12 +1,12 @@
 import type {Task, Io} from './fn-type.js'
 
 export function tryCatch<R, F>(
-    block: Task<R>,
+    onTry: Task<R>,
     onError: Io<unknown, F>,
     onFinally?: undefined | Task,
 ): R | F {
     try {
-        return block()
+        return onTry()
     }
     catch (error) {
         return onError(error)
@@ -16,10 +16,10 @@ export function tryCatch<R, F>(
     }
 }
 
-export function tryCatching<I, O1, O2>(
-    block: Io<I, O1>,
+export function _tryCatch<I, O1, O2>(
+    onTry: Io<I, O1>,
     onCatch: Io<unknown, O2>,
     onFinally?: undefined | Task,
 ): Io<I, O1 | O2> {
-    return (input: I) => tryCatch(() => block(input), onCatch, onFinally)
+    return (input: I) => tryCatch(() => onTry(input), onCatch, onFinally)
 }

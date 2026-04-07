@@ -26,14 +26,14 @@ export function call<A extends FnArgs, R>(fn: Fn<A, R>, ...args: A): R {
 * Used for calling callbacks inside collections passing default arguments.
 *
 * EXAMPLE
-* callbacks.forEach(calling(arg1, arg2))
+* callbacks.forEach(_callWithArgs(arg1, arg2))
 * // same of
 * callbacks.forEach(it => it(arg1, arg2))
 */
-export function calling<A extends FnArgs>(...args: A): <R>(fn: Fn<A, R>) => R {
-    function call<R>(fn: Fn<A, R>): R {
-        return fn(...args)
-    }
-
-    return call
+export function _callWithArgs<A extends FnArgs>(...args: A): <R>(fn: Fn<A, R>) => R {
+    return <R>(fn: Fn<A, R>): R => fn(...args)
 }
+
+// export function _callVoid<A extends FnArgs>(fn: (...args: A) => any): () => undefined {
+//     return (...args: A) => void fn(...args)
+// }

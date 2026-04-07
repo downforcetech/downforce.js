@@ -4,7 +4,7 @@ import {compute} from './fn/fn-compute.js'
 /**
 * @throws Error
 */
-export function assert(condition: boolean, error: string | (() => string)): void {
+export function assert(condition: boolean, error: string | (() => string)): undefined {
     if (! condition) {
         throwInvalidCondition(compute(error))
     }

@@ -1,9 +1,11 @@
 export function isNumber(value: unknown): value is number {
+    // We don't care about 'new Number()'.
     // We don't consider NaN a number.
-    return typeof value === 'number' && ! isNaN(value)
+    // We don't consider +/-Infinite a number.
+    return Number.isFinite(value)
+    // return typeof value === 'number' && ! Number.isNaN(value) && Number.isFinite(value)
 }
 
-export function isInteger(value: unknown): value is number {
-    // return isNumber(value) && value % 1 === 0
-    return Number.isInteger(value as any)
+export function isNumberBigInt(value: unknown): value is BigInt {
+    return typeof value === 'bigint'
 }

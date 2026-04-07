@@ -1,12 +1,12 @@
 import {logConditional, type LogFilter} from '../log/log-mix.js'
 import type {Logger, LoggerArgs} from '../log/log-type.js'
-import {consoleLog} from './console-mix.js'
+import {consoleLog} from './console-console.js'
 import type {ConsoleLogType} from './console-type.js'
 
 export const ConsoleLogTypes: Array<ConsoleLogType> = ['debug', 'error', 'info', 'log', 'warn']
 export const ConsoleLogTypesWithoutDebug: Array<ConsoleLogType> = ConsoleLogTypes.filter(it => it !== 'debug')
 
-export function createConsoleLogger<R = void>(options?: undefined | {
+export function createConsoleLogger<R = undefined>(options?: undefined | {
     logger?: undefined | Logger<ConsoleLogType, R>,
     types?: undefined | Array<ConsoleLogType>
 }): Logger<ConsoleLogType, undefined | R> {

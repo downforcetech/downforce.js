@@ -15,10 +15,10 @@ export function SortComparator(
 * EXAMPLE
 *
 * const list = [{id: 1, name: 'Mike'}, {id: 2, name: 'John'}]
-* list.sort(sorting(it => it.id))
-* list.sort(sorting(it => it.name))
+* list.sort(sortBy(it => it.id))
+* list.sort(sortBy(it => it.name))
 */
-export function sorting<I, R extends undefined | number | string>(
+export function sortBy<I, R extends undefined | number | string>(
     getItemValue: (item: I) => R,
     collatorOptional?: undefined | Intl.Collator | Intl.CollatorOptions,
     localeOptions?: undefined | Intl.LocalesArgument,
@@ -41,9 +41,9 @@ export function sorting<I, R extends undefined | number | string>(
 * EXAMPLE
 *
 * const list = [{id: 1, name: 'Mike'}]
-* list.sort(inverting(sorting(it => it.id)))
+* list.sort(invertSort(sortBy(it => it.id)))
 */
-export function inverting<A extends FnArgs>(
+export function invertSort<A extends FnArgs>(
     fn: (...args: A) => number,
 ): (...args: A) => number {
     function invertFn(...args: A) {
@@ -61,10 +61,9 @@ export function invert(result: number): number {
 * EXAMPLE
 *
 * const list = [{id: 1, name: 'Mike'}, {id: 2, name: 'John'}]
-* list.sort(combiningSort(sortById, sortByName))
-* list.sort(combiningSort(sorting(it => it.id), sorting(it => it.name)))
+* list.sort(composeSorts(invertSort(sortById), sortBy(it => it.name)))
 */
-export function combiningSort<I>(...comparators: Array<(first: I, second: I) => number>): (first: I, second: I) => number {
+export function composeSorts<I>(...comparators: Array<(first: I, second: I) => number>): (first: I, second: I) => number {
     function sort(first: I, second: I): number {
         for (const comparator of comparators) {
             const result = comparator(first, second)

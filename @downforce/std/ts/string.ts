@@ -1,6 +1,7 @@
 export * from './string/string-assert.js'
 export * from './string/string-ensure.js'
 export * from './string/string-is.js'
+export * from './string/string-match.js'
 export * from './string/string-mix.js'
 export * from './string/string-strict.js'
 export * from './string/string-trust.js'

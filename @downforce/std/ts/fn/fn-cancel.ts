@@ -12,7 +12,7 @@ export function cancelable<A extends FnArgs, R>(
         return fn(...args)
     }
 
-    function cancel() {
+    function cancel(): undefined {
         run.canceled = true
 
         onCancel?.()
@@ -39,7 +39,7 @@ export function createCancelable<A extends FnArgs, R>(
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface FnCancelable<A extends FnArgs = [], R = void> extends Fn<A, undefined | R>, FnCancelableState, FnCancelableProtocol {
+export interface FnCancelable<A extends FnArgs = [], R = undefined> extends Fn<A, undefined | R>, FnCancelableState, FnCancelableProtocol {
 }
 
 export interface FnCancelableState {
@@ -47,5 +47,5 @@ export interface FnCancelableState {
 }
 
 export interface FnCancelableProtocol {
-    cancel(): void
+    cancel(): undefined
 }

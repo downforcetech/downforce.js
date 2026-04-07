@@ -1,182 +1,136 @@
-import {chain, chaining, compose, composed, identity, pipe, piped, pipedLazy, tryCatching} from '@downforce/std/fn'
-import {matchingNone, matchingOptional, matchingSome} from '@downforce/std/optional'
-import {Error, matchingError, matchingResult, matchingResultOrError, type OutcomeError} from '@downforce/std/outcome'
-import {awaiting, catching, catchingError} from '@downforce/std/promise'
-import {ensureStringNotEmpty} from '@downforce/std/string'
+import {chain, compose, composed, identity, matchFunction, Pipe, pipe, piped} from '@downforce/std/fn'
 import {expectType} from '@downforce/std/type'
 import Assert from 'node:assert/strict'
 import {describe, test} from 'node:test'
 
-export type Subject = {id: number, name: string, age: number, admin: boolean}
-export const subject: Subject = {id: 1, name: 'Mario', age: 18, admin: false}
+type Data = {id: number, name: string, age: number, admin: boolean, value: number}
+const data: Data = {id: 1, name: 'Mario', age: 18, admin: false, value: 123}
 
 describe('@downforce/std/fn', (ctx) => {
-    test('chain()', (ctx) => {
+    test('matchFunction()', (ctx) => {
         {
-            const actual = chain(
-                subject,
-                it => it.id,
-                it => it.name,
-            )
+            const input = undefined as unknown
 
-            expectType<Subject>(actual)
-            Assert.equal(actual, subject)
+            matchFunction(input, expectType<Function>)
+            expectType<Function | 123>(matchFunction(input, expectType<Function>, unknown => 123))
         }
-    })
+        {
+            const input = undefined as ((arg: string) => 123) | undefined | null | 'A' | number | {name: string}
 
-    type State = {example: number}
-    const state: State = {example: 123}
-
-    test('compose()', (ctx) => {
-        const fn = compose(
-            (it: State) => it.example,
-            it => String(it),
-            identity,
-        )
-
-        expectType<string>(fn(state))
-        Assert.equal(fn(state), '123')
-    })
-
-    test('composed()', (ctx) => {
-        const fn = composed
-            ((it: State) => it.example)
-            (it => String(it))
-            (identity)
-        ()
-
-        expectType<string>(fn(state))
-        Assert.equal(fn(state), '123')
+            matchFunction(input, expectType<(arg: string) => 123>)
+            matchFunction(input, expectType<(arg: string) => 123>, expectType<undefined | null | 'A' | number | {name: string}>)
+        }
     })
 
     test('pipe()', async (ctx) => {
         {
-            const actual: Subject = pipe(subject)
+            const actual: Data = pipe(data)
 
-            Assert.equal(actual, subject)
+            Assert.deepEqual(actual, data)
         }
 
         {
             const actual = pipe(
-                /* in */ 0 as const,
-                /*  1 */ it => it + 1 as 1,
-                /*  2 */ it => it + 2 as 3,
-                /*  3 */ it => it + 3 as 6,
-                /*  4 */ it => it + 4 as 10,
-                /*  5 */ it => it + 5 as 15,
-                /*  6 */ it => it + 6 as 21,
-                /*  7 */ it => it + 7 as 28,
-                /*  8 */ it => it + 8 as 36,
-                /*  9 */ it => it + 9 as 45,
-                /* 10 */ it => it + 10 as 55,
+                0 as const,
+                it => it + 1 as 1,
+                it => it + 1 as 2,
+                it => it + 1 as 3,
+                it => it + 1 as 4,
+                it => it + 1 as 5,
+                it => it + 1 as 6,
+                it => it + 1 as 7,
+                it => it + 1 as 8,
+                it => it + 1 as 9,
+                it => it + 1 as 10,
+                it => it + 1 as 11,
+                it => it + 1 as 12,
+                it => it + 1 as 13,
+                it => it + 1 as 14,
+                it => it + 1 as 15,
+                it => it + 1 as 16,
+                it => it + 1 as 17,
+                it => it + 1 as 18,
+                it => it + 1 as 19,
+                it => it + 1 as 20,
             )
 
-            expectType<55>(actual)
-            Assert.equal(actual, 55)
+            expectType<20>(actual)
+            Assert.equal(actual, 20)
         }
 
         {
-            const actual = pipe(
-                subject,
-                it => it.name,
-                it => `Hello ${it}!`,
+            const actual: string = pipe(
+                data,
+                it => it.value,
+                String,
             )
 
-            expectType<string>(actual)
-            Assert.equal(actual, `Hello ${subject.name}!`)
-        }
-    })
-
-    test('pipedLazy()', (ctx) => {
-        {
-            const actual: Subject = pipedLazy(subject)
-                .to(identity)
-                .to(identity)
-            .end
-
-            Assert.equal(actual, subject)
+            Assert.equal(actual, '123')
         }
     })
 
     test('piped()', async (ctx) => {
         {
-            const actual: Subject = piped(subject)()
+            const actual: Data = piped(data)()
 
-            Assert.equal(actual, subject)
+            Assert.equal(actual, data)
         }
 
         {
-            const actual: string = piped(subject)
-                (it => it.name)
-                (it => `Hello ${it}!`)
-            ()
-
-            Assert.equal(actual, `Hello ${subject.name}!`)
-        }
-
-        {
-            const actual: Subject | OutcomeError<'VeryTooYoung' | 'Boom'> = piped(undefined as undefined | string)
-                (matchingSome((it: string) => it))
-                (chaining(expectType<undefined | string>))
-                (matchingSome(it => ({...subject, name: `Some ${it}`})))
-                (matchingNone(it => subject))
-                (matchingOptional(it => it, it => subject))
-                (chaining(expectType<Subject>))
-                (it => it.age >= 18 ? it : Error('TooYoung'))
-                (matchingResultOrError(identity, Error))
-                (matchingResultOrError(
-                    it => (expectType<Subject>(it), ensureStringNotEmpty(it.name), it),
-                    error => (expectType<string>(error), Error(`Very${ensureStringNotEmpty(error)}`)),
-                ))
-                (tryCatching(
-                    matchingResult(
-                        it => (ensureStringNotEmpty(it.name), it),
-                    ),
-                    error => Error('Boom'),
-                ))
-                // (mappingResult(
-                //     tringCatching(
-                //         it => (ensureStringNotEmpty(it.name), it),
-                //         error => Error('Boom'),
-                //     ),
-                // ))
-                (matchingResultOrError(
-                    it => expectType<Subject>(it),
-                    error => Error(expectType<'VeryTooYoung' | 'Boom'>(error)),
-                ))
-                (matchingResult(it => it))
-                (matchingError(error => Error(error)))
+            const actual: string = piped(data)
+                (it => it.value)
+                (String)
                 (identity)
-                (expectType<Subject | OutcomeError<'VeryTooYoung' | 'Boom'>>)
-                (chaining(it => expectType<Subject | OutcomeError<'VeryTooYoung' | 'Boom'>>(it)))
             ()
 
-            Assert.equal(actual, subject)
+            Assert.equal(actual, '123')
         }
+    })
 
+    test('Pipe()', (ctx) => {
         {
-            const actual: Subject | OutcomeError<'SomeError'> = await piped(Promise.resolve(subject))
-                (awaiting(identity, Error))
-                (awaiting(identity))
-                (awaiting(identity, Error))
-                (expectType<Promise<Subject | OutcomeError<unknown>>>)
-                (awaiting(expectType<Subject | OutcomeError<unknown>>))
-                (catching(Error))
-                (catchingError()) // Same of catching(Error).
-                (catchingError('Error'))
-                (awaiting(matchingResult(identity)))
-                (awaiting(matchingError(error => Error('SomeError' as const))))
-            ()
+            const actual: string = Pipe(data)
+                .to(it => it.value)
+                .to(String)
+                .to(identity)
+            .end
 
-            Assert.deepEqual(actual, subject)
+            Assert.equal(actual, '123')
         }
+    })
 
+    test('chain()', (ctx) => {
         {
-            const actual: undefined | Array<string> = piped(undefined as undefined | Array<undefined | string>)
-                (matchingSome(expectType<Array<undefined | string>>))
-                // @ts-expect-error
-                (matchingSome((it: Array<string>) => it))
-            ()
+            const actual: Data = chain(
+                data,
+                it => it.id,
+                it => it.name,
+            )
+
+            Assert.equal(actual, data)
         }
+    })
+
+    test('compose()', (ctx) => {
+        const fn = compose(
+            (it: Data) => it.value,
+            String,
+            identity,
+        )
+        const actual: string = fn(data)
+
+        Assert.equal(actual, '123')
+    })
+
+    test('composed()', (ctx) => {
+        const fn = composed
+            ((it: Data) => it.value)
+            (it => String(it))
+            (identity)
+        ()
+
+        const actual: string = fn(data)
+
+        Assert.equal(actual, '123')
     })
 })

@@ -1,7 +1,4 @@
 export function isPromise(value: unknown): value is Promise<unknown> {
-    if (! value) {
-        return false
-    }
     return value instanceof Promise
 }
 

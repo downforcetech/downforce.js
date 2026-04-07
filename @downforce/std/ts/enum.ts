@@ -1,5 +1,7 @@
 export * from './enum/enum-assert.js'
 export * from './enum/enum-ensure.js'
 export * from './enum/enum-is.js'
+export * from './enum/enum-new.js'
 export * from './enum/enum-strict.js'
 export * from './enum/enum-trust.js'
+export * from './enum/enum-type.js'
