@@ -43,7 +43,7 @@ export class CableTomlFilePlug<S extends CableStoreGeneric> implements CablePlug
 // Types ///////////////////////////////////////////////////////////////////////
 
 export interface CableTomlFilePlugOptions {
-    onFileError?: undefined | ((filePath: string, error: unknown) => void)
-    onFileFound?: undefined | ((filePath: string) => void)
-    onParseError?: undefined | ((filePath: string, error: unknown) => void)
+    onFileError?: undefined | ((filePath: string, error: unknown) => undefined)
+    onFileFound?: undefined | ((filePath: string) => undefined)
+    onParseError?: undefined | ((filePath: string, error: unknown) => undefined)
 }

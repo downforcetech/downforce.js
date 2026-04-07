@@ -35,6 +35,6 @@ export class CableJsFilePlug<S extends CableStoreGeneric> implements CablePlugIn
 // Types ///////////////////////////////////////////////////////////////////////
 
 export interface CableJsFilePlugOptions {
-    onFileError?: undefined | ((filePath: string, error: unknown) => void)
-    onFileImport?: undefined | ((filePath: string) => void)
+    onFileError?: undefined | ((filePath: string, error: unknown) => undefined)
+    onFileImport?: undefined | ((filePath: string) => undefined)
 }

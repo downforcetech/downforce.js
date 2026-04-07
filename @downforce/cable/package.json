@@ -20,7 +20,7 @@
         "preversion": "node --run build && node --run test"
     },
     "dependencies": {
-        "@downforce/std": "1.2.18"
+        "@downforce/std": "workspace:*"
     },
     "optionalDependencies": {
         "smol-toml": "1.6",
@@ -30,8 +30,8 @@
         "@types/node": "24 || 25"
     },
     "devDependencies": {
-        "@downforce/tsconfig": "1",
-        "typescript": "5.9"
+        "@downforce/tsconfig": "workspace:*",
+        "typescript": "6"
     },
     "author": "Daniele Orlando",
     "license": "MIT",

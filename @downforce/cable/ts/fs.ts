@@ -15,10 +15,10 @@ export async function walkPath(
     path: string,
     handlers?: undefined | {
         filter?: undefined | ((entry: FsWalkPathEntry) => boolean)
-        onEntry?: undefined | ((entry: FsWalkPathEntry) => void)
-        onDir?: undefined | ((dirPath: string) => void)
-        onFile?: undefined | ((filePath: string) => void)
-        onLink?: undefined | ((linkPath: string) => void)
+        onEntry?: undefined | ((entry: FsWalkPathEntry) => undefined)
+        onDir?: undefined | ((dirPath: string) => undefined)
+        onFile?: undefined | ((filePath: string) => undefined)
+        onLink?: undefined | ((linkPath: string) => undefined)
     },
 ): Promise<Array<FsWalkPathEntry>> {
     const files: Array<FsWalkPathEntry> = []
@@ -46,7 +46,7 @@ export async function walkPath(
 export async function* iteratePath(
     path: string,
     filter?: undefined | ((entry: FsWalkPathEntry) => boolean),
-): AsyncGenerator<FsWalkPathEntry, void, undefined> {
+): AsyncGenerator<FsWalkPathEntry, undefined, undefined> {
     const attrs = await Fs.lstat(path)
 
     if (! attrs) {
