@@ -1,0 +1,53 @@
+#!/usr/bin/env sh
+
+################################################################################
+# Bumps up a package version and publishes it.
+#
+# USAGE
+# ./jsr-publish <package-dir> ...
+#
+# EXAMPLE
+# ./jsr-publish ./@downforce/*
+################################################################################
+
+set -e # errexit
+set -u # nounset
+
+case "$(dirname "$0")" in
+    /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
+    *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
+esac
+
+usage() {
+    echo
+    echo "USAGE: $(basename "$0") <package-dir> ..."
+    echo
+}
+
+if test $# -lt 1; then
+    usage
+    exit 1
+fi
+
+: ${JsrPublishArgs:=}
+
+for pkg; do
+    if test ! -e "$pkg/jsr.jsonc"; then
+        echo "skipping invalid package '$pkg'."
+        continue
+    fi
+
+    (
+        case "$pkg" in
+            /*|./*) cd "$pkg";;
+            *) cd "$PWD/$pkg";;
+        esac
+
+        set -- $JsrPublishArgs
+
+        until deno publish --sloppy-imports "$@"; do
+            printf -- 'Press Enter to retry'
+            read answer
+        done
+    )
+done

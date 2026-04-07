@@ -13,7 +13,10 @@ export function decodeStringFromHex(hexString: string): string {
     return decoder.decode(bytes)
 }
 
-export const Hex = {
+export const Hex: {
+    toHex(string: string): string
+    fromHex(hexString: string): string
+} = {
     toHex(string: string): string {
         return encodeStringToHex(string)
     },

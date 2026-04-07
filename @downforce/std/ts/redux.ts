@@ -96,7 +96,11 @@ export function patchState<S extends ReduxReducerState>(state: S, statePatch: Re
         : mergedState
 }
 
-export const ReduxReducers = {
+export const ReduxReducers: {
+    fromActions<S extends ReduxReducerState>(
+        actions: ReduxActionsDefinitions<S>,
+    ): ReduxReducersDefinitionsList<S>
+} = {
     fromActions<S extends ReduxReducerState>(
         actions: ReduxActionsDefinitions<S>,
     ): ReduxReducersDefinitionsList<S> {

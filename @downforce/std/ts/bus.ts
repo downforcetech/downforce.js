@@ -134,7 +134,7 @@ export function exact(...args: [string] | [TemplateStringsArray, ...Array<unknow
         : exactString(strings as string)
 }
 
-export function exactString(pattern: string) {
+export function exactString(pattern: string): string {
     return `^${pattern}$`
 }
 

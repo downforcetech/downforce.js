@@ -5,7 +5,18 @@ import {filterError, filterResult, splitOutcome} from './outcome-mix.js'
 import {catchPromise, createError} from './outcome-new.js'
 import type {OutcomeError, OutcomeErrorOf, OutcomeResultOf, OutcomeResultOrError} from './outcome-type.js'
 
-export const Outcome = {
+export const Outcome: {
+    from<V>(promise: Promise<V>): Promise<OutcomeResultOrError<V, unknown>>
+    isResult<R>(value: R): value is OutcomeResultOf<R>
+    isError(value: unknown): value is OutcomeError<unknown>
+    split<R>(input: R): [undefined | OutcomeResultOf<R>, undefined | OutcomeErrorOf<R>['error']]
+    filterResult<R>(input: R): undefined | OutcomeResultOf<R>
+    filterError<R>(input: R): undefined | OutcomeErrorOf<R>['error']
+    match<I, O1, O2>(input: I, onResult: Io<OutcomeResultOf<I>, O1>, onError: Io<OutcomeErrorOf<I>['error'], O2>): O1 | O2
+    matchResult<I, O>(input: I, onResult: Io<OutcomeResultOf<I>, O>): OutcomeResultOrError<O, OutcomeErrorOf<I>['error']>
+    matchError<I, O>(input: I, onError: Io<OutcomeErrorOf<I>['error'], O>): O | OutcomeResultOf<I>
+    Error<const E>(error: E): OutcomeError<E>
+} = {
     from<V>(promise: Promise<V>): Promise<OutcomeResultOrError<V, unknown>> {
         return catchPromise(promise)
     },

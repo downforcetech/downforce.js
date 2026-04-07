@@ -4,10 +4,10 @@
 # Commits changes, bumps up package version and publishes it.
 #
 # USAGE
-# ./package-publish-commit version|patch|minor|major <package-dir> ...
+# ./npm-publish-commit version|patch|minor|major <package-dir> ...
 #
 # EXAMPLE
-# ./package-publish-commit patch ./@downforce/*
+# ./npm-publish-commit patch ./@downforce/*
 ################################################################################
 
 set -e # errexit
@@ -57,13 +57,13 @@ for pkg; do
         $Git -C "$pkg" commit --edit --message "[$pkg_name] "
     fi
 
-    "$Dir/package-publish" $arg_version "$pkg"
+    "$Dir/npm-publish" $arg_version "$pkg"
 
     pkg_version=$(npm --prefix "$pkg" pkg get version | tr -d '"')
 
     dirty=$($Git -C "$pkg" status --porcelain . | tail -n1)
     if test -n "$dirty"; then
         $Git -C "$pkg" add --all .
-        $Git -C "$pkg" commit --message "[$pkg_name] v$pkg_version [release]"
+        $Git -C "$pkg" commit --message "[$pkg_name] npm:v$pkg_version [release]"
     fi
 done

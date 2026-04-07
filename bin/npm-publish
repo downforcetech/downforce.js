@@ -4,10 +4,10 @@
 # Bumps up a package version and publishes it.
 #
 # USAGE
-# ./package-publish version|patch|minor|major <package-dir> ...
+# ./npm-publish version|patch|minor|major <package-dir> ...
 #
 # EXAMPLE
-# ./package-publish patch ./@downforce/*
+# ./npm-publish patch ./@downforce/*
 ################################################################################
 
 set -e # errexit
@@ -24,12 +24,6 @@ usage() {
     echo "USAGE: $(basename "$0") version|patch|minor|major <package-dir> ..."
     echo
 }
-
-: ${Npm:=npm}
-: ${NpmVersionCmd:=version}
-: ${NpmVersionArgs:=--no-git-tag-version}
-: ${NpmPublishCmd:=publish}
-: ${NpmPublishArgs:=--access public --auth-type legacy}
 
 if test $# -lt 2; then
     usage
@@ -57,15 +51,13 @@ for pkg; do
         esac
 
         if test "$arg_version" != version; then
-            set -- $NpmVersionCmd $NpmVersionArgs $arg_version
-            $Npm "$@"
+            npm version --no-git-tag-version $arg_version
 
             printf -- 'Press Enter to continue'
             read answer
         fi
 
-        set -- $NpmPublishCmd $NpmPublishArgs
-        until $Npm "$@"; do
+        until npm publish --access public; do
             printf -- 'Press Enter to retry'
             read answer
         done
