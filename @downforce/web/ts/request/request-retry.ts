@@ -41,7 +41,7 @@ export function setupRequestRetry(request: Request, options?: undefined | Reques
 /**
 * @throws
 **/
-export function usingRequestRetry(options?: undefined | RequestRetryOptions): Io<Request, Promise<Response>> {
+export function useRequestRetry(options?: undefined | RequestRetryOptions): Io<Request, Promise<Response>> {
     function continuation(request: Request): Promise<Response> {
         return setupRequestRetry(request, options)
     }
@@ -87,6 +87,6 @@ export interface RequestRetryOptions {
     delayFactor?: undefined | number
     delayMax?: undefined | number // In milliseconds.
     executor?: undefined | Io<Request, Promise<Response>>
-    onError?: undefined | Fn<[error: unknown], void>
+    onError?: undefined | Fn<[error: unknown], undefined>
     times?: undefined | number
 }

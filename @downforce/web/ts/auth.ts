@@ -2,7 +2,7 @@ import {compute, piped, type Computable, type Fn, type FnArgs} from '@downforce/
 import {isObject} from '@downforce/std/object'
 import {trustString} from '@downforce/std/string'
 import {throwInvalidResponse} from './error.js'
-import {buildRequest, RequestMethod, usingRequestJson} from './request.js'
+import {buildRequest, RequestMethod, useRequestJson} from './request.js'
 import {decodeResponseBody} from './response.js'
 
 export const AuthUrlDefault = '/auth'
@@ -21,7 +21,7 @@ export async function authenticate(credentials: AuthCredentials, optionsComputab
     const requestBody = requestBodyOptional ?? createDefaultRequestBody(credentials)
 
     const response = await buildRequest(method, url, requestOptions)
-        (usingRequestJson(requestBody))
+        (useRequestJson(requestBody))
         (fetch)
         (promise => promise.catch(error => {
             return throwAuthInvalidResponse('authenticate', AuthMessages.failedResponse(error))

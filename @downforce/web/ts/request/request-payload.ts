@@ -37,6 +37,6 @@ export function setupRequestPayload(request: Request, body: undefined | BodyInit
 /**
 * @throws
 **/
-export function usingRequestPayload(body: undefined | BodyInit | unknown): Io<Request, Request> {
+export function useRequestPayload(body: undefined | BodyInit | unknown): Io<Request, Request> {
     return (request: Request) => setupRequestPayload(request, body)
 }

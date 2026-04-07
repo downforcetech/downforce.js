@@ -16,7 +16,7 @@ export function defineRoutePath<const R extends string, A extends FnArgs, P exte
     route: R,
     patternComputed: RegExp | Array<RegExp> | Io<R, RegExp | Array<RegExp>>,
     encode: (route: R, ...args: A) => string,
-    params?: P,
+    params?: undefined | P,
 ): RoutePathDefinition<R, A, undefined | RouteParamsDefinition<P>> {
     function encodeRoutePathArgs(...args: A): string {
         return encode(route, ...args)

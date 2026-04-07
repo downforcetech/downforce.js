@@ -14,7 +14,7 @@ export {Ref, type ValueRef} from '@downforce/std/store'
 export function createElement<E extends RenderElement>(
     tag: string,
     props?: undefined | RenderProps<E>,
-    build?: undefined | Io<E, void>
+    build?: undefined | Io<E, undefined>
 ): E {
     const element = document.createElement(tag) as unknown as E
     return updateElement(element, props, build)
@@ -22,7 +22,7 @@ export function createElement<E extends RenderElement>(
 
 export function buildElement<E extends RenderElement>(
     tag: string,
-    build?: undefined | Io<E, void>,
+    build?: undefined | Io<E, undefined>,
 ): E {
     return createElement(tag, undefined, build)
 }
@@ -30,17 +30,17 @@ export function buildElement<E extends RenderElement>(
 export function updateElement<E extends RenderElement>(
     element: E,
     props?: undefined | RenderProps<E>,
-    build?: undefined | Io<E, void>
+    build?: undefined | Io<E, undefined>
 ): E
 export function updateElement<E extends RenderElement>(
     element: undefined | E,
     props?: undefined | RenderProps<E>,
-    setup?: undefined | Io<E, void>
+    setup?: undefined | Io<E, undefined>
 ): undefined | E
 export function updateElement<E extends RenderElement>(
     element: undefined | E,
     props?: undefined | RenderProps<E>,
-    setup?: undefined | Io<E, void>
+    setup?: undefined | Io<E, undefined>
 ): undefined | E {
     if (! element) {
         return
@@ -50,7 +50,7 @@ export function updateElement<E extends RenderElement>(
 
     for (const property in otherProps) {
         type Property = keyof typeof otherProps
-        type Strategy = (element: RenderElement, property: string, value: unknown) => void
+        type Strategy = (element: RenderElement, property: string, value: unknown) => undefined
 
         const value = otherProps[property as Property] as unknown
 
@@ -89,17 +89,17 @@ export function updateEvent<E extends RenderEventName>(
     element: RenderElement,
     event: E,
     handler: null | RenderEventHandler<HTMLElementEventMap[E]>,
-): void
+): undefined
 export function updateEvent(
     element: RenderElement,
     event: string,
     handler: null | RenderEventHandler<any>,
-): void
+): undefined
 export function updateEvent(
     element: RenderElement,
     event: string,
     handler: null | RenderEventHandler<any>,
-): void {
+): undefined {
     const elementRoot = element as RenderRoot<RenderElement>
     const handlerAttached = elementRoot.__listeners__?.[event]
 
@@ -137,11 +137,11 @@ export function asRenderEventListener<E>(args: RenderEventHandler<E>): RenderEve
     return arrayWrap(args) as RenderEventHandlerTuple<E>
 }
 
-export function setAttribute(element: RenderElement, property: string, value: boolean | number | string): void {
+export function setAttribute(element: RenderElement, property: string, value: boolean | number | string): undefined {
     element.setAttribute(property, String(value))
 }
 
-export function setDataset(element: RenderElement, dataset: RenderDatasetAttribute): void {
+export function setDataset(element: RenderElement, dataset: RenderDatasetAttribute): undefined {
     for (const key in dataset) {
         const value = dataset[key]
 
@@ -157,11 +157,11 @@ export function setDataset(element: RenderElement, dataset: RenderDatasetAttribu
     }
 }
 
-export function setClass(element: RenderElement, value: Classes): void {
+export function setClass(element: RenderElement, value: Classes): undefined {
     setAttribute(element, 'class', classes(value))
 }
 
-export function setChildren(element: RenderElement, children: RenderChildren): void {
+export function setChildren(element: RenderElement, children: RenderChildren): undefined {
     if (isUndefined(children)) {
         return
     }
@@ -196,23 +196,31 @@ export function setChildren(element: RenderElement, children: RenderChildren): v
     }
 }
 
-export function setRef(element: RenderElement, ref: ValueRef<undefined | RenderElement>): void {
+export function setRef(element: RenderElement, ref: ValueRef<undefined | RenderElement>): undefined {
     ref.value = element
 }
 
-export function toggleAttribute(element: RenderElement, property: string, value?: undefined | boolean): void {
+export function toggleAttribute(element: RenderElement, property: string, value?: undefined | boolean): undefined {
     element.toggleAttribute(property, value)
 }
 
-export function attachEvent(element: RenderElement, event: string, handler: RenderEventHandler<any>): void {
+export function attachEvent(element: RenderElement, event: string, handler: RenderEventHandler<any>): undefined {
     updateEvent(element, event, handler)
 }
 
 export const RenderUpdateProperties = {
-    children: (element: RenderElement, property: string, value: RenderChildren): void => setChildren(element, value),
-    class: (element: RenderElement, property: string, value: Classes): void => setClass(element, value),
-    dataset: (element: RenderElement, property: string, value: RenderDatasetAttribute): void => setDataset(element, value),
-    ref: (element: RenderElement, property: string, value: ValueRef<undefined | RenderElement>): void => setRef(element, value),
+    children(element: RenderElement, property: string, value: RenderChildren): undefined {
+        return setChildren(element, value)
+    },
+    class(element: RenderElement, property: string, value: Classes): undefined {
+        return setClass(element, value)
+    },
+    dataset(element: RenderElement, property: string, value: RenderDatasetAttribute): undefined {
+        return setDataset(element, value)
+    },
+    ref(element: RenderElement, property: string, value: ValueRef<undefined | RenderElement>): undefined {
+        return setRef(element, value)
+    },
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
@@ -259,7 +267,7 @@ export type RenderEventsHtml = {[key in keyof HTMLElementEventMap]?: undefined |
 export type RenderEventsCustom = {[key in string]?: undefined | RenderEventHandler<any>}
 
 export type RenderEventHandler<E> = RenderEventHandlerFunction<E> | RenderEventHandlerTuple<E>
-export type RenderEventHandlerFunction<E> = Io<E, void>
+export type RenderEventHandlerFunction<E> = Io<E, undefined>
 export type RenderEventHandlerTuple<E> =
     | [RenderEventHandlerFunction<E>]
     | [RenderEventHandlerFunction<E>, undefined | AddEventListenerOptions]

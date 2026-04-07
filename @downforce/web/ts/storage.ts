@@ -134,5 +134,5 @@ export interface BrowserStorageAccessorSync<V = string> extends ReadWriteSync<Br
 
 export interface BrowserStorageAccessorOptions {
     storage?: undefined | Storage
-    onReadError?: undefined | Io<unknown, void>
+    onReadError?: undefined | Io<unknown, undefined>
 }

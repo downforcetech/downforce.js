@@ -1,12 +1,12 @@
 import {isArray} from '@downforce/std/array'
 import {throwInvalidArgument} from '@downforce/std/error'
 import {isObject} from '@downforce/std/object'
-import {isNone} from '@downforce/std/optional'
+import {isNone, type None} from '@downforce/std/optional'
 
 /**
 * @throws InvalidArgument
 **/
-export function mergeRequestHeaders(...headersList: Array<HeadersInit>): Record<string, string> {
+export function mergeRequestHeaders(...headersList: Array<void | None | HeadersInit>): Record<string, string> {
     const headersMap: Record<string, string> = {}
 
     for (const headers of headersList) {

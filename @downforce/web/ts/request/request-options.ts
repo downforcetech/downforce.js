@@ -22,7 +22,7 @@ export function setupRequestOptions(request: Request, options: ObjectPartial<Req
 /**
 * @throws TypeError
 **/
-export function usingRequestOptions(options: ObjectPartial<RequestInit>): Io<Request, Request> {
+export function useRequestOptions(options: ObjectPartial<RequestInit>): Io<Request, Request> {
     return (request: Request) => setupRequestOptions(request, options)
 }
 
@@ -38,7 +38,7 @@ export function setupRequestMethod(request: Request, method: undefined | Request
 /**
 * @throws TypeError
 **/
-export function usingRequestMethod(method: undefined | RequestMethodEnum): Io<Request, Request> {
+export function useRequestMethod(method: undefined | RequestMethodEnum): Io<Request, Request> {
     return (request: Request) => setupRequestMethod(request, method)
 }
 
@@ -56,7 +56,7 @@ export function setupRequestHeaders(request: Request, ...headersList: Array<Head
 /**
 * @throws InvalidArgument
 **/
-export function usingRequestHeaders(...headersList: Array<HeadersInit>): Io<Request, Request> {
+export function useRequestHeaders(...headersList: Array<HeadersInit>): Io<Request, Request> {
     return (request: Request) => setupRequestHeaders(request, ...headersList)
 }
 
@@ -72,7 +72,7 @@ export function setupRequestBody(request: Request, body: undefined | BodyInit): 
 /**
 * @throws TypeError
 **/
-export function usingRequestBody(body: undefined | BodyInit): Io<Request, Request> {
+export function useRequestBody(body: undefined | BodyInit): Io<Request, Request> {
     return (request: Request) => setupRequestBody(request, body)
 }
 
@@ -88,7 +88,7 @@ export function setupRequestCache(request: Request, cache: undefined | RequestCa
 /**
 * @throws
 **/
-export function usingRequestCache(cache: undefined | RequestCache): Io<Request, Request> {
+export function useRequestCache(cache: undefined | RequestCache): Io<Request, Request> {
     return (request: Request) => setupRequestCache(request, cache)
 }
 
@@ -104,7 +104,7 @@ export function setupRequestSignal(request: Request, signal: undefined | AbortSi
 /**
 * @throws
 **/
-export function usingRequestSignal(signal: undefined | AbortSignal): Io<Request, Request> {
+export function useRequestSignal(signal: undefined | AbortSignal): Io<Request, Request> {
     return (request: Request) => setupRequestSignal(request, signal)
 }
 
@@ -120,6 +120,6 @@ export function setupRequestPriority(request: Request, priority: undefined | Req
 /**
 * @throws
 **/
-export function usingRequestPriority(priority: undefined | RequestPriority): Io<Request, Request> {
+export function useRequestPriority(priority: undefined | RequestPriority): Io<Request, Request> {
     return (request: Request) => setupRequestPriority(request, priority)
 }

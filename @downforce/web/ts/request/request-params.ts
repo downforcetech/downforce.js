@@ -12,6 +12,6 @@ export function setupRequestParams(request: Request, params: UrlParams, options?
 /**
 * @throws TypeError
 **/
-export function usingRequestParams(...paramsList: Array<UrlParams>): Io<Request, Request> {
+export function useRequestParams(...paramsList: Array<UrlParams>): Io<Request, Request> {
     return (request: Request) => setupRequestParams(request, paramsList)
 }

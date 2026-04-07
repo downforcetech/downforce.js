@@ -17,7 +17,7 @@ export const SpringScaleDistance: number = SpringDistance
 export const SpringScaleMass: number = SpringMass
 export const SpringScaleStiffness: number = SpringStiffness
 
-export function flushStyles(...elements: [HTMLElement, ...Array<HTMLElement>]): void {
+export function flushStyles(...elements: [HTMLElement, ...Array<HTMLElement>]): undefined {
     for (const element of elements) {
         // Forces styles computation.
         // Void prevents Chrome from skipping the evaluation of the expression.
@@ -26,28 +26,28 @@ export function flushStyles(...elements: [HTMLElement, ...Array<HTMLElement>]): 
     }
 }
 
-export function requestStylesFlush(...elements: [HTMLElement, ...Array<HTMLElement>]): Promise<void> {
-    const promise = new Promise<void>((resolve, reject) => {
+export function requestStylesFlush(...elements: [HTMLElement, ...Array<HTMLElement>]): Promise<undefined> {
+    const promise = new Promise<undefined>((resolve, reject) => {
         requestAnimationFrame(() => {
             flushStyles(...elements)
-            resolve()
+            resolve(undefined)
         })
     })
 
     return promise
 }
 
-export function playCssTransition<T extends HTMLElement, S1 = void, S2 = void>(
+export function playCssTransition<T extends HTMLElement, S1 = undefined, S2 = undefined>(
     target: T,
     hooks: AnimationCssHooks<T, S1, S2>,
-): Promise<void> {
+): Promise<undefined> {
     const setupReturn = hooks.setup?.(target)
 
     if (hooks.setup) {
         flushStyles(target)
     }
 
-    const promise = new Promise<void>((resolve, reject) => {
+    const promise = new Promise<undefined>((resolve, reject) => {
         function onTransitionEnd(event: TransitionEvent) {
             if (event.target !== target) {
                 return
@@ -55,7 +55,7 @@ export function playCssTransition<T extends HTMLElement, S1 = void, S2 = void>(
 
             target.removeEventListener('transitionend', onTransitionEnd)
             hooks.clean?.(target, playReturn)
-            resolve()
+            resolve(undefined)
         }
         target.addEventListener('transitionend', onTransitionEnd)
 
@@ -68,7 +68,7 @@ export function playCssTransition<T extends HTMLElement, S1 = void, S2 = void>(
 export function createCssTransition<S1, S2, T extends HTMLElement>(
     target: T,
     hooks: AnimationCssHooks<T, S1, S2>,
-): Task<Promise<void>> {
+): Task<Promise<undefined>> {
     function play() {
         return playCssTransition(target, hooks)
     }
@@ -76,15 +76,15 @@ export function createCssTransition<S1, S2, T extends HTMLElement>(
     return play
 }
 
-export function createSpringAnimation(options: SpringAnimationOptions): [Task<Promise<void>>, Task, Task<Boolean>] {
+export function createSpringAnimation(options: SpringAnimationOptions): [Task<Promise<undefined>>, Task, Task<Boolean>] {
     const {promise, reject, resolve} = createPromise()
     let canceled = false
 
-    function loop(initialTime: number, wasSnapped = false) {
+    function loop(initialTime: number, wasSnapped = false): undefined {
         if (canceled) {
             options.onCancel?.()
             options.onFinally?.()
-            resolve()
+            resolve(undefined)
             return
         }
 
@@ -101,7 +101,7 @@ export function createSpringAnimation(options: SpringAnimationOptions): [Task<Pr
             options.onTick(0, time)
             options.onEnd?.()
             options.onFinally?.()
-            resolve()
+            resolve(undefined)
             return
         }
 
@@ -118,7 +118,7 @@ export function createSpringAnimation(options: SpringAnimationOptions): [Task<Pr
         return promise
     }
 
-    function cancel() {
+    function cancel(): undefined {
         canceled = true
         reject()
     }
@@ -134,7 +134,7 @@ export function createSpringScaleAnimation(
     finalScale: number,
     initialScaleOptional?: undefined | number,
     options?: undefined | Partial<SpringAnimationOptions>,
-): (element: HTMLElement, direction: 'forwards' | 'backward') => Promise<void> {
+): (element: HTMLElement, direction: 'forwards' | 'backward') => Promise<undefined> {
     const initialScale = initialScaleOptional ?? 1
     const animationDistance = options?.distance ?? SpringScaleDistance
     const scaleDistance = Math.abs(finalScale - initialScale)
@@ -217,7 +217,7 @@ export function computeDampedSimpleHarmonicMotion(time: number, options: SpringO
     return position
 }
 
-export function scheduleAnimationTask(task: Function): void {
+export function scheduleAnimationTask(task: Function): undefined {
     requestAnimationFrame(() => task())
 }
 
@@ -226,7 +226,7 @@ export function scheduleAnimationTask(task: Function): void {
 export interface AnimationCssHooks<T extends HTMLElement, S1, S2 = S1> {
     setup?: undefined | ((target: T) => S1)
     play(target: T, state: S1): S2
-    clean?: undefined | ((target: T, state: S2) => void)
+    clean?: undefined | ((target: T, state: S2) => undefined)
 }
 
 export interface SpringOptions {
@@ -239,7 +239,7 @@ export interface SpringOptions {
 
 export interface SpringAnimationOptions extends SpringOptions {
     snapping?: undefined | number
-    onTick(position: number, tick: number): void
+    onTick(position: number, tick: number): undefined
     onEnd?: undefined | Task
     onCancel?: undefined | Task
     onFinally?: undefined | Task

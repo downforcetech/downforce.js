@@ -1,15 +1,15 @@
-import {awaiting} from '@downforce/std/promise'
 import {identity, piped, type Io} from '@downforce/std/fn'
+import {_thenPromise} from '@downforce/std/promise'
 import {
     buildRequest,
     RequestMethod,
-    usingRequestAuthorization,
-    usingRequestCache,
-    usingRequestHeaders,
-    usingRequestParams,
-    usingRequestPayload,
-    usingRequestRetry,
-    usingRequestSignal,
+    useRequestAuthorization,
+    useRequestCache,
+    useRequestHeaders,
+    useRequestParams,
+    useRequestPayload,
+    useRequestRetry,
+    useRequestSignal,
     type RequestMethodEnum,
     type RequestRetryOptions,
 } from './request.js'
@@ -36,15 +36,15 @@ export const HttpClient = {
         } = args
 
         return buildRequest(method, url, {baseUrl})
-            (params ? usingRequestParams(params) : identity)
-            (cache ? usingRequestCache(cache) : identity)
-            (signal ? usingRequestSignal(signal) : identity)
-            (authToken ? usingRequestAuthorization('Bearer', authToken) : identity)
-            (headers ? usingRequestHeaders(headers) : identity)
-            (usingRequestPayload(body))
+            (params ? useRequestParams(params) : identity)
+            (cache ? useRequestCache(cache) : identity)
+            (signal ? useRequestSignal(signal) : identity)
+            (authToken ? useRequestAuthorization('Bearer', authToken) : identity)
+            (headers ? useRequestHeaders(headers) : identity)
+            (useRequestPayload(body))
             (encoder ? encoder : identity)
-            (usingRequestRetry(retry))
-            (decoder ? awaiting(decoder) : (identity as Io<Promise<Response>, Promise<O>>))
+            (useRequestRetry(retry))
+            (decoder ? _thenPromise(it => decoder(it)) : (identity as Io<Promise<Response>, Promise<O>>))
         ()
     },
     Get<O = Response>(args: HttpClientGetOptions<Response, O>): Promise<NoInfer<O>> {
@@ -96,7 +96,7 @@ export async function decodeResponseOrReject<O>(
     return piped(responsePromise)
         (rejectResponseWhenError) // Rejects on failed response (4xx/5xx).
         (decodeResponseBody) // Decodes response to FormData/JSON/Text/UrlSearchParams.
-        (awaiting(decodeContent)) // Decodes the mixed unsafe output.
+        (_thenPromise(decodeContent)) // Decodes the mixed unsafe output.
     ()
 }
 
@@ -119,7 +119,7 @@ export function castingUnknown<O>(fn: Io<any, O>): (<I>(input: I) => unknown ext
 export interface HttpClientRequestOptions {
     authToken?: undefined | string
     baseUrl?: undefined | string
-    body?: undefined | Parameters<typeof usingRequestPayload>[0]
+    body?: undefined | Parameters<typeof useRequestPayload>[0]
     cache?: undefined | RequestCache
     encoder?: undefined | Io<Request, Request>
     headers?: undefined | HeadersInit

@@ -6,12 +6,12 @@ import type {UrlParams, UrlParamsDict, UrlParamsList} from '../url/url-params.js
 export interface Router {
     readonly route: ReactiveRef<RouterRoute>
     readonly started: boolean
-    start(): void
-    stop(): void
+    start(): undefined
+    stop(): undefined
     /**
     * @throws InvalidArgument
     **/
-    changeRoute(change: RouterRouteChange): void
+    changeRoute(change: RouterRouteChange): undefined
     /**
     * @throws InvalidArgument
     **/
@@ -23,7 +23,7 @@ export interface RouterRoute {
     readonly params: undefined | RouterRouteParams
 }
 
-export type RouterObserver = (route: RouterRoute) => void
+export type RouterObserver = (route: RouterRoute) => undefined
 
 export interface RouterOptions {
     basePath?: undefined | string

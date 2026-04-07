@@ -1,5 +1,5 @@
 import {OneSecondInMs, asDate} from '@downforce/std/date'
-import {isSome, whenSome} from '@downforce/std/optional'
+import {isSome, matchSome} from '@downforce/std/optional'
 import {escapeRegexp} from '@downforce/std/regexp'
 
 export const CookieKeyRegexpCache: Record<string, RegExp> = {}
@@ -20,7 +20,7 @@ export function readCookie(key: string): undefined | string {
     return matches[1]
 }
 
-export function writeCookie(args: CookieOptions & {value: string}): void {
+export function writeCookie(args: CookieOptions & {value: string}): undefined {
     const key = args.key
     const value = args.value
     const path = args.path
@@ -31,10 +31,10 @@ export function writeCookie(args: CookieOptions & {value: string}): void {
     const customParts = args.custom
     const parts = [
         `${key}=${value}`,
-        whenSome(path, path => `Path=${path}`),
-        whenSome(maxAge, maxAge => `Max-Age=${maxAge}`),
-        whenSome(expires, expires => `Expires=${expires}`),
-        whenSome(sameSite, sameSite => `SameSite=${sameSite}`),
+        matchSome(path, path => `Path=${path}`),
+        matchSome(maxAge, maxAge => `Max-Age=${maxAge}`),
+        matchSome(expires, expires => `Expires=${expires}`),
+        matchSome(sameSite, sameSite => `SameSite=${sameSite}`),
         secure ? 'Secure' : undefined,
         ...customParts ?? [],
     ].filter(isSome)
@@ -44,7 +44,7 @@ export function writeCookie(args: CookieOptions & {value: string}): void {
     document.cookie = cookie
 }
 
-export function deleteCookie(args: CookieOptions): void {
+export function deleteCookie(args: CookieOptions): undefined {
     const value = ''
     const maxAge = 0
     const expires = 'Thu, 01 Jan 1970 00:00:01 GMT'
@@ -52,7 +52,7 @@ export function deleteCookie(args: CookieOptions): void {
     writeCookie({...args, value, maxAge, expires})
 }
 
-export function cleanCookies(args: CookieOptions): void {
+export function cleanCookies(args: CookieOptions): undefined {
     const list = document.cookie.split(';')
 
     for (const keyVal of list) {
@@ -93,8 +93,8 @@ export function compileCookieRegexp(key: string): RegExp {
 export interface Cookie {
     key: string
     get(): string | undefined
-    set(value: string): void
-    delete(): void
+    set(value: string): undefined
+    delete(): undefined
 }
 
 export interface CookieOptions {

@@ -18,7 +18,7 @@ export function setupRequestAuthorization(request: Request, type: RequestAuthori
 /**
 * @throws
 **/
-export function usingRequestAuthorization(type: RequestAuthorizationType, value: string): Io<Request, Request> {
+export function useRequestAuthorization(type: RequestAuthorizationType, value: string): Io<Request, Request> {
     return (request: Request) => setupRequestAuthorization(request, type, value)
 }
 

@@ -1,5 +1,5 @@
 import type {Fn} from '@downforce/std/fn'
-import {whenSome} from '@downforce/std/optional'
+import {matchSome} from '@downforce/std/optional'
 import type {StringAutocompleted} from '@downforce/std/type'
 import type {JsonType, TextType} from './mimetype.js'
 
@@ -17,12 +17,12 @@ export function exposePreloadHintElement(attrs: PreloadElementAttrs, options?: u
 
 export function createPreloadHintElement(attrs: PreloadElementAttrs): HTMLLinkElement {
     const element = document.createElement('link')
-    whenSome(attrs.as, it => element.setAttribute('as', it))
-    whenSome(attrs.crossOrigin, it => element.setAttribute('crossOrigin', it))
-    whenSome(attrs.fetchPriority, it => element.setAttribute('fetchPriority', it))
-    whenSome(attrs.href, it => element.setAttribute('href', it))
-    whenSome(attrs.rel, it => element.setAttribute('rel', it))
-    whenSome(attrs.type, it => element.setAttribute('type', it))
+    matchSome(attrs.as, it => element.setAttribute('as', it))
+    matchSome(attrs.crossOrigin, it => element.setAttribute('crossOrigin', it))
+    matchSome(attrs.fetchPriority, it => element.setAttribute('fetchPriority', it))
+    matchSome(attrs.href, it => element.setAttribute('href', it))
+    matchSome(attrs.rel, it => element.setAttribute('rel', it))
+    matchSome(attrs.type, it => element.setAttribute('type', it))
     return element
 }
 
@@ -40,16 +40,16 @@ export function findPreloadHint(attrs: PreloadElementAttrs): undefined | HTMLLin
     return document.querySelector<HTMLLinkElement>(selector) ?? undefined
 }
 
-export function attachPreloadHintElement(element: Node, options?: undefined | PreloadElementOptions): void {
+export function attachPreloadHintElement(element: Node, options?: undefined | PreloadElementOptions): undefined {
     const attach = options?.attach ?? attachToHeadPrepending
     attach(element)
 }
 
-export function attachToHeadAppending(element: Node): void {
+export function attachToHeadAppending(element: Node): undefined {
     document.head.append(element)
 }
 
-export function attachToHeadPrepending(element: Node): void {
+export function attachToHeadPrepending(element: Node): undefined {
     document.head.prepend(element)
 }
 
@@ -70,5 +70,5 @@ export interface PreloadElementAttrs {
 }
 
 export interface PreloadElementOptions {
-    attach?: undefined | Fn<[element: Node], void>
+    attach?: undefined | Fn<[element: Node], undefined>
 }

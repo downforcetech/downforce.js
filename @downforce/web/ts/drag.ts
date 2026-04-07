@@ -55,7 +55,7 @@ export function attachDragDraggingListeners(element: DragElement, options: DragL
     // element.addEventListener('mouseleave', listeners.onMouseLeave, listeners.onMouseLeaveOptions)
     element.addEventListener('touchcancel', listeners.onTouchCancel, listeners.onTouchCancelOptions)
 
-    function onClean() {
+    function onClean(): undefined {
         element.removeEventListener('mousemove', listeners.onMouseMove, listeners.onMouseMoveOptions.capture)
         element.removeEventListener('touchmove', listeners.onTouchMove, listeners.onTouchMoveOptions.capture)
         element.removeEventListener('mouseup', listeners.onMouseUp, listeners.onMouseUpOptions.capture)
@@ -614,9 +614,9 @@ export interface DragScrollOptions extends DragOptions {
 }
 
 export interface DragListeners {
-    onPointerMove(event: DragPointerEvent): void
-    onPointerCancel(event: DragPointerEvent): void
-    onPointerEnd(event: DragPointerEvent): void
+    onPointerMove(event: DragPointerEvent): undefined
+    onPointerCancel(event: DragPointerEvent): undefined
+    onPointerEnd(event: DragPointerEvent): undefined
 }
 
 export interface DragState<E, O extends DragOptions> {

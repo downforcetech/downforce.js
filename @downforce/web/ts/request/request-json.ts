@@ -13,7 +13,7 @@ export function setupRequestJson(request: Request, body: unknown, otherHeaders?:
 /**
 * @throws TypeError | InvalidArgument
 **/
-export function usingRequestJson(body: unknown, headers?: undefined | HeadersInit): Io<Request, Request> {
+export function useRequestJson(body: unknown, headers?: undefined | HeadersInit): Io<Request, Request> {
     return (request: Request) => setupRequestJson(request, body, headers)
 }
 
