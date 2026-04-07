@@ -6,10 +6,10 @@ export function ButtonArmored(props: ButtonArmoredProps): React.JSX.Element {
     const {children, className, ...otherProps} = props
     const [armored, setArmored] = useState(false)
 
-    const armor = useCallback(() => {
+    const armor = useCallback((): undefined => {
         setArmored(true)
     }, [])
-    const close = useCallback(() => {
+    const close = useCallback((): undefined => {
         setArmored(false)
     }, [])
 
@@ -34,6 +34,6 @@ export interface ButtonArmoredProps extends Omit<ElementProps<'div'>, 'children'
 
 export interface ButtonArmoredChildrenProps {
     isArmored: boolean
-    armor(): void
-    close(): void
+    armor(): undefined
+    close(): undefined
 }

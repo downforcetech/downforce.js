@@ -5,6 +5,7 @@ import type {ElementProps, Props} from '@downforce/react/props'
 import {call} from '@downforce/std/fn'
 import {clamp} from '@downforce/std/number'
 import {isNone, type None} from '@downforce/std/optional'
+import type {Void} from '@downforce/std/type'
 import {KeyboardKey} from '@downforce/web/keybinding'
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 
@@ -41,11 +42,11 @@ export function Range(props: Props<RangeProps>): React.JSX.Element {
     const centerDrag = useDrag(refs.centerHandle, dragCenterOptions)
 
     useEffect(() => {
-        function onProgress(range: Range) {
+        function onProgress(range: Range): undefined {
             setDragRange(range)
             onChange?.(range)
         }
-        function onEnd(range: Range) {
+        function onEnd(range: Range): undefined {
             setDragRange(undefined)
             onChanged?.(range)
         }
@@ -186,7 +187,7 @@ export function Range(props: Props<RangeProps>): React.JSX.Element {
 export function RangeNumeric(props: Props<RangeNumericProps>): undefined | React.JSX.Element {
     const {start, end, min, max, onChange, onChanged, ...otherProps} = props
 
-    const onRangeChange = useCallback((range: Range) => {
+    const onRangeChange = useCallback((range: Range): undefined => {
         if (isNone(min) || isNone(max)) {
             return
         }
@@ -196,7 +197,7 @@ export function RangeNumeric(props: Props<RangeNumericProps>): undefined | React
         onChange?.(numbersRange)
     }, [onChange, min, max])
 
-    const onRangeChanged = useCallback((range: Range) => {
+    const onRangeChanged = useCallback((range: Range): undefined => {
         if (isNone(min) || isNone(max)) {
             return
         }
@@ -262,8 +263,7 @@ export function computeRangeRatio(
     initialEvent: DragPointerEvent,
     currentEvent: DragPointerEvent,
     target: RangeTarget,
-): Range
-{
+): Range {
     const total = rects.start.width + rects.center.width + rects.end.width
     const xDelta = currentEvent.clientX - initialEvent.clientX
 
@@ -366,9 +366,7 @@ export interface RangeRects {
 
 export type RangeTarget = 'start' | 'center' | 'end'
 
-export interface RangeObserver<T = number> {
-    (change: Range<T>): void
-}
+export type RangeObserver<T = number> = (change: Range<T>) => Void
 
 export interface Range<T = number> {
     start: T

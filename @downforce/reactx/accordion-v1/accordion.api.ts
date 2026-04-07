@@ -1,6 +1,6 @@
 import {flushStyles} from '@downforce/web/animation'
 
-export function animateAccordionOpen(element: HTMLElement): void {
+export function animateAccordionOpen(element: HTMLElement): undefined {
     const eventOptions = {
         capture: false,
         passive: true,
@@ -15,7 +15,7 @@ export function animateAccordionOpen(element: HTMLElement): void {
     element.style.height = element.scrollHeight + 'px'
 }
 
-export function animateAccordionClose(element: HTMLElement): void {
+export function animateAccordionClose(element: HTMLElement): undefined {
     const eventOptions = {
         capture: false,
         passive: true,

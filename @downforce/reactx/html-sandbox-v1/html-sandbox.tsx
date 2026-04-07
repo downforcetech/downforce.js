@@ -16,7 +16,7 @@ export function HtmlSandbox(props: Props<HtmlSandboxProps>): React.JSX.Element {
     )
 }
 
-export function defineHtmlSandbox(tagOptional?: undefined| string): void {
+export function defineHtmlSandbox(tagOptional?: undefined| string): undefined {
     const tag = tagOptional ?? HtmlSandboxTag
 
     if (! customElements.get(tag)) { // HMR Compatibility.

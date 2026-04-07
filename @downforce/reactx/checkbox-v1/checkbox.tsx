@@ -1,5 +1,6 @@
 import {classes} from '@downforce/react/classes'
 import type {ElementProps, Props} from '@downforce/react/props'
+import type {Void} from '@downforce/std/type'
 import {asBooleanString} from '@downforce/web/aria'
 import {cloneElement, isValidElement} from 'react'
 
@@ -42,7 +43,7 @@ export function Checkbox(props: Props<CheckboxProps>): React.JSX.Element {
 
 export interface CheckboxProps extends Omit<ElementProps<'button'>, 'children' | 'onChange'>, CheckboxModel {
     children?: undefined | React.ReactElement<CheckboxModel>
-    onChange?: undefined | ((value: boolean) => void)
+    onChange?: undefined | ((value: boolean) => Void)
 }
 
 export interface CheckboxModel {

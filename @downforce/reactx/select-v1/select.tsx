@@ -2,7 +2,7 @@ import {classes} from '@downforce/react/classes'
 import type {Props, VoidProps} from '@downforce/react/props'
 import type {Io} from '@downforce/std/fn'
 import {isSome, isUndefined} from '@downforce/std/optional'
-import type {Prettify} from '@downforce/std/type'
+import type {Prettify, Void} from '@downforce/std/type'
 import {useImperativeHandle} from 'react'
 import {createPortal} from 'react-dom'
 import type {SelectOptionGeneric, SelectPlacement} from './select.api.js'
@@ -311,8 +311,8 @@ export interface SelectGenericProps<V, S, O extends object = object> extends
 
     initialOpen?: undefined | boolean
     open?: undefined | boolean
-    onOpenChange?: undefined | ((value: boolean) => void)
-    onSelectedChange(value: S, options: Array<O>): void
+    onOpenChange?: undefined | ((value: boolean) => Void)
+    onSelectedChange(value: S, options: Array<O>): Void
 
     controlProps?: undefined | SelectProviderOptions<V, S, O>['controlProps']
     optionsRootProps?: undefined | SelectProviderOptions<V, S, O>['optionsRootProps']
@@ -353,13 +353,13 @@ export interface SelectManyProps<V, O extends object = object> extends SelectGen
 }
 
 export interface SelectControlProps<V, S, O extends object = object> extends SelectContextValue<V, S, O> {
-    onClick(event: React.MouseEvent<HTMLElement>): void
+    onClick(event: React.MouseEvent<HTMLElement>): undefined
 }
 
 export interface SelectOptionProps<V, S, O extends object = object> extends SelectContextValue<V, S, O> {
     option: SelectOptionGeneric<V> & O
     optionIdx: number
-    onClick(event: React.MouseEvent<HTMLElement>): void
+    onClick(event: React.MouseEvent<HTMLElement>): undefined
 }
 
 export interface SelectPortalProps<V, S, O extends object = object> extends SelectContextValue<V, S, O> {

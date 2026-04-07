@@ -1,9 +1,11 @@
 import {defineContext} from '@downforce/react/ctx'
 import {useClickOutside} from '@downforce/react/gesture'
 import {setRef} from '@downforce/react/ref'
+import type {StateWriter} from '@downforce/react/state'
 import {compute, type Computable} from '@downforce/std/fn'
 import {clamp} from '@downforce/std/number'
-import {isDefined, isUndefined, whenSome} from '@downforce/std/optional'
+import {isDefined, isUndefined, matchSome} from '@downforce/std/optional'
+import type {Void} from '@downforce/std/type'
 import {classes} from '@downforce/web/classes'
 import {KeyboardKey} from '@downforce/web/keybinding'
 import {useCallback, useContext, useEffect, useId, useLayoutEffect, useRef, useState, type AriaRole} from 'react'
@@ -54,17 +56,17 @@ export function useSelectOneProvider<V, O extends object = object>(
         setSelectedUncontrolled(initialSelected)
     }, [selectedControlled])
 
-    const setOpen = useCallback((open: boolean) => {
+    const setOpen = useCallback((open: boolean): undefined => {
         setOpenUncontrolled(open)
         setOpenControlled?.(open)
     }, [setOpenUncontrolled, setOpenControlled])
 
-    const setSelected = useCallback((value: undefined | V) => {
+    const setSelected = useCallback((value: undefined | V): undefined => {
         setSelectedUncontrolled(value)
         setSelectedControlled?.(value, args.options ?? [])
     }, [setSelectedUncontrolled, setSelectedControlled, args.options])
 
-    const clearSelected = useCallback(() => {
+    const clearSelected = useCallback((): undefined => {
         setSelected(undefined)
     }, [setSelected])
 
@@ -72,7 +74,7 @@ export function useSelectOneProvider<V, O extends object = object>(
         return selected === value
     }, [selected])
 
-    const onOptionSelection = useCallback((option: SelectOptionGeneric<V> & O, optionIdx: number, event: React.UIEvent<HTMLElement>) => {
+    const onOptionSelection = useCallback((option: SelectOptionGeneric<V> & O, optionIdx: number, event: React.UIEvent<HTMLElement>): undefined => {
         setSelected(option.value)
         setOpen(false)
     }, [setSelected, setOpen])
@@ -182,17 +184,17 @@ export function useSelectManyProvider<V, O extends object = object>(
     const open = openControlled ?? openUncontrolled
     const selected = selectedControlled ?? selectedUncontrolled
 
-    const setOpen = useCallback((value: boolean) => {
+    const setOpen = useCallback((value: boolean): undefined => {
         setOpenUncontrolled(value)
         setOpenControlled?.(value)
     }, [setOpenUncontrolled, setOpenControlled])
 
-    const setSelected = useCallback((value: Array<V>) => {
+    const setSelected = useCallback((value: Array<V>): undefined => {
         setSelectedUncontrolled(value)
         setSelectedControlled?.(value, args.options ?? [])
     }, [setSelectedUncontrolled, setSelectedControlled, args.options])
 
-    const clearSelected = useCallback(() => {
+    const clearSelected = useCallback((): undefined => {
         setSelected(NoItems)
     }, [setSelected])
 
@@ -200,7 +202,7 @@ export function useSelectManyProvider<V, O extends object = object>(
         return selected.includes(value)
     }, [selected])
 
-    const onOptionSelection = useCallback((option: SelectOptionGeneric<V> & O, optionIdx: number, event: React.UIEvent<HTMLElement>) => {
+    const onOptionSelection = useCallback((option: SelectOptionGeneric<V> & O, optionIdx: number, event: React.UIEvent<HTMLElement>): undefined => {
         const value: Array<V> = (
             selected.includes(option.value)
                 ? selected.filter(it => it !== option.value)
@@ -274,8 +276,8 @@ export function useSelectProvider<V, S, O extends object = object>(
         readonly: args.readonly ?? false,
         required: args.required ?? false,
         selected: args.selected,
-        setOptionFocused: PRIVATE_setOptionFocused,
-        setOptionTabbed: PRIVATE_setOptionTabbed,
+        setOptionFocused: PRIVATE_setOptionFocused as StateWriter<undefined | number>,
+        setOptionTabbed: PRIVATE_setOptionTabbed as StateWriter<undefined | number>,
         teleport: args.teleport ?? false,
         valid: args.valid ?? true,
     } satisfies Partial<SelectContextValue<V, S, O>['state']>
@@ -285,7 +287,7 @@ export function useSelectProvider<V, S, O extends object = object>(
 
         isSelected: args.isSelected,
 
-        setOpen: useCallback((open: boolean) => {
+        setOpen: useCallback((open: boolean): undefined => {
             if (state.disabled) {
                 return
             }
@@ -299,7 +301,7 @@ export function useSelectProvider<V, S, O extends object = object>(
             args.setOpen(open)
         }, [args.setOpen, statePartial.disabled, statePartial.readonly]),
 
-        setSelected: useCallback((value: S) => {
+        setSelected: useCallback((value: S): undefined => {
             if (state.disabled) {
                 return
             }
@@ -311,7 +313,7 @@ export function useSelectProvider<V, S, O extends object = object>(
         }, [args.setSelected, statePartial.disabled, statePartial.readonly]),
     }
 
-    const onOptionSelection = useCallback((option: SelectOptionGeneric<V> & O, optionIdx: number, event: React.UIEvent<HTMLElement>) => {
+    const onOptionSelection = useCallback((option: SelectOptionGeneric<V> & O, optionIdx: number, event: React.UIEvent<HTMLElement>): undefined => {
         if (state.disabled) {
             return
         }
@@ -342,9 +344,9 @@ export function useSelectProvider<V, S, O extends object = object>(
     const props: SelectContextValue<V, S, O>['props'] = {
         rootProps: {
             ...computedProps.rootProps,
-            ref: useCallback((element: null | HTMLElement) => {
+            ref: useCallback((element: null | HTMLElement): undefined => {
                 refs.rootRef.current = element ?? undefined
-                whenSome(computedProps.rootProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
+                matchSome(computedProps.rootProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
             }, [computedProps.rootProps?.ref]),
             className: classes(computedProps.rootProps?.className),
             ['aria-controls']: ids.optionsRootId,
@@ -355,7 +357,7 @@ export function useSelectProvider<V, S, O extends object = object>(
                 ...SelectPlacementPositionedKit.rootPropsStyles(state),
                 ...computedProps.rootProps?.style,
             },
-            onBlur: useCallback((event: React.FocusEvent<HTMLElement>) => {
+            onBlur: useCallback((event: React.FocusEvent<HTMLElement>): undefined => {
                 if (state.disabled) {
                     return
                 }
@@ -379,9 +381,9 @@ export function useSelectProvider<V, S, O extends object = object>(
 
         controlProps: {
             ...computedProps.controlProps,
-            ref: useCallback((element: null | HTMLElement) => {
+            ref: useCallback((element: null | HTMLElement): undefined => {
                 refs.controlRef.current = element ?? undefined
-                whenSome(computedProps.controlProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
+                matchSome(computedProps.controlProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
             }, [computedProps.controlProps?.ref]),
             className: classes(computedProps.controlProps?.className),
             role: 'combobox',
@@ -389,7 +391,7 @@ export function useSelectProvider<V, S, O extends object = object>(
             ['aria-readonly']: state.readonly,
             ['aria-required']: state.required,
             tabIndex: state.disabled ? -1 : 0,
-            onClick: useCallback((event: React.MouseEvent<HTMLElement>) => {
+            onClick: useCallback((event: React.MouseEvent<HTMLElement>): undefined => {
                 if (state.disabled) {
                     return
                 }
@@ -414,7 +416,7 @@ export function useSelectProvider<V, S, O extends object = object>(
                 state.setOptionFocused(undefined)
                 state.setOptionTabbed(undefined)
             }, [state.disabled, state.readonly, state.open, state.setOptionFocused, state.setOptionTabbed, computedProps.controlProps?.onClick]),
-            onFocus: useCallback((event: React.FocusEvent<HTMLElement>) => {
+            onFocus: useCallback((event: React.FocusEvent<HTMLElement>): undefined => {
                 if (state.disabled) {
                     return
                 }
@@ -429,7 +431,7 @@ export function useSelectProvider<V, S, O extends object = object>(
 
                 state.setOptionFocused(undefined)
             }, [state.disabled, state.readonly, state.setOptionFocused, computedProps.controlProps?.onFocus]),
-            onKeyDown: useCallback((event: React.KeyboardEvent<HTMLElement>) => {
+            onKeyDown: useCallback((event: React.KeyboardEvent<HTMLElement>): undefined => {
                 if (state.disabled) {
                     return
                 }
@@ -483,9 +485,9 @@ export function useSelectProvider<V, S, O extends object = object>(
         optionsRootProps: {
             ...computedProps.optionsRootProps,
             className: classes(computedProps.optionsRootProps?.className),
-            ref: useCallback((element: null | HTMLElement) => {
+            ref: useCallback((element: null | HTMLElement): undefined => {
                 refs.optionsRootRef.current = element ?? undefined
-                whenSome(computedProps.optionsRootProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
+                matchSome(computedProps.optionsRootProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
             }, [computedProps.optionsRootProps?.ref]),
             ['aria-hidden']: ! state.open,
             style: {
@@ -497,9 +499,9 @@ export function useSelectProvider<V, S, O extends object = object>(
         optionsListProps: {
             ...computedProps.optionsListProps,
             className: classes(computedProps.optionsListProps?.className),
-            ref: useCallback((element: null | HTMLElement) => {
+            ref: useCallback((element: null | HTMLElement): undefined => {
                 refs.optionsListRef.current = element ?? undefined
-                whenSome(computedProps.optionsListProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
+                matchSome(computedProps.optionsListProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
             }, [computedProps.optionsListProps?.ref]),
             role: 'listbox',
         },
@@ -508,7 +510,7 @@ export function useSelectProvider<V, S, O extends object = object>(
             ...computedProps.optionProps,
             ref(element: null | HTMLElement) {
                 refs.optionsRef.current[optionIdx] = element ?? undefined
-                whenSome(computedProps.optionProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
+                matchSome(computedProps.optionProps?.ref, ref => setRef<null | HTMLElement>(ref, element))
             },
             className: classes(),
             role: 'option',
@@ -603,7 +605,7 @@ export function useSelectProvider<V, S, O extends object = object>(
 
     useClickOutside(
         refs.rootRef,
-        useCallback(event => {
+        useCallback((event): undefined => {
             if (event.target && ! document.documentElement.contains(event.target as Node)) {
                 // A DOM Node has been removed from the DOM tree by React.
                 // Not an actual click outside event.
@@ -762,7 +764,7 @@ export interface SelectContextValue<V, S, O extends object = object> {
             'aria-expanded': boolean
             'data-placement': string
             style: React.CSSProperties
-            onBlur(event: React.FocusEvent<HTMLElement>): void
+            onBlur(event: React.FocusEvent<HTMLElement>): undefined
         }
         controlProps: React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement> & {
             ref: React.RefCallback<null | HTMLElement>
@@ -772,9 +774,9 @@ export interface SelectContextValue<V, S, O extends object = object> {
             'aria-readonly': boolean
             'aria-required': boolean
             tabIndex: number
-            onClick(event: React.MouseEvent<HTMLElement>): void
-            onFocus(event: React.FocusEvent<HTMLElement>): void
-            onKeyDown(event: React.KeyboardEvent<HTMLElement>): void
+            onClick(event: React.MouseEvent<HTMLElement>): undefined
+            onFocus(event: React.FocusEvent<HTMLElement>): undefined
+            onKeyDown(event: React.KeyboardEvent<HTMLElement>): undefined
         }
         optionsRootProps: React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement> & {
             ref: React.RefCallback<null | HTMLElement>
@@ -788,14 +790,14 @@ export interface SelectContextValue<V, S, O extends object = object> {
             role: AriaRole
         }
         optionPropsFor(option: SelectOptionGeneric<V> & O, optionIdx: number): React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement> & {
-            ref(element: null | HTMLElement): void
+            ref(element: null | HTMLElement): undefined
             className: undefined | string
             role: AriaRole
             'aria-disabled': boolean
             'aria-selected': boolean
             tabIndex: number
-            onClick(event: React.MouseEvent<HTMLElement>): void
-            onKeyDown(event: React.KeyboardEvent<HTMLElement>): void
+            onClick(event: React.MouseEvent<HTMLElement>): undefined
+            onKeyDown(event: React.KeyboardEvent<HTMLElement>): undefined
         }
     }
     refs: {
@@ -818,12 +820,12 @@ export interface SelectContextValue<V, S, O extends object = object> {
         selected: S
         teleport: boolean
         valid: boolean
-        clearSelected(): void
+        clearSelected(): Void
         isSelected(value: V): boolean
-        setOpen(open: boolean): void
-        setOptionFocused(optionIdx: undefined | number): void
-        setOptionTabbed(optionIdx: undefined | number): void
-        setSelected(value: S): void
+        setOpen(open: boolean): Void
+        setOptionFocused(optionIdx: undefined | number): Void
+        setOptionTabbed(optionIdx: undefined | number): Void
+        setSelected(value: S): Void
     }
 }
 
@@ -848,11 +850,11 @@ export interface SelectProviderFragments<V, S, O extends object = object> {
         valid: undefined | boolean
     }
     StateActions: {
-        clearSelected(): void
+        clearSelected(): Void
         isSelected(value: V): boolean
-        onOptionSelection(option: SelectOptionGeneric<V> & O, optionIdx: number, event: React.UIEvent<HTMLElement>): void
-        setOpen(open: boolean): void
-        setSelected(value: S): void
+        onOptionSelection(option: SelectOptionGeneric<V> & O, optionIdx: number, event: React.UIEvent<HTMLElement>): Void
+        setOpen(open: boolean): Void
+        setSelected(value: S): Void
     }
     PropsContext: SelectProviderFragments<V, S, O>['State']
 }
@@ -869,7 +871,7 @@ export type SelectCommonProviderOptions<V, S, O extends object = object> =
     initialOpen: undefined | SelectProviderOptions<V, S, O>['open']
     open: undefined | SelectProviderOptions<V, S, O>['open']
     onOpen: undefined | SelectProviderOptions<V, S, O>['setOpen']
-    onSelected(value: S, options: Array<SelectOptionGeneric<V> & O>): void
+    onSelected(value: S, options: Array<SelectOptionGeneric<V> & O>): Void
 }
 
 export interface SelectOneProviderOptions<V, O extends object = object> extends SelectCommonProviderOptions<V, undefined | V, O> {

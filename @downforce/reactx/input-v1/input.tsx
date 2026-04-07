@@ -1,6 +1,7 @@
 import {classes} from '@downforce/react/classes'
 import type {ElementProps, Props} from '@downforce/react/props'
 import {useMergeRefs} from '@downforce/react/ref'
+import type {Void} from '@downforce/std/type'
 import {useLayoutEffect, useRef, useState} from 'react'
 
 export function Input(props: Props<InputProps>): React.JSX.Element {
@@ -81,5 +82,5 @@ export interface InputProps extends Omit<ElementProps<'input'>, 'onChange'> {
     tabIndex?: undefined | number
     type?: undefined | React.HTMLInputTypeAttribute
     value?: undefined | string
-    onChange?: undefined | ((value: string, event: React.ChangeEvent<HTMLInputElement>) => void)
+    onChange?: undefined | ((value: string, event: React.ChangeEvent<HTMLInputElement>) => Void)
 }

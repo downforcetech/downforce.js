@@ -7,7 +7,7 @@ export function ImageLoader(props: ImageLoaderProps): undefined {
     const loadedRef = useRef<Array<string>>([])
     const identifiers = items.join('|')
 
-    function onImageLoaded(imageUrl: string, img: HTMLImageElement) {
+    function onImageLoaded(imageUrl: string, img: HTMLImageElement): undefined {
         const id = imageIdOf(imageUrl)
         const idx = loadingRef.current.indexOf(id)
 
@@ -75,14 +75,14 @@ export function createImageLoader(imageUrl: string, onEndObserver?: ImageOnEnd):
 export function mountImageLoader(img: HTMLImageElement): Task {
     document.body.appendChild(img)
 
-    function onClean() {
+    function onClean(): undefined {
         unmountImageLoader(img)
     }
 
     return onClean
 }
 
-export function unmountImageLoader(img: HTMLImageElement): void {
+export function unmountImageLoader(img: HTMLImageElement): undefined {
     document.body.removeChild(img)
 }
 
@@ -93,5 +93,5 @@ export interface ImageLoaderProps {
 }
 
 export interface ImageOnEnd {
-    (url: string, img: HTMLImageElement): void
+    (url: string, img: HTMLImageElement): undefined
 }

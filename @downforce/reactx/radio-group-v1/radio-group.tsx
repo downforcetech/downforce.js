@@ -1,6 +1,7 @@
 import {classes} from '@downforce/react/classes'
 import type {ElementProps, Props} from '@downforce/react/props'
 import {compute, type Computable} from '@downforce/std/fn'
+import type {Void} from '@downforce/std/type'
 import {useId} from 'react'
 
 export function RadioGroup(props: Props<RadioGroupProps>): React.JSX.Element {
@@ -58,5 +59,5 @@ export interface RadioGroupProps extends Omit<ElementProps<'div'>, 'onChange'> {
         value: string
     }>
     selected?: undefined | null | string
-    onChange?: undefined | ((value: string, idx: number) => void)
+    onChange?: undefined | ((value: string, idx: number) => Void)
 }

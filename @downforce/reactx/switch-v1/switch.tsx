@@ -1,5 +1,6 @@
 import {classes} from '@downforce/react/classes'
 import type {ElementProps, Props} from '@downforce/react/props'
+import type {Void} from '@downforce/std/type'
 import {asBooleanString} from '@downforce/web/aria'
 
 export function Switch(props: Props<SwitchProps>): React.JSX.Element {
@@ -33,5 +34,5 @@ export function Switch(props: Props<SwitchProps>): React.JSX.Element {
 
 export interface SwitchProps extends Omit<ElementProps<'button'>, 'onChange'> {
     checked?: undefined | boolean
-    onChange?: undefined | ((value: boolean) => void)
+    onChange?: undefined | ((value: boolean) => Void)
 }

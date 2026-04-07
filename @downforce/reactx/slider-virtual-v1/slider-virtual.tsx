@@ -23,7 +23,7 @@ export function SliderVirtual<I>(props: Props<SliderVirtualProps<I>>): React.JSX
     const refMerged = useMergeRefs(containerRef, refOptional)
     const [sizes, setSizes] = useState<undefined | VirtualSizes>()
 
-    const updateSize = useCallback(() => {
+    const updateSize = useCallback((): undefined => {
         if (! containerRef.current) {
             return
         }

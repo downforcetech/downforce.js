@@ -2,6 +2,7 @@ import {classes} from '@downforce/react/classes'
 import type {ElementProps, Props, VoidProps} from '@downforce/react/props'
 import {useMergeRefs} from '@downforce/react/ref'
 import {identity} from '@downforce/std/fn'
+import type {Void} from '@downforce/std/type'
 import {useRef, useState} from 'react'
 
 export {createElementAfterDecorator, createElementBeforeDecorator, createElementDecorator} from '@downforce/react/children'
@@ -142,7 +143,7 @@ export interface InputProps extends Omit<VoidProps<ElementProps<'input'>>, 'onCh
     inputClass?: undefined | string
     inputProps?: undefined | ElementProps<'input'>
     inputStyle?: undefined | React.CSSProperties
-    onChange?: undefined | ((value: string, event: React.ChangeEvent<HTMLInputElement>) => void)
+    onChange?: undefined | ((value: string, event: React.ChangeEvent<HTMLInputElement>) => Void)
 }
 
 export interface TextInputProps extends InputProps {

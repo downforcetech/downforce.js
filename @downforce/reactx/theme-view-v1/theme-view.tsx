@@ -2,6 +2,7 @@ import {classes} from '@downforce/react/classes'
 import type {ElementProps, Props} from '@downforce/react/props'
 import {colorHslFromRgbHexString, colorRgbHexStringFromHsl, type ColorHslDict} from '@downforce/std/color'
 import {times} from '@downforce/std/iter'
+import type {Void} from '@downforce/std/type'
 import {Fragment, useEffect, useRef, useState} from 'react'
 import {ExampleIcon as Icon} from '../icon-example/icon-example-v2.js'
 
@@ -447,6 +448,6 @@ export interface ThemeViewProps extends ElementProps<'div'> {
 }
 
 export interface PickerProps {
-    onPrimaryChange(hsl: ColorHslDict): void
-    onThemeChange(theme: 'light' | 'dark'): void
+    onPrimaryChange(hsl: ColorHslDict): Void
+    onThemeChange(theme: 'light' | 'dark'): Void
 }

@@ -208,7 +208,7 @@ export interface AccordionListProps extends ElementProps<'ul'> {
     initialOpen?: undefined | Array<number>
     open?: undefined | Array<number>
     maxOpen?: undefined | number
-    onOpenChange?: undefined | ((open: Array<number>) => void)
+    onOpenChange?: undefined | ((open: Array<number>) => undefined)
 }
 
 export interface AccordionProps extends Omit<BoxProps, 'content'> {
@@ -219,5 +219,5 @@ export interface AccordionProps extends Omit<BoxProps, 'content'> {
     contentStyle?: undefined | React.CSSProperties
     initialOpen?: undefined | boolean
     open?: undefined | boolean
-    onOpenChange?: undefined | ((open: boolean) => void)
+    onOpenChange?: undefined | ((open: boolean) => undefined)
 }
