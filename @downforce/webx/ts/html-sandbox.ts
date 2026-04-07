@@ -16,8 +16,8 @@ import {useEventListener, useMounted, WebElement} from '@downforce/web/element'
 */
 export class HtmlSandbox extends WebElement {
     static getImplementation(): {
-        onContentChange(element: HTMLElement): void
-        onHashChange(element: HTMLElement): void
+        onContentChange(element: HTMLElement): undefined
+        onHashChange(element: HTMLElement): undefined
     } {
         return Implementation
     }
@@ -34,24 +34,24 @@ export class HtmlSandbox extends WebElement {
         useEventListener(this, window, 'hashchange', Implementation.onHashChange.bind(this, this))
     }
 
-    override connectedCallback(): void {
+    override connectedCallback(): undefined {
         Implementation.onContentChange(this)
     }
 }
 
 const Implementation = {
-    onMounted(element: HTMLElement): Task<void> {
+    onMounted(element: HTMLElement): Task {
         const observer = new MutationObserver(() => Implementation.onContentChange(element))
         observer.observe(element, {subtree: true, characterData: true})
 
-        function onUnmount() {
+        function onUnmount(): undefined {
             observer.disconnect()
         }
 
         return onUnmount
     },
 
-    onContentChange(element: HTMLElement): void {
+    onContentChange(element: HTMLElement): undefined {
         if (! element.shadowRoot) {
             return
         }
@@ -64,7 +64,7 @@ const Implementation = {
         Implementation.onHashChange(element)
     },
 
-    onHashChange(element: HTMLElement): void {
+    onHashChange(element: HTMLElement): undefined {
         const target = tryCatch(() => {
             if (! element.shadowRoot) {
                 return
