@@ -3,6 +3,7 @@
         "./use-defaults=sane.json",
         "./use-platform=web.json"
     ],
+    "include": ["${configDir}/src/"],
     "compilerOptions": {
         "allowImportingTsExtensions": true,
         "jsx": "react-jsx",
