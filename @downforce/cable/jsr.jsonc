@@ -1,0 +1,21 @@
+{
+    "$schema": "https://jsr.io/schema/config-file.v1.json",
+    "name": "@downforce/cable",
+    "version": "1.0.2",
+    "publish": {
+        "include": [
+            "./LICENSE.txt",
+            "./module.ts",
+            "./ts/**/*.ts",
+        ],
+    },
+    "exports": {
+        ".": "./module.ts",
+    },
+    "imports": {
+        "@downforce/std": "jsr:@downforce/std@1.3.1",
+        "smol-toml": "npm:smol-toml@1.6",
+        "yaml": "npm:yaml@2.8",
+    },
+    "license": "MIT",
+}

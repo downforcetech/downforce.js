@@ -9,7 +9,7 @@
         "./ts/"
     ],
     "exports": {
-        ".": "./esm/index.js",
+        ".": "./esm/all.js",
         "./*": "./esm/*.js"
     },
     "scripts": {

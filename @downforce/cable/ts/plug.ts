@@ -6,7 +6,33 @@ import {CableTomlFilePlug, type CableTomlFilePlugOptions} from './plug-toml.js'
 import type {CableDecoder, CablePlugInterface} from './plug-types.js'
 import {CableYamlFilePlug, type CableYamlFilePlugOptions} from './plug-yaml.js'
 
-export const CablePlug = {
+export const CablePlug: {
+    Env<S extends CableStoreGeneric>(
+        env: Record<string, undefined | string>,
+        decoder: CableDecoder<Record<string, undefined | string>, S>,
+        options?: undefined | CableEnvPlugOptions,
+    ): CablePlugInterface<S>
+    JsFile<S extends CableStoreGeneric>(
+        filePath: string,
+        decoder: CableDecoder<unknown, S>,
+        options?: undefined | CableJsFilePlugOptions,
+    ): CablePlugInterface<S>
+    JsonFile<S extends CableStoreGeneric>(
+        filePath: string,
+        decoder: CableDecoder<unknown, S>,
+        options?: undefined | CableJsonFilePlugOptions,
+    ): CablePlugInterface<S>
+    TomlFile<S extends CableStoreGeneric>(
+        filePath: string,
+        decoder: CableDecoder<unknown, S>,
+        options?: undefined | CableTomlFilePlugOptions,
+    ): CablePlugInterface<S>
+    YamlFile<S extends CableStoreGeneric>(
+        filePath: string,
+        decoder: CableDecoder<unknown, S>,
+        options?: undefined | CableYamlFilePlugOptions,
+    ): CablePlugInterface<S>
+} = {
     Env<S extends CableStoreGeneric>(
         env: Record<string, undefined | string>,
         decoder: CableDecoder<Record<string, undefined | string>, S>,
