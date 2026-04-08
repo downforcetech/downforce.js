@@ -1,10 +1,16 @@
 import {PartialApplication} from '../fn/fn-partial.js'
 import type {Io, Task} from '../fn/fn-type.js'
-import type {None} from '../optional/optional-type.js'
-import {createError} from '../outcome/outcome-new.js'
-import type {OutcomeError} from '../outcome/outcome-type.js'
 import type {IfAnyOrUnknown} from '../type/type-type.js'
 import {isPromise} from './promise-is.js'
+
+// We can't use NoInfer<I> on Partial Application functions definitions
+// because it prevents inference when multiple partial application functions
+// are combined.
+// EXAMPLE
+//   pipe(
+//     input,
+//     _thenPromise(_matchResult(it => it)), // 'it' would be 'never' with 'NoInfer<I>'.
+//   )
 
 export function matchPromise<I, O1, O2 = Exclude<I, Promise<unknown>>>(
     input: PartialApplication.Placeholder,
@@ -13,13 +19,13 @@ export function matchPromise<I, O1, O2 = Exclude<I, Promise<unknown>>>(
 ): Io<I, O1 | O2>
 export function matchPromise<I, O1, O2 = Exclude<I, Promise<unknown>>>(
     input: I,
-    onMatch: Io<IfAnyOrUnknown<I, Promise<unknown>, Extract<I, Promise<unknown>>>, O1>,
-    onElse?: undefined | Io<Exclude<I, Promise<unknown>>, O2>,
+    onMatch: Io<NoInfer<IfAnyOrUnknown<I, Promise<unknown>, Extract<I, Promise<unknown>>>>, O1>,
+    onElse?: undefined | Io<NoInfer<Exclude<I, Promise<unknown>>>, O2>,
 ): O1 | O2
 export function matchPromise<I, O1, O2 = Exclude<I, Promise<unknown>>>(
     input: I | PartialApplication.Placeholder,
-    onMatch: Io<IfAnyOrUnknown<I, Promise<unknown>, Extract<I, Promise<unknown>>>, O1>,
-    onElse?: undefined | Io<Exclude<I, Promise<unknown>>, O2>,
+    onMatch: Io<NoInfer<IfAnyOrUnknown<I, Promise<unknown>, Extract<I, Promise<unknown>>>>, O1>,
+    onElse?: undefined | Io<NoInfer<Exclude<I, Promise<unknown>>>, O2>,
 ): O1 | O2 | Io<I, O1 | O2> {
     if (input === PartialApplication.Placeholder) {
         return (input: I) => matchPromise(input, onMatch, onElse)
@@ -42,13 +48,13 @@ export function awaitPromise<I, O1, O2>(
 ): Io<Promise<I>, Promise<O1 | O2>>
 export function awaitPromise<I, O1, O2>(
     input: Promise<I>,
-    onThen: Io<I, O1 | Promise<O1>>,
+    onThen: Io<NoInfer<I>, O1 | Promise<O1>>,
     onCatch: Io<unknown, O2 | Promise<O2>>,
     onFinally?: undefined | Task,
 ): Promise<O1 | O2>
 export function awaitPromise<I, O1, O2>(
     input: Promise<I> | PartialApplication.Placeholder,
-    onThen: Io<I, O1 | Promise<O1>>,
+    onThen: Io<NoInfer<I>, O1 | Promise<O1>>,
     onCatch: Io<unknown, O2 | Promise<O2>>,
     onFinally?: undefined | Task,
 ): Promise<O1 | O2> | Io<Promise<I>, Promise<O1 | O2>> {
@@ -65,11 +71,11 @@ export function thenPromise<I, O>(
 ): Io<Promise<I>, Promise<O>>
 export function thenPromise<I, O>(
     input: Promise<I>,
-    onThen: Io<I, O | Promise<O>>,
+    onThen: Io<NoInfer<I>, O | Promise<O>>,
 ): Promise<O>
 export function thenPromise<I, O>(
     input: Promise<I> | PartialApplication.Placeholder,
-    onThen: Io<I, O | Promise<O>>,
+    onThen: Io<NoInfer<I>, O | Promise<O>>,
 ): Promise<O> | Io<Promise<I>, Promise<O>> {
     if (input === PartialApplication.Placeholder) {
         return (input: Promise<I>) => thenPromise(input, onThen)
@@ -97,36 +103,6 @@ export function catchPromise<I, O>(
     return input.catch(onCatch)
 }
 
-/*
-* Shortcut API. Same of catchPromise(createError).
-*/
-export function catchPromiseError<I>(
-    input: PartialApplication.Placeholder,
-    errorOptional?: undefined | None,
-): Io<Promise<I>, Promise<I | OutcomeError<unknown>>>
-export function catchPromiseError<I, const O>(
-    input: PartialApplication.Placeholder,
-    errorOptional: O,
-): Io<Promise<I>, Promise<I | OutcomeError<O>>>
-export function catchPromiseError<I>(
-    input: Promise<I>,
-    errorOptional?: undefined | None,
-): Promise<I | OutcomeError<unknown>>
-export function catchPromiseError<I, const O>(
-    input: Promise<I>,
-    errorOptional: O,
-): Promise<I | OutcomeError<O>>
-export function catchPromiseError<I, const O>(
-    input: Promise<I> | PartialApplication.Placeholder,
-    errorOptional?: undefined | None | O,
-): Promise<I | OutcomeError<O>> | Io<Promise<I>, Promise<I | OutcomeError<O>>> {
-    if (input === PartialApplication.Placeholder) {
-        return (input: Promise<I>) => catchPromiseError(input, errorOptional as O)
-    }
-
-    return input.catch(error => createError(errorOptional ?? error))
-}
-
 export function _awaitPromise<I, O1, O2>(
     onThen: Io<I, O1 | Promise<O1>>,
     onCatch: Io<unknown, O2 | Promise<O2>>,
@@ -145,16 +121,4 @@ export function _catchPromise<I, O>(
     onCatch: Io<unknown, O | Promise<O>>,
 ): Io<Promise<I>, Promise<I | O>> {
     return (input: Promise<I>) => catchPromise(input, onCatch)
-}
-
-export function _catchPromiseError<I>(
-    errorOptional?: undefined | None,
-): Io<Promise<I>, Promise<I | OutcomeError<unknown>>>
-export function _catchPromiseError<I, const O>(
-    errorOptional: O,
-): Io<Promise<I>, Promise<I | OutcomeError<O>>>
-export function _catchPromiseError<I, const O>(
-    errorOptional?: undefined | None | O,
-): Io<Promise<I>, Promise<I | OutcomeError<O>>> {
-    return (input: Promise<I>) => catchPromiseError(input, errorOptional as O)
 }

@@ -2,10 +2,10 @@ import {isMonadType} from '../monad/monad-is.js'
 import {OutcomeErrorMonadTag} from './outcome-tag.js'
 import type {OutcomeError, OutcomeResultOf} from './outcome-type.js'
 
-export function isResult<R>(resultOrError: R): resultOrError is OutcomeResultOf<R> {
-    return ! isError(resultOrError)
+export function isResult<V>(value: V): value is OutcomeResultOf<V> {
+    return ! isError(value)
 }
 
-export function isError(resultOrError: unknown): resultOrError is OutcomeError<unknown> {
-    return isMonadType<OutcomeError<unknown>>(resultOrError, OutcomeErrorMonadTag)
+export function isError(value: unknown): value is OutcomeError<unknown> {
+    return isMonadType<OutcomeError<unknown>>(value, OutcomeErrorMonadTag)
 }
