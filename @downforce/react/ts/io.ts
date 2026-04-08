@@ -1,7 +1,7 @@
 import type {FnArgs, FnAsync, Io, Task} from '@downforce/std/fn'
 import {areObjectsEqualShallow} from '@downforce/std/object'
 import {isDefined} from '@downforce/std/optional'
-import {isError, isResult, catchPromise, matchOutcome, type OutcomeResultOrError} from '@downforce/std/outcome'
+import {catchPromiseError, isError, isResult, matchOutcome, type OutcomeResultOrError} from '@downforce/std/outcome'
 import type {PromiseView} from '@downforce/std/promise'
 import {startTransition, useCallback, useEffect, useRef, useState} from 'react'
 
@@ -49,7 +49,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
         const taskHandle: TaskHandle = {
             cancel() { taskHandle.canceled = true },
             canceled: false,
-            promise: catchPromise(asyncTask(...args)),
+            promise: catchPromiseError(asyncTask(...args)),
         }
 
         taskHandleRef.current = taskHandle
