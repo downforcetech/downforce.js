@@ -19,7 +19,7 @@ import type {UrlParams} from './url.js'
 export {createFormData} from './request.js'
 
 export const HttpClient = {
-    Request<O = Response>(args: HttpClientBaseOptions<Response, O>): Promise<NoInfer<O>> {
+    Request<O = Response>(args: HttpClientBaseOptions<Response, O>): NoInfer<Promise<O>> {
         const {
             authToken,
             baseUrl,
@@ -47,31 +47,31 @@ export const HttpClient = {
             (decoder ? _thenPromise(it => decoder(it)) : (identity as Io<Promise<Response>, Promise<O>>))
         ()
     },
-    Get<O = Response>(args: HttpClientGetOptions<Response, O>): Promise<NoInfer<O>> {
+    Get<O = Response>(args: HttpClientGetOptions<Response, O>): NoInfer<Promise<O>> {
         return HttpClient.Request({
             ...args,
             method: RequestMethod.Get,
         })
     },
-    Delete<O = Response>(args: HttpClientDeleteOptions<Response, O>): Promise<NoInfer<O>> {
+    Delete<O = Response>(args: HttpClientDeleteOptions<Response, O>): NoInfer<Promise<O>> {
         return HttpClient.Request({
             ...args,
             method: RequestMethod.Delete,
         })
     },
-    Patch<O = Response>(args: HttpClientPatchOptions<Response, O>): Promise<NoInfer<O>> {
+    Patch<O = Response>(args: HttpClientPatchOptions<Response, O>): NoInfer<Promise<O>> {
         return HttpClient.Request({
             ...args,
             method: RequestMethod.Patch,
         })
     },
-    Put<O = Response>(args: HttpClientPutOptions<Response, O>): Promise<NoInfer<O>> {
+    Put<O = Response>(args: HttpClientPutOptions<Response, O>): NoInfer<Promise<O>> {
         return HttpClient.Request({
             ...args,
             method: RequestMethod.Put,
         })
     },
-    Post<O = Response>(args: HttpClientPostOptions<Response, O>): Promise<NoInfer<O>> {
+    Post<O = Response>(args: HttpClientPostOptions<Response, O>): NoInfer<Promise<O>> {
         return HttpClient.Request({
             ...args,
             method: RequestMethod.Post,
