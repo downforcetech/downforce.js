@@ -2,6 +2,7 @@ import {arrayWrap} from '@downforce/std/array'
 import {debounced, throttled, type EventTask} from '@downforce/std/event'
 import type {Fn, FnArgs, Task} from '@downforce/std/fn'
 import type {None} from '@downforce/std/optional'
+import type {Void} from '@downforce/std/type'
 import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react'
 import {useStateAccessor, type StateAccessorManager, type StateInit} from './state.js'
 
@@ -37,7 +38,7 @@ export function useEvent<E extends Event>(
     }, [active, eventName, capture, passive, onEventHandler])
 }
 
-export function useCallbackDebounced<A extends FnArgs>(callback: Fn<A>, delayMs: number): EventTask<A> {
+export function useCallbackDebounced<A extends FnArgs>(callback: Fn<A, Void>, delayMs: number): EventTask<A> {
     const callbackDebounced = useMemo(() => {
         return debounced(callback, delayMs)
     }, [callback, delayMs])
@@ -53,7 +54,7 @@ export function useCallbackDebounced<A extends FnArgs>(callback: Fn<A>, delayMs:
     return callbackDebounced
 }
 
-export function useCallbackThrottled<A extends FnArgs>(callback: Fn<A>, delayMs: number): EventTask<A> {
+export function useCallbackThrottled<A extends FnArgs>(callback: Fn<A, Void>, delayMs: number): EventTask<A> {
     const callbackThrottled = useMemo(() => {
         return throttled(callback, delayMs)
     }, [callback, delayMs])
@@ -141,4 +142,4 @@ export interface EventOptions {
 }
 
 export type EventElement = Element | EventTarget
-export type EventHandler<E> = (event: E) => undefined
+export type EventHandler<E> = (event: E) => Void
