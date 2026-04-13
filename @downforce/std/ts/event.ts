@@ -2,7 +2,7 @@ import type {Fn, FnArgs} from './fn/fn-type.js'
 import {isDefined, isUndefined} from './optional/optional-is.js'
 import type {Void} from './type/type-type.js'
 
-export function debounced<A extends FnArgs>(task: Fn<A, Void>, delay: number): EventTask<A> {
+export function debounced<A extends FnArgs>(task: Fn<A>, delay: number): EventTask<A> {
     interface State {
         lastCallArgs: undefined | A
         lastCallTime: undefined | number
@@ -78,7 +78,7 @@ export function debounced<A extends FnArgs>(task: Fn<A, Void>, delay: number): E
     return call
 }
 
-export function throttled<A extends FnArgs>(task: Fn<A, Void>, delay: number): EventTask<A> {
+export function throttled<A extends FnArgs>(task: Fn<A>, delay: number): EventTask<A> {
     interface State {
         lastCallArgs: undefined | A
         timeoutId: undefined | ReturnType<typeof setTimeout>

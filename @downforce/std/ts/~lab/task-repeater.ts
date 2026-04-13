@@ -1,5 +1,6 @@
 import {noop} from '../fn/fn-return.js'
 import type {Task} from '../fn/fn-type.js'
+import type {Void} from '../type/type-type.js'
 
 export function createTaskRepeater(
     task: Task,
@@ -81,8 +82,8 @@ export interface TaskRepeater {
     delay: number
     immediate: boolean
     running: boolean
-    task(): undefined
-    clean(): undefined
+    task(): Void
+    clean(): Void
     start(): Task
     stop(): undefined
 }

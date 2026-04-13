@@ -1,4 +1,5 @@
 import type {Task} from '../fn/fn-type.js'
+import type {Void} from '../type/type-type.js'
 
 // Types ///////////////////////////////////////////////////////////////////////
 
@@ -15,7 +16,7 @@ export interface ReactiveState<V> {
 }
 
 export type ReactiveMiddleware<V> = (newValue: V, oldValue: V) => V
-export type ReactiveObserver<V> = (newValue: V, oldValue: V) => undefined
+export type ReactiveObserver<V> = (newValue: V, oldValue: V) => Void
 export type ReactiveComparator<V> = (newValue: V, oldValue: V) => boolean
 
 export interface ReactiveOptions<V> {

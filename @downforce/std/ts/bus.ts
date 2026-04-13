@@ -5,6 +5,7 @@ import type {FnArgs, Task} from './fn/fn-type.js'
 import {readReactive, writeReactive} from './reactive/reactive-mix.js'
 import {createReactive} from './reactive/reactive-new.js'
 import type {ReactiveObject} from './reactive/reactive-type.js'
+import type {Void} from './type/type-type.js'
 
 export const BusEventRegexpCache: Record<BusEventPattern, RegExp> = {}
 
@@ -163,7 +164,7 @@ export interface Bus {
 
 export type BusEvent = string
 export type BusEventPattern = string
-export type BusEventObserver<P = unknown> = (event: BusEventPattern, matches: RegExpMatchArray, payload: P) => undefined
+export type BusEventObserver<P = unknown> = (event: BusEventPattern, matches: RegExpMatchArray, payload: P) => Void
 export type BusEventObservers = ReactiveObject<Record<BusEventPattern, Array<BusEventObserver>>>
 
 export type BusEventPolymorphicArgs =
