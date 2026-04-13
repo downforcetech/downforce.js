@@ -1,4 +1,5 @@
 import {getReduxEvent, type ReduxEvent, type ReduxEventPolymorphic, type ReduxReducerArgs, type ReduxReducerId, type ReduxReducerState} from '@downforce/std/redux'
+import type {Void} from '@downforce/std/type'
 import {startTransition, useCallback, useContext, useMemo, useRef, useState} from 'react'
 import {defineContext} from './ctx.js'
 
@@ -83,4 +84,4 @@ export interface StoreDispatchV2<S extends ReduxReducerState, A extends ReduxEve
     (...args: A): S
 }
 
-export type StoreV2Observer<S extends ReduxReducerState> = (id: ReduxReducerId, args: ReduxReducerArgs, newState: S, oldState: S) => undefined
+export type StoreV2Observer<S extends ReduxReducerState> = (id: ReduxReducerId, args: ReduxReducerArgs, newState: S, oldState: S) => Void
