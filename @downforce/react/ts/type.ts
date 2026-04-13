@@ -1,3 +1,4 @@
+import type {Void} from '@downforce/std/type'
 import {isValidElement, type ComponentProps} from 'react'
 
 export function isElementType<T extends React.JSXElementConstructor<any>>(
@@ -9,12 +10,12 @@ export function isElementType<T extends React.JSXElementConstructor<any>>(
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface ValueMutator<V, C = V, R = undefined> {
+export interface ValueMutator<V, C = V, R = Void> {
     value: V
     onChange: (value: C) => R
 }
 
-export interface ItemSelector<I, V, C = V, R = undefined> {
+export interface ItemSelector<I, V, C = V, R = Void> {
     items: Array<I>
     selected: V
     onSelect: (value: C, idx: number) => R

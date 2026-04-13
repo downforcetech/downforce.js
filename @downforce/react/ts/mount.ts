@@ -1,8 +1,9 @@
 import type {Task} from '@downforce/std/fn'
+import type {FIX} from '@downforce/std/type'
 import {useEffect, useLayoutEffect, useRef} from 'react'
 
 export function useMountEffect(effect: Task): undefined {
-    useEffect(effect, [])
+    useEffect(effect as FIX<() => void | (() => void)>, [])
 }
 
 /*

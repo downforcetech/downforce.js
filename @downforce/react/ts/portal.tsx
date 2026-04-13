@@ -1,8 +1,9 @@
+import type {FIX} from '@downforce/std/type'
 import {useContext, useMemo} from 'react'
 import {createPortal} from 'react-dom'
 import {Box, type BoxProps} from './box.js'
 import {defineContext} from './ctx.js'
-import {useStateAccessor, type StateAccessorManager} from './state.js'
+import {useStateAccessor, type StateAccessorManager, type StateWriterArg} from './state.js'
 
 export const PortalContext: React.Context<undefined | StateAccessorManager<null | PortalElement>> = defineContext<StateAccessorManager<null | PortalElement>>('PortalContext')
 
@@ -31,7 +32,12 @@ export function PortalProvider(props: PortalProviderProps): React.JSX.Element {
 export function Portal(props: PortalProps): React.JSX.Element {
     const [, setPortal] = useContext(PortalContext)!
 
-    return <Box {...props} ref={setPortal}/>
+    return (
+        <Box
+            {...props}
+            ref={setPortal as FIX<(value: StateWriterArg<null | PortalElement>) => void>}
+        />
+    )
 }
 
 /*

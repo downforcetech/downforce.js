@@ -1,4 +1,5 @@
 import {compute, type Io} from '@downforce/std/fn'
+import type {Void} from '@downforce/std/type'
 import {useCallback, useRef, useState} from 'react'
 
 export function useStateAccessor<S>(initialState: StateInit<S>): StateAccessorManager<S> {
@@ -66,10 +67,10 @@ export function mergedState<S extends object>(statePatch: Partial<S>): Io<S, S> 
 // Types ///////////////////////////////////////////////////////////////////////
 
 export type StateInit<S> = S | (() => S)
-export type StateWriter<S> = (value: StateWriterArg<S>) => undefined
+export type StateWriter<S> = (value: StateWriterArg<S>) => Void
 export type StateWriterArg<S> = React.SetStateAction<S>
 export type StateReader<S> = () => S
 export type StateManager<S> = [state: S, write: StateWriter<S>]
-export type StatePatcher<S extends object> = (statePatch: Partial<S>) => undefined
+export type StatePatcher<S extends object> = (statePatch: Partial<S>) => Void
 
 export type StateAccessorManager<S> = [...StateManager<S>, read: StateReader<S>]

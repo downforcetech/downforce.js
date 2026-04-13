@@ -3,6 +3,7 @@ import {matchSome} from '@downforce/std/optional'
 import type {ReactiveObserver, ReactiveWatchOptions} from '@downforce/std/reactive'
 import {readReactive, watchReactive, writeReactive, type ReactiveObject, type ReactiveValuesOf} from '@downforce/std/reactive'
 import type {ReadWriteSync} from '@downforce/std/store'
+import type {FIX} from '@downforce/std/type'
 import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useState, useSyncExternalStore} from 'react'
 import {useRenderSignal, type RenderSignal} from './render.js'
 import type {StateManager, StateWriterArg} from './state.js'
@@ -28,7 +29,7 @@ export function useReactiveState<V>(reactive: ReactiveObject<V>): StateManager<V
             {immediate: true},
         )
 
-        return onClean
+        return onClean as FIX<void | (() => void)>
     }, [reactive])
 
     return [value, setValue]
@@ -151,7 +152,7 @@ export function useReactiveStore<V>(
 
         const onClean = watch(setValueTransition, {immediate: true})
 
-        return onClean
+        return onClean as FIX<void | (() => void)>
     }, [watch])
 
     return [value, setValue]
@@ -176,7 +177,7 @@ export function useReactiveSignal(reactive: undefined | ReactiveObject<any>): Re
             },
         )
 
-        return onClean
+        return onClean as FIX<void | (() => void)>
     }, [reactive])
 
     return signal

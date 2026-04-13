@@ -38,7 +38,7 @@ export function useEvent<E extends Event>(
     }, [active, eventName, capture, passive, onEventHandler])
 }
 
-export function useCallbackDebounced<A extends FnArgs>(callback: Fn<A, Void>, delayMs: number): EventTask<A> {
+export function useCallbackDebounced<A extends FnArgs>(callback: Fn<A>, delayMs: number): EventTask<A> {
     const callbackDebounced = useMemo(() => {
         return debounced(callback, delayMs)
     }, [callback, delayMs])
@@ -54,7 +54,7 @@ export function useCallbackDebounced<A extends FnArgs>(callback: Fn<A, Void>, de
     return callbackDebounced
 }
 
-export function useCallbackThrottled<A extends FnArgs>(callback: Fn<A, Void>, delayMs: number): EventTask<A> {
+export function useCallbackThrottled<A extends FnArgs>(callback: Fn<A>, delayMs: number): EventTask<A> {
     const callbackThrottled = useMemo(() => {
         return throttled(callback, delayMs)
     }, [callback, delayMs])

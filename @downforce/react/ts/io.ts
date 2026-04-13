@@ -3,6 +3,7 @@ import {areObjectsEqualShallow} from '@downforce/std/object'
 import {isDefined} from '@downforce/std/optional'
 import {catchPromiseError, isError, isResult, matchOutcome, type OutcomeResultOrError} from '@downforce/std/outcome'
 import type {PromiseView} from '@downforce/std/promise'
+import type {FIX} from '@downforce/std/type'
 import {startTransition, useCallback, useEffect, useRef, useState} from 'react'
 
 export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?: undefined | Array<unknown>): AsyncIoManager<A, R> {
@@ -176,19 +177,18 @@ export function useAsyncIoEffect<I extends AsyncIoState<any>>(
     effect: Io<I, undefined | Task>,
     deps?: undefined | Array<any>,
   ): undefined {
-    useEffect(
-        () => effect(io),
-        [
-            io.pending,
-            io.settled,
-            io.fulfilled,
-            io.rejected,
-            io.output,
-            io.result,
-            io.error,
-            ...deps ?? [],
-        ],
-    )
+    useEffect(() => {
+        return effect(io) as FIX<void | (() => void)>
+    }, [
+        io.pending,
+        io.settled,
+        io.fulfilled,
+        io.rejected,
+        io.output,
+        io.result,
+        io.error,
+        ...deps ?? [],
+    ])
 }
 
 export function useAsyncIoAggregated(asyncIoDict: Record<string, AsyncIoState<unknown>>): {
