@@ -28,7 +28,6 @@ describe('@downforce/std/fn', (ctx) => {
 
             Assert.deepEqual(actual, data)
         }
-
         {
             const actual = pipe(
                 0 as const,
@@ -57,7 +56,35 @@ describe('@downforce/std/fn', (ctx) => {
             expectType<20>(actual)
             Assert.equal(actual, 20)
         }
+        {
+            const actual = pipe(
+                0 as const,
+                it => it, // 1
+                it => it, // 2
+                it => it, // 3
+                it => it, // 4
+                it => it, // 5
+                it => it, // 6
+                it => it, // 7
+                it => it, // 8
+                it => it, // 9
+                it => it, // 10
+                it => it, // 11
+                it => it, // 12
+                it => it, // 13
+                it => it, // 14
+                it => it, // 15
+                it => it, // 16
+                it => it, // 17
+                it => it, // 18
+                it => it, // 19
+                it => it, // 20
+                it => it, // 21
+            )
 
+            expectType<0>(actual)
+            Assert.equal(actual, 0)
+        }
         {
             const actual: string = pipe(
                 data,
@@ -75,7 +102,6 @@ describe('@downforce/std/fn', (ctx) => {
 
             Assert.equal(actual, data)
         }
-
         {
             const actual: string = piped(data)
                 (it => it.value)

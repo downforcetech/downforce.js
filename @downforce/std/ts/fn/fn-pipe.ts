@@ -22,6 +22,7 @@ export function pipe<I, O1, O2, O3, O4, O5, O6, O7, O8, O9, O10, O11, O12, O13, 
 export function pipe<I, O1, O2, O3, O4, O5, O6, O7, O8, O9, O10, O11, O12, O13, O14, O15, O16, O17, O18>(input: $, ...args: [F<I, O1>, F<O1, O2>, F<O2, O3>, F<O3, O4>, F<O4, O5>, F<O5, O6>, F<O6, O7>, F<O7, O8>, F<O8, O9>, F<O9, O10>, F<O10, O11>, F<O11, O12>, F<O12, O13>, F<O13, O14>, F<O14, O15>, F<O15, O16>, F<O16, O17>, F<O17, O18>]): Io<I, O18>
 export function pipe<I, O1, O2, O3, O4, O5, O6, O7, O8, O9, O10, O11, O12, O13, O14, O15, O16, O17, O18, O19>(input: $, ...args: [F<I, O1>, F<O1, O2>, F<O2, O3>, F<O3, O4>, F<O4, O5>, F<O5, O6>, F<O6, O7>, F<O7, O8>, F<O8, O9>, F<O9, O10>, F<O10, O11>, F<O11, O12>, F<O12, O13>, F<O13, O14>, F<O14, O15>, F<O15, O16>, F<O16, O17>, F<O17, O18>, F<O18, O19>]): Io<I, O19>
 export function pipe<I, O1, O2, O3, O4, O5, O6, O7, O8, O9, O10, O11, O12, O13, O14, O15, O16, O17, O18, O19, O20>(input: $, ...args: [F<I, O1>, F<O1, O2>, F<O2, O3>, F<O3, O4>, F<O4, O5>, F<O5, O6>, F<O6, O7>, F<O7, O8>, F<O8, O9>, F<O9, O10>, F<O10, O11>, F<O11, O12>, F<O12, O13>, F<O13, O14>, F<O14, O15>, F<O15, O16>, F<O16, O17>, F<O17, O18>, F<O18, O19>, F<O19, O20>]): Io<I, O20>
+export function pipe<I>(input: $, ...args: Array<F<I, I>>): Io<I, I>
 export function pipe<I>(input: I, ...args: []): I
 export function pipe<I, O1>(input: I, ...args: [F<I, O1>]): O1
 export function pipe<I, O1, O2>(input: I, ...args: [F<I, O1>, F<O1, O2>]): O2
@@ -43,6 +44,7 @@ export function pipe<I, O1, O2, O3, O4, O5, O6, O7, O8, O9, O10, O11, O12, O13, 
 export function pipe<I, O1, O2, O3, O4, O5, O6, O7, O8, O9, O10, O11, O12, O13, O14, O15, O16, O17, O18>(input: I, ...args: [F<I, O1>, F<O1, O2>, F<O2, O3>, F<O3, O4>, F<O4, O5>, F<O5, O6>, F<O6, O7>, F<O7, O8>, F<O8, O9>, F<O9, O10>, F<O10, O11>, F<O11, O12>, F<O12, O13>, F<O13, O14>, F<O14, O15>, F<O15, O16>, F<O16, O17>, F<O17, O18>]): O18
 export function pipe<I, O1, O2, O3, O4, O5, O6, O7, O8, O9, O10, O11, O12, O13, O14, O15, O16, O17, O18, O19>(input: I, ...args: [F<I, O1>, F<O1, O2>, F<O2, O3>, F<O3, O4>, F<O4, O5>, F<O5, O6>, F<O6, O7>, F<O7, O8>, F<O8, O9>, F<O9, O10>, F<O10, O11>, F<O11, O12>, F<O12, O13>, F<O13, O14>, F<O14, O15>, F<O15, O16>, F<O16, O17>, F<O17, O18>, F<O18, O19>]): O19
 export function pipe<I, O1, O2, O3, O4, O5, O6, O7, O8, O9, O10, O11, O12, O13, O14, O15, O16, O17, O18, O19, O20>(input: I, ...args: [F<I, O1>, F<O1, O2>, F<O2, O3>, F<O3, O4>, F<O4, O5>, F<O5, O6>, F<O6, O7>, F<O7, O8>, F<O8, O9>, F<O9, O10>, F<O10, O11>, F<O11, O12>, F<O12, O13>, F<O13, O14>, F<O14, O15>, F<O15, O16>, F<O16, O17>, F<O17, O18>, F<O18, O19>, F<O19, O20>]): O20
+export function pipe<I>(input: I, ...args: Array<F<I, I>>): I
 export function pipe<I>(input: I | PartialApplication.Placeholder, ...args: Array<IoGeneric>): unknown | Io<I, unknown> {
     if (input === PartialApplication.Placeholder) {
         return (input: I) => (pipe as PipeGeneric)(input, ...args)
@@ -105,6 +107,7 @@ export function _pipe<I, O1, O2, O3, O4, O5, O6, O7, O8, O9, O10, O11, O12, O13,
 export function _pipe<I, O1, O2, O3, O4, O5, O6, O7, O8, O9, O10, O11, O12, O13, O14, O15, O16, O17, O18>(...args: [F<I, O1>, F<O1, O2>, F<O2, O3>, F<O3, O4>, F<O4, O5>, F<O5, O6>, F<O6, O7>, F<O7, O8>, F<O8, O9>, F<O9, O10>, F<O10, O11>, F<O11, O12>, F<O12, O13>, F<O13, O14>, F<O14, O15>, F<O15, O16>, F<O16, O17>, F<O17, O18>]): Io<I, O18>
 export function _pipe<I, O1, O2, O3, O4, O5, O6, O7, O8, O9, O10, O11, O12, O13, O14, O15, O16, O17, O18, O19>(...args: [F<I, O1>, F<O1, O2>, F<O2, O3>, F<O3, O4>, F<O4, O5>, F<O5, O6>, F<O6, O7>, F<O7, O8>, F<O8, O9>, F<O9, O10>, F<O10, O11>, F<O11, O12>, F<O12, O13>, F<O13, O14>, F<O14, O15>, F<O15, O16>, F<O16, O17>, F<O17, O18>, F<O18, O19>]): Io<I, O19>
 export function _pipe<I, O1, O2, O3, O4, O5, O6, O7, O8, O9, O10, O11, O12, O13, O14, O15, O16, O17, O18, O19, O20>(...args: [F<I, O1>, F<O1, O2>, F<O2, O3>, F<O3, O4>, F<O4, O5>, F<O5, O6>, F<O6, O7>, F<O7, O8>, F<O8, O9>, F<O9, O10>, F<O10, O11>, F<O11, O12>, F<O12, O13>, F<O13, O14>, F<O14, O15>, F<O15, O16>, F<O16, O17>, F<O17, O18>, F<O18, O19>, F<O19, O20>]): Io<I, O20>
+export function _pipe<I>(...args: Array<F<I, I>>): Io<I, I>
 export function _pipe<I>(...args: Array<IoGeneric>): Io<I, unknown> {
     return (input: I) => (pipe as PipeGeneric)(input, ...args)
 }
