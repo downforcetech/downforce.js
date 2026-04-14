@@ -19,14 +19,15 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
     const taskHandleRef = useRef<TaskHandle>(undefined)
 
     interface TaskHandle {
-        cancel(): undefined
         canceled: boolean
         readonly promise: Promise<OutcomeResultOrError<R, unknown>>
     }
 
     const call = useCallback(async (...args: A): Promise<undefined | OutcomeResultOrError<R, unknown>> => {
         // We must cancel previous task.
-        taskHandleRef.current?.cancel()
+        if (taskHandleRef.current) {
+            taskHandleRef.current.canceled = true
+        }
 
         // We must retain current result and error states.
         // Whether the developer wants to clear them, he uses the reset() API
@@ -48,23 +49,16 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
         })
 
         const taskHandle: TaskHandle = {
-            cancel() { taskHandle.canceled = true },
             canceled: false,
-            promise: catchPromiseError(asyncTask(...args)),
+            promise: catchPromiseError(Promise.try(() => asyncTask(...args))),
         }
 
         taskHandleRef.current = taskHandle
 
         const resultOrError: OutcomeResultOrError<R, unknown> = await taskHandle.promise
 
-        if (taskHandle.canceled && taskHandleRef.current === taskHandle) {
-            // Task has been canceled with cancel() and no new task started with call().
+        if (taskHandle.canceled) {
             return
-        }
-        if (taskHandle.canceled && taskHandleRef.current !== taskHandle) {
-            // Task has been canceled with cancel() and a new task started after current one.
-            // We fulfill current one with the result-or-error of the newer one.
-            return taskHandleRef.current?.promise
         }
 
         startTransition(() => {
@@ -96,7 +90,9 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
     }, deps ?? [])
 
     const cancel = useCallback((): undefined => {
-        taskHandleRef.current?.cancel()
+        if (taskHandleRef.current) {
+            taskHandleRef.current.canceled = true
+        }
 
         setState(state => {
             const nextState: AsyncIoState<R> = {
