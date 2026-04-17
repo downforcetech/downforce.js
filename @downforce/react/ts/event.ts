@@ -38,10 +38,16 @@ export function useEvent<E extends Event>(
     }, [active, eventName, capture, passive, onEventHandler])
 }
 
-export function useCallbackDebounced<A extends FnArgs>(callback: Fn<A>, delayMs: number): EventTask<A> {
+export function useCallbackDebounced<A extends FnArgs>(
+    callback: Fn<A>,
+    delayMs: number,
+    deps?: undefined | Array<unknown>,
+): EventTask<A> {
+    const callbackMemoized = deps ? useCallback(callback, deps) : callback
+
     const callbackDebounced = useMemo(() => {
-        return debounced(callback, delayMs)
-    }, [callback, delayMs])
+        return debounced(callbackMemoized, delayMs)
+    }, [callbackMemoized, delayMs])
 
     useEffect(() => {
         function onClean() {
@@ -54,10 +60,16 @@ export function useCallbackDebounced<A extends FnArgs>(callback: Fn<A>, delayMs:
     return callbackDebounced
 }
 
-export function useCallbackThrottled<A extends FnArgs>(callback: Fn<A>, delayMs: number): EventTask<A> {
+export function useCallbackThrottled<A extends FnArgs>(
+    callback: Fn<A>,
+    delayMs: number,
+    deps?: undefined | Array<unknown>,
+): EventTask<A> {
+    const callbackMemoized = deps ? useCallback(callback, deps) : callback
+
     const callbackThrottled = useMemo(() => {
-        return throttled(callback, delayMs)
-    }, [callback, delayMs])
+        return throttled(callbackMemoized, delayMs)
+    }, [callbackMemoized, delayMs])
 
     useEffect(() => {
         function onClean() {
@@ -70,7 +82,15 @@ export function useCallbackThrottled<A extends FnArgs>(callback: Fn<A>, delayMs:
     return callbackThrottled
 }
 
-export function useCallbackDelayed(callback: Function, delayMs: number): {run: Task, cancel: Task} {
+export function useCallbackDelayed<A extends FnArgs>(
+    callback: Fn<A>,
+    delayMs: number,
+    deps?: undefined | Array<unknown>,
+): {
+    (...args: A): undefined
+    cancel: Task
+} {
+    const callbackMemoized = deps ? useCallback(callback, deps) : callback
     const taskRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
     const cancel = useCallback((): undefined => {
@@ -81,18 +101,22 @@ export function useCallbackDelayed(callback: Function, delayMs: number): {run: T
         taskRef.current = void clearTimeout(taskRef.current)
     }, [])
 
-    const run = useCallback((): undefined => {
+    const callbackDelayed = useCallback((...args: A): undefined => {
         cancel()
 
-        taskRef.current = setTimeout(callback, delayMs)
-    }, [callback, cancel])
+        taskRef.current = setTimeout(callbackMemoized, delayMs, ...args)
+    }, [callbackMemoized, cancel])
 
     useLayoutEffect(() => {
         // We use useLayoutEffect() to conform with React 17 hooks lifecycle.
         return cancel
     }, [cancel])
 
-    return {run, cancel}
+    type Return = (typeof callbackDelayed) & {cancel: Task}
+
+    (callbackDelayed as Return).cancel = cancel
+
+    return callbackDelayed as Return
 }
 
 export function useStateDebounced<T>(initialValue: undefined, delay: number): StateAccessorManager<undefined | T>
