@@ -1,7 +1,7 @@
 import {mapArray, matchArray, splitArray} from '@downforce/std/array'
 import {matchBoolean} from '@downforce/std/boolean'
 import {matchDate} from '@downforce/std/date'
-import {$_, _pipe, _tryCatch, chain, identity, matchFunction, pipe, piped, returnUndefined} from '@downforce/std/fn'
+import {$_, _pipe, _tryCatch, _tryCatchAsync, chain, identity, matchFunction, pipe, piped, returnUndefined} from '@downforce/std/fn'
 import {matchNumber} from '@downforce/std/number'
 import {matchObject} from '@downforce/std/object'
 import {ensureSome, ensureUndefined, matchNone, matchNull, matchOptional, matchSome, matchUndefined, type None} from '@downforce/std/optional'
@@ -89,11 +89,16 @@ describe('@downforce/std/fn', (ctx) => {
                 (thenPromise($_, expectType<Data | OutcomeError<unknown>>))
                 (expectType<Promise<Data | OutcomeError<unknown>>>)
                 (catchPromise($_, createError))
+                (expectType<Promise<Data | OutcomeError<unknown>>>)
                 (catchPromiseError($_)) // Same of _catchPromise(createError).
+                (expectType<Promise<Data | OutcomeError<unknown>>>)
                 (thenPromise($_, matchResult($_, expectType<Data>)))
                 (thenPromise($_, matchError($_, error => createError('SomeError'))))
+                (expectType<Promise<Data | OutcomeError<'SomeError'>>>)
                 (catchPromiseError($_, 'OtherError'))
                 (expectType<Promise<Data | OutcomeError<'SomeError'> | OutcomeError<'OtherError'>>>)
+                (_tryCatchAsync(it => it))
+                (_tryCatchAsync(it => Promise.resolve(it)))
             ()
 
             Assert.deepEqual(actual, data)

@@ -1,7 +1,8 @@
-import {chain, compose, composed, identity, matchFunction, Pipe, pipe, piped} from '@downforce/std/fn'
+import {chain, compose, composed, identity, matchFunction, Pipe, pipe, piped, tryCatchAsync} from '@downforce/std/fn'
 import {expectType} from '@downforce/std/type'
 import Assert from 'node:assert/strict'
 import {describe, test} from 'node:test'
+import {wait} from '../esm/async.js'
 
 type Data = {id: number, name: string, age: number, admin: boolean, value: number}
 const data: Data = {id: 1, name: 'Mario', age: 18, admin: false, value: 123}
@@ -80,6 +81,15 @@ describe('@downforce/std/fn', (ctx) => {
                 it => it, // 19
                 it => it, // 20
                 it => it, // 21
+                it => it, // 22
+                it => it, // 23
+                it => it, // 24
+                it => it, // 25
+                it => it, // 26
+                it => it, // 27
+                it => it, // 28
+                it => it, // 29
+                it => it, // 30
             )
 
             expectType<0>(actual)
@@ -158,5 +168,33 @@ describe('@downforce/std/fn', (ctx) => {
         const actual: string = fn(data)
 
         Assert.equal(actual, '123')
+    })
+
+    test('tryCatchAsync()', async (ctx) => {
+        {
+            const promise = tryCatchAsync(() => {
+                throw 'SyncError'
+            })
+
+            Assert(promise instanceof Promise)
+            Assert.rejects(promise)
+
+            const actual = await promise.catch(error => error)
+
+            Assert.equal(actual, 'SyncError')
+        }
+        {
+            const promise = tryCatchAsync(async () => {
+                await wait(0)
+                throw 'AsyncError'
+            })
+
+            Assert(promise instanceof Promise)
+            Assert.rejects(promise)
+
+            const actual = await promise.catch(error => error)
+
+            Assert.equal(actual, 'AsyncError')
+        }
     })
 })
