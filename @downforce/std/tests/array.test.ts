@@ -1,8 +1,28 @@
-import {arrayWrap, filterSome, matchArray} from '@downforce/std/array'
+import {areArraysEqual, arrayWrap, filterSome, matchArray} from '@downforce/std/array'
 import {expectType} from '@downforce/std/type'
 import {describe, test} from 'node:test'
+import Assert from 'node:assert/strict'
 
 describe('@downforce/std/array', (ctx) => {
+    test('areArraysEqual()', (ctx) => {
+        {
+            const actual = areArraysEqual(
+                [undefined, null, true, NaN, 123, 'abc'],
+                [undefined, null, true, NaN, 123, 'abc'],
+            )
+
+            Assert.equal(actual, true)
+        }
+        {
+            const actual = areArraysEqual(
+                [undefined, null, true, NaN, 123, 'abc'],
+                [undefined, null, true, NaN, 123, 'abc', new Date()],
+            )
+
+            Assert.equal(actual, false)
+        }
+    })
+
     test('matchArray()', (ctx) => {
         {
             const input = undefined as unknown

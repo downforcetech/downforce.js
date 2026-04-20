@@ -1,4 +1,4 @@
-import {areEqualIdentity} from '../struct/struct-equal.js'
+import {areEqual} from '../value/value-equal.js'
 import type {ReactiveObserver, ReactiveOptions, ReactiveObject} from './reactive-type.js'
 
 export const ReactiveStateSymbol: unique symbol = Symbol('ReactiveState')
@@ -10,7 +10,7 @@ export function createReactive<V>(
     return {
         [ReactiveStateSymbol]: {
             value: value,
-            comparator: options?.equals ?? areEqualIdentity,
+            comparator: options?.equals ?? areEqual,
             middleware: options?.middleware,
             observers: new Set<ReactiveObserver<V>>(),
             notification: undefined,

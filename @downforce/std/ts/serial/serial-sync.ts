@@ -6,7 +6,7 @@ import {isObject} from '../object/object-is.js'
 import type {ObjectPath} from '../object/object-path.js'
 import {getObjectPath, setObjectPath} from '../object/object-path.js'
 import {assertDefined} from '../optional/optional-assert.js'
-import {isPrimitive} from '../primitive/primitive-is.js'
+import {isPrimitive} from '../value/value-is.js'
 import {deserializeFromJson, serializeAsJson} from './serial-mix.js'
 import type {SerialCodecId, SerialStackEntry} from './serial-type.js'
 

@@ -1,7 +1,7 @@
 import {cloneDate} from '../date/date-clone.js'
 import {cloneObjectShallow} from '../object/object-clone.js'
 import {clonePromise} from '../promise/promise-clone.js'
-import {cloneDeep, cloneDeepSerializable, cloneShallow} from '../struct/struct-clone.js'
+import {cloneDeep, cloneDeepSerializable, cloneShallow} from '../value/value-clone.js'
 
 export const TypeClone: {
     cloneDate: typeof cloneDate

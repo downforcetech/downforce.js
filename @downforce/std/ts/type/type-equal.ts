@@ -1,17 +1,19 @@
 import {areArraysEqual} from '../array/array-equal.js'
 import {areObjectsEqualShallow, areObjectsEqualShallowStrict} from '../object/object-equal.js'
-import {areEqualDeepSerializable, areEqualIdentity} from '../struct/struct-equal.js'
+import {areEqualDeepSerializable, areEqualDeepStrict, areEqual} from '../value/value-equal.js'
 
 export const TypeEqual: {
     areArraysEqual: typeof areArraysEqual
+    areEqual: typeof areEqual
     areEqualDeepSerializable: typeof areEqualDeepSerializable
-    areEqualIdentity: typeof areEqualIdentity
+    areEqualDeepStrict: typeof areEqualDeepStrict
     areObjectsEqualShallow: typeof areObjectsEqualShallow
     areObjectsEqualShallowStrict: typeof areObjectsEqualShallowStrict
 } = {
     areArraysEqual: areArraysEqual,
+    areEqual: areEqual,
     areEqualDeepSerializable: areEqualDeepSerializable,
-    areEqualIdentity: areEqualIdentity,
+    areEqualDeepStrict: areEqualDeepStrict,
     areObjectsEqualShallow: areObjectsEqualShallow,
     areObjectsEqualShallowStrict: areObjectsEqualShallowStrict,
 }
