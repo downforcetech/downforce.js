@@ -1,25 +1,40 @@
 import type {None} from '@downforce/std/optional'
-import {useEffect} from 'react'
+import {useCallback, useEffect} from 'react'
 
 export function useResizeObserver(
     containerRef: React.RefObject<None | HTMLElement>,
     onResize: ResizeObserverCallback,
+    options?: undefined | UseResizeObserverOptions,
+    deps?: undefined | Array<unknown>,
 ): undefined {
-    useEffect(() => {
-        const containerEl = containerRef.current
+    const onResizeMemoized = deps ? useCallback(onResize, deps) : onResize
+    const active = options?.active ?? true
 
-        if (! containerEl) {
+    useEffect(() => {
+        if (! active) {
             return
         }
 
-        const observer = new ResizeObserver(onResize)
+        const containerElement = containerRef.current
 
-        observer.observe(containerEl)
+        if (! containerElement) {
+            return
+        }
+
+        const observer = new ResizeObserver(onResizeMemoized)
+
+        observer.observe(containerElement)
 
         function onClean() {
             observer.disconnect()
         }
 
         return onClean
-    }, [onResize])
+    }, [onResizeMemoized, active])
+}
+
+// Types ///////////////////////////////////////////////////////////////////////
+
+export interface UseResizeObserverOptions {
+    active?: undefined | boolean
 }

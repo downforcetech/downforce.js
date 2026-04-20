@@ -5,13 +5,13 @@ import {useLayoutEffect, useMemo, useRef} from 'react'
 
 export function useMergeRefs<V>(...refs: Array<void | None | RefHandler<None | V>>): (instance: null | V) => undefined {
     const onRef = useMemo(() => {
-        return mergingRefs(...refs)
+        return mergeRefs(...refs)
     }, refs)
 
     return onRef
 }
 
-export function mergingRefs<V>(...refs: Array<void | None | RefHandler<None | V>>): (instance: null | V) => undefined {
+export function mergeRefs<V>(...refs: Array<void | None | RefHandler<None | V>>): (instance: null | V) => undefined {
     function onRef(instance: null | V): undefined {
         for (const ref of refs) {
             if (! ref) {
@@ -27,11 +27,9 @@ export function mergingRefs<V>(...refs: Array<void | None | RefHandler<None | V>
 export function setRef<V>(ref: RefHandler<V>, value: V): undefined {
     if (isFunction(ref)) {
         ref(value)
-        return
     }
-    if (isObject(ref)) {
+    else if (isObject(ref)) {
         ref.current = value
-        return
     }
 }
 

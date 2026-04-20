@@ -1,17 +1,20 @@
 import {arrayWrap} from '@downforce/std/array'
 import {debounced, throttled, type EventTask} from '@downforce/std/event'
-import type {Fn, FnArgs, Task} from '@downforce/std/fn'
+import {call, noop, type Fn, type FnArgs, type Task} from '@downforce/std/fn'
 import type {None} from '@downforce/std/optional'
 import type {Void} from '@downforce/std/type'
+import {observeEvent} from '@downforce/web/event'
 import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react'
 import {useStateAccessor, type StateAccessorManager, type StateInit} from './state.js'
 
 export function useEvent<E extends Event>(
     targetRefOrRefs: React.RefObject<None | EventElement> | Array<React.RefObject<None | EventElement>>,
     eventName: string,
-    onEventHandler: EventHandler<E>,
-    options?: undefined | EventOptions,
+    onEvent: EventHandler<E>,
+    options?: undefined | UseEventOptions,
+    deps?: undefined | Array<unknown>,
 ): undefined {
+    const onEventMemoized = deps ? useCallback(onEvent, deps) : onEvent
     const active = options?.active ?? true
     const capture = options?.phase === 'capturing' // Bubbling by default.
     const passive = options?.passive ?? true
@@ -24,18 +27,18 @@ export function useEvent<E extends Event>(
         const targetsRefs = arrayWrap(targetRefOrRefs)
         const eventOptions: AddEventListenerOptions = {capture: capture, passive: passive}
 
-        targetsRefs.forEach(ref => {
-            ref.current?.addEventListener(eventName, onEventHandler as EventListener, eventOptions)
-        })
+        const cleanups = targetsRefs.map((ref): Task =>
+            ref.current
+                ? observeEvent(ref.current, eventName, onEventMemoized as EventListener, eventOptions)
+                : noop
+        )
 
         function onClean() {
-            targetsRefs.forEach(ref => {
-                ref.current?.removeEventListener(eventName, onEventHandler as EventListener, eventOptions.capture)
-            })
+            cleanups.forEach(call)
         }
 
         return onClean
-    }, [active, eventName, capture, passive, onEventHandler])
+    }, [onEventMemoized, active, eventName, capture, passive])
 }
 
 export function useCallbackDebounced<A extends FnArgs>(
@@ -159,7 +162,7 @@ export function useValueDebounced<V>(input: V, delay: number): V {
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface EventOptions {
+export interface UseEventOptions {
     active?: undefined | boolean
     passive?: undefined | boolean
     phase?: undefined |  'bubbling' | 'capturing'

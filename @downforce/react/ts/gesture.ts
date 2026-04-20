@@ -2,7 +2,7 @@ import {arrayWrap} from '@downforce/std/array'
 import {call} from '@downforce/std/fn'
 import {isSome, type None} from '@downforce/std/optional'
 import {useCallback, useRef} from 'react'
-import {useEvent, type EventElement, type EventHandler, type EventOptions} from './event.js'
+import {useEvent, type EventElement, type EventHandler, type UseEventOptions} from './event.js'
 
 export function useEventOutside<E extends Event>(
     refOrRefs: React.RefObject<None | Element> | Array<React.RefObject<None | Element>>,
@@ -59,7 +59,7 @@ export function useClickOutside(
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface EventOutsideOptions extends EventOptions {
+export interface EventOutsideOptions extends UseEventOptions {
     behavior?: undefined | 'any' | 'every'
     rootRef?: undefined | React.RefObject<None | EventElement>
 }

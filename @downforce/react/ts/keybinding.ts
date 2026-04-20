@@ -1,7 +1,7 @@
 import {arrayWrap} from '@downforce/std/array'
 import type {None} from '@downforce/std/optional'
 import {useCallback, useRef} from 'react'
-import {useEvent, type EventElement, type EventHandler, type EventOptions} from './event.js'
+import {useEvent, type EventElement, type EventHandler, type UseEventOptions} from './event.js'
 
 export function useKey(
     key: KeybindingKey,
@@ -33,7 +33,7 @@ export function useKey(
 
 export type KeybindingKey = string | Array<string> // https://developer.mozilla.org/it/docs/Web/API/KeyboardEvent/key/Key_Values
 
-export interface KeybindingOptions extends EventOptions {
+export interface KeybindingOptions extends UseEventOptions {
     event?: undefined | 'keyup' | 'keydown'
     ref?: undefined | React.RefObject<None | EventElement> | Array<React.RefObject<None | EventElement>>
 }
