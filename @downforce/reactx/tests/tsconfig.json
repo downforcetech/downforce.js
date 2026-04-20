@@ -1,0 +1,17 @@
+{
+    "extends": "../tsconfig.json",
+    "include": ["${configDir}/"],
+    "exclude": [],
+    "compilerOptions": {
+        "allowImportingTsExtensions": true,
+        "declaration": null,
+        "declarationMap": false,
+        "incremental": true,
+        "isolatedDeclarations": false,
+        "noEmit": true,
+        "outDir": ".",
+        "rootDir": ".",
+        "sourceMap": false,
+        "types": ["node"]
+    },
+}

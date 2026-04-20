@@ -10,13 +10,15 @@
         "./**/*.d.ts"
     ],
     "exports": {
-        "./*": "./*"
+        "./*.css": "./ts/*.css",
+        "./*.js": "./esm/*.js"
     },
     "scripts": {
-        "clean": "rm -rf ./.cache/ || true",
-        "build": "tsc --project ./tsconfig.json",
-        "prepack": "node --run clean && node --run build",
-        "preversion": "node --run build"
+        "clean": "rm -rf ./esm/ ./.cache/ || true",
+        "build": "tsc --project ./tsconfig.json && tsc --project ./tests/tsconfig.json",
+        "test": "node --test --test-reporter ${NODE_TEST_REPORTER:-spec} --enable-source-maps --experimental-transform-types ./tests/**/*.test.ts",
+        "prepack": "node --run clean && node --run build && node --run test",
+        "preversion": "node --run build && node --run test"
     },
     "peerDependencies": {
         "@downforce/react": "1",
