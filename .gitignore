@@ -7,5 +7,3 @@ pnpm-lock.yaml
 /.nx/
 /@downforce/*/cjs/
 /@downforce/*/esm/
-/@downforce/reactx/**/*.d.ts
-/@downforce/reactx/**/*.js
