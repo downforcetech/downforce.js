@@ -1,17 +1,17 @@
-export function areObjectsEqualShallow<T extends object>(first: T, second: T): boolean {
-    if (first === second) {
+export function areObjectsEqualShallow<T extends object>(firstObject: T, secondObject: T): boolean {
+    if (firstObject === secondObject) {
         return true
     }
 
-    const firstKeys = Object.keys(first)
-    const secondKeys = Object.keys(second)
-    const allKeys = new Set([...firstKeys, ...secondKeys])
+    const firstKeys = Object.keys(firstObject)
+    const secondKeys = Object.keys(secondObject)
+    const allKeys = new Set(firstKeys.concat(secondKeys))
 
     // Shallow equality check.
     for (const key of allKeys) {
         // A not defined property and a property with undefined value are considered equal.
-        const firstValue = first[key as keyof typeof first]
-        const secondValue = second[key as keyof typeof second]
+        const firstValue = firstObject[key as keyof typeof firstObject]
+        const secondValue = secondObject[key as keyof typeof secondObject]
 
         if (firstValue !== secondValue) {
             // Something changed inside the object.
@@ -23,33 +23,33 @@ export function areObjectsEqualShallow<T extends object>(first: T, second: T): b
     return true
 }
 
-export function areObjectsEqualShallowStrict<T extends object>(first: T, second: T): boolean {
-    if (first === second) {
+export function areObjectsEqualShallowStrict<T extends object>(firstObject: T, secondObject: T): boolean {
+    if (firstObject === secondObject) {
         return true
     }
 
-    const firstKeys = Object.keys(first)
-    const secondKeys = Object.keys(second)
+    const firstKeys = Object.keys(firstObject)
+    const secondKeys = Object.keys(secondObject)
 
     if (firstKeys.length !== secondKeys.length) {
         return false
     }
 
-    const allKeys = new Set([...firstKeys, ...secondKeys])
+    const allKeys = new Set(firstKeys.concat(secondKeys))
 
     // Shallow equality check.
     for (const key of allKeys) {
-        const keyInFirst = key in first
-        const keyInSecond = key in second
+        const keyInFirst = key in firstObject
+        const keyInSecond = key in secondObject
 
         if (keyInFirst !== keyInSecond) {
             return false
         }
 
-        const aValue = first[key as keyof typeof first]
-        const bValue = second[key as keyof typeof second]
+        const firstValue = firstObject[key as keyof typeof firstObject]
+        const secondValue = secondObject[key as keyof typeof secondObject]
 
-        if (aValue !== bValue) {
+        if (firstValue !== secondValue) {
             // Something changed inside the object.
             return false
         }

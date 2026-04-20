@@ -1,4 +1,3 @@
-import type {Fn, Io} from '../fn/fn-type.js'
 import {isDefined, isUndefined} from '../optional/optional-is.js'
 import type {ObjectComplete, Prettify} from '../type/type-type.js'
 
@@ -87,7 +86,7 @@ export function pickObjectProp<O extends object, P extends keyof O>(object: O, p
     return {[prop]: object[prop]} as Pick<O, P>
 }
 
-export function pickObjectProps<O extends object, P extends keyof O>(object: O, ...props: Array<P>): Pick<O, P> {
+export function pickObjectProps<O extends object, P extends keyof O>(object: O, props: Array<P>): Pick<O, P> {
     const objectPicked = {} as Record<P, O[P]>
 
     for (const prop of props) {
@@ -102,7 +101,7 @@ export function omitObjectProp<O extends object, P extends keyof O>(object: O, p
     return otherProps
 }
 
-export function omitObjectProps<O extends object, P extends keyof O>(object: O, ...props: Array<P>): Omit<O, P> {
+export function omitObjectProps<O extends object, P extends keyof O>(object: O, props: Array<P>): Omit<O, P> {
     const objectOmitted = {...object}
 
     for (const prop of props) {
@@ -122,44 +121,6 @@ export function omitObjectPropsUndefined<O extends object>(object: O): Prettify<
     }
 
     return objectOmitted as Prettify<Partial<ObjectComplete<O>>>
-}
-
-/*
-* Stores an item inside an object, returning the object. Useful when used inside
-* an Array.reduce() function.
-*
-* EXAMPLE
-* const index = indexBy({}, {key: 123}, it => it.key)
-* [{id: 123}, {id: 234}].reduce((index, it) => indexBy(index, it, it => it.id), {})
-*/
-export function indexBy<
-    M extends Record<PropertyKey, unknown>,
-    K extends keyof M,
-    T extends M[K],
->(
-    map: M,
-    item: T,
-    keyOf: Io<T, K>,
-): M {
-    const key = keyOf(item)
-
-    map[key] = item
-
-    return map
-}
-
-export function indexedBy<
-    M extends Record<PropertyKey, unknown>,
-    K extends keyof M,
-    T extends M[K],
->(
-    keyOf: Io<T, K>,
-): Fn<[map: M, item: T], M> {
-    function indexItem(map: M, item: T) {
-        return indexBy(map, item, keyOf)
-    }
-
-    return indexItem
 }
 
 // Types ///////////////////////////////////////////////////////////////////////

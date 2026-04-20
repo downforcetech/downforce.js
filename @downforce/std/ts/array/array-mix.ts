@@ -96,8 +96,8 @@ export function _splitArray<I, R>(
 }
 
 export function chunkArray<I>(input: Array<I>, chunkSize: number): Array<Array<I>> {
-    const listSize = input.length
     const chunks: Array<Array<I>> = []
+    const listSize = input.length
 
     for (let idx = 0; idx < listSize; idx += chunkSize) {
         const chunk = input.slice(idx, idx + chunkSize)
