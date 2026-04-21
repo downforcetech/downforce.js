@@ -5,8 +5,6 @@ import {identity} from '@downforce/std/fn'
 import type {Void} from '@downforce/std/type'
 import {useRef, useState} from 'react'
 
-export {createElementAfterDecorator, createElementBeforeDecorator, createElementDecorator} from '@downforce/react/children'
-
 export function InputLabel(props: Props<InputLabelProps>): React.JSX.Element {
     const {children, className, labelClass, title, ...otherProps} = props
 
