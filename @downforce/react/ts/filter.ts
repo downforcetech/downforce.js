@@ -1,27 +1,37 @@
 import {useCallback, useMemo, useState} from 'react'
-import type {StateWriter} from './state.js'
+import type {StateManager, StateWriter} from './state.js'
 
 const NoItems: [] = []
 
 export function useFilter<I, F>(
     items: undefined | Array<I>,
-    test: (filter: F, it: I) => boolean,
-    initialFilter: F | (() => F),
+    test: (filter: F, it: I, idx: number) => boolean,
+    initialState: F | (() => F),
 ): FilterManager<I, F> {
-    const [filter, setFilter] = useState<F>(initialFilter)
+    const [state, setState] = useState<F>(initialState) as StateManager<F>
 
     const filteredItems = useMemo(() => {
         if (! items) {
             return NoItems
         }
-        return items.filter(it => test(filter, it))
-    }, [items, filter, test])
+        return items.filter((it, idx) => test(state, it, idx))
+    }, [items, state])
 
     const itemIdxOf = useCallback((filteredItemIdx: number) => {
         return resolveFilteredItemIdx(items ?? NoItems, filteredItems, filteredItemIdx)
     }, [items, filteredItems])
 
-    return {filter, filteredItems, itemIdxOf, setFilter: setFilter as StateWriter<F>}
+    return useMemo(() => ({
+        state,
+        items: filteredItems,
+        itemIdxOf,
+        setState,
+    }), [
+        state,
+        filteredItems,
+        itemIdxOf,
+        setState,
+    ])
 }
 
 export function resolveFilteredItemIdx<I>(
@@ -45,8 +55,8 @@ export function resolveFilteredItemIdx<I>(
 // Types ///////////////////////////////////////////////////////////////////////
 
 export interface FilterManager<I, F> {
-    filter: F
-    filteredItems: Array<I>
+    items: Array<I>
     itemIdxOf(filteredItemIdx: number): undefined | number
-    setFilter: StateWriter<F>
+    state: F
+    setState: StateWriter<F>
 }
