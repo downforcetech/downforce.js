@@ -51,24 +51,25 @@ export const Self: {
         high: Computable<H>
         low: Computable<L>
     }): H | L
-    computeVirtualLayout<I>(args: {
-        context: ListVirtualModule.Context
-        directionComputable: Computable<ListVirtualModule.DirectionEnum, [context: ListVirtualModule.Context]>
-        gridComputable: Computable<number, [context: ListVirtualModule.Context]>
+    computeVirtualLayout<I, S>(args: {
+        context: ListVirtualModule.Context<S>
+        directionComputable: Computable<ListVirtualModule.DirectionEnum, [context: ListVirtualModule.Context<S>]>
+        gridComputable: Computable<number, [context: ListVirtualModule.Context<S>]>
         itemKeyOf(item: I, idx: number): number | string
         items: Array<I>
-        itemSizeOf(item: I, idx: number, sizes: ListVirtualModule.Context): ListVirtualModule.LayoutBox
-        offscreenComputable: Computable<number, [context: ListVirtualModule.Context]>
+        itemSizeOf(item: I, idx: number, context: ListVirtualModule.Context<S>): ListVirtualModule.LayoutBox
+        offscreenComputable: Computable<number, [context: ListVirtualModule.Context<S>]>
     }): ListVirtualModule.Layout<I>
     computeRenderState<I>(args: {
         offscreen: number
         scrollPositionKey: number
         virtualLayoutMap: ListVirtualModule.LayoutMap<I>
     }): ListVirtualModule.LayoutList<I>
-    computeContext(args: {
+    computeContext<S>(args: {
+        contextState: S
         containerElement: HTMLElement
         scrollerElement: HTMLElement
-    }): ListVirtualModule.Context
+    }): ListVirtualModule.Context<S>
     computeItemKeyOf(item: unknown, idx: number): number | string
     computeVirtualLayoutKeyOf(args: {
         containerDimension: number
@@ -117,7 +118,15 @@ export const Self: {
     },
 
     computeVirtualLayout(args) {
-        const {context, directionComputable, gridComputable, itemKeyOf, items, itemSizeOf, offscreenComputable} = args
+        const {
+            context,
+            directionComputable,
+            gridComputable,
+            itemKeyOf,
+            items,
+            itemSizeOf,
+            offscreenComputable,
+        } = args
 
         const direction = compute(directionComputable, context)
         const grid = compute(gridComputable, context)
@@ -246,9 +255,10 @@ export const Self: {
     },
 
     computeContext(args) {
-        const {containerElement, scrollerElement} = args
+        const {contextState, containerElement, scrollerElement} = args
 
         return {
+            state: contextState,
             containerClient: {
                 height: Math.max(1, containerElement.clientHeight),
                 width: Math.max(1, containerElement.clientWidth),
@@ -383,7 +393,8 @@ export declare namespace ListVirtualModule {
     type LayoutList<I> = Array<LayoutItem<I>>
     type LayoutMap<I> = Map<number, LayoutList<I>>
 
-    interface Context {
+    interface Context<S> {
+        state: S
         containerClient: LayoutBox
         containerOffset: LayoutBox
         scrollerClient: LayoutBox

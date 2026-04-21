@@ -10,7 +10,7 @@ import {areEqualDeepStrict} from '@downforce/std/value'
 import {memo, startTransition, useCallback, useLayoutEffect, useMemo, useRef, useState} from 'react'
 import {ListVirtualApi as Api, type ListVirtualModule} from './api.js'
 
-export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Element {
+export function ListVirtual<I, S>(props: Props<ListVirtualProps<I, S>>): React.JSX.Element {
     const {
         advanced,
         children,
@@ -21,6 +21,7 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
         items,
         itemSizeOf,
         ref: refOptional,
+        state: contextState,
         style,
         ...otherProps
     } = props
@@ -33,7 +34,7 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
     const updatePriority = advanced?.updatePriority ?? Api.defaults.updatePriority
     const itemKeyOf = itemKeyOfOptional ?? (Api.computeItemKeyOf as (item: I, idx: number) => number | string)
 
-    const [context, setContext] = useState<undefined | ListVirtualModule.Context>()
+    const [context, setContext] = useState<undefined | ListVirtualModule.Context<S>>()
     const [scrollPositionKey, setScrollPositionKey] = useState(0)
     const contextRef = useRef(context)
     const windowRef = useRef<Window>(window)
@@ -52,7 +53,11 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
             return
         }
 
-        const newContext = Api.computeContext({containerElement, scrollerElement})
+        const newContext = Api.computeContext({
+            contextState: contextState as S,
+            containerElement,
+            scrollerElement,
+        })
 
         if (areEqualDeepStrict(contextRef.current, newContext)) {
             return
@@ -70,7 +75,7 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
                 })
             },
         })
-    }, [updatePriority])
+    }, [contextState, updatePriority])
 
     const updateScroll = useCallback((): undefined => {
         const context = contextRef.current
@@ -183,9 +188,9 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
     )
 }
 
-export const ListVirtualMemo = memo(ListVirtual, arePropsEqual) as <I>(props: Props<ListVirtualProps<I>>) => React.JSX.Element
+export const ListVirtualMemo = memo(ListVirtual, arePropsEqual) as <I, S>(props: Props<ListVirtualProps<I, S>>) => React.JSX.Element
 
-export function arePropsEqual(prevProps: ListVirtualProps<unknown>, nextProps: ListVirtualProps<unknown>): boolean {
+export function arePropsEqual(prevProps: ListVirtualProps<unknown, unknown>, nextProps: ListVirtualProps<unknown, unknown>): boolean {
     const tests: Array<() => boolean> = [
         () =>
             areObjectsEqualShallow(
@@ -207,21 +212,22 @@ export function arePropsEqual(prevProps: ListVirtualProps<unknown>, nextProps: L
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface ListVirtualProps<I> extends VoidProps<ElementProps<'div'>>, React.RefAttributes<HTMLDivElement> {
+export interface ListVirtualProps<I, S> extends VoidProps<ElementProps<'div'>>, React.RefAttributes<HTMLDivElement> {
     advanced?: undefined | {
         debugRender?: undefined | ((args: {
             renderState: undefined | ListVirtualModule.LayoutList<I>
             virtualLayout: undefined | ListVirtualModule.Layout<I>
         }) => Void)
-        offscreen?: undefined | Computable<number, [context: ListVirtualModule.Context]>
+        offscreen?: undefined | Computable<number, [context: ListVirtualModule.Context<S>]>
         resizeThrottleDelay?: undefined | number
         scrollThrottleDelay?: undefined | number
         updatePriority?: undefined | ListVirtualModule.UpdatePriorityEnum
     }
     children(item: I, idx: number): React.ReactElement
-    direction?: undefined | Computable<ListVirtualModule.DirectionEnum, [context: ListVirtualModule.Context]>
-    grid?: undefined | Computable<number, [context: ListVirtualModule.Context]>
+    direction?: undefined | Computable<ListVirtualModule.DirectionEnum, [context: ListVirtualModule.Context<S>]>
+    grid?: undefined | Computable<number, [context: ListVirtualModule.Context<S>]>
     itemKeyOf?: undefined | ((item: I) => number | string)
     items: Array<I>
-    itemSizeOf(item: I, idx: number, ctx: ListVirtualModule.Context): ListVirtualModule.LayoutBox
+    itemSizeOf(item: I, idx: number, ctx: ListVirtualModule.Context<S>): ListVirtualModule.LayoutBox
+    state?: undefined | S
 }
