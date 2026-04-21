@@ -1,6 +1,7 @@
+import type {Io} from '@downforce/std/fn'
 import {isValidElement} from 'react'
 
-export function strictElement<P extends object = {}>(node: ReactNode<P>): undefined | ReactElement<P, unknown> {
+export function strictElement<P extends object = object>(node: ReactNode<P>): undefined | ReactElement<P, unknown> {
     if (! isValidElement(node)) {
         return
     }
@@ -21,27 +22,27 @@ export function areElementsEqual(first: undefined | ReactElement<any, any>, seco
     return sameType && sameKey
 }
 
-export function createElementDecorator(args: {
-    after?: undefined | React.ReactNode
-    before?: undefined | React.ReactNode
-}): (children: React.ReactNode) => React.JSX.Element {
+export function decorateElementWith(
+    before?: undefined | React.ReactNode,
+    after?: undefined | React.ReactNode,
+): Io<React.ReactNode, React.JSX.Element> {
     function decorator(children: React.ReactNode) {
         return <>
-            {args?.before}
+            {before}
             {children}
-            {args?.after}
+            {after}
         </>
     }
 
     return decorator
 }
 
-export function createElementAfterDecorator(children: React.ReactNode): (children: React.ReactNode) => React.JSX.Element {
-    return createElementDecorator({after: children})
+export function decorateElementBefore(children: React.ReactNode): Io<React.ReactNode, React.JSX.Element> {
+    return decorateElementWith(children, undefined)
 }
 
-export function createElementBeforeDecorator(children: React.ReactNode): (children: React.ReactNode) => React.JSX.Element {
-    return createElementDecorator({before: children})
+export function decorateElementAfter(children: React.ReactNode): Io<React.ReactNode, React.JSX.Element> {
+    return decorateElementWith(undefined, children)
 }
 
 // Types ///////////////////////////////////////////////////////////////////////

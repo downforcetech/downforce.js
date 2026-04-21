@@ -17,9 +17,9 @@ import {
     useRef,
     useState
 } from 'react'
-import {areElementsEqual, strictElement} from './children.js'
 import {classes} from './classes.js'
 import {defineContext} from './ctx.js'
+import {areElementsEqual, strictElement} from './element.js'
 
 const DisplayNoneStyle: React.CSSProperties = {display: 'none'}
 
