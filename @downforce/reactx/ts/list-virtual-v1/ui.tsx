@@ -10,7 +10,7 @@ import {areEqualDeepStrict} from '@downforce/std/value'
 import {memo, startTransition, useCallback, useLayoutEffect, useMemo, useRef, useState} from 'react'
 import {ListVirtualApi as Api, type ListVirtualModule} from './api.js'
 
-export function ListVirtual<I, S>(props: Props<ListVirtualProps<I, S>>): React.JSX.Element {
+export function ListVirtual<I, S = undefined>(props: Props<ListVirtualProps<I, S>>): React.JSX.Element {
     const {
         advanced,
         children,
