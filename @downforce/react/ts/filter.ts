@@ -1,21 +1,24 @@
 import {useCallback, useMemo, useState} from 'react'
+import {useFn, type HookDeps} from './hook.js'
 import type {StateManager, StateWriter} from './state.js'
 
 const NoItems: [] = []
 
 export function useFilter<I, F>(
     items: undefined | Array<I>,
-    test: (filter: F, it: I, idx: number) => boolean,
+    onTestCallback: (state: F, item: I, idx: number) => boolean,
     initialState: F | (() => F),
+    deps?: undefined | HookDeps,
 ): FilterManager<I, F> {
+    const onTestMemoized = useFn(onTestCallback, deps)
     const [state, setState] = useState<F>(initialState) as StateManager<F>
 
     const filteredItems = useMemo(() => {
         if (! items) {
             return NoItems
         }
-        return items.filter((it, idx) => test(state, it, idx))
-    }, [items, state])
+        return items.filter((it, idx) => onTestMemoized(state, it, idx))
+    }, [onTestMemoized, items, state])
 
     const itemIdxOf = useCallback((filteredItemIdx: number) => {
         return resolveFilteredItemIdx(items ?? NoItems, filteredItems, filteredItemIdx)

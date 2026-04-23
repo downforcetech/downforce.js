@@ -5,8 +5,13 @@ import {catchPromiseError, isError, isResult, matchOutcome, type OutcomeResultOr
 import type {PromiseView} from '@downforce/std/promise'
 import type {FIX} from '@downforce/std/type'
 import {startTransition, useCallback, useEffect, useRef, useState} from 'react'
+import {useFn, type HookDeps} from './hook.js'
 
-export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?: undefined | Array<unknown>): AsyncIoManager<A, R> {
+export function useAsyncIo<A extends FnArgs, R>(
+    onCallCallback: FnAsync<A, R>,
+    deps?: undefined | HookDeps,
+): AsyncIoManager<A, R> {
+    const onCallMemoized = useFn(onCallCallback, deps)
     const [state, setState] = useState<AsyncIoState<R>>({
         output: undefined,
         error: undefined,
@@ -50,7 +55,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
 
         const taskHandle: TaskHandle = {
             canceled: false,
-            promise: catchPromiseError(Promise.try(() => asyncTask(...args))),
+            promise: catchPromiseError(Promise.try(() => onCallMemoized(...args))),
         }
 
         taskHandleRef.current = taskHandle
@@ -87,7 +92,7 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
         })
 
         return resultOrError
-    }, deps ?? [])
+    }, [onCallMemoized])
 
     const cancel = useCallback((): undefined => {
         if (taskHandleRef.current) {
@@ -170,12 +175,15 @@ export function useAsyncIo<A extends FnArgs, R>(asyncTask: FnAsync<A, R>, deps?:
 
 export function useAsyncIoEffect<I extends AsyncIoState<any>>(
     io: I,
-    effect: Io<I, undefined | Task>,
-    deps?: undefined | Array<any>,
+    onEffectCallback: Io<I, undefined | Task>,
+    deps?: undefined | HookDeps,
   ): undefined {
+    const onEffectMemoized = useFn(onEffectCallback, deps)
+
     useEffect(() => {
-        return effect(io) as FIX<void | (() => void)>
+        return onEffectMemoized(io) as FIX<void | (() => void)>
     }, [
+        onEffectMemoized,
         io.pending,
         io.settled,
         io.fulfilled,
@@ -183,7 +191,6 @@ export function useAsyncIoEffect<I extends AsyncIoState<any>>(
         io.output,
         io.result,
         io.error,
-        ...deps ?? [],
     ])
 }
 

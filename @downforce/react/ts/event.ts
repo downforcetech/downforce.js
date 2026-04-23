@@ -5,16 +5,17 @@ import type {None} from '@downforce/std/optional'
 import type {Void} from '@downforce/std/type'
 import {observeEvent} from '@downforce/web/event'
 import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react'
+import {useFn, type HookDeps} from './hook.js'
 import {useStateAccessor, type StateAccessorManager, type StateInit} from './state.js'
 
 export function useEvent<E extends Event>(
     targetRefOrRefs: React.RefObject<None | EventElement> | Array<React.RefObject<None | EventElement>>,
     eventName: string,
-    onEvent: EventHandler<E>,
+    onEventCallback: EventHandler<E>,
     options?: undefined | UseEventOptions,
-    deps?: undefined | Array<unknown>,
+    deps?: undefined | HookDeps,
 ): undefined {
-    const onEventMemoized = deps ? useCallback(onEvent, deps) : onEvent
+    const onEventMemoized = useFn(onEventCallback, deps)
     const active = options?.active ?? true
     const capture = options?.phase === 'capturing' // Bubbling by default.
     const passive = options?.passive ?? true
@@ -42,15 +43,15 @@ export function useEvent<E extends Event>(
 }
 
 export function useCallbackDebounced<A extends FnArgs>(
-    callback: Fn<A>,
+    onCallCallback: Fn<A>,
     delayMs: number,
-    deps?: undefined | Array<unknown>,
+    deps?: undefined | HookDeps,
 ): EventTask<A> {
-    const callbackMemoized = deps ? useCallback(callback, deps) : callback
+    const onCallMemoized = useFn(onCallCallback, deps)
 
     const callbackDebounced = useMemo(() => {
-        return debounced(callbackMemoized, delayMs)
-    }, [callbackMemoized, delayMs])
+        return debounced(onCallMemoized, delayMs)
+    }, [onCallMemoized, delayMs])
 
     useEffect(() => {
         function onClean() {
@@ -64,15 +65,15 @@ export function useCallbackDebounced<A extends FnArgs>(
 }
 
 export function useCallbackThrottled<A extends FnArgs>(
-    callback: Fn<A>,
+    onCallCallback: Fn<A>,
     delayMs: number,
-    deps?: undefined | Array<unknown>,
+    deps?: undefined | HookDeps,
 ): EventTask<A> {
-    const callbackMemoized = deps ? useCallback(callback, deps) : callback
+    const onCallMemoized = useFn(onCallCallback, deps)
 
     const callbackThrottled = useMemo(() => {
-        return throttled(callbackMemoized, delayMs)
-    }, [callbackMemoized, delayMs])
+        return throttled(onCallMemoized, delayMs)
+    }, [onCallMemoized, delayMs])
 
     useEffect(() => {
         function onClean() {
@@ -86,14 +87,14 @@ export function useCallbackThrottled<A extends FnArgs>(
 }
 
 export function useCallbackDelayed<A extends FnArgs>(
-    callback: Fn<A>,
+    onCallCallback: Fn<A>,
     delayMs: number,
-    deps?: undefined | Array<unknown>,
+    deps?: undefined | HookDeps,
 ): {
     (...args: A): undefined
     cancel: Task
 } {
-    const callbackMemoized = deps ? useCallback(callback, deps) : callback
+    const onCallMemoized = useFn(onCallCallback, deps)
     const taskRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
     const cancel = useCallback((): undefined => {
@@ -107,8 +108,8 @@ export function useCallbackDelayed<A extends FnArgs>(
     const callbackDelayed = useCallback((...args: A): undefined => {
         cancel()
 
-        taskRef.current = setTimeout(callbackMemoized, delayMs, ...args)
-    }, [callbackMemoized, cancel])
+        taskRef.current = setTimeout(onCallMemoized, delayMs, ...args)
+    }, [onCallMemoized, cancel])
 
     useLayoutEffect(() => {
         // We use useLayoutEffect() to conform with React 17 hooks lifecycle.

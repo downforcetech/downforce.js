@@ -13,6 +13,7 @@ import {memo, startTransition, useContext, useMemo, useState} from 'react'
 import {Box, type BoxProps} from './box.js'
 import {classes} from './classes.js'
 import {defineContext} from './ctx.js'
+import {useDeps, useFn, type HookDeps} from './hook.js'
 import type {Props, VoidProps} from './props.js'
 import type {StateWriter} from './state.js'
 
@@ -32,8 +33,8 @@ export const MessageContext: React.Context<undefined | MessageStore<string, MsgM
 * }
 */
 export function MessageProvider(props: MessageProviderProps): React.JSX.Element {
-    const {children, ...spec} = props
-    const contextValue = useMessageProvider(spec)
+    const {children, ...args} = props
+    const contextValue = useMessageProvider(args)
 
     return <MessageContext value={contextValue} children={children}/>
 }
@@ -61,13 +62,13 @@ export function Translate(props: Props<TranslateProps>): React.ReactNode {
     return message
 }
 
-export function useMessageProvider(spec: MsgDefinition<string, MsgMessageKey>): MessageStore {
-    const [locale, setLocale] = useState(spec.locale)
-    const [localeFallback, setLocaleFallback] = useState(spec.localeFallback)
-    const [messages, setMessages] = useState(spec.messages)
+export function useMessageProvider(args: MsgDefinition<string, MsgMessageKey>): MessageStore {
+    const [locale, setLocale] = useState(args.locale)
+    const [localeFallback, setLocaleFallback] = useState(args.localeFallback)
+    const [messages, setMessages] = useState(args.messages)
 
     const msg = useMemo((): MessageStore => {
-        const msg = createMsg({...spec, locale, localeFallback, messages})
+        const msg = createMsg({...args, locale, localeFallback, messages})
 
         return {
             __cache__: msg.__cache__,
@@ -142,18 +143,19 @@ export function useMessage<K extends MsgMessageKey = MsgMessageKey>(key: K, args
 }
 
 export function useMessages<T extends object, L extends string = string, K extends MsgMessageKey = MsgMessageKey>(
-    compute: MessagesComputer<MessageStore<L, K>, T>,
-    deps?: undefined | Array<unknown>,
+    onComputeCallback: MessagesComputer<MessageStore<L, K>, T>,
+    deps?: undefined | HookDeps,
 ): T & { $msg: MessageStore<L, K> } {
+    const onComputeMemoized = useFn(onComputeCallback, deps)
     const msg = useMessageStore()! as MessageStore<L, K>
     const {locale, localeFallback, messages} = msg
 
     const messagesComputed = useMemo(() => {
         return {
-            ...compute(msg),
+            ...onComputeMemoized(msg),
             $msg: msg,
         }
-    }, [msg, locale, localeFallback, messages, ...deps ?? []])
+    }, [onComputeMemoized, msg, locale, localeFallback, messages])
 
     return messagesComputed
 }
@@ -180,6 +182,4 @@ export interface TranslateProps {
     children: MsgMessageKey
 }
 
-export interface MessagesComputer<I, T extends object> {
-    (i18n: I): T
-}
+export type MessagesComputer<I, T extends object> = (i18n: I) => T

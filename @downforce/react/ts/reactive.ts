@@ -5,6 +5,7 @@ import {readReactive, watchReactive, writeReactive, type ReactiveObject, type Re
 import type {ReadWriteSync} from '@downforce/std/store'
 import type {FIX} from '@downforce/std/type'
 import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useState, useSyncExternalStore} from 'react'
+import {useDeps, type HookDeps} from './hook.js'
 import {useRenderSignal, type RenderSignal} from './render.js'
 import type {StateManager, StateWriterArg} from './state.js'
 
@@ -81,17 +82,17 @@ export function useReactiveMemo<A extends Array<ReactiveObject<any>>, V>(
 export function useReactiveSelect<V, R>(
     reactive: ReactiveObject<V>,
     selector: Io<V, R>,
-    deps?: undefined | ReactiveSelectorDeps,
+    deps?: undefined | HookDeps,
 ): R
 export function useReactiveSelect<V, R>(
     reactive: undefined | ReactiveObject<V>,
     selector: Io<undefined | V, R>,
-    deps?: undefined | ReactiveSelectorDeps,
+    deps?: undefined | HookDeps,
 ): undefined | R
 export function useReactiveSelect<V, R>(
     reactive: undefined | ReactiveObject<V>,
     selector: Io<undefined | V, R>,
-    deps?: undefined | ReactiveSelectorDeps,
+    deps?: undefined | HookDeps,
 ): undefined | R {
     const selectedValue = selector(matchSome(reactive, readReactive))
     const [signal, setSignal] = useState(selectedValue)
@@ -112,7 +113,7 @@ export function useReactiveSelect<V, R>(
         )
 
         return onClean
-    }, [reactive, ...(deps ?? [])])
+    }, useDeps([reactive], deps))
 
     const readState = useCallback(() => {
         if (! reactive) {
@@ -243,5 +244,3 @@ export interface ReactiveValuesProps<A extends Array<ReactiveObject<any>>> {
     of: readonly [...A]
     children(values: ReactiveValuesOf<A>): React.ReactNode
 }
-
-export type ReactiveSelectorDeps = Array<any> | ReadonlyArray<any>

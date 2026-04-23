@@ -14,7 +14,9 @@ export function createRootElement(id: string, classes?: undefined | Array<string
     const element = document.createElement('div')
     element.setAttribute(`data-${RootDataAttrName}`, '')
     element.id = id
-    element.classList.add(...classes ?? [])
+    if (classes) {
+        element.classList.add(...classes)
+    }
     return element
 }
 

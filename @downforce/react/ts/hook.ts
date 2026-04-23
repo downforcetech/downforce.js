@@ -2,13 +2,12 @@ import type {Fn, FnArgs} from '@downforce/std/fn'
 import {useCallback, useLayoutEffect, useMemo, useRef} from 'react'
 
 /*
-* Used to provide a constant value.
+* Provides a constant value.
+* Same of `useRef(value).current` or `useMemo(() => value, [])`.
 *
 * EXAMPLE
 *
 * function MyComponent(props) {
-*     const value = useMemo(() => {...}, [])
-*
 *     return (
 *         <OtherComponent
 *             flags={useConst(['a', 'b', 'c'])}
@@ -18,17 +17,33 @@ import {useCallback, useLayoutEffect, useMemo, useRef} from 'react'
 * }
 */
 export function useConst<V>(value: V): V {
-    const ref = useRef(value)
-    return ref.current
+    return useRef(value).current
+}
+
+export function useFn<A extends FnArgs, R>(
+    fn: (...args: A) => R,
+    deps: undefined | HookDeps,
+): (...args: A) => R {
+    return deps ? useCallback(fn, deps) : fn
+}
+
+export function useDeps(
+    baseDeps: HookDeps,
+    moreDeps: undefined | HookDeps,
+): Array<unknown> {
+    return moreDeps
+        ? baseDeps.concat(moreDeps)
+        : baseDeps as Array<unknown>
 }
 
 /*
 * useMemo(fn, deps) but with inverted arguments (deps, fn) and deps as function arguments.
 */
-export function useComputed<A extends Array<unknown>, R>(deps: A, computed: Fn<A, R>): R {
-    return useMemo(() => {
-        return computed(...deps)
-    }, deps)
+export function useComputed<A extends FnArgs, R>(
+    deps: A,
+    compute: Fn<A, R>,
+): R {
+    return useMemo(() => compute(...deps), deps)
 }
 
 /*
@@ -48,16 +63,22 @@ export function useComputed<A extends Array<unknown>, R>(deps: A, computed: Fn<A
 *     )
 * }
 */
-export function useClosure<A extends FnArgs, R>(closure: (...args: A) => R): (...args: A) => R {
+export function useClosure<A extends FnArgs, R>(
+    closure: (...args: A) => R,
+): (...args: A) => R {
     const closureRef = useRef(closure)
 
     useLayoutEffect(() => {
         closureRef.current = closure
     })
 
-    const callback = useCallback((...args: A) => {
+    const callback = useCallback((...args: A): R => {
         return closureRef.current(...args)
     }, [])
 
     return callback
 }
+
+// Types ///////////////////////////////////////////////////////////////////////
+
+export type HookDeps = Array<unknown> | ReadonlyArray<unknown>
