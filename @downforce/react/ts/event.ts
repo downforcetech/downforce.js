@@ -12,8 +12,8 @@ export function useEvent<E extends Event>(
     targetRefOrRefs: React.RefObject<None | EventElement> | Array<React.RefObject<None | EventElement>>,
     eventName: string,
     onEventCallback: EventHandler<E>,
-    options?: undefined | UseEventOptions,
     deps?: undefined | HookDeps,
+    options?: undefined | UseEventOptions,
 ): undefined {
     const onEventMemoized = useCallback(onEventCallback, deps ?? NoDeps)
     const active = options?.active ?? true
@@ -43,8 +43,8 @@ export function useEvent<E extends Event>(
 }
 
 export function useCallbackDebounced<A extends FnArgs>(
-    onCallCallback: Fn<A>,
     delayMs: number,
+    onCallCallback: Fn<A>,
     deps?: undefined | HookDeps,
 ): EventTask<A> {
     const onCallMemoized = useCallback(onCallCallback, deps ?? NoDeps)
@@ -65,8 +65,8 @@ export function useCallbackDebounced<A extends FnArgs>(
 }
 
 export function useCallbackThrottled<A extends FnArgs>(
-    onCallCallback: Fn<A>,
     delayMs: number,
+    onCallCallback: Fn<A>,
     deps?: undefined | HookDeps,
 ): EventTask<A> {
     const onCallMemoized = useCallback(onCallCallback, deps ?? NoDeps)
@@ -87,8 +87,8 @@ export function useCallbackThrottled<A extends FnArgs>(
 }
 
 export function useCallbackDelayed<A extends FnArgs>(
-    onCallCallback: Fn<A>,
     delayMs: number,
+    onCallCallback: Fn<A>,
     deps?: undefined | HookDeps,
 ): {
     (...args: A): undefined
@@ -123,20 +123,38 @@ export function useCallbackDelayed<A extends FnArgs>(
     return callbackDelayed as Return
 }
 
-export function useStateDebounced<T>(initialValue: undefined, delay: number): StateAccessorManager<undefined | T>
-export function useStateDebounced<T>(initialValue: StateInit<T>, delay: number): StateAccessorManager<T>
-export function useStateDebounced<T>(initialValue: undefined | T, delay: number): StateAccessorManager<undefined | T> {
+export function useStateDebounced<T>(
+    initialValue: undefined,
+    delay: number,
+): StateAccessorManager<undefined | T>
+export function useStateDebounced<T>(
+    initialValue: StateInit<T>,
+    delay: number,
+): StateAccessorManager<T>
+export function useStateDebounced<T>(
+    initialValue: undefined | T,
+    delay: number,
+): StateAccessorManager<undefined | T> {
     const [value, setValue, getValue] = useStateAccessor(initialValue)
-    const setValueDebounced = useCallbackDebounced(setValue, delay)
+    const setValueDebounced = useCallbackDebounced(delay, setValue)
 
     return [value, setValueDebounced, getValue]
 }
 
-export function useStateThrottled<T>(initialValue: undefined, delay: number): StateAccessorManager<undefined | T>
-export function useStateThrottled<T>(initialValue: StateInit<T>, delay: number): StateAccessorManager<T>
-export function useStateThrottled<T>(initialValue: undefined | StateInit<T>, delay: number): StateAccessorManager<undefined | T> {
+export function useStateThrottled<T>(
+    initialValue: undefined,
+    delay: number,
+): StateAccessorManager<undefined | T>
+export function useStateThrottled<T>(
+    initialValue: StateInit<T>,
+    delay: number,
+): StateAccessorManager<T>
+export function useStateThrottled<T>(
+    initialValue: undefined | StateInit<T>,
+    delay: number,
+): StateAccessorManager<undefined | T> {
     const [value, setValue, getValue] = useStateAccessor(initialValue)
-    const setValueThrottled = useCallbackThrottled(setValue, delay)
+    const setValueThrottled = useCallbackThrottled(delay, setValue)
 
     return [value, setValueThrottled, getValue]
 }

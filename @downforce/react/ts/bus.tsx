@@ -1,6 +1,7 @@
 import {createBus, type Bus, type BusEvent, type BusEventObserver} from '@downforce/std/bus'
-import {useContext, useEffect, useMemo} from 'react'
+import {useCallback, useContext, useEffect, useMemo} from 'react'
 import {defineContext} from './ctx.js'
+import {NoDeps, type HookDeps} from './hook.js'
 
 export * from '@downforce/std/bus'
 
@@ -20,8 +21,8 @@ export function setupBusUsingSingleton(options: BusBoundCase1Options): BusBoundC
         useBus() {
             return bus
         },
-        useBusEvent(event, observer) {
-            useBusEvent(bus, event, observer)
+        useBusEvent(event, onEventCallback, deps) {
+            useBusEvent(bus, event, onEventCallback, deps)
         },
     }
 }
@@ -45,8 +46,8 @@ export function setupBusUsingContext(options?: undefined | BusBoundCase2Options)
         useBus() {
             return useContext(Context)!
         },
-        useBusEvent(event, observer) {
-            useBusEvent(useContext(Context)!, event, observer)
+        useBusEvent(event, onEventCallback, deps) {
+            useBusEvent(useContext(Context)!, event, onEventCallback, deps)
         },
     }
 }
@@ -59,20 +60,27 @@ export function useBusProvider(): Bus {
     return bus
 }
 
-export function useBusEvent<P = unknown>(bus: Bus, event: BusEvent, observer: undefined | BusEventObserver<P>): undefined {
+export function useBusEvent<P = unknown>(
+    bus: Bus,
+    event: BusEvent,
+    onEventCallback: BusEventObserver<P>,
+    deps?: undefined | HookDeps
+): undefined {
+    const onEventMemoized = useCallback(onEventCallback, deps ?? NoDeps)
+
     useEffect(() => {
-        if (! observer) {
+        if (! onEventMemoized) {
             return
         }
 
-        const unobserve = bus.observe(event, observer)
+        const unobserve = bus.observe(event, onEventMemoized)
 
         function onClean() {
             unobserve?.()
         }
 
         return onClean
-    }, [bus, event, observer])
+    }, [bus, event, onEventMemoized])
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
@@ -81,13 +89,12 @@ export interface BusBoundCase1Options {
     bus: Bus
 }
 export interface BusBoundCase1Exports {
-    useBus: {
-        (): Bus
-    }
-    useBusEvent: {
-        <P = unknown>(event: BusEvent, observer: BusEventObserver<P>): undefined
-        <P = unknown>(event: BusEvent, observer: undefined | BusEventObserver<P>): undefined
-    }
+    useBus(): Bus
+    useBusEvent<P = unknown>(
+        event: BusEvent,
+        onEventCallback: BusEventObserver<P>,
+        deps?: undefined | HookDeps,
+    ): undefined
 }
 
 export interface BusBoundCase2Options {
@@ -96,13 +103,7 @@ export interface BusBoundCase2Options {
 }
 export interface BusBoundCase2Exports extends BusBoundCase1Exports {
     BusContext: React.Context<undefined | Bus>
-    BusProvider: {
-        (props: {children: React.ReactNode}): React.JSX.Element
-    },
-    useBusContext: {
-        (): undefined | Bus
-    }
-    useBusProvider: {
-        (): Bus
-    }
+    BusProvider(props: {children: React.ReactNode}): React.JSX.Element
+    useBusContext(): undefined | Bus
+    useBusProvider(): Bus
 }

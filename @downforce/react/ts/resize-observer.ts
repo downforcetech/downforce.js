@@ -5,8 +5,8 @@ import {NoDeps, type HookDeps} from './hook.js'
 export function useResizeObserver(
     containerRef: React.RefObject<None | HTMLElement>,
     onResizeCallback: ResizeObserverCallback,
-    options?: undefined | UseResizeObserverOptions,
     deps?: undefined | HookDeps,
+    options?: undefined | UseResizeObserverOptions,
 ): undefined {
     const onResizeMemoized = useCallback(onResizeCallback, deps ?? NoDeps)
     const active = options?.active ?? true

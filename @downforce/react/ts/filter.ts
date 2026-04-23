@@ -6,8 +6,8 @@ const NoItems: [] = []
 
 export function useFilter<I, F>(
     items: undefined | Array<I>,
-    onTestCallback: (state: F, item: I, idx: number) => boolean,
     initialState: F | (() => F),
+    onTestCallback: (state: F, item: I, idx: number) => boolean,
     deps?: undefined | HookDeps,
 ): FilterManager<I, F> {
     const onTestMemoized = useCallback(onTestCallback, deps ?? NoDeps)
