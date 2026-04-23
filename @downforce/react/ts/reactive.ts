@@ -5,7 +5,7 @@ import {readReactive, watchReactive, writeReactive, type ReactiveObject, type Re
 import type {ReadWriteSync} from '@downforce/std/store'
 import type {FIX} from '@downforce/std/type'
 import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useState, useSyncExternalStore} from 'react'
-import {useDeps, type HookDeps} from './hook.js'
+import {NoDeps, type HookDeps} from './hook.js'
 import {useRenderSignal, type RenderSignal} from './render.js'
 import type {StateManager, StateWriterArg} from './state.js'
 
@@ -81,20 +81,21 @@ export function useReactiveMemo<A extends Array<ReactiveObject<any>>, V>(
 
 export function useReactiveSelect<V, R>(
     reactive: ReactiveObject<V>,
-    selector: Io<V, R>,
+    onSelectCallback: Io<V, R>,
     deps?: undefined | HookDeps,
 ): R
 export function useReactiveSelect<V, R>(
     reactive: undefined | ReactiveObject<V>,
-    selector: Io<undefined | V, R>,
+    onSelectCallback: Io<undefined | V, R>,
     deps?: undefined | HookDeps,
 ): undefined | R
 export function useReactiveSelect<V, R>(
     reactive: undefined | ReactiveObject<V>,
-    selector: Io<undefined | V, R>,
+    onSelectCallback: Io<undefined | V, R>,
     deps?: undefined | HookDeps,
 ): undefined | R {
-    const selectedValue = selector(matchSome(reactive, readReactive))
+    const onSelectMemoized = useCallback(onSelectCallback, deps ?? NoDeps)
+    const selectedValue = onSelectMemoized(matchSome(reactive, readReactive))
     const [signal, setSignal] = useState(selectedValue)
 
     const subscribe = useCallback(() => {
@@ -106,14 +107,14 @@ export function useReactiveSelect<V, R>(
             reactive,
             newValue => {
                 startTransition(() => {
-                    setSignal(selector(newValue))
+                    setSignal(onSelectMemoized(newValue))
                 })
             },
             {immediate: true},
         )
 
         return onClean
-    }, useDeps([reactive], deps))
+    }, [onSelectMemoized, reactive])
 
     const readState = useCallback(() => {
         if (! reactive) {

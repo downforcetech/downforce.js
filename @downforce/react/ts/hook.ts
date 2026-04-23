@@ -1,6 +1,8 @@
 import type {Fn, FnArgs} from '@downforce/std/fn'
 import {useCallback, useLayoutEffect, useMemo, useRef} from 'react'
 
+export const NoDeps: [] = []
+
 /*
 * Provides a constant value.
 * Same of `useRef(value).current` or `useMemo(() => value, [])`.

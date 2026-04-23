@@ -1,9 +1,9 @@
 import {arrayWrap} from '@downforce/std/array'
 import {call} from '@downforce/std/fn'
 import {isSome, type None} from '@downforce/std/optional'
-import {useRef} from 'react'
+import {useCallback, useRef} from 'react'
 import {useEvent, type EventElement, type EventHandler, type UseEventOptions} from './event.js'
-import {useFn, type HookDeps} from './hook.js'
+import {NoDeps, type HookDeps} from './hook.js'
 
 export function useEventOutside<E extends Event>(
     refOrRefs: React.RefObject<None | Element> | Array<React.RefObject<None | Element>>,
@@ -12,7 +12,7 @@ export function useEventOutside<E extends Event>(
     options?: undefined | UseEventOutsideOptions,
     deps?: undefined | HookDeps,
 ): undefined {
-    const onEventMemoized = useFn(onEventCallback, deps)
+    const onEventMemoized = useCallback(onEventCallback, deps ?? NoDeps)
     const documentRef = useRef<EventElement>(document.documentElement)
     const behavior = options?.behavior ?? 'every'
     const rootRef = options?.rootRef ?? documentRef

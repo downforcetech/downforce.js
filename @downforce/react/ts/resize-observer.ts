@@ -1,6 +1,6 @@
 import type {None} from '@downforce/std/optional'
-import {useEffect} from 'react'
-import {useFn, type HookDeps} from './hook.js'
+import {useCallback, useEffect} from 'react'
+import {NoDeps, type HookDeps} from './hook.js'
 
 export function useResizeObserver(
     containerRef: React.RefObject<None | HTMLElement>,
@@ -8,7 +8,7 @@ export function useResizeObserver(
     options?: undefined | UseResizeObserverOptions,
     deps?: undefined | HookDeps,
 ): undefined {
-    const onResizeMemoized = useFn(onResizeCallback, deps)
+    const onResizeMemoized = useCallback(onResizeCallback, deps ?? NoDeps)
     const active = options?.active ?? true
 
     useEffect(() => {
