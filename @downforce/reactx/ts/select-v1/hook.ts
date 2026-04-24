@@ -605,7 +605,7 @@ export function useSelectProvider<V, S, O extends object = object>(
 
     useClickOutside(
         refs.rootRef,
-        useCallback((event): undefined => {
+        (event): undefined => {
             if (event.target && ! document.documentElement.contains(event.target as Node)) {
                 // A DOM Node has been removed from the DOM tree by React.
                 // Not an actual click outside event.
@@ -616,7 +616,8 @@ export function useSelectProvider<V, S, O extends object = object>(
             // We reset focused and tabbed option when clicking outside.
             state.setOptionFocused(undefined)
             state.setOptionTabbed(undefined)
-        }, [state.setOpen, state.setOptionFocused, state.setOptionTabbed]),
+        },
+        [state.setOpen, state.setOptionFocused, state.setOptionTabbed],
         {active: state.open},
     )
 

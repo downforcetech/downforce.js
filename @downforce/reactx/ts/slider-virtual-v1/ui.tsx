@@ -32,7 +32,7 @@ export function SliderVirtual<I>(props: Props<SliderVirtualProps<I>>): React.JSX
     }, [])
 
     useLayoutEffect(updateSize, [])
-    useResizeObserver(containerRef, useCallbackThrottled(updateSize, 100))
+    useResizeObserver(containerRef, useCallbackThrottled(100, updateSize))
 
     const render = useMemo(() => {
         if (! sizes) {

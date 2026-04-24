@@ -118,12 +118,12 @@ export function ListVirtual<I, S = undefined>(props: Props<ListVirtualProps<I, S
         updateScroll()
     }, [updateContext, updateScroll])
 
-    const onResizeThrottled = useCallbackThrottled(updateContextAndScroll, resizeThrottleDelay)
-    const onScrollThrottled = useCallbackThrottled(updateScroll, scrollThrottleDelay)
+    const onResizeThrottled = useCallbackThrottled(resizeThrottleDelay, updateContextAndScroll)
+    const onScrollThrottled = useCallbackThrottled(scrollThrottleDelay, updateScroll)
 
     useLayoutEffect(updateContext, [updateContext])
     useResizeObserver(containerRef, onResizeThrottled)
-    useEvent(windowRef, 'resize', onResizeThrottled, {passive: true})
+    useEvent(windowRef, 'resize', onResizeThrottled, undefined, {passive: true})
 
     const virtualLayout = useMemo(() => {
         if (!context) {
