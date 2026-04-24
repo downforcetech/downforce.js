@@ -5,7 +5,7 @@ import {readReactive, watchReactive, writeReactive, type ReactiveObject, type Re
 import type {ReadWriteSync} from '@downforce/std/store'
 import type {FIX} from '@downforce/std/type'
 import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useState, useSyncExternalStore} from 'react'
-import {NoDeps, type HookDeps} from './hook.js'
+import {useFn, type HookDeps} from './hook.js'
 import {useRenderSignal, type RenderSignal} from './render.js'
 import type {StateManager, StateWriterArg} from './state.js'
 
@@ -81,20 +81,20 @@ export function useReactiveMemo<A extends Array<ReactiveObject<any>>, V>(
 
 export function useReactiveSelect<V, R>(
     reactive: ReactiveObject<V>,
-    onSelectCallback: Io<V, R>,
+    onSelect: Io<V, R>,
     deps?: undefined | HookDeps,
 ): R
 export function useReactiveSelect<V, R>(
     reactive: undefined | ReactiveObject<V>,
-    onSelectCallback: Io<undefined | V, R>,
+    onSelect: Io<undefined | V, R>,
     deps?: undefined | HookDeps,
 ): undefined | R
 export function useReactiveSelect<V, R>(
     reactive: undefined | ReactiveObject<V>,
-    onSelectCallback: Io<undefined | V, R>,
+    onSelect: Io<undefined | V, R>,
     deps?: undefined | HookDeps,
 ): undefined | R {
-    const onSelectMemoized = useCallback(onSelectCallback, deps ?? NoDeps)
+    const onSelectMemoized = useFn(onSelect, deps)
     const selectedValue = onSelectMemoized(matchSome(reactive, readReactive))
     const [signal, setSignal] = useState(selectedValue)
 
@@ -114,7 +114,7 @@ export function useReactiveSelect<V, R>(
         )
 
         return onClean
-    }, [onSelectMemoized, reactive])
+    }, [reactive, onSelectMemoized])
 
     const readState = useCallback(() => {
         if (! reactive) {

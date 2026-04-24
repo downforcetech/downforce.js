@@ -1,16 +1,16 @@
 import {arrayWrap} from '@downforce/std/array'
 import type {None} from '@downforce/std/optional'
-import {useCallback, useRef} from 'react'
+import {useRef} from 'react'
 import {useEvent, type EventElement, type EventHandler, type UseEventOptions} from './event.js'
-import {NoDeps, type HookDeps} from './hook.js'
+import {useFn, type HookDeps} from './hook.js'
 
 export function useKey(
     key: KeybindingKey,
-    onKeyCallback: EventHandler<KeyboardEvent>,
+    onKey: EventHandler<KeyboardEvent>,
     deps?: undefined | HookDeps,
     options?: undefined | UseKeyOptions,
 ): undefined {
-    const onKeyMemoized = useCallback(onKeyCallback, deps ?? NoDeps)
+    const onKeyMemoized = useFn(onKey, deps)
     const documentRef = useRef(document)
     const event = options?.event ?? 'keydown'
     const ref = options?.ref ?? documentRef
@@ -28,7 +28,7 @@ export function useKey(
 
             onKeyMemoized(event)
         },
-        [onKeyMemoized, key],
+        [key, onKeyMemoized],
         options,
     )
 }

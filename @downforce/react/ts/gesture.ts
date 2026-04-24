@@ -1,18 +1,18 @@
 import {arrayWrap} from '@downforce/std/array'
 import {call} from '@downforce/std/fn'
 import {isSome, type None} from '@downforce/std/optional'
-import {useCallback, useRef} from 'react'
+import {useRef} from 'react'
 import {useEvent, type EventElement, type EventHandler, type UseEventOptions} from './event.js'
-import {NoDeps, type HookDeps} from './hook.js'
+import {useFn, type HookDeps} from './hook.js'
 
 export function useEventOutside<E extends Event>(
     refOrRefs: React.RefObject<None | Element> | Array<React.RefObject<None | Element>>,
     eventName: string,
-    onEventCallback: EventHandler<E>,
+    onEvent: EventHandler<E>,
     deps?: undefined | HookDeps,
     options?: undefined | UseEventOutsideOptions,
 ): undefined {
-    const onEventMemoized = useCallback(onEventCallback, deps ?? NoDeps)
+    const onEventMemoized = useFn(onEvent, deps)
     const documentRef = useRef<EventElement>(document.documentElement)
     const behavior = options?.behavior ?? 'every'
     const rootRef = options?.rootRef ?? documentRef
@@ -53,13 +53,13 @@ export function useEventOutside<E extends Event>(
 
 export function useClickOutside(
     refOrRefs: React.RefObject<None | Element> | Array<React.RefObject<None | Element>>,
-    onEventCallback: EventHandler<MouseEvent>,
+    onEvent: EventHandler<MouseEvent>,
     deps?: undefined | HookDeps,
     options?: undefined | UseClickOutsideOptions,
 ): undefined {
     const event = options?.event ?? 'click'
 
-    useEventOutside(refOrRefs, event, onEventCallback, deps, options)
+    useEventOutside(refOrRefs, event, onEvent, deps, options)
 }
 
 // Types ///////////////////////////////////////////////////////////////////////

@@ -9,11 +9,11 @@ import {
     type MsgMessageKey,
     type MsgMessages,
 } from '@downforce/std/msg'
-import {memo, startTransition, useCallback, useContext, useMemo, useState} from 'react'
+import {memo, startTransition, useContext, useMemo, useState} from 'react'
 import {Box, type BoxProps} from './box.js'
 import {classes} from './classes.js'
 import {defineContext} from './ctx.js'
-import {NoDeps, type HookDeps} from './hook.js'
+import {useFn, type HookDeps} from './hook.js'
 import type {Props, VoidProps} from './props.js'
 import type {StateWriter} from './state.js'
 
@@ -143,10 +143,10 @@ export function useMessage<K extends MsgMessageKey = MsgMessageKey>(key: K, args
 }
 
 export function useMessages<T extends object, L extends string = string, K extends MsgMessageKey = MsgMessageKey>(
-    onComputeCallback: MessagesComputer<MessageStore<L, K>, T>,
+    onCompute: MessagesComputer<MessageStore<L, K>, T>,
     deps?: undefined | HookDeps,
 ): T & { $msg: MessageStore<L, K> } {
-    const onComputeMemoized = useCallback(onComputeCallback, deps ?? NoDeps)
+    const onComputeMemoized = useFn(onCompute, deps)
     const msg = useMessageStore()! as MessageStore<L, K>
     const {locale, localeFallback, messages} = msg
 

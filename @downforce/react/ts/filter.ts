@@ -1,5 +1,5 @@
 import {useCallback, useMemo, useState} from 'react'
-import {NoDeps, type HookDeps} from './hook.js'
+import {useFn, type HookDeps} from './hook.js'
 import type {StateManager, StateWriter} from './state.js'
 
 const NoItems: [] = []
@@ -7,10 +7,10 @@ const NoItems: [] = []
 export function useFilter<I, F>(
     items: undefined | Array<I>,
     initialState: F | (() => F),
-    onTestCallback: (state: F, item: I, idx: number) => boolean,
+    onTest: (state: F, item: I, idx: number) => boolean,
     deps?: undefined | HookDeps,
 ): FilterManager<I, F> {
-    const onTestMemoized = useCallback(onTestCallback, deps ?? NoDeps)
+    const onTestMemoized = useFn(onTest, deps)
     const [state, setState] = useState<F>(initialState) as StateManager<F>
 
     const filteredItems = useMemo(() => {
@@ -18,7 +18,7 @@ export function useFilter<I, F>(
             return NoItems
         }
         return items.filter((it, idx) => onTestMemoized(state, it, idx))
-    }, [onTestMemoized, items, state])
+    }, [items, onTestMemoized, state])
 
     const itemIdxOf = useCallback((filteredItemIdx: number) => {
         return resolveFilteredItemIdx(items ?? NoItems, filteredItems, filteredItemIdx)

@@ -1,7 +1,7 @@
 import {createBus, type Bus, type BusEvent, type BusEventObserver} from '@downforce/std/bus'
-import {useCallback, useContext, useEffect, useMemo} from 'react'
+import {useContext, useEffect, useMemo} from 'react'
 import {defineContext} from './ctx.js'
-import {NoDeps, type HookDeps} from './hook.js'
+import {useFn, type HookDeps} from './hook.js'
 
 export * from '@downforce/std/bus'
 
@@ -63,10 +63,10 @@ export function useBusProvider(): Bus {
 export function useBusEvent<P = unknown>(
     bus: Bus,
     event: BusEvent,
-    onEventCallback: BusEventObserver<P>,
+    onEvent: BusEventObserver<P>,
     deps?: undefined | HookDeps
 ): undefined {
-    const onEventMemoized = useCallback(onEventCallback, deps ?? NoDeps)
+    const onEventMemoized = useFn(onEvent, deps)
 
     useEffect(() => {
         if (! onEventMemoized) {
