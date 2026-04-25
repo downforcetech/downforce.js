@@ -19,6 +19,7 @@
         "moduleResolution": "nodenext",
         "noEmitOnError": true,
         "noErrorTruncation": true,
+        "noFallthroughCasesInSwitch": true,
         "noImplicitAny": true,
         "noImplicitOverride": true,
         "noImplicitReturns": true,
