@@ -55,16 +55,15 @@ export const Self: {
         containerElement: HTMLElement
         scrollerElement: HTMLElement
     }): ListVirtualModule.Context
-    computeVirtualLayout<I, S>(args: {
+    computeVirtualLayout<I>(args: {
         context: ListVirtualModule.Context
-        deps: S,
         direction: ListVirtualModule.DirectionEnum
         grid: number
         itemKeyOf(item: I, idx: number): number | string
         items: Array<I>
-        itemSizeOf(item: I, idx: number, context: ListVirtualModule.Context, deps: S): ListVirtualModule.LayoutBox
+        itemSize: Computable<number, [item: I, idx: number, context: ListVirtualModule.Context]>
         offscreen: number
-    }): ListVirtualModule.Layout<I, S>
+    }): ListVirtualModule.Layout<I>
     computeRenderState<I>(args: {
         offscreen: number
         scrollPositionKey: number
@@ -167,12 +166,11 @@ export const Self: {
     computeVirtualLayout(args) {
         const {
             context,
-            deps,
             direction,
             grid,
             itemKeyOf,
             items,
-            itemSizeOf,
+            itemSize,
             offscreen,
         } = args
 
@@ -189,29 +187,20 @@ export const Self: {
         let gridItemDirectionSizeMax = 0
 
         items.forEach((item, idx) => {
-            const itemBaseBox = itemSizeOf(item, idx, context, deps)
+            const itemBaseSize = compute(itemSize, item, idx, context)
             const itemGridIdx = idx % grid
             const itemDirectionOffset = virtualDirectionSize
-
-            const itemDirectionSize = Self.matchDirection(direction, {
-                horizontal() {
-                    return itemBaseBox.width
-                },
-                vertical() {
-                    return itemBaseBox.height
-                },
-            })
 
             const itemLayoutBox = Self.matchDirection(direction, {
                 horizontal(): ListVirtualModule.LayoutBox {
                     return {
                         height: context.scrollerClient.height / grid,
-                        width: itemBaseBox.width,
+                        width: itemBaseSize,
                     }
                 },
                 vertical(): ListVirtualModule.LayoutBox {
                     return {
-                        height: itemBaseBox.height,
+                        height: itemBaseSize,
                         width: context.scrollerClient.width / grid,
                     }
                 },
@@ -252,7 +241,7 @@ export const Self: {
             virtualLayoutList.push(virtualItem)
             layoutKeyList.push(virtualItem)
 
-            gridItemDirectionSizeMax = Math.max(gridItemDirectionSizeMax, itemDirectionSize)
+            gridItemDirectionSizeMax = Math.max(gridItemDirectionSizeMax, itemBaseSize)
 
             if ((idx + 1) % grid === 0) {
                 virtualDirectionSize += gridItemDirectionSizeMax
@@ -262,7 +251,6 @@ export const Self: {
 
         return {
             context: context,
-            deps: deps,
             direction: direction,
             grid: grid,
             offscreen: offscreen,
@@ -404,9 +392,8 @@ export declare namespace ListVirtualModule {
         windowVisualViewport: LayoutBox
     }
 
-    interface Layout<I, S> {
+    interface Layout<I> {
         context: Context
-        deps: S
         direction: DirectionEnum
         grid: number
         offscreen: number

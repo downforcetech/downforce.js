@@ -10,17 +10,16 @@ import {areEqualDeepStrict} from '@downforce/std/value'
 import {memo, startTransition, useCallback, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState} from 'react'
 import {ListVirtualApi as Api, type ListVirtualModule} from './api.js'
 
-export function ListVirtual<I, S>(props: Props<ListVirtualProps<I, S>>): React.JSX.Element {
+export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Element {
     const {
         children,
         className,
         debugRender,
-        deps,
         direction: directionOptional,
         grid: gridOptional,
         itemKeyOf: itemKeyOfOptional,
         items,
-        itemSizeOf,
+        itemSize,
         offscreen: offscreenOptional,
         onLayoutChange,
         onRenderChange,
@@ -47,9 +46,9 @@ export function ListVirtual<I, S>(props: Props<ListVirtualProps<I, S>>): React.J
     const containerRef = useRef<HTMLDivElement>(null)
     const scrollerRef = useRef<HTMLDivElement>(null)
 
-    const direction = context ? compute(directionComputable, context, deps as S) : undefined
-    const grid = context ? Math.max(0, compute(gridComputable, context, deps as S)) : undefined
-    const offscreen = context ? Math.max(1, compute(offscreenComputable, context, deps as S)) : undefined
+    const direction = context ? compute(directionComputable, context) : undefined
+    const grid = context ? Math.max(0, compute(gridComputable, context)) : undefined
+    const offscreen = context ? Math.max(1, compute(offscreenComputable, context)) : undefined
 
     const updateContext = useCallback((): undefined => {
         const containerElement = containerRef.current
@@ -147,15 +146,14 @@ export function ListVirtual<I, S>(props: Props<ListVirtualProps<I, S>>): React.J
 
         return Api.computeVirtualLayout({
             context: context,
-            deps: deps as S,
             direction: direction,
             grid: grid,
             itemKeyOf: itemKeyOf,
             items: items,
-            itemSizeOf: itemSizeOf,
+            itemSize: itemSize,
             offscreen: offscreen,
         })
-    }, [context, deps, direction, grid, items, offscreen/*, itemKeyOf, itemSizeOf*/])
+    }, [context, direction, grid, items, itemSize, offscreen/*, itemKeyOf*/])
 
     const renderState = useMemo(() => {
         if (! virtualLayout) {
@@ -169,7 +167,7 @@ export function ListVirtual<I, S>(props: Props<ListVirtualProps<I, S>>): React.J
         })
     }, [scrollPositionKey, virtualLayout])
 
-    useImperativeHandle<ListVirtualRefValue<I, S>, ListVirtualRefValue<I, S>>(refOptional, () => ({
+    useImperativeHandle<ListVirtualRefValue<I>, ListVirtualRefValue<I>>(refOptional, () => ({
         containerRef: containerRef,
         scrollerRef: scrollerRef,
         virtualLayout: virtualLayout,
@@ -201,13 +199,13 @@ export function ListVirtual<I, S>(props: Props<ListVirtualProps<I, S>>): React.J
                 style={Api.styleOfScroller(direction, virtualLayout?.virtualSize)}
                 onScrollCapture={onScrollThrottled}
             >
-                {renderState?.map(it => (
+                {context && renderState?.map(it => (
                     <div
                         key={it.key}
                         className='v-item-2602e3'
                         style={Api.styleOfItem(it, direction)}
                     >
-                        {children(it.item, it.idx)}
+                        {children(it.item, it.idx, it, context)}
                     </div>
                 ))}
             </div>
@@ -215,16 +213,16 @@ export function ListVirtual<I, S>(props: Props<ListVirtualProps<I, S>>): React.J
     )
 }
 
-export const ListVirtualMemo = memo(ListVirtual, arePropsEqual) as <I, S>(props: Props<ListVirtualProps<I, S>>) => React.JSX.Element
+export const ListVirtualMemo = memo(ListVirtual, arePropsEqual) as <I>(props: Props<ListVirtualProps<I>>) => React.JSX.Element
 
-export function arePropsEqual(
-    prevProps: ListVirtualProps<unknown, unknown>,
-    nextProps: ListVirtualProps<unknown, unknown>,
+function arePropsEqual(
+    prevProps: ListVirtualProps<unknown>,
+    nextProps: ListVirtualProps<unknown>,
 ): boolean {
     const tests: Array<() => boolean> = [
         () => areObjectsEqualShallow(
-            omitObjectProps(prevProps, ['debugRender', 'itemKeyOf', 'itemSizeOf', 'onLayoutChange', 'onRenderChange']),
-            omitObjectProps(nextProps, ['debugRender', 'itemKeyOf', 'itemSizeOf', 'onLayoutChange', 'onRenderChange']),
+            omitObjectProps(prevProps, ['debugRender', 'itemKeyOf', 'onLayoutChange', 'onRenderChange']),
+            omitObjectProps(nextProps, ['debugRender', 'itemKeyOf', 'onLayoutChange', 'onRenderChange']),
         ),
     ]
 
@@ -233,31 +231,30 @@ export function arePropsEqual(
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface ListVirtualProps<I, S> extends
+export interface ListVirtualProps<I> extends
     Omit<VoidProps<ElementProps<'div'>>, 'ref'>,
-    React.RefAttributes<ListVirtualRefValue<I, S>>
+    React.RefAttributes<ListVirtualRefValue<I>>
 {
     debugRender?: undefined | ((args: {
         renderState: undefined | ListVirtualModule.LayoutList<I>
-        virtualLayout: undefined | ListVirtualModule.Layout<I, S>
+        virtualLayout: undefined | ListVirtualModule.Layout<I>
     }) => Void)
-    children(item: I, idx: number): React.ReactElement
-    deps?: S
-    direction?: undefined | Computable<ListVirtualModule.DirectionEnum, [context: ListVirtualModule.Context, deps: S]>
-    grid?: undefined | Computable<number, [context: ListVirtualModule.Context, deps: S]>
+    children(item: I, idx: number, itemLayout: ListVirtualModule.LayoutItem<I>, context: ListVirtualModule.Context): React.ReactElement
+    direction?: undefined | Computable<ListVirtualModule.DirectionEnum, [context: ListVirtualModule.Context]>
+    grid?: undefined | Computable<number, [context: ListVirtualModule.Context]>
     itemKeyOf?: undefined | ((item: I, idx: number) => number | string)
     items: Array<I>
-    itemSizeOf(item: I, idx: number, context: ListVirtualModule.Context, deps: S): ListVirtualModule.LayoutBox
-    offscreen?: undefined | Computable<number, [context: ListVirtualModule.Context, deps: S]>
-    onLayoutChange?: undefined | ((virtualLayout: undefined | ListVirtualModule.Layout<I, S>) => Void)
+    itemSize: Computable<number, [item: I, idx: number, context: ListVirtualModule.Context]>
+    offscreen?: undefined | Computable<number, [context: ListVirtualModule.Context]>
+    onLayoutChange?: undefined | ((virtualLayout: undefined | ListVirtualModule.Layout<I>) => Void)
     onRenderChange?: undefined | ((renderState: undefined | ListVirtualModule.LayoutList<I>) => Void)
     resizeThrottleDelay?: undefined | number
     scrollThrottleDelay?: undefined | number
     updatePriority?: undefined | ListVirtualModule.UpdatePriorityEnum
 }
 
-export interface ListVirtualRefValue<I, S> {
+export interface ListVirtualRefValue<I> {
     containerRef: React.RefObject<null | HTMLDivElement>
     scrollerRef: React.RefObject<null | HTMLDivElement>
-    virtualLayout: undefined | ListVirtualModule.Layout<I, S>
+    virtualLayout: undefined | ListVirtualModule.Layout<I>
 }
