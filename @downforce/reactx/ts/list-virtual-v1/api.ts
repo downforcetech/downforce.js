@@ -51,25 +51,25 @@ export const Self: {
         high: Computable<H>
         low: Computable<L>
     }): H | L
+    computeContext(args: {
+        containerElement: HTMLElement
+        scrollerElement: HTMLElement
+    }): ListVirtualModule.Context
     computeVirtualLayout<I, S>(args: {
-        context: ListVirtualModule.Context<S>
-        directionComputable: Computable<ListVirtualModule.DirectionEnum, [context: ListVirtualModule.Context<S>]>
-        gridComputable: Computable<number, [context: ListVirtualModule.Context<S>]>
+        context: ListVirtualModule.Context
+        deps: S,
+        direction: ListVirtualModule.DirectionEnum
+        grid: number
         itemKeyOf(item: I, idx: number): number | string
         items: Array<I>
-        itemSizeOf(item: I, idx: number, context: ListVirtualModule.Context<S>): ListVirtualModule.LayoutBox
-        offscreenComputable: Computable<number, [context: ListVirtualModule.Context<S>]>
-    }): ListVirtualModule.Layout<I>
+        itemSizeOf(item: I, idx: number, context: ListVirtualModule.Context, deps: S): ListVirtualModule.LayoutBox
+        offscreen: number
+    }): ListVirtualModule.Layout<I, S>
     computeRenderState<I>(args: {
         offscreen: number
         scrollPositionKey: number
         virtualLayoutMap: ListVirtualModule.LayoutMap<I>
     }): ListVirtualModule.LayoutList<I>
-    computeContext<S>(args: {
-        contextState: S
-        containerElement: HTMLElement
-        scrollerElement: HTMLElement
-    }): ListVirtualModule.Context<S>
     computeItemKeyOf(item: unknown, idx: number): number | string
     computeVirtualLayoutKeyOf(args: {
         containerDimension: number
@@ -117,20 +117,64 @@ export const Self: {
         }
     },
 
+    computeContext(args) {
+        const {containerElement, scrollerElement} = args
+
+        return {
+            containerClient: {
+                height: Math.max(1, containerElement.clientHeight),
+                width: Math.max(1, containerElement.clientWidth),
+            },
+            containerOffset: {
+                height: Math.max(1, containerElement.offsetHeight),
+                width: Math.max(1, containerElement.offsetWidth),
+            },
+            scrollerClient: {
+                height: Math.max(1, scrollerElement.clientHeight),
+                width: Math.max(1, scrollerElement.clientWidth),
+            },
+            scrollerOffset: {
+                height: Math.max(1, scrollerElement.offsetHeight),
+                width: Math.max(1, scrollerElement.offsetWidth),
+            },
+            documentClient: {
+                height: Math.max(1, document.documentElement.clientHeight),
+                width: Math.max(1, document.documentElement.clientWidth),
+            },
+            documentOffset: {
+                height: Math.max(1, document.documentElement.offsetHeight),
+                width: Math.max(1, document.documentElement.offsetWidth),
+            },
+            windowInner: {
+                height: Math.max(1, window.innerHeight),
+                width: Math.max(1, window.innerWidth),
+            },
+            windowOuter: {
+                height: Math.max(1, window.outerHeight),
+                width: Math.max(1, window.outerWidth),
+            },
+            windowScreen: {
+                height: Math.max(1, window.screen.height),
+                width: Math.max(1, window.screen.width),
+            },
+            windowVisualViewport: {
+                height: Math.max(1, window.visualViewport?.height ?? 0),
+                width: Math.max(1, window.visualViewport?.width ?? 0),
+            },
+        }
+    },
+
     computeVirtualLayout(args) {
         const {
             context,
-            directionComputable,
-            gridComputable,
+            deps,
+            direction,
+            grid,
             itemKeyOf,
             items,
             itemSizeOf,
-            offscreenComputable,
+            offscreen,
         } = args
-
-        const direction = compute(directionComputable, context)
-        const grid = compute(gridComputable, context)
-        const offscreen = Math.max(1, compute(offscreenComputable, context))
 
         const containerDirectionSize = Self.matchDirection(direction, {
             horizontal: context.containerClient.width,
@@ -145,7 +189,7 @@ export const Self: {
         let gridItemDirectionSizeMax = 0
 
         items.forEach((item, idx) => {
-            const itemBaseBox = itemSizeOf(item, idx, context)
+            const itemBaseBox = itemSizeOf(item, idx, context, deps)
             const itemGridIdx = idx % grid
             const itemDirectionOffset = virtualDirectionSize
 
@@ -217,6 +261,8 @@ export const Self: {
         })
 
         return {
+            context: context,
+            deps: deps,
             direction: direction,
             grid: grid,
             offscreen: offscreen,
@@ -254,54 +300,6 @@ export const Self: {
         return renderState
     },
 
-    computeContext(args) {
-        const {contextState, containerElement, scrollerElement} = args
-
-        return {
-            state: contextState,
-            containerClient: {
-                height: Math.max(1, containerElement.clientHeight),
-                width: Math.max(1, containerElement.clientWidth),
-            },
-            containerOffset: {
-                height: Math.max(1, containerElement.offsetHeight),
-                width: Math.max(1, containerElement.offsetWidth),
-            },
-            scrollerClient: {
-                height: Math.max(1, scrollerElement.clientHeight),
-                width: Math.max(1, scrollerElement.clientWidth),
-            },
-            scrollerOffset: {
-                height: Math.max(1, scrollerElement.offsetHeight),
-                width: Math.max(1, scrollerElement.offsetWidth),
-            },
-            documentClient: {
-                height: Math.max(1, document.documentElement.clientHeight),
-                width: Math.max(1, document.documentElement.clientWidth),
-            },
-            documentOffset: {
-                height: Math.max(1, document.documentElement.offsetHeight),
-                width: Math.max(1, document.documentElement.offsetWidth),
-            },
-            windowInner: {
-                height: Math.max(1, window.innerHeight),
-                width: Math.max(1, window.innerWidth),
-            },
-            windowOuter: {
-                height: Math.max(1, window.outerHeight),
-                width: Math.max(1, window.outerWidth),
-            },
-            windowScreen: {
-                height: Math.max(1, window.screen.height),
-                width: Math.max(1, window.screen.width),
-            },
-            windowVisualViewport: {
-                height: Math.max(1, window.visualViewport?.height ?? 0),
-                width: Math.max(1, window.visualViewport?.width ?? 0),
-            },
-        }
-    },
-
     computeItemKeyOf(item, idx) {
         return idx
     },
@@ -317,7 +315,7 @@ export const Self: {
             display: 'flex',
         }
 
-        if (!direction) {
+        if (! direction) {
             return sharedStyles
         }
 
@@ -347,7 +345,7 @@ export const Self: {
             flexBasis: 0,
         }
 
-        if (!direction) {
+        if (! direction) {
             return sharedStyles
         }
 
@@ -393,8 +391,7 @@ export declare namespace ListVirtualModule {
     type LayoutList<I> = Array<LayoutItem<I>>
     type LayoutMap<I> = Map<number, LayoutList<I>>
 
-    interface Context<S> {
-        state: S
+    interface Context {
         containerClient: LayoutBox
         containerOffset: LayoutBox
         scrollerClient: LayoutBox
@@ -407,7 +404,9 @@ export declare namespace ListVirtualModule {
         windowVisualViewport: LayoutBox
     }
 
-    interface Layout<I> {
+    interface Layout<I, S> {
+        context: Context
+        deps: S
         direction: DirectionEnum
         grid: number
         offscreen: number
