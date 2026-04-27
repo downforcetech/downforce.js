@@ -1,12 +1,8 @@
 import {isArray} from '../array/array-is.js'
-import {throwInvalidArgument} from '../error/error-new.js'
 import {isFunction} from '../fn/fn-is.js'
 import type {TaskAsync} from '../fn/fn-type.js'
 import {isObject} from '../object/object-is.js'
 
-/**
-* @throws InvalidArgument
-*/
 export async function runAsyncTimeline(timeline: AsyncTimelineMixed): Promise<unknown> {
     if (isFunction(timeline)) {
         return timeline()
@@ -23,11 +19,7 @@ export async function runAsyncTimeline(timeline: AsyncTimelineMixed): Promise<un
             Object.values(timeline).map(runAsyncTimeline),
         )
     }
-
-    return throwInvalidArgument(
-        'runAsyncTimeline(~~timeline~~):\n'
-        + `timeline must be a Function | Array | Object, given "${timeline}".`
-    )
+    return
 }
 
 // Types ///////////////////////////////////////////////////////////////////////

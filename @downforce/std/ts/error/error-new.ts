@@ -7,10 +7,8 @@ export class StdError extends Error {
 
 export class InvalidArgument extends StdError {}
 export class InvalidInput extends StdError {}
-
-export class InvalidCondition extends StdError {}
 export class InvalidType extends StdError {}
-
+export class InvalidCondition extends StdError {}
 export class UnexpectedCondition extends StdError {}
 
 /**
@@ -35,17 +33,17 @@ export function throwInvalidInput(message?: undefined | string): never {
 }
 
 /**
-* @throws InvalidCondition
-*/
-export function throwInvalidCondition(message: string): never {
-    return throwError(new InvalidCondition(message))
-}
-
-/**
 * @throws InvalidType
 */
 export function throwInvalidType(message: string): never {
     return throwError(new InvalidType(message))
+}
+
+/**
+* @throws InvalidCondition
+*/
+export function throwInvalidCondition(message: string): never {
+    return throwError(new InvalidCondition(message))
 }
 
 /**

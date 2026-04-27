@@ -52,9 +52,7 @@ export function getContainerInternals<M extends ContainerServicesMap, S>(contain
     return container[ContainerInternalsKey]!
 }
 
-/**
-* @throws
-*
+/*
 * Provides a service instance.
 *
 * EXAMPLE
@@ -76,9 +74,7 @@ function defineContainerService<M extends ContainerServicesMap, S, I extends key
     })
 }
 
-/**
-* @throws
-*
+/*
 * Provides a service instance.
 *
 * EXAMPLE
@@ -134,9 +130,6 @@ export type Container<M extends ContainerServicesMap = ContainerServicesMap, S =
     & ContainerStateProps<S>
     & {
         [key: symbol]: ContainerInternals<M, S>
-        /**
-        * @throws
-        */
         require<K extends keyof M>(id: K, options?: undefined | ContainerServiceOptions): M[K]
     }
 
