@@ -1,11 +1,11 @@
 import type {Io} from '../fn/fn-type.js'
 import {isUndefined} from '../optional/optional-is.js'
 
-// We don't define isInteger as a type predicate, because would lead to an incorrect control flow.
+// We don't define isInteger as a type predicate, because it would lead to an incorrect control flow.
 // export function isInteger(value: unknown): value is number
 export function isInteger(value: number): boolean {
-    // return isNumber(value) && value % 1 === 0
     return Number.isInteger(value)
+    // return isNumber(value) && value % 1 === 0
 }
 
 export function isBetween(from: number, value: number, to: number): boolean {
@@ -19,7 +19,7 @@ export function clamp(from: number, value: number, to: number): number {
     const min = Math.min(from, to)
     const max = Math.max(from, to)
 
-    return Math.min(max, Math.max(min, value))
+    return Math.max(min, Math.min(max, value))
 }
 
 export function round(value: number, round: number): number {
