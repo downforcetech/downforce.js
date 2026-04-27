@@ -1,23 +1,23 @@
 import type {Io} from '@downforce/std/fn'
 import {JsonType} from '../mimetype.js'
-import {mergeRequestHeaders} from './request-headers.js'
+import {mergeRequestHeaders, type RequestHeadersInit} from './request-headers.js'
 import {setupRequestOptions} from './request-options.js'
 
 /**
 * @throws TypeError | InvalidArgument
 **/
-export function setupRequestJson(request: Request, body: unknown, headers?: undefined | HeadersInit): Request {
+export function setupRequestJson(request: Request, body: unknown, headers?: undefined | RequestHeadersInit): Request {
     return setupRequestOptions(request, createRequestJsonOptions(body, headers))
 }
 
 /**
 * @throws TypeError | InvalidArgument
 **/
-export function useRequestJson(body: unknown, headers?: undefined | HeadersInit): Io<Request, Request> {
+export function useRequestJson(body: unknown, headers?: undefined | RequestHeadersInit): Io<Request, Request> {
     return (request: Request) => setupRequestJson(request, body, headers)
 }
 
-export function createRequestJsonOptions(body: unknown, headersOptional?: undefined | HeadersInit): RequestInit {
+export function createRequestJsonOptions(body: unknown, headersOptional?: undefined | RequestHeadersInit): RequestInit {
     const jsonHeaders: HeadersInit = {
         'Content-Type': JsonType,
     }

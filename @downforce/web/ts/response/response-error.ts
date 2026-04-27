@@ -1,7 +1,7 @@
 import {isArray} from '@downforce/std/array'
 import {decodeResponseBody} from './response-body.js'
 
-export const ResponseErrorMonadTag = '@downforce/web/response/error'
+export const ResponseErrorMonadTag = '@downforce/web/response:error'
 
 export class ResponseErrorKit {
     static new(status: number, body: unknown): ResponseErrorMonad {
@@ -30,11 +30,11 @@ export function createResponseError(status: number, body: unknown): ResponseErro
 /**
 * @throws ResponseError
 **/
-export async function rejectResponseWhenError(responsePromise: Response | Promise<Response>): Promise<Response> {
+export async function rejectResponseIfFailed(responsePromise: Response | Promise<Response>): Promise<Response> {
     const response = await responsePromise
 
     try {
-        return throwResponseWhenError(response)
+        return throwResponseIfFailed(response)
     }
     catch {
         throw createResponseError(response.status, await decodeResponseBody(response))
@@ -44,7 +44,7 @@ export async function rejectResponseWhenError(responsePromise: Response | Promis
 /**
 * @throws Response
 **/
-export function throwResponseWhenError(response: Response): Response {
+export function throwResponseIfFailed(response: Response): Response {
     if (! response.ok) {
         throw response
     }

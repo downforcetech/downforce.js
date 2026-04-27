@@ -1,7 +1,7 @@
 import type {Io} from '@downforce/std/fn'
 import type {ObjectPartial} from '@downforce/std/type'
 import {cloneRequest} from './request-clone.js'
-import {mergeRequestHeaders} from './request-headers.js'
+import {mergeRequestHeaders, type RequestHeadersInit} from './request-headers.js'
 import type {RequestMethodEnum} from './request-method.js'
 
 /**
@@ -47,7 +47,7 @@ export function useRequestMethod(method: undefined | RequestMethodEnum): Io<Requ
 /**
 * @throws InvalidArgument
 **/
-export function setupRequestHeaders(request: Request, ...headersList: Array<HeadersInit>): Request {
+export function setupRequestHeaders(request: Request, ...headersList: Array<RequestHeadersInit>): Request {
     return cloneRequest(request, {
         headers: mergeRequestHeaders(request.headers, ...headersList),
     })
@@ -56,7 +56,7 @@ export function setupRequestHeaders(request: Request, ...headersList: Array<Head
 /**
 * @throws InvalidArgument
 **/
-export function useRequestHeaders(...headersList: Array<HeadersInit>): Io<Request, Request> {
+export function useRequestHeaders(...headersList: Array<RequestHeadersInit>): Io<Request, Request> {
     return (request: Request) => setupRequestHeaders(request, ...headersList)
 }
 

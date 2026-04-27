@@ -1,42 +1,49 @@
 import {wait} from '@downforce/std/async'
 import {OneSecondInMs} from '@downforce/std/date'
-import {identity, type Fn, type Io} from '@downforce/std/fn'
+import {compute, isFunction, type Computable, type Fn, type Io} from '@downforce/std/fn'
+import {clamp} from '@downforce/std/number'
+import type {Void} from '@downforce/std/type'
 import {cloneRequestWithBody} from './request-clone.js'
 
 /**
 * @throws
 **/
-export function setupRequestRetry(request: Request, options?: undefined | RequestRetryOptions): Promise<Response> {
+export async function setupRequestRetry(request: Request, options?: undefined | RequestRetryOptions): Promise<Response> {
     const executor: Io<Request, Promise<Response>> = options?.executor ?? fetch
-    const assert = options?.assert ?? identity
-    const times = options?.times ?? 3
-    const delay = options?.delay ?? OneSecondInMs
-    const delayFactor = options?.delayFactor ?? 3
-    const delayMax = options?.delayMax ?? 30_000
-    const onError = options?.onError ?? console.error
+    const computeDelay = isFunction(options?.delay) ? options.delay : createRequestRetryDelayComputer(options?.delay)
+    const shouldRetry = options?.shouldRetry ?? isRequestRetryable
+    const retryTimes = Math.max(0, options?.times ?? 3)
+    const onRetry = options?.onRetry
 
-    /**
-    * @throws
-    **/
-    async function retry(error: unknown) {
-        if (times === 0) {
-            throw error
-        }
+    let retryAttempt = 0
 
-        onError(error)
-
-        await wait(delay)
-
-        return setupRequestRetry(request, {
-            ...options,
-            times: times - 1,
-            delay: Math.min(delayMax, delay * delayFactor),
-        })
+    function executeRequest(): Promise<Response> {
+        // We need to clone the request otherwise a TypeError is raised due to used body.
+        // `new Request(request)` doesn't work; we need `request.clone()`.
+        return executor(cloneRequestWithBody(request))
     }
 
-    // We need to clone the request otherwise a TypeError is raised due to used body.
-    // `new Request(request)` doesn't work; we need `request.clone()`.
-    return executor(cloneRequestWithBody(request)).then(assert).catch(retry)
+    while (true) {
+        const responsePromise = executeRequest()
+
+        if (! await shouldRetry(responsePromise)) {
+            return responsePromise
+        }
+
+        if (retryAttempt === retryTimes) {
+            throw responsePromise
+        }
+
+        retryAttempt += 1
+
+        const retryDelay = computeDelay(retryAttempt)
+
+        await wait(retryDelay)
+
+        onRetry?.(retryAttempt, request, responsePromise)
+
+        continue
+    }
 }
 /**
 * @throws
@@ -49,17 +56,7 @@ export function useRequestRetry(options?: undefined | RequestRetryOptions): Io<R
     return continuation
 }
 
-/**
-* EXAMPLE
-*
-* const retryOptions: RequestRetryOptions = {
-*     assert: rejectOnServerRecoverableStatus,
-*     delay: 3_000,
-*     delayFactor: 2,
-*     times: 2,
-* }
-*/
-export async function rejectOnServerRecoverableStatus(responsePromise: Response | Promise<Response>): Promise<Response> {
+export async function isRequestRetryable(responsePromise: Promise<Response>): Promise<boolean> {
     const response = await responsePromise
 
     // Selects response errors eligible for retrying.
@@ -70,23 +67,43 @@ export async function rejectOnServerRecoverableStatus(responsePromise: Response 
         case 503: // Service Unavailable
         case 504: // Gateway Timeout
         case 507: // Insufficient Storage
-            throw response
+            return true
     }
+    return false
+}
 
-    return response
+export function createRequestRetryDelayComputer(options?: undefined | RequestRetryDelayOptions): RequestRetryDelayComputer {
+    return (attempt: number) => computeRequestRetryDelay(attempt, options)
+}
+
+export function computeRequestRetryDelay(attempt: number, options?: undefined | RequestRetryDelayOptions): number {
+    const delayBase = compute(options?.delayBase ?? 2, attempt)
+    const delayExp = compute(options?.delayExp ?? (attempt - 1), attempt)
+    const delayFactor = compute(options?.delayFactor ?? attempt, attempt)
+    const delayMax = options?.delayMax ?? 30_000
+    const delayMin = options?.delayMin ?? 1_000
+
+    const delay = OneSecondInMs * delayFactor * Math.pow(delayBase, delayExp)
+
+    return clamp(delayMin, delay, delayMax)
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
 
 export interface RequestRetryOptions {
-    /**
-    * @throws
-    **/
-    assert?: undefined | Io<Response, Response | Promise<Response>>
-    delay?: undefined | number // In milliseconds.
-    delayFactor?: undefined | number
-    delayMax?: undefined | number // In milliseconds.
+    delay?: undefined | RequestRetryDelayOptions | RequestRetryDelayComputer
     executor?: undefined | Io<Request, Promise<Response>>
-    onError?: undefined | Fn<[error: unknown], undefined>
+    onRetry?: undefined | Fn<[attempt: number, request: Request, response: Promise<Response>], Void>
+    shouldRetry?: undefined | Io<Promise<Response>, Promise<boolean>>
     times?: undefined | number
 }
+
+export interface RequestRetryDelayOptions {
+    delayBase?: undefined | Computable<number, [attempt: number]> // In milliseconds.
+    delayExp?: undefined | Computable<number, [attempt: number]>
+    delayFactor?: undefined | Computable<number, [attempt: number]>
+    delayMin?: undefined | number // In milliseconds.
+    delayMax?: undefined | number // In milliseconds.
+}
+
+export type RequestRetryDelayComputer = (attempt: number) => number
