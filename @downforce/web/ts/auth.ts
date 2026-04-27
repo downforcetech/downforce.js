@@ -1,8 +1,8 @@
-import {compute, piped, type Computable, type Fn, type FnArgs} from '@downforce/std/fn'
+import {compute, pipe, piped, type Computable, type Fn, type FnArgs} from '@downforce/std/fn'
 import {isObject} from '@downforce/std/object'
 import {trustString} from '@downforce/std/string'
 import {throwInvalidResponse} from './error.js'
-import {buildRequest, RequestMethod, useRequestJson} from './request.js'
+import {createRequest, RequestMethod, setupRequestJson} from './request.js'
 import {decodeResponseBody} from './response.js'
 
 export const AuthUrlDefault = '/auth'
@@ -20,13 +20,13 @@ export async function authenticate(credentials: AuthCredentials, optionsComputab
     const method = methodOptional ?? RequestMethod.Post
     const requestBody = requestBodyOptional ?? createDefaultRequestBody(credentials)
 
-    const response = await buildRequest(method, url, requestOptions)
-        (useRequestJson(requestBody))
-        (fetch)
-        (promise => promise.catch(error => {
+    const response = await pipe(
+        createRequest(method, url, requestOptions),
+        request => setupRequestJson(request, requestBody),
+        request => fetch(request).catch(error => {
             return throwAuthInvalidResponse('authenticate', AuthMessages.failedResponse(error))
-        }))
-    ()
+        }),
+    )
 
     const responseBody = await piped(response)
         (decodeResponseBody)
@@ -69,12 +69,12 @@ export async function validateAuthentication(token: string, optionsComputable: A
 
     const method = methodOptional ?? RequestMethod.Get
 
-    const response = await buildRequest(method, url, requestOptions)
-        (fetch)
-        (promise => promise.catch(error => {
+    const response = await pipe(
+        createRequest(method, url, requestOptions),
+        request => fetch(request).catch(error => {
             return throwAuthInvalidResponse('validateAuthentication', AuthMessages.failedResponse(error))
-        }))
-    ()
+        }),
+    )
 
     return response.ok
 }
@@ -88,12 +88,12 @@ export async function invalidateAuthentication(token: string, optionsComputable:
 
     const method = methodOptional ?? RequestMethod.Delete
 
-    const response = await buildRequest(method, url, requestOptions)
-        (fetch)
-        (promise => promise.catch(error => {
+    const response = await pipe(
+        createRequest(method, url, requestOptions),
+        request => fetch(request).catch(error => {
             return throwAuthInvalidResponse('invalidateAuthentication', AuthMessages.failedResponse(error))
-        }))
-    ()
+        }),
+    )
 
     if (! response.ok) {
         return throwAuthInvalidResponse('invalidateAuthentication', AuthMessages.invalidResponseStatus(response))

@@ -1,9 +1,10 @@
 import {isArray} from '@downforce/std/array'
 import {isDateString} from '@downforce/std/date'
-import {throwInvalidArgument} from '@downforce/std/error'
 import type {Fn, Io} from '@downforce/std/fn'
+import {isNumber} from '@downforce/std/number'
 import {isObject} from '@downforce/std/object'
-import {isSome} from '@downforce/std/optional'
+import {isNull, isSome, isUndefined} from '@downforce/std/optional'
+import {isString} from '@downforce/std/string'
 import {kindOf} from '@downforce/std/type'
 
 export function joinUrlWithParams(url: string, params: UrlParams, options?: undefined | UrlParamsEncodeOptions): string {
@@ -33,9 +34,6 @@ export function joinUrlParamsList(paramsList: Array<string>): string {
     return paramsList.filter(Boolean).join('&')
 }
 
-/**
-* @throws InvalidArgument
-**/
 export function encodeUrlParams(params: undefined | UrlParams, options?: undefined | UrlParamsEncodeOptions): string {
     if (! params) {
         return ''
@@ -51,17 +49,9 @@ export function encodeUrlParams(params: undefined | UrlParams, options?: undefin
     if (isArray(params)) {
         return encodeUrlParamsArray(params, options)
     }
-
-    return throwInvalidArgument(
-        '@downforce/web/url-params.encodeUrlParams(~~params~~):\n'
-        + 'params is of an invalid type.\n'
-        + `Must be a <undefined | null | string | object | array>, given "${params}".`
-    )
+    return ''
 }
 
-/**
-* @throws InvalidArgument
-**/
 export function encodeUrlParamsObject(params: UrlParamsDict, options?: undefined | UrlParamsEncodeOptions): string {
     const encodeKey = options?.encodeKey ?? encodeUrlParamKey
     const encodeValue = options?.encodeValue ?? encodeUrlParamValue
@@ -69,18 +59,15 @@ export function encodeUrlParamsObject(params: UrlParamsDict, options?: undefined
     const joinParts = options?.joinParts ?? joinUrlParamsList
 
     const paramsParts = Object.entries(params).map(([key, value]) => {
-        const valueType = kindOf(value, 'undefined', 'null')
-
-        switch (valueType) {
-            case 'undefined':
-                // A key with an undefined value is removed.
-                return
-            case 'null':
-                // A key with a null value is encoded without a value.
-                return encodeKey(key)
-            default:
-                return joinParam(encodeKey(key), encodeValue(value))
+        if (isUndefined(value)) {
+            // A key with an undefined value is removed.
+            return
         }
+        if (isNull(value)) {
+            // A key with a null value is encoded without a value.
+            return encodeKey(key)
+        }
+        return joinParam(encodeKey(key), encodeValue(value))
     }).filter(isSome)
 
     const encodedParams = joinParts(paramsParts)
@@ -88,9 +75,6 @@ export function encodeUrlParamsObject(params: UrlParamsDict, options?: undefined
     return encodedParams
 }
 
-/**
-* @throws InvalidArgument
-**/
 export function encodeUrlParamsArray(params: UrlParamsList, options?: undefined | UrlParamsEncodeOptions): string {
     const encodeKey = options?.encodeKey ?? encodeUrlParamKey
     const joinParts = options?.joinParts ?? joinUrlParamsList
@@ -106,7 +90,9 @@ export function encodeUrlParamsArray(params: UrlParamsList, options?: undefined 
             case 'array':
             case 'object':
                 return encodeUrlParams(param as UrlParamsList | UrlParamsDict, options)
-            default: // string or number.
+            // case 'string'
+            // case 'number'
+            default:
                 return encodeKey(param)
         }
     }).filter(isSome)
@@ -116,33 +102,21 @@ export function encodeUrlParamsArray(params: UrlParamsList, options?: undefined 
     return encodedParams
 }
 
-/**
-* @throws InvalidArgument
-**/
 export function encodeUrlParamKey(name: unknown): string {
-    const type = kindOf(name, 'string', 'number')
-
-    switch (type) {
-        case 'string':
-            return encodeURIComponent(name as string)
-        case 'number':
-            return String(name)
-        default:
-            return throwInvalidArgument(
-                '@downforce/web/url-params.defaultEncodeParamName(~~name~~):\n'
-                + `name is of an invalid type.\n`
-                + `Must be <number | string>, given "${name}".`
-            )
+    if (isString(name)) {
+        return encodeURIComponent(name as string)
     }
+    if (isNumber(name)) {
+        return String(name)
+    }
+    return ''
 }
 
-/**
-* @throws InvalidArgument
-**/
 export function encodeUrlParamValue(value: unknown): string {
-    const type = kindOf(value, 'null', 'boolean', 'number', 'string', 'array', 'object')
+    const type = kindOf(value, 'undefined', 'null', 'boolean', 'number', 'string', 'array', 'object')
 
     switch (type) {
+        case 'undefined':
         case 'null':
             return ''
         case 'boolean':
@@ -153,12 +127,8 @@ export function encodeUrlParamValue(value: unknown): string {
         case 'array':
         case 'object':
             return encodeURIComponent(JSON.stringify(value))
-        default: // undefined.
-            return throwInvalidArgument(
-                '@downforce/web/url-params.defaultEncodeParamValue(~~value~~):\n'
-                + `value is of an invalid type.\n`
-                + `Must be <null | boolean | number | string | array | object>, given "${value}".`
-            )
+        default:
+            return ''
     }
 }
 

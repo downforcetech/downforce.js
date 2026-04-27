@@ -51,9 +51,6 @@ export function decodeRouteParams(paramsString: undefined | string): undefined |
     return params
 }
 
-/**
-* @throws InvalidArgument
-**/
 export function encodeLink(url: string, params?: undefined | RouterRouteChangeParams): string {
     const [urlPath, urlParams] = url.split('?')
     const paramsString = encodeRouteParams(params)
@@ -62,9 +59,6 @@ export function encodeLink(url: string, params?: undefined | RouterRouteChangePa
     return linkEncoded
 }
 
-/**
-* @throws InvalidArgument
-**/
 export function encodeRoute(path: string, params?: undefined | RouterRouteChangeParams): string {
     const paramsString = encodeRouteParams(params)
     const routeEncoded = joinUrlWithParamsString(path, paramsString)
@@ -78,9 +72,6 @@ export function encodeRouteParams(params: undefined | RouterRouteChangeParams): 
     })
 }
 
-/**
-* @throws InvalidArgument
-**/
 export function encodeRouteParamKey(key: unknown): string {
     if (isString(key)) {
         // We don't encode route params keys of type string.
@@ -94,9 +85,6 @@ export function encodeRouteParamKey(key: unknown): string {
     return encodeUrlParamKey(key)
 }
 
-/**
-* @throws InvalidArgument
-**/
 export function encodeRouteParamValue(value: unknown): string {
     if (isString(value)) {
         // We don't encode route params values of type string.
@@ -110,9 +98,6 @@ export function encodeRouteParamValue(value: unknown): string {
     return encodeUrlParamValue(value)
 }
 
-/**
-* @throws InvalidArgument
-**/
 export function flattenRouteParams(routeParams: RouterRouteChangeParams): RouterRouteParams
 export function flattenRouteParams(routeParams: undefined | RouterRouteChangeParams): undefined | RouterRouteParams
 export function flattenRouteParams(routeParams: undefined | RouterRouteChangeParams): undefined | RouterRouteParams {

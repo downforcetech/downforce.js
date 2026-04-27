@@ -1,11 +1,10 @@
 import {isArray} from '@downforce/std/array'
-import {decodeResponseBody} from './response-body.js'
 
 export const ResponseErrorMonadTag = '@downforce/web/response:error'
 
 export class ResponseErrorKit {
-    static new(status: number, body: unknown): ResponseErrorMonad {
-        return createResponseError(status, body)
+    static new(status: number, response: Response): ResponseErrorMonad {
+        return createResponseError(status, response)
     }
 
     static isError(value: unknown): value is ResponseError {
@@ -23,28 +22,28 @@ export function isResponseError(value: unknown): value is ResponseError {
     return monadTag === ResponseErrorMonadTag
 }
 
-export function createResponseError(status: number, body: unknown): ResponseErrorMonad {
-    return [status, body, ResponseErrorMonadTag]
+export function createResponseError(status: number, response: Response): ResponseErrorMonad {
+    return [status, response, ResponseErrorMonadTag]
 }
 
 /**
-* @throws ResponseError
+* @throws [number, Response, string]
 **/
-export async function rejectResponseIfFailed(responsePromise: Response | Promise<Response>): Promise<Response> {
+export async function rejectResponseFailed(responsePromise: Response | Promise<Response>): Promise<Response> {
     const response = await responsePromise
 
     try {
-        return throwResponseIfFailed(response)
+        return throwResponseFailed(response)
     }
     catch {
-        throw createResponseError(response.status, await decodeResponseBody(response))
+        throw createResponseError(response.status, response)
     }
 }
 
 /**
 * @throws Response
 **/
-export function throwResponseIfFailed(response: Response): Response {
+export function throwResponseFailed(response: Response): Response {
     if (! response.ok) {
         throw response
     }
@@ -53,5 +52,5 @@ export function throwResponseIfFailed(response: Response): Response {
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export type ResponseError = [status: number, body: unknown]
+export type ResponseError = [status: number, response: Response]
 export type ResponseErrorMonad = [...ResponseError, monadTag: typeof ResponseErrorMonadTag]

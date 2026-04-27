@@ -1,4 +1,5 @@
-import {isUrlWithScheme, joinUrlPaths} from '../url.js'
+import {isUrlWithScheme} from '../url/url-mix.js'
+import {joinUrlPaths} from '../url/url-path.js'
 
 export function joinRequestPath(baseUrl: undefined | string, path: string): string {
     if (! baseUrl) {

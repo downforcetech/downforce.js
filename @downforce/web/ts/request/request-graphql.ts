@@ -1,10 +1,9 @@
-import type {UrlParams} from '../url.js'
+import type {UrlParams} from '../url/url-params.js'
 
 export const GraphqlQueryCommentRegexp: RegExp = /[#].*/g
 export const GraphqlQueryEmptiesRegexp: RegExp = /\s+/g
 export const GraphqlQueryLeadingEmptiesRegexp: RegExp = /\s+([{}])/g
 export const GraphqlQueryTrailingEmptiesRegexp: RegExp = /([{}])\s+/g
-
 
 export function createGraphqlGetParams(
     query: string,

@@ -1,14 +1,11 @@
 import type {Io} from '@downforce/std/fn'
-import {isDefined} from '@downforce/std/optional'
+import {isNone} from '@downforce/std/optional'
 import {isString} from '@downforce/std/string'
-import {setupRequestBody} from './request-options.js'
 import {setupRequestJson} from './request-json.js'
+import {setupRequestBody} from './request-options.js'
 
-/**
-* @throws
-**/
 export function setupRequestPayload(request: Request, body: undefined | BodyInit | unknown): Request {
-    if (! isDefined(body)) {
+    if (isNone(body)) {
         return request
     }
     if (isString(body)) {
@@ -34,9 +31,6 @@ export function setupRequestPayload(request: Request, body: undefined | BodyInit
     return setupRequestJson(request, body)
 }
 
-/**
-* @throws
-**/
-export function useRequestPayload(body: undefined | BodyInit | unknown): Io<Request, Request> {
+export function _setupRequestPayload(body: undefined | BodyInit | unknown): Io<Request, Request> {
     return (request: Request) => setupRequestPayload(request, body)
 }

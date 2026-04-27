@@ -1,12 +1,14 @@
 import {isArray} from '@downforce/std/array'
-import {throwInvalidArgument} from '@downforce/std/error'
 import {isObject, omitObjectPropsUndefined} from '@downforce/std/object'
-import {isNone, type None} from '@downforce/std/optional'
+import type {None} from '@downforce/std/optional'
 
-/**
-* @throws InvalidArgument
-**/
 export function mergeRequestHeaders(...headersList: Array<None | RequestHeadersInit>): Record<string, string> {
+    return omitObjectPropsUndefined(
+        mergeRequestHeadersPartial(...headersList),
+    ) as Record<string, string>
+}
+
+export function mergeRequestHeadersPartial(...headersList: Array<None | RequestHeadersInit>): Record<string, undefined | string> {
     const headersMap: Record<string, undefined | string> = {}
 
     for (const headers of headersList) {
@@ -25,17 +27,9 @@ export function mergeRequestHeaders(...headersList: Array<None | RequestHeadersI
         else if (isObject(headers)) {
             Object.assign(headersMap, headers)
         }
-        else if (isNone(headers)) {
-        }
-        else {
-            return throwInvalidArgument(
-                '@downforce/web/request.mergeRequestHeaders(...list: Array<HeadersInit>):\n'
-                + `HeadersInit must be undefined | null | Object | Array | Headers, given "${headers}".`
-            )
-        }
     }
 
-    return omitObjectPropsUndefined(headersMap) as Record<string, string>
+    return headersMap
 }
 
 // Types ///////////////////////////////////////////////////////////////////////

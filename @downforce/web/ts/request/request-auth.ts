@@ -8,17 +8,11 @@ export function createRequestAuthorizationHeaders(type: RequestAuthorizationType
     } satisfies HeadersInit
 }
 
-/**
-* @throws
-**/
 export function setupRequestAuthorization(request: Request, type: RequestAuthorizationType, value: string): Request {
     return setupRequestHeaders(request, createRequestAuthorizationHeaders(type, value))
 }
 
-/**
-* @throws
-**/
-export function useRequestAuthorization(type: RequestAuthorizationType, value: string): Io<Request, Request> {
+export function _setupRequestAuthorization(type: RequestAuthorizationType, value: string): Io<Request, Request> {
     return (request: Request) => setupRequestAuthorization(request, type, value)
 }
 

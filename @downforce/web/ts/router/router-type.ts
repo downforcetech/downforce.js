@@ -8,13 +8,7 @@ export interface Router {
     readonly started: boolean
     start(): undefined
     stop(): undefined
-    /**
-    * @throws InvalidArgument
-    **/
     changeRoute(change: RouterRouteChange): undefined
-    /**
-    * @throws InvalidArgument
-    **/
     createLink(path: string, params?: undefined | RouterRouteChangeParams): string
 }
 

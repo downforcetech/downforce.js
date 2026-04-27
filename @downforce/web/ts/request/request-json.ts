@@ -3,17 +3,11 @@ import {JsonType} from '../mimetype.js'
 import {mergeRequestHeaders, type RequestHeadersInit} from './request-headers.js'
 import {setupRequestOptions} from './request-options.js'
 
-/**
-* @throws TypeError | InvalidArgument
-**/
 export function setupRequestJson(request: Request, body: unknown, headers?: undefined | RequestHeadersInit): Request {
     return setupRequestOptions(request, createRequestJsonOptions(body, headers))
 }
 
-/**
-* @throws TypeError | InvalidArgument
-**/
-export function useRequestJson(body: unknown, headers?: undefined | RequestHeadersInit): Io<Request, Request> {
+export function _setupRequestJson(body: unknown, headers?: undefined | RequestHeadersInit): Io<Request, Request> {
     return (request: Request) => setupRequestJson(request, body, headers)
 }
 

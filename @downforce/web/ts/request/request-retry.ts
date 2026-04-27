@@ -5,9 +5,6 @@ import {clamp} from '@downforce/std/number'
 import type {Void} from '@downforce/std/type'
 import {cloneRequestWithBody} from './request-clone.js'
 
-/**
-* @throws
-**/
 export async function setupRequestRetry(request: Request, options?: undefined | RequestRetryOptions): Promise<Response> {
     const executor: Io<Request, Promise<Response>> = options?.executor ?? fetch
     const computeDelay = isFunction(options?.delay) ? options.delay : createRequestRetryDelayComputer(options?.delay)
@@ -45,10 +42,8 @@ export async function setupRequestRetry(request: Request, options?: undefined | 
         continue
     }
 }
-/**
-* @throws
-**/
-export function useRequestRetry(options?: undefined | RequestRetryOptions): Io<Request, Promise<Response>> {
+
+export function _setupRequestRetry(options?: undefined | RequestRetryOptions): Io<Request, Promise<Response>> {
     function continuation(request: Request): Promise<Response> {
         return setupRequestRetry(request, options)
     }
