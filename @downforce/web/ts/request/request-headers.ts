@@ -1,13 +1,13 @@
 import {isArray} from '@downforce/std/array'
 import {throwInvalidArgument} from '@downforce/std/error'
-import {isObject} from '@downforce/std/object'
+import {isObject, omitObjectPropsUndefined} from '@downforce/std/object'
 import {isNone, type None} from '@downforce/std/optional'
 
 /**
 * @throws InvalidArgument
 **/
-export function mergeRequestHeaders(...headersList: Array<void | None | HeadersInit>): Record<string, string> {
-    const headersMap: Record<string, string> = {}
+export function mergeRequestHeaders(...headersList: Array<None | RequestHeadersInit>): Record<string, string> {
+    const headersMap: Record<string, undefined | string> = {}
 
     for (const headers of headersList) {
         if (headers instanceof Headers) {
@@ -35,5 +35,9 @@ export function mergeRequestHeaders(...headersList: Array<void | None | HeadersI
         }
     }
 
-    return headersMap satisfies HeadersInit
+    return omitObjectPropsUndefined(headersMap) as Record<string, string>
 }
+
+// Types ///////////////////////////////////////////////////////////////////////
+
+export type RequestHeadersInit = HeadersInit | Array<[string, undefined | string]> | Record<string, undefined | string>

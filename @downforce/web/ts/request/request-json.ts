@@ -6,8 +6,8 @@ import {setupRequestOptions} from './request-options.js'
 /**
 * @throws TypeError | InvalidArgument
 **/
-export function setupRequestJson(request: Request, body: unknown, otherHeaders?: undefined | HeadersInit): Request {
-    return setupRequestOptions(request, createRequestJsonOptions(body, otherHeaders))
+export function setupRequestJson(request: Request, body: unknown, headers?: undefined | HeadersInit): Request {
+    return setupRequestOptions(request, createRequestJsonOptions(body, headers))
 }
 
 /**
@@ -17,14 +17,14 @@ export function useRequestJson(body: unknown, headers?: undefined | HeadersInit)
     return (request: Request) => setupRequestJson(request, body, headers)
 }
 
-export function createRequestJsonOptions(body: unknown, otherHeaders?: undefined | HeadersInit): RequestInit {
+export function createRequestJsonOptions(body: unknown, headersOptional?: undefined | HeadersInit): RequestInit {
     const jsonHeaders: HeadersInit = {
         'Content-Type': JsonType,
     }
 
     return {
-        headers: otherHeaders
-            ? mergeRequestHeaders(jsonHeaders, otherHeaders)
+        headers: headersOptional
+            ? mergeRequestHeaders(jsonHeaders, headersOptional)
             : jsonHeaders
         ,
         ...body

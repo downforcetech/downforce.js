@@ -1,6 +1,6 @@
 import {wait} from '@downforce/std/async'
 import {OneSecondInMs} from '@downforce/std/date'
-import type {Fn, Io} from '@downforce/std/fn'
+import {identity, type Fn, type Io} from '@downforce/std/fn'
 import {cloneRequestWithBody} from './request-clone.js'
 
 /**
@@ -8,7 +8,7 @@ import {cloneRequestWithBody} from './request-clone.js'
 **/
 export function setupRequestRetry(request: Request, options?: undefined | RequestRetryOptions): Promise<Response> {
     const executor: Io<Request, Promise<Response>> = options?.executor ?? fetch
-    const assert = options?.assert ?? Promise.resolve<Response>
+    const assert = options?.assert ?? identity
     const times = options?.times ?? 3
     const delay = options?.delay ?? OneSecondInMs
     const delayFactor = options?.delayFactor ?? 3
@@ -82,7 +82,7 @@ export interface RequestRetryOptions {
     /**
     * @throws
     **/
-    assert?: undefined | Io<Response, Promise<Response>>
+    assert?: undefined | Io<Response, Response | Promise<Response>>
     delay?: undefined | number // In milliseconds.
     delayFactor?: undefined | number
     delayMax?: undefined | number // In milliseconds.
