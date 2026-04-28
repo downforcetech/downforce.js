@@ -5,13 +5,12 @@
     "sideEffects": false,
     "files": [
         "./LICENSE.txt",
-        "./**/*.css",
-        "./**/*.js",
-        "./**/*.d.ts"
+        "./esm/",
+        "./ts/"
     ],
     "exports": {
         "./*.css": "./ts/*.css",
-        "./*.js": "./esm/*.js"
+        "./*": "./esm/*.js"
     },
     "scripts": {
         "clean": "rm -rf ./esm/ ./.cache/ || true",
