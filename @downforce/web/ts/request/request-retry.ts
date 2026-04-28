@@ -8,7 +8,7 @@ import {cloneRequestWithBody} from './request-clone.js'
 export async function setupRequestRetry(request: Request, options?: undefined | RequestRetryOptions): Promise<Response> {
     const executor: Io<Request, Promise<Response>> = options?.executor ?? fetch
     const computeDelay = isFunction(options?.delay) ? options.delay : createRequestRetryDelayComputer(options?.delay)
-    const shouldRetry = options?.shouldRetry ?? isRequestRetryable
+    const shouldRetry = options?.shouldRetry ?? shouldRequestRetry
     const retryTimes = Math.max(0, options?.times ?? 3)
     const onRetry = options?.onRetry
 
@@ -51,9 +51,14 @@ export function _setupRequestRetry(options?: undefined | RequestRetryOptions): I
     return continuation
 }
 
-export async function isRequestRetryable(responsePromise: Promise<Response>): Promise<boolean> {
-    const response = await responsePromise
+export async function shouldRequestRetry(responsePromise: Response | Promise<Response>): Promise<boolean> {
+    return Promise.resolve(responsePromise).then(
+        isResponseRetryable,
+        error => true,
+    )
+}
 
+export function isResponseRetryable(response: Response): boolean {
     // Selects response errors eligible for retrying.
     switch (response.status) {
         case 408: // Request Timeout
