@@ -2,7 +2,7 @@
     "name": "@downforce/reactx.tests",
     "type": "module",
     "dependencies": {
-        "@downforce/react": "workspace:*",
+        "@downforce/reactx": "workspace:*",
         "@types/node": "25"
     }
 }
