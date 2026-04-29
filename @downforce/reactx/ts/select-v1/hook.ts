@@ -276,8 +276,8 @@ export function useSelectProvider<V, S, O extends object = object>(
         readonly: args.readonly ?? false,
         required: args.required ?? false,
         selected: args.selected,
-        setOptionFocused: PRIVATE_setOptionFocused as StateWriter<undefined | number>,
-        setOptionTabbed: PRIVATE_setOptionTabbed as StateWriter<undefined | number>,
+        setOptionFocused: PRIVATE_setOptionFocused as StateWriter<undefined | number, Void>,
+        setOptionTabbed: PRIVATE_setOptionTabbed as StateWriter<undefined | number, Void>,
         teleport: args.teleport ?? false,
         valid: args.valid ?? true,
     } satisfies Partial<SelectContextValue<V, S, O>['state']>
