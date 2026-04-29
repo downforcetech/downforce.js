@@ -1,10 +1,10 @@
 import type {Io} from '@downforce/std/fn'
-import type {ObjectPartial} from '@downforce/std/type'
+import type {Options} from '@downforce/std/type'
 import {cloneRequest} from './request-clone.js'
 import {mergeRequestHeaders, type RequestHeadersInit} from './request-headers.js'
 import type {RequestMethodEnum} from './request-method.js'
 
-export function setupRequestOptions(request: Request, options: ObjectPartial<RequestInit>): Request {
+export function setupRequestOptions(request: Request, options: Options<RequestInit>): Request {
     const {headers, ...otherOptions} = options
 
     return cloneRequest(request, {
@@ -16,7 +16,7 @@ export function setupRequestOptions(request: Request, options: ObjectPartial<Req
     })
 }
 
-export function _setupRequestOptions(options: ObjectPartial<RequestInit>): Io<Request, Request> {
+export function _setupRequestOptions(options: Options<RequestInit>): Io<Request, Request> {
     return (request: Request) => setupRequestOptions(request, options)
 }
 

@@ -1,6 +1,6 @@
 import type {Fn} from '@downforce/std/fn'
 import {matchSome} from '@downforce/std/optional'
-import type {StringAutocompleted} from '@downforce/std/type'
+import type {StringAutocomplete} from '@downforce/std/type'
 import type {JsonType, TextType} from './mimetype.js'
 
 export function exposePreloadHintElement(attrs: PreloadElementAttrs, options?: undefined | PreloadElementOptions): Node {
@@ -56,7 +56,7 @@ export function attachToHeadPrepending(element: Node): undefined {
 // Types ///////////////////////////////////////////////////////////////////////
 
 export interface PreloadElementAttrs {
-    as?: undefined | 'fetch' | 'font' | StringAutocompleted // Extend it as needed.
+    as?: undefined | 'fetch' | 'font' | StringAutocomplete // Extend it as needed.
     crossOrigin?: undefined | 'anonymous' | 'use-credentials'
     fetchPriority?: undefined | 'auto' | 'low' | 'high'
     href: string
@@ -66,7 +66,7 @@ export interface PreloadElementAttrs {
         | typeof TextType
         | 'font/woff'
         | 'font/woff2'
-        | StringAutocompleted
+        | StringAutocomplete
 }
 
 export interface PreloadElementOptions {

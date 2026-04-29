@@ -5,7 +5,7 @@ import {isNumber} from '@downforce/std/number'
 import {isNone, isNull, isUndefined} from '@downforce/std/optional'
 import type {ValueRef} from '@downforce/std/store'
 import {isString} from '@downforce/std/string'
-import type {StringAutocompleted} from '@downforce/std/type'
+import type {StringAutocomplete} from '@downforce/std/type'
 import {classes, type Classes} from './classes.js'
 import {removeChildren} from './dom.js'
 
@@ -316,10 +316,10 @@ export interface AllElementAttrs {
     'enctype'?: undefined | null | AllElementAttrs['formenctype']
     'for'?: undefined | null | string
     'formaction'?: undefined | null | string
-    'formenctype'?: undefined | null | 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain' | StringAutocompleted
-    'formmethod'?: undefined | null | 'POST' | 'GET' | StringAutocompleted
+    'formenctype'?: undefined | null | 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain' | StringAutocomplete
+    'formmethod'?: undefined | null | 'POST' | 'GET' | StringAutocomplete
     'formnovalidate'?: undefined | null | boolean
-    'formtarget'?: undefined | null | '_blank' | '_self' | '_parent' | '_top' | StringAutocompleted
+    'formtarget'?: undefined | null | '_blank' | '_self' | '_parent' | '_top' | StringAutocomplete
     'formtype'?: undefined | null | string
     'frameborder'?: undefined | null | number | string
     'hidden'?: undefined | null | boolean
@@ -399,7 +399,7 @@ export interface AllElementAttrs {
     'cx'?: undefined | null | number | string
     'cy'?: undefined | null | number | string
     'd'?: undefined | null | string
-    'dominant-baseline'?: undefined | null | 'auto' | 'text-bottom' | 'alphabetic' | 'ideographic' | 'middle' | 'central' | 'mathematical' | 'hanging' | 'text-top' | StringAutocompleted
+    'dominant-baseline'?: undefined | null | 'auto' | 'text-bottom' | 'alphabetic' | 'ideographic' | 'middle' | 'central' | 'mathematical' | 'hanging' | 'text-top' | StringAutocomplete
     'fill-opacity'?: undefined | null | number | string
     'fill-rule'?: undefined | null | 'evenodd' | 'nonzero'
     'fill'?: undefined | null | string
@@ -413,7 +413,7 @@ export interface AllElementAttrs {
     'patternContentUnits'?: undefined | null | 'userSpaceOnUse' | 'objectBoundingBox'
     'patternUnits'?: undefined | null | 'userSpaceOnUse' | 'objectBoundingBox'
     'points'?: undefined | null | string
-    'preserveAspectRatio'?: undefined | null | 'none' | `x${'Min'|'Mid'|'Max'}Y${'Min'|'Mid'|'Max'}${''|' meet'|' slice'}` | StringAutocompleted
+    'preserveAspectRatio'?: undefined | null | 'none' | `x${'Min'|'Mid'|'Max'}Y${'Min'|'Mid'|'Max'}${''|' meet'|' slice'}` | StringAutocomplete
     'r'?: undefined | null | number | string
     'rx'?: undefined | null | number | string
     'ry'?: undefined | null | number | string
@@ -424,9 +424,9 @@ export interface AllElementAttrs {
     'stroke-miterlimit'?: undefined | null | number | string
     'stroke-width'?: undefined | null | number | string
     'stroke'?: undefined | null | string
-    'text-anchor'?: undefined | null | 'start' | 'middle' | 'end' | StringAutocompleted
+    'text-anchor'?: undefined | null | 'start' | 'middle' | 'end' | StringAutocomplete
     'transform'?: undefined | null | string
-    'vector-effect'?: undefined | null | 'non-scaling-stroke' | StringAutocompleted
+    'vector-effect'?: undefined | null | 'non-scaling-stroke' | StringAutocomplete
     'version'?: undefined | null | number | string
     'viewBox'?: undefined | null | string
     'width'?: undefined | null | number | string
@@ -509,7 +509,7 @@ export interface AllAriaAttrs {
         | 'tree'
         | 'treegrid'
         | 'treeitem'
-        | StringAutocompleted
+        | StringAutocomplete
     'aria-activedescendant'?: undefined | string
     'aria-atomic'?: undefined | '' | 'true' | 'false'
     'aria-autocomplete'?: undefined | 'none' | 'inline' | 'list' | 'both'

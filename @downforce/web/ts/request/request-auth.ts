@@ -1,5 +1,5 @@
 import type {Io} from '@downforce/std/fn'
-import type {StringAutocompleted} from '@downforce/std/type'
+import type {StringAutocomplete} from '@downforce/std/type'
 import {setupRequestHeaders} from './request-options.js'
 
 export function createRequestAuthorizationHeaders(type: RequestAuthorizationType, value: string): Record<string, string> {
@@ -18,4 +18,4 @@ export function _setupRequestAuthorization(type: RequestAuthorizationType, value
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export type RequestAuthorizationType = 'Basic' | 'Bearer' | StringAutocompleted
+export type RequestAuthorizationType = 'Basic' | 'Bearer' | StringAutocomplete

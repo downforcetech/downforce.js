@@ -1,4 +1,4 @@
-import type {ObjectPartial} from '@downforce/std/type'
+import type {Options} from '@downforce/std/type'
 import {RequestMethod, type RequestMethodEnum} from './request-method.js'
 import {joinRequestPath} from './request-path.js'
 
@@ -36,6 +36,6 @@ export function createRequestPut(pathOrUrl: string, options?: undefined | Reques
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface RequestOptions extends ObjectPartial<RequestInit> {
+export interface RequestOptions extends Options<RequestInit> {
     baseUrl?: undefined | string
 }

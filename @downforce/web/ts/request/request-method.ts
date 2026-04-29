@@ -1,4 +1,4 @@
-import type {StringAutocompleted, ValueOf} from '@downforce/std/type'
+import type {StringAutocomplete, ValueOf} from '@downforce/std/type'
 
 export const RequestMethod = {
     Delete: 'DELETE' as const,
@@ -10,4 +10,4 @@ export const RequestMethod = {
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export type RequestMethodEnum = (ValueOf<typeof RequestMethod>) | StringAutocompleted
+export type RequestMethodEnum = (ValueOf<typeof RequestMethod>) | StringAutocomplete
