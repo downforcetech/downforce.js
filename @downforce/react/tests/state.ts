@@ -1,4 +1,4 @@
-import {mergedState, useMergeState, type StateWriterArg} from '@downforce/react/state'
+import {mergeStateWith, useMergeState, type StateWriterArg} from '@downforce/react/state'
 
 type State = {a: number, b: string}
 function setState(state: StateWriterArg<State>): undefined {
@@ -11,16 +11,16 @@ patch({a: 1, b: undefined})
 // @ts-expect-error
 patch({a: 1, c: 123})
 
-const merge1 = mergedState({a: 123})
-const merge2 = mergedState({a: 123, b: undefined})
-const merge3 = mergedState({a: 123, c: ''})
+const merge1 = mergeStateWith({a: 123})
+const merge2 = mergeStateWith({a: 123, b: undefined})
+const merge3 = mergeStateWith({a: 123, c: ''})
 const merge1r = merge1(undefined as any as State)
 // @ts-expect-error
 const merge2r = merge2(undefined as any as State)
 // @ts-expect-error
 const merge3r = merge3(undefined as any as State)
-setState(mergedState<State>({a: 123}))
+setState(mergeStateWith<State>({a: 123}))
 // @ts-expect-error
-setState(mergedState<State>({a: 123, b: undefined}))
+setState(mergeStateWith<State>({a: 123, b: undefined}))
 // @ts-expect-error
-setState(mergedState<State>({a: 123, c: ''}))
+setState(mergeStateWith<State>({a: 123, c: ''}))

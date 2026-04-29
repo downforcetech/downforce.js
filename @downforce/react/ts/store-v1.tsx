@@ -1,4 +1,5 @@
 import type {ReduxReducerState} from '@downforce/std/redux'
+import type {Void} from '@downforce/std/type'
 import {useContext, useState} from 'react'
 import {defineContext} from './ctx.js'
 import type {StateManager} from './state.js'
@@ -43,4 +44,4 @@ export interface StoreDefinitionV1<S extends ReduxReducerState> {
     createState(): S
 }
 
-export type StoreV1<S extends ReduxReducerState> = StateManager<S>
+export type StoreV1<S extends ReduxReducerState> = StateManager<S, Void>

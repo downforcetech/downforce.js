@@ -9,14 +9,16 @@ import {useFn, type HookDeps} from './hook.js'
 import {useRenderSignal, type RenderSignal} from './render.js'
 import type {StateManager, StateWriterArg} from './state.js'
 
-export function useReactiveState<V>(reactive: ReactiveObject<V>): StateManager<V> {
+export function useReactiveState<V>(reactive: ReactiveObject<V>): StateManager<V, V> {
     const [value, PRIVATE_setValue] = useState(() => readReactive(reactive))
 
-    const setValue = useCallback((value: StateWriterArg<V>): undefined => {
+    const setValue = useCallback((value: StateWriterArg<V>): V => {
         const newValue = compute(value, readReactive(reactive))
 
         PRIVATE_setValue(newValue)
         writeReactive(reactive, newValue)
+
+        return newValue
     }, [reactive])
 
     useEffect(() => {
@@ -133,16 +135,18 @@ export function useReactiveStore<V>(
     read: ReadWriteSync<V>['read'],
     write: ReadWriteSync<V>['write'],
     watch: (observer: ReactiveObserver<V>, options?: undefined | ReactiveWatchOptions) => Task,
-): StateManager<V> {
+): StateManager<V, V> {
     const [value, PRIVATE_setValue] = useState(read())
 
-    const setValue = useCallback((value: StateWriterArg<V>): undefined => {
+    const setValue = useCallback((value: StateWriterArg<V>): V => {
         const newValue = compute(value, read())
 
         startTransition(() => {
             PRIVATE_setValue(newValue)
         })
         write(newValue)
+
+        return newValue
     }, [read, write])
 
     useEffect(() => {
@@ -233,7 +237,7 @@ export function ReactiveValues<A extends Array<ReactiveObject<any>>>(props: Reac
 
 export interface ReactiveStateProps<V> {
     from: ReactiveObject<V>
-    children(value: StateManager<V>): React.ReactNode
+    children(value: StateManager<V, V>): React.ReactNode
 }
 
 export interface ReactiveValueProps<V> {

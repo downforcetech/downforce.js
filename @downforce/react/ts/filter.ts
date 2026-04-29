@@ -1,17 +1,17 @@
-import {useCallback, useMemo, useState} from 'react'
+import {useCallback, useMemo} from 'react'
 import {useFn, type HookDeps} from './hook.js'
-import type {StateManager, StateWriter} from './state.js'
+import {useStateAccessor, type StateReader, type StateWriter} from './state.js'
 
 const NoItems: [] = []
 
-export function useFilter<I, F>(
+export function useFilter<S, I>(
     items: undefined | Array<I>,
-    initialState: F | (() => F),
-    onTest: (state: F, item: I, idx: number) => boolean,
+    initialState: S | (() => S),
+    onTest: (state: S, item: I, idx: number) => boolean,
     deps?: undefined | HookDeps,
-): FilterManager<I, F> {
+): FilterManager<S, I> {
     const onTestMemoized = useFn(onTest, deps)
-    const [state, setState] = useState<F>(initialState) as StateManager<F>
+    const [state, setState, getState] = useStateAccessor(initialState)
 
     const filteredItems = useMemo(() => {
         if (! items) {
@@ -20,20 +20,22 @@ export function useFilter<I, F>(
         return items.filter((it, idx) => onTestMemoized(state, it, idx))
     }, [items, onTestMemoized, state])
 
-    const itemIdxOf = useCallback((filteredItemIdx: number) => {
+    const getItemIdx = useCallback((filteredItemIdx: number) => {
         return resolveFilteredItemIdx(items ?? NoItems, filteredItems, filteredItemIdx)
     }, [items, filteredItems])
 
     return useMemo(() => ({
-        state,
+        getItemIdx,
         items: filteredItems,
-        itemIdxOf,
-        setState,
-    }), [
         state,
-        filteredItems,
-        itemIdxOf,
         setState,
+        getState,
+    }), [
+        getItemIdx,
+        filteredItems,
+        state,
+        setState,
+        getState,
     ])
 }
 
@@ -57,9 +59,10 @@ export function resolveFilteredItemIdx<I>(
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface FilterManager<I, F> {
+export interface FilterManager<S, I> {
+    getItemIdx(filteredItemIdx: number): undefined | number
     items: Array<I>
-    itemIdxOf(filteredItemIdx: number): undefined | number
-    state: F
-    setState: StateWriter<F>
+    state: S
+    getState: StateReader<S>
+    setState: StateWriter<S, S>
 }

@@ -1,9 +1,9 @@
 import {createCssTransition, runAsyncTimeline} from '@downforce/web/animation'
 import {useEffect, useMemo, useState} from 'react'
 import {useRouteTransition} from './router.js'
-import type {StateManager, StateWriter} from './state.js'
+import type {StateManager} from './state.js'
 
-export function useRoutedViewLifecycle(routeRegexp: RegExp): StateManager<ViewLifecycle> {
+export function useRoutedViewLifecycle(routeRegexp: RegExp): StateManager<ViewLifecycle, void> {
     const [viewLifecycle, setViewLifecycle] = useState<ViewLifecycle>('exited')
     const {fromRoute, toRoute} = useRouteTransition()
 
@@ -29,7 +29,7 @@ export function useRoutedViewLifecycle(routeRegexp: RegExp): StateManager<ViewLi
         }
     }, [fromRoute, toRoute])
 
-    return [viewLifecycle, setViewLifecycle as StateWriter<ViewLifecycle>]
+    return [viewLifecycle, setViewLifecycle]
 }
 
 /*

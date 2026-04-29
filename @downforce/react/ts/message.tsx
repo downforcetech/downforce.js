@@ -9,6 +9,7 @@ import {
     type MsgMessageKey,
     type MsgMessages,
 } from '@downforce/std/msg'
+import type {Void} from '@downforce/std/type'
 import {memo, startTransition, useContext, useMemo, useState} from 'react'
 import {Box, type BoxProps} from './box.js'
 import {classes} from './classes.js'
@@ -169,9 +170,9 @@ export interface MessageProviderProps extends MsgDefinition<string, string> {
 export interface MessageStore<L extends string = string, K extends MsgMessageKey = MsgMessageKey> extends Msg<L, K> {
     t(strings: TemplateStringsArray, ...substitutions: Array<MsgMessageArgValue>): string
     translate<KK extends K>(key: KK, values?: undefined | MsgMessageArgs): string | KK
-    setLocale: StateWriter<L>
-    setLocaleFallback: StateWriter<L>
-    setMessages: StateWriter<MsgMessages<L, K>>
+    setLocale: StateWriter<L, Void>
+    setLocaleFallback: StateWriter<L, Void>
+    setMessages: StateWriter<MsgMessages<L, K>, Void>
 }
 
 export interface MessageProps extends VoidProps<BoxProps>, TranslateProps {
