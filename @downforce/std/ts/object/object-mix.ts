@@ -1,5 +1,5 @@
 import {isDefined, isUndefined} from '../optional/optional-is.js'
-import type {ObjectComplete, Prettify} from '../type/type-type.js'
+import type {Complete, Prettify} from '../type/type-type.js'
 
 export function isObjectEmpty(object: object): boolean {
     for (const it in object) {
@@ -111,7 +111,7 @@ export function omitObjectProps<O extends object, P extends keyof O>(object: O, 
     return objectOmitted as Omit<O, P>
 }
 
-export function omitObjectPropsUndefined<O extends object>(object: O): Prettify<Partial<ObjectComplete<O>>> {
+export function omitObjectPropsUndefined<O extends object>(object: O): Prettify<Partial<Complete<O>>> {
     const objectOmitted = {...object}
 
     for (const prop in objectOmitted) {
@@ -120,7 +120,7 @@ export function omitObjectPropsUndefined<O extends object>(object: O): Prettify<
         }
     }
 
-    return objectOmitted as Prettify<Partial<ObjectComplete<O>>>
+    return objectOmitted as Prettify<Partial<Complete<O>>>
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
