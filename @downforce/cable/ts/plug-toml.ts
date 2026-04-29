@@ -1,5 +1,5 @@
 import {tryCatch} from '@downforce/std/fn'
-import type {ObjectPartial} from '@downforce/std/type'
+import type {Options} from '@downforce/std/type'
 import Fs from 'node:fs/promises'
 import Toml from 'smol-toml'
 import type {CableStoreGeneric} from './cable-types.js'
@@ -20,7 +20,7 @@ export class CableTomlFilePlug<S extends CableStoreGeneric> implements CablePlug
         this.options = options
     }
 
-    async load(): Promise<undefined | ObjectPartial<S>> {
+    async load(): Promise<undefined | Options<S>> {
         const contentRaw = await Fs.readFile(this.filePath, {encoding: 'utf-8', flag: 'r'}).catch(error => {
             this.options?.onFileError?.(this.filePath, error)
         })

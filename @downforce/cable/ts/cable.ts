@@ -1,6 +1,6 @@
 import {type Computable, compute} from '@downforce/std/fn'
 import {isDefined} from '@downforce/std/optional'
-import type {ObjectPartial} from '@downforce/std/type'
+import type {Options} from '@downforce/std/type'
 import type {CableStoreGeneric} from './cable-types.js'
 import type {CablePlugInterface} from './plug-types.js'
 
@@ -20,7 +20,7 @@ export class Cable<S extends CableStoreGeneric> {
 
     async resolve(): Promise<S> {
         const tasksPromises = this.plugs.map(it => it.load())
-        const tasksResults: Array<undefined | ObjectPartial<S>> = await Promise.all(tasksPromises)
+        const tasksResults: Array<undefined | Options<S>> = await Promise.all(tasksPromises)
         const lookups = tasksResults.filter(isDefined)
 
         return lookupKeysValues(this.defaults, lookups)
@@ -29,7 +29,7 @@ export class Cable<S extends CableStoreGeneric> {
 
 export function lookupKeysValues<S extends CableStoreGeneric>(
     defaults: S,
-    lookups: Array<ObjectPartial<S>>,
+    lookups: Array<Options<S>>,
 ): S {
     const keysValues = {...defaults}
 
@@ -41,7 +41,7 @@ export function lookupKeysValues<S extends CableStoreGeneric>(
 }
 
 export function lookupKeyValue<S extends CableStoreGeneric, K extends keyof S>(
-    lookups: Array<ObjectPartial<S>>,
+    lookups: Array<Options<S>>,
     key: K,
 ): undefined | S[K] {
     for (const lookup of lookups) {

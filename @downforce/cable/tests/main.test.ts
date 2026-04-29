@@ -14,7 +14,7 @@ import {
     type CableTomlFilePlugOptions,
 } from '@downforce/cable'
 import {noop, pipe} from '@downforce/std/fn'
-import {TypeStrict as TS, TypeTrust as TT, type ObjectPartial} from '@downforce/std/type'
+import {TypeStrict as TS, TypeTrust as TT, type Options} from '@downforce/std/type'
 import Assert from 'node:assert/strict'
 import Path from 'node:path'
 import Process from 'node:process'
@@ -59,7 +59,7 @@ function createDefaults(): DataInterface {
     }
 }
 const dataDecoders = {
-    decodeEnv(env: CableEnvPlugDict): ObjectPartial<DataInterface> {
+    decodeEnv(env: CableEnvPlugDict): Options<DataInterface> {
         return {
             address: TS.strictString(env.DATA_ADDRESS),
             log: TS.strictBooleanLike(env.DATA_LOG),
@@ -69,8 +69,8 @@ const dataDecoders = {
             secret: TS.strictString(env.DATA_SECRET),
         }
     },
-    decodeJs(js: unknown): ObjectPartial<DataInterface> {
-        return pipe(js, TT.trustObject, (root): ObjectPartial<DataInterface> => ({
+    decodeJs(js: unknown): Options<DataInterface> {
+        return pipe(js, TT.trustObject, (root): Options<DataInterface> => ({
             address: TT.trustString(root?.address),
             log: TT.trustBoolean(root?.log),
             log_file: TT.trustString(root?.log_file),
@@ -79,8 +79,8 @@ const dataDecoders = {
             secret: TT.trustString(root?.secret),
         }))
     },
-    decodeJson(json: unknown): ObjectPartial<DataInterface> {
-        return pipe(json, TT.trustObject, (root): ObjectPartial<DataInterface> => ({
+    decodeJson(json: unknown): Options<DataInterface> {
+        return pipe(json, TT.trustObject, (root): Options<DataInterface> => ({
             address: TT.trustString(root?.address),
             log: TT.trustBoolean(root?.log),
             log_file: TT.trustString(root?.log_file),
@@ -89,8 +89,8 @@ const dataDecoders = {
             secret: TT.trustString(root?.secret),
         }))
     },
-    decodeToml(yaml: unknown): ObjectPartial<DataInterface> {
-        return pipe(yaml, TT.trustObject, (root): ObjectPartial<DataInterface> => ({
+    decodeToml(yaml: unknown): Options<DataInterface> {
+        return pipe(yaml, TT.trustObject, (root): Options<DataInterface> => ({
             address: TT.trustString(root?.address),
             log: TT.trustBoolean(root?.log),
             log_file: TT.trustString(root?.log_file),
@@ -99,8 +99,8 @@ const dataDecoders = {
             secret: TT.trustString(root?.secret),
         }))
     },
-    decodeYaml(yaml: unknown): ObjectPartial<DataInterface> {
-        return pipe(yaml, TT.trustObject, (root): ObjectPartial<DataInterface> => ({
+    decodeYaml(yaml: unknown): Options<DataInterface> {
+        return pipe(yaml, TT.trustObject, (root): Options<DataInterface> => ({
             address: TT.trustString(root?.address),
             log: TT.trustBoolean(root?.log),
             log_file: TT.trustString(root?.log_file),

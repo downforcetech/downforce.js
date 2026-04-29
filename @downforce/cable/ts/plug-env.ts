@@ -1,4 +1,4 @@
-import type {ObjectPartial} from '@downforce/std/type'
+import type {Options} from '@downforce/std/type'
 import type {CableStoreGeneric} from './cable-types.js'
 import type {CableDecoder, CablePlugInterface} from './plug-types.js'
 
@@ -17,7 +17,7 @@ export class CableEnvPlug<S extends CableStoreGeneric> implements CablePlugInter
         this.options = options
     }
 
-    async load(): Promise<undefined | ObjectPartial<S>> {
+    async load(): Promise<undefined | Options<S>> {
         return this.decoder(this.env)
     }
 }
