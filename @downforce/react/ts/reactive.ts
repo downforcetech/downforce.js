@@ -7,9 +7,9 @@ import type {FIX} from '@downforce/std/type'
 import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useState, useSyncExternalStore} from 'react'
 import {useFn, type HookDeps} from './hook.js'
 import {useRenderSignal, type RenderSignal} from './render.js'
-import type {StateManager, StateWriterArg} from './state.js'
+import type {UseStateContract, StateWriterArg} from './state.js'
 
-export function useReactiveState<V>(reactive: ReactiveObject<V>): StateManager<V, V> {
+export function useReactiveState<V>(reactive: ReactiveObject<V>): UseStateContract<V, V> {
     const [value, PRIVATE_setValue] = useState(() => readReactive(reactive))
 
     const setValue = useCallback((value: StateWriterArg<V>): V => {
@@ -135,7 +135,7 @@ export function useReactiveStore<V>(
     read: ReadWriteSync<V>['read'],
     write: ReadWriteSync<V>['write'],
     watch: (observer: ReactiveObserver<V>, options?: undefined | ReactiveWatchOptions) => Task,
-): StateManager<V, V> {
+): UseStateContract<V, V> {
     const [value, PRIVATE_setValue] = useState(read())
 
     const setValue = useCallback((value: StateWriterArg<V>): V => {
@@ -237,7 +237,7 @@ export function ReactiveValues<A extends Array<ReactiveObject<any>>>(props: Reac
 
 export interface ReactiveStateProps<V> {
     from: ReactiveObject<V>
-    children(value: StateManager<V, V>): React.ReactNode
+    children(value: UseStateContract<V, V>): React.ReactNode
 }
 
 export interface ReactiveValueProps<V> {

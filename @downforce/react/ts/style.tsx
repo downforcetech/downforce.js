@@ -72,17 +72,17 @@ export function useStyleContext(): undefined | StyleContextValue {
 }
 
 export function useStyle(style: string): undefined {
-    const stylesManager = useStyleContext()!
+    const styleContext = useStyleContext()!
 
     useInsertionEffect(() => {
-        stylesManager.useStyle(style)
+        styleContext.useStyle(style)
 
         function onClean() {
-            stylesManager.cleanStyle(style)
+            styleContext.cleanStyle(style)
         }
 
         return onClean
-    }, [stylesManager, style])
+    }, [styleContext, style])
 }
 
 export function computeSimpleFastHash(string: string): string {

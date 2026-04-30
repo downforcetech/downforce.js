@@ -1,7 +1,21 @@
 import {compute, type Io} from '@downforce/std/fn'
-import {useCallback, useRef, useState} from 'react'
+import {useCallback, useMemo, useRef, useState} from 'react'
 
-export function useStateAccessor<S>(initialState: StateInit<S>): StateAccessorManager<S> {
+export function useState1<S>(initialState: StateInit<S>): UseState1Contract<S> {
+    const [state, setState, getState] = useState3(initialState)
+
+    return useMemo(() => ({
+        value: state,
+        get: getState,
+        set: setState,
+    }), [
+        state,
+        getState,
+        setState,
+    ])
+}
+
+export function useState3<S>(initialState: StateInit<S>): UseState3Contract<S> {
     const [state, PRIVATE_setState] = useState(initialState)
     const stateRef = useRef(state)
 
@@ -30,27 +44,27 @@ export function useStateAccessor<S>(initialState: StateInit<S>): StateAccessorMa
 *
 * function MyComponent(props) {
 *     const [state, setState] = useState({checked: false, input: ''})
-*     const patchState = useMergeState(setState)
+*     const patchState = useStatePatch(setState)
 *
 *     return (
 *         <Input onChange={input => patchState({input})}/>
 *     )
 * }
 */
-export function useMergeState<S extends object, R>(
+export function usePatchState<S extends object, R>(
     setState: StateWriter<S, R>,
 ): Io<Partial<S>, R>
-export function useMergeState<S extends object, R>(
+export function usePatchState<S extends object, R>(
     setState: React.Dispatch<React.SetStateAction<S>>,
 ): Io<Partial<S>, void>
-export function useMergeState<S extends object, R>(
+export function usePatchState<S extends object, R>(
     setState: StateWriter<S, R> | React.Dispatch<React.SetStateAction<S>>,
 ): Io<Partial<S>, R | void> {
-    const mergeState = useCallback((statePatch: Partial<S>): R | void => {
+    const patchState = useCallback((statePatch: Partial<S>): R | void => {
         return setState(mergeStateWith(statePatch))
     }, [setState])
 
-    return mergeState
+    return patchState
 }
 
 /*
@@ -62,7 +76,7 @@ export function useMergeState<S extends object, R>(
 *     const [state, setState] = useState({checked: false, input: ''})
 *
 *     return (
-*         <Input onChange={input => setState(mergedState({input}))}/>
+*         <Input onChange={input => setState(mergeStateWith({input}))}/>
 *     )
 * }
 */
@@ -80,5 +94,6 @@ export type StateInit<S> = S | (() => S)
 export type StateWriter<S, R> = (value: StateWriterArg<S>) => R
 export type StateWriterArg<S> = React.SetStateAction<S>
 export type StateReader<S> = () => S
-export type StateManager<S, R> = [state: S, write: StateWriter<S, R>]
-export type StateAccessorManager<S> = [state: S, write: StateWriter<S, S>, read: StateReader<S>]
+export type UseStateContract<S, R> = [state: S, set: StateWriter<S, R>]
+export type UseState1Contract<S> = {value: S, get: StateReader<S>, set: StateWriter<S, S>}
+export type UseState3Contract<S> = [...UseStateContract<S, S>, get: StateReader<S>]

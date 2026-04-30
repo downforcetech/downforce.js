@@ -4,7 +4,7 @@ import {startTransition, useCallback, useMemo} from 'react'
 import {useRender} from './render.js'
 import type {StateWriterArg} from './state.js'
 
-export function useUndoRedo<S>(initState: S | (() => S)): UndoRedoManager<S> {
+export function useUndoRedo<S>(initState: S | (() => S)): UseUndoRedoContract<S> {
     const render = useRender()
 
     function withRenderEffect<A extends Array<unknown>>(fn: (...args: A) => S) {
@@ -44,7 +44,7 @@ export function useUndoRedo<S>(initState: S | (() => S)): UndoRedoManager<S> {
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface UndoRedoManager<S> {
+export interface UseUndoRedoContract<S> {
     state: S
     redoStack: Array<S>
     undoStack: Array<S>

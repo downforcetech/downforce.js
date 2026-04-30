@@ -3,9 +3,10 @@ import {useContext, useMemo} from 'react'
 import {createPortal} from 'react-dom'
 import {Box, type BoxProps} from './box.js'
 import {defineContext} from './ctx.js'
-import {useStateAccessor, type StateAccessorManager, type StateWriterArg} from './state.js'
+import {useState3, type UseState3Contract, type StateWriterArg} from './state.js'
 
-export const PortalContext: React.Context<undefined | StateAccessorManager<null | PortalElement>> = defineContext<StateAccessorManager<null | PortalElement>>('PortalContext')
+export const PortalContext: React.Context<undefined | UseState3Contract<null | PortalElement>> =
+    defineContext<UseState3Contract<null | PortalElement>>('PortalContext')
 
 export function PortalProvider(props: PortalProviderProps): React.JSX.Element {
     const {children} = props
@@ -66,8 +67,8 @@ export function Teleport(props: TeleportProps): undefined | React.ReactPortal {
     return createPortal(children, portal)
 }
 
-export function usePortalProvider(): StateAccessorManager<null | PortalElement> {
-    const [element, setElement, getElement] = useStateAccessor<null | PortalElement>(null)
+export function usePortalProvider(): UseState3Contract<null | PortalElement> {
+    const [element, setElement, getElement] = useState3<null | PortalElement>(null)
 
     return useMemo(() => [element, setElement, getElement], [element, setElement, getElement])
 }

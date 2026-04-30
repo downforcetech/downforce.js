@@ -6,7 +6,7 @@ import type {Void} from '@downforce/std/type'
 import {observeEvent} from '@downforce/web/event'
 import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react'
 import {useFn, type HookDeps} from './hook.js'
-import {useStateAccessor, type StateAccessorManager, type StateInit} from './state.js'
+import {useState3, type UseState3Contract, type StateInit} from './state.js'
 
 export function useEvent<E extends Event>(
     targetRefOrRefs: React.RefObject<None | EventElement> | Array<React.RefObject<None | EventElement>>,
@@ -126,16 +126,16 @@ export function useCallbackDelayed<A extends FnArgs>(
 export function useStateDebounced<T>(
     initialValue: undefined,
     delay: number,
-): StateAccessorManager<undefined | T>
+): UseState3Contract<undefined | T>
 export function useStateDebounced<T>(
     initialValue: StateInit<T>,
     delay: number,
-): StateAccessorManager<T>
+): UseState3Contract<T>
 export function useStateDebounced<T>(
     initialValue: undefined | T,
     delay: number,
-): StateAccessorManager<undefined | T> {
-    const [value, setValue, getValue] = useStateAccessor(initialValue)
+): UseState3Contract<undefined | T> {
+    const [value, setValue, getValue] = useState3(initialValue)
     const setValueDebounced = useCallbackDebounced(delay, setValue)
 
     return [value, setValueDebounced, getValue]
@@ -144,16 +144,16 @@ export function useStateDebounced<T>(
 export function useStateThrottled<T>(
     initialValue: undefined,
     delay: number,
-): StateAccessorManager<undefined | T>
+): UseState3Contract<undefined | T>
 export function useStateThrottled<T>(
     initialValue: StateInit<T>,
     delay: number,
-): StateAccessorManager<T>
+): UseState3Contract<T>
 export function useStateThrottled<T>(
     initialValue: undefined | StateInit<T>,
     delay: number,
-): StateAccessorManager<undefined | T> {
-    const [value, setValue, getValue] = useStateAccessor(initialValue)
+): UseState3Contract<undefined | T> {
+    const [value, setValue, getValue] = useState3(initialValue)
     const setValueThrottled = useCallbackThrottled(delay, setValue)
 
     return [value, setValueThrottled, getValue]

@@ -304,7 +304,7 @@ export function useRouterContext(): undefined | Router {
     return useContext(RouterContext as React.Context<undefined | Router>)
 }
 
-export function useRouter(): RouterManager {
+export function useRouter(): UseRouterContract {
     const routerContext = useRouterContext()!
 
     const readRoute = useRouteRead()
@@ -347,7 +347,7 @@ export function useRouterLink(): (path: string, params?: undefined | RouterRoute
     return routerContext.createLink
 }
 
-export function useRoute(): RouteManager {
+export function useRoute(): UseRouteContract {
     return {
         routePath: useRoutePath(),
         routeParams: useRouteParams(),
@@ -503,13 +503,13 @@ export interface RoutingProps extends Omit<RouterRouteChange, 'path'> {
     replace?: undefined | RouterRouteChange['replace']
 }
 
-export interface RouterManager {
+export interface UseRouterContract {
     changeRoute(args: RouterRouteChangeComputable): undefined
     link(path: string, params?: undefined | RouterRouteChangeParams): string
     readRoute(): RouterRoute
 }
 
-export interface RouteManager {
+export interface UseRouteContract {
     routePath: RouterRoute['path']
     routeParams: RouterRoute['params']
     routeArgs: RouteArgs

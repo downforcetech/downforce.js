@@ -2,9 +2,10 @@ import {useCallback, useContext, useEffect, useMemo} from 'react'
 import {createPortal} from 'react-dom'
 import {Box, type BoxProps} from './box.js'
 import {defineContext} from './ctx.js'
-import {useStateAccessor, type StateAccessorManager} from './state.js'
+import {useState3, type UseState3Contract} from './state.js'
 
-export const PortalsContext: React.Context<undefined | StateAccessorManager<Portals>> = defineContext<StateAccessorManager<Portals>>('PortalsContext')
+export const PortalsContext: React.Context<undefined | UseState3Contract<Portals>> =
+    defineContext<UseState3Contract<Portals>>('PortalsContext')
 
 /*
 * EXAMPLE
@@ -89,8 +90,8 @@ export function Teleport(props: TeleportProps): undefined | React.ReactPortal {
     return createPortal(children, portal)
 }
 
-export function usePortalsProvider(): StateAccessorManager<Portals> {
-    const [portals, setPortals, getPortals] = useStateAccessor<Portals>({})
+export function usePortalsProvider(): UseState3Contract<Portals> {
+    const [portals, setPortals, getPortals] = useState3<Portals>({})
 
     return useMemo(() => [portals, setPortals, getPortals], [portals, setPortals, getPortals])
 }

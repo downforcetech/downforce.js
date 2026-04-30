@@ -9,15 +9,15 @@ import {useCallback, useMemo, useRef, useState} from 'react'
 export function useBrowserStorageAccessor<V = string>(
     accessor: BrowserStorageAccessorSync<V>,
     codecOptional?: undefined,
-): BrowserStorageManager<V>
+): UseBrowserStorageContract<V>
 export function useBrowserStorageAccessor<V = string, S = string>(
     accessor: BrowserStorageAccessorSync<S>,
-    codec: BrowserStorageManagerOptions<V>,
-): BrowserStorageManager<V>
+    codec: UseBrowserStorageAccessorOptions<V>,
+): UseBrowserStorageContract<V>
 export function useBrowserStorageAccessor<V = string, S = string>(
     accessor: BrowserStorageAccessorSync<S>,
-    codecOptional?: undefined | BrowserStorageManagerOptions<V>,
-): BrowserStorageManager<S | V> {
+    codecOptional?: undefined | UseBrowserStorageAccessorOptions<V>,
+): UseBrowserStorageContract<S | V> {
     const decode = (codecOptional?.decode ?? identity) as Io<BrowserStorageValue<S>, BrowserStorageValue<S | V>>
     const encode = (codecOptional?.encode ?? identity) as Io<BrowserStorageValue<S | V>, BrowserStorageValue<S>>
     // Reading from LocalStorage is slow, so we must wrap value access.
@@ -54,14 +54,14 @@ export function useBrowserStorageAccessor<V = string, S = string>(
     return accessorManager
 }
 
-export function useBrowserStorageString(accessor: BrowserStorageAccessorSync<string>): BrowserStorageManager<string> {
+export function useBrowserStorageString(accessor: BrowserStorageAccessorSync<string>): UseBrowserStorageContract<string> {
     return useBrowserStorageAccessor(accessor, {
         encode: value => value ?? '',
         decode: value => value ?? '',
     })
 }
 
-export function useBrowserStorageNumber(accessor: BrowserStorageAccessorSync<string>): BrowserStorageManager<number> {
+export function useBrowserStorageNumber(accessor: BrowserStorageAccessorSync<string>): UseBrowserStorageContract<number> {
     return useBrowserStorageAccessor(accessor, {
         encode: value => JSON.stringify(value),
         decode: value => value
@@ -76,7 +76,7 @@ export function useBrowserStorageNumber(accessor: BrowserStorageAccessorSync<str
     })
 }
 
-export function useBrowserStorageBoolean(accessor: BrowserStorageAccessorSync<string>): BrowserStorageManager<boolean> {
+export function useBrowserStorageBoolean(accessor: BrowserStorageAccessorSync<string>): UseBrowserStorageContract<boolean> {
     return useBrowserStorageAccessor(accessor, {
         encode: value => JSON.stringify(value),
         decode: value => value
@@ -93,10 +93,10 @@ export function useBrowserStorageBoolean(accessor: BrowserStorageAccessorSync<st
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface BrowserStorageManager<V> extends BrowserStorageAccessorSync<V> {
+export interface UseBrowserStorageContract<V> extends BrowserStorageAccessorSync<V> {
 }
 
-export interface BrowserStorageManagerOptions<V, S = string> {
+export interface UseBrowserStorageAccessorOptions<V, S = string> {
     encode: Io<BrowserStorageValue<V>, BrowserStorageValue<S>>
     decode: Io<BrowserStorageValue<S>, BrowserStorageValue<V>>
 }

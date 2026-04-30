@@ -10,7 +10,7 @@ import {useFn, type HookDeps} from './hook.js'
 export function useAsyncIo<A extends FnArgs, R>(
     onCall: FnAsync<A, R>,
     deps?: undefined | HookDeps,
-): AsyncIoManager<A, R> {
+): UseAsyncIoContract<A, R> {
     const onCallMemoized = useFn(onCall, deps)
     const [state, setState] = useState<AsyncIoState<R>>({
         output: undefined,
@@ -235,7 +235,7 @@ export interface AsyncIoState<R> extends PromiseView {
     result: undefined | R
 }
 
-export interface AsyncIoManager<A extends FnArgs, R> extends AsyncIoState<R> {
+export interface UseAsyncIoContract<A extends FnArgs, R> extends AsyncIoState<R> {
     call(...args: A): Promise<undefined | OutcomeResultOrError<R, unknown>>
     cancel(): undefined
     reset(): undefined

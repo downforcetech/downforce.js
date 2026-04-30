@@ -1,10 +1,11 @@
-import {mergeStateWith, useMergeState, type StateWriterArg} from '@downforce/react/state'
+import {mergeStateWith, usePatchState, type StateWriterArg} from '@downforce/react/state'
 
 type State = {a: number, b: string}
+
 function setState(state: StateWriterArg<State>): undefined {
 }
 
-const patch = useMergeState(setState)
+const patch = usePatchState(setState)
 patch({a: 1})
 // @ts-expect-error
 patch({a: 1, b: undefined})
