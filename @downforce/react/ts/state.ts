@@ -95,5 +95,5 @@ export type StateWriter<S, R> = (value: StateWriterArg<S>) => R
 export type StateWriterArg<S> = React.SetStateAction<S>
 export type StateReader<S> = () => S
 export type UseStateContract<S, R> = [state: S, set: StateWriter<S, R>]
-export type UseState1Contract<S> = {value: S, get: StateReader<S>, set: StateWriter<S, S>}
+export type UseState1Contract<S> = {readonly value: S, get: StateReader<S>, set: StateWriter<S, S>}
 export type UseState3Contract<S> = [...UseStateContract<S, S>, get: StateReader<S>]
