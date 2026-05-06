@@ -15,7 +15,7 @@
     "scripts": {
         "clean": "rm -rf ./esm/ ./.cache/ || true",
         "build": "tsc --project ./tsconfig.json && tsc --project ./tests/tsconfig.json",
-        "test": "node --test --test-reporter ${NODE_TEST_REPORTER:-spec} --enable-source-maps --experimental-transform-types ./tests/**/*.test.ts",
+        "test": "node --test --test-reporter ${NODE_TEST_REPORTER:-spec} --enable-source-maps ./tests/**/*.test.ts",
         "prepack": "node --run clean && node --run build && node --run test",
         "preversion": "node --run build && node --run test"
     },

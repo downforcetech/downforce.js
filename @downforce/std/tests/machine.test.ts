@@ -1,24 +1,25 @@
 import {piped} from '@downforce/std/fn'
+import {Enum} from '@downforce/std/enum'
 import {defineMachine} from '@downforce/std/machine'
 import Assert from 'node:assert/strict'
 import {describe, test} from 'node:test'
 
-enum StateType {
-    Init = 'init',
-    Ready = 'ready',
-}
-enum EventType {
-    Update = 'update',
-    Delete = 'delete',
-}
+const StateType = Enum({
+    Init: 'init',
+    Ready: 'ready',
+})
+const EventType = Enum({
+    Update: 'update',
+    Delete: 'delete',
+})
 
 type State =
-    | {type: StateType.Init}
-    | {type: StateType.Ready, name: string, message: string}
+    | {type: typeof StateType.Init}
+    | {type: typeof StateType.Ready, name: string, message: string}
 
 type Event =
-    | {type: EventType.Update, value: string}
-    | {type: EventType.Delete, id: string}
+    | {type: typeof EventType.Update, value: string}
+    | {type: typeof EventType.Delete, id: string}
 
 describe('@downforce/std/machine', (ctx) => {
     test('defineMachine()', (ctx) => {
