@@ -6,7 +6,7 @@ import {call} from '@downforce/std/fn'
 import {clamp} from '@downforce/std/number'
 import {isNone, type None} from '@downforce/std/optional'
 import type {Void} from '@downforce/std/type'
-import {KeyboardKey} from '@downforce/web/keybinding'
+import {KeyboardKey} from '@downforce/web/keyboard'
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 
 export function Range(props: Props<RangeProps>): React.JSX.Element {

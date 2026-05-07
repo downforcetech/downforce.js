@@ -1,5 +1,5 @@
 import {classes} from '@downforce/react/classes'
-import {useCallbackThrottled} from '@downforce/react/event'
+import {useCallbackThrottled} from '@downforce/react/defer'
 import type {ElementProps, Props, VoidProps} from '@downforce/react/props'
 import {useMergeRefs} from '@downforce/react/ref'
 import {useResizeObserver} from '@downforce/react/resize-observer'

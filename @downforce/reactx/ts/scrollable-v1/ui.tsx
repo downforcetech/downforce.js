@@ -1,7 +1,7 @@
 import {Box, type BoxProps} from '@downforce/react/box'
 import {useBrowserFeatures} from '@downforce/react/browser'
 import {classes} from '@downforce/react/classes'
-import {useScrollHorizontal} from '@downforce/react/drag'
+import {useDragScroll} from '@downforce/react/drag'
 import {useMergeRefs} from '@downforce/react/ref'
 import {isUndefined} from '@downforce/std/optional'
 import {useMemo, useRef} from 'react'
@@ -29,7 +29,7 @@ export function Scrollable(props: ScrollableProps): React.JSX.Element {
         return () => undefined
     }, [hasTouch])
 
-    const {scrolling} = useScrollHorizontal(elementRef, {horizontal, vertical, initOptions})
+    const {scrolling} = useDragScroll(elementRef, {horizontal, vertical, initOptions})
 
     return (
         <Box

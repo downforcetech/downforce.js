@@ -1,7 +1,7 @@
 import {Box, type BoxProps} from '@downforce/react/box'
 import {classes} from '@downforce/react/classes'
 import type {ElementProps, Props} from '@downforce/react/props'
-import {KeyboardKey} from '@downforce/web/keybinding'
+import {KeyboardKey} from '@downforce/web/keyboard'
 import {Children, cloneElement, isValidElement, useCallback, useEffect, useRef, useState} from 'react'
 import {animateAccordionClose, animateAccordionOpen} from './api.js'
 
