@@ -1,22 +1,29 @@
 import {Box, type BoxProps} from '@downforce/react/box'
 import {classes} from '@downforce/react/classes'
-import type {ValueOf} from '@downforce/std/type'
+import type {Props} from '@downforce/react/props'
+import {Enum, type UnionOf} from '@downforce/std/enum'
 
-export const TransitionEffect = {
-    Fade: 'std-transition-fade' as const,
-    Leak: 'std-transition-leak' as const,
-    None: 'std-transition-none' as const,
-    SkidLeft: 'std-transition-skid-left' as const,
-    Zoom: 'std-transition-zoom' as const,
-}
+export const TransitionEffectEnum: {
+    Fade: 'std-transition-fade'
+    Leak: 'std-transition-leak'
+    None: 'std-transition-none'
+    SkidLeft: 'std-transition-skid-left'
+    Zoom: 'std-transition-zoom'
+} = Enum({
+    Fade: 'std-transition-fade',
+    Leak: 'std-transition-leak',
+    None: 'std-transition-none',
+    SkidLeft: 'std-transition-skid-left',
+    Zoom: 'std-transition-zoom',
+})
 
-export function TransitionAnimator(props: TransitionAnimatorProps): React.JSX.Element {
+export function TransitionAnimator(props: Props<TransitionAnimatorProps>): React.JSX.Element {
     const {className, effect, ...otherProps} = props
 
     return (
         <Box
             {...otherProps}
-            className={classes('TransitionAnimator-c385', className, effect)}
+            className={classes('TransitionAnimator-262e89', className, effect)}
         />
     )
 }
@@ -24,7 +31,5 @@ export function TransitionAnimator(props: TransitionAnimatorProps): React.JSX.El
 // Types ///////////////////////////////////////////////////////////////////////
 
 export interface TransitionAnimatorProps extends BoxProps {
-    effect: TransitionEffectEnum
+    effect: UnionOf<typeof TransitionEffectEnum>
 }
-
-export type TransitionEffectEnum = ValueOf<typeof TransitionEffect> & string

@@ -1,17 +1,23 @@
 import {classes} from '@downforce/react/classes'
 import type {ElementProps, Props} from '@downforce/react/props'
 import {arrayWrap} from '@downforce/std/array'
+import {Enum} from '@downforce/std/enum'
 import type {ValueOf} from '@downforce/std/type'
 
-export const SliderDirection = {
-    Row: 'row' as const,
-    RowReverse: 'row-reverse' as const,
-    Column: 'column' as const,
-    ColumnReverse: 'column-reverse' as const,
-}
+export const SliderDirectionEnum: {
+    Row: 'row'
+    RowReverse: 'row-reverse'
+    Column: 'column'
+    ColumnReverse: 'column-reverse'
+} = Enum({
+    Row: 'row',
+    RowReverse: 'row-reverse',
+    Column: 'column',
+    ColumnReverse: 'column-reverse',
+})
 
 export function Slider(props: Props<SliderProps>): React.JSX.Element {
-    const {className, children, selected, direction, ...otherProps} = props
+    const {className, children, direction, selected, ...otherProps} = props
     const childrenList = arrayWrap(children)
 
     return (
@@ -30,7 +36,7 @@ export function Slider(props: Props<SliderProps>): React.JSX.Element {
                     style={computeSlideStyle({
                         index: idx,
                         selected,
-                        direction: direction ?? SliderDirection.Row,
+                        direction: direction ?? SliderDirectionEnum.Row,
                     })}
                 >
                     {it}
@@ -54,19 +60,19 @@ export function Slide(props: Props<SlideProps>): React.JSX.Element {
 export function computeSlideStyle(args: {
     index: number
     selected: number
-    direction: SliderDirectionEnum
+    direction: SliderDirectionEnumType
 }): React.CSSProperties {
     const {index, selected, direction} = args
 
     const [xDirection, yDirection] = (() => {
         switch (direction) {
-            case SliderDirection.Column:
+            case SliderDirectionEnum.Column:
                 return [0, 1]
-            case SliderDirection.ColumnReverse:
+            case SliderDirectionEnum.ColumnReverse:
                 return [0, -1]
-            case SliderDirection.Row:
+            case SliderDirectionEnum.Row:
                 return [1, 0]
-            case SliderDirection.RowReverse:
+            case SliderDirectionEnum.RowReverse:
                 return [-1, 0]
         }
     })()
@@ -84,11 +90,11 @@ export function computeSlideStyle(args: {
 
 export interface SliderProps extends ElementProps<'div'> {
     children: Array<React.ReactNode>
+    direction?: undefined | SliderDirectionEnumType
     selected: number
-    direction?: undefined | SliderDirectionEnum
 }
 
 export interface SlideProps extends ElementProps<'div'> {
 }
 
-export type SliderDirectionEnum = ValueOf<typeof SliderDirection> & string
+export type SliderDirectionEnumType = ValueOf<typeof SliderDirectionEnum>

@@ -1,4 +1,4 @@
-import {defineContext} from '@downforce/react/ctx'
+import {defineContext} from '@downforce/react/context'
 import {useClickOutside} from '@downforce/react/gesture'
 import {setRef} from '@downforce/react/ref'
 import type {StateWriter} from '@downforce/react/state'
