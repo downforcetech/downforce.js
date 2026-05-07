@@ -9,6 +9,7 @@
         "./ts/"
     ],
     "exports": {
+        "./*.css": "./ts/*.css",
         "./*": "./esm/*.js"
     },
     "scripts": {
