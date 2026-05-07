@@ -14,7 +14,7 @@ export function SortComparator(
 /*
 * EXAMPLE
 *
-* const list = [{id: 1, name: 'Mike'}, {id: 2, name: 'John'}]
+* const list = [{id: 1, name: 'Jake'}]
 * list.sort(sortBy(it => it.id))
 * list.sort(sortBy(it => it.name))
 */
@@ -41,27 +41,23 @@ export function sortBy<I, R extends undefined | number | string>(
 * EXAMPLE
 *
 * const list = [{id: 1, name: 'Mike'}]
-* list.sort(invertSort(sortBy(it => it.id)))
+* list.sort(invertSortOf(sortBy(it => it.id)))
 */
-export function invertSort<A extends FnArgs>(
+export function invertSortOf<A extends FnArgs>(
     fn: (...args: A) => number,
 ): (...args: A) => number {
-    function invertFn(...args: A) {
-        return invert(fn(...args))
+    function invert(...args: A) {
+        return -1 * fn(...args)
     }
 
-    return invertFn
-}
-
-export function invert(result: number): number {
-    return -1 * result
+    return invert
 }
 
 /*
 * EXAMPLE
 *
-* const list = [{id: 1, name: 'Mike'}, {id: 2, name: 'John'}]
-* list.sort(composeSorts(invertSort(sortById), sortBy(it => it.name)))
+* const list = [{id: 1, name: 'Jake'}]
+* list.sort(composeSorts(invertSortOf(sortById), sortBy(it => it.name)))
 */
 export function composeSorts<I>(...comparators: Array<(first: I, second: I) => number>): (first: I, second: I) => number {
     function sort(first: I, second: I): number {
