@@ -11,13 +11,12 @@ export function isObjectEmpty(object: object): boolean {
 export function objectFromEntry<K extends PropertyKey, V>(
     key: K,
     value: undefined | V,
-): object | {[key in K]: V}
+): {[key in K]?: V}
 {
     return isDefined(value)
-        ? {[key]: value}
+        ? {[key]: value} as {[key in K]: V}
         : {}
 }
-
 
 export function mapObject<K extends PropertyKey, V, RK extends PropertyKey, RV>(
     object: Record<K, V>,

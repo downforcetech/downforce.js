@@ -16,7 +16,7 @@ export const ContainerInternalsKey: unique symbol = Symbol('ContainerInternals')
 * createContainer(services)
 */
 export function createContainer<M extends ContainerServicesMap>(
-    factories: ContainerFactoriesOf<M>,
+    factories: ContainerFactoriesOf<M, undefined>,
     state?: undefined,
 ): Container<M, undefined>
 export function createContainer<M extends ContainerServicesMap, S = undefined>(
@@ -125,7 +125,7 @@ export interface ContainerServiceOptions {
     type?: undefined | 'prototype'
 }
 
-export type Container<M extends ContainerServicesMap = ContainerServicesMap, S = undefined> =
+export type Container<M extends ContainerServicesMap, S> =
     & M
     & ContainerStateProps<S>
     & {
@@ -133,7 +133,7 @@ export type Container<M extends ContainerServicesMap = ContainerServicesMap, S =
         require<K extends keyof M>(id: K, options?: undefined | ContainerServiceOptions): M[K]
     }
 
-export interface ContainerInternals<M extends ContainerServicesMap = ContainerServicesMap, S = undefined> {
+export interface ContainerInternals<M extends ContainerServicesMap, S> {
     factories: ContainerFactoriesOf<M, S>
     instances: M
 }
@@ -145,6 +145,6 @@ export interface ContainerStateProps<S> {
 export type ContainerServiceId = PropertyKey
 export type ContainerServicesMap = object
 
-export type ContainerFactoriesOf<M extends ContainerServicesMap, S = undefined> = {
+export type ContainerFactoriesOf<M extends ContainerServicesMap, S> = {
     [key in keyof M]: (container: Container<M, S>) => M[key]
 }

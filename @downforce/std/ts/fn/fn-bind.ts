@@ -9,8 +9,8 @@ import type {FnArgs} from './fn-type.js'
 * fn.bind(undefined, arg1)
 */
 export function bind<A extends FnArgs, B extends FnArgs, R>(
-    fn: (...allArgs: [...A, ...B]) => R,
+    fn: (...args: [...A, ...B]) => R,
     ...boundArgs: A
-): (...otherArgs: B) => R {
+): (...deferredArgs: B) => R {
     return fn.bind(undefined, ...boundArgs)
 }
