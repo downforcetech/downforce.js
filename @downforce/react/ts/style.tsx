@@ -1,6 +1,6 @@
 import {getMapValue} from '@downforce/std/map'
 import {useContext, useInsertionEffect, useMemo} from 'react'
-import {defineContext} from './ctx.js'
+import {defineContext} from './context.js'
 
 export const StyleContext: React.Context<undefined | StyleContextValue> = defineContext<StyleContextValue>('StyleContext')
 

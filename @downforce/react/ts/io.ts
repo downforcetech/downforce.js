@@ -5,13 +5,13 @@ import {catchPromiseError, isError, isResult, matchOutcome, type OutcomeResultOr
 import type {PromiseView} from '@downforce/std/promise'
 import type {FIX} from '@downforce/std/type'
 import {startTransition, useCallback, useEffect, useRef, useState} from 'react'
-import {useFn, type HookDeps} from './hook.js'
+import {useCallback2, type HookDeps} from './memo.js'
 
 export function useAsyncIo<A extends FnArgs, R>(
     onCall: FnAsync<A, R>,
     deps?: undefined | HookDeps,
 ): UseAsyncIoContract<A, R> {
-    const onCallMemoized = useFn(onCall, deps)
+    const onCallMemoized = useCallback2(onCall, deps)
     const [state, setState] = useState<AsyncIoState<R>>({
         output: undefined,
         error: undefined,
@@ -178,7 +178,7 @@ export function useAsyncIoEffect<I extends AsyncIoState<any>>(
     onEffect: Io<I, undefined | Task>,
     deps?: undefined | HookDeps,
   ): undefined {
-    const onEffectMemoized = useFn(onEffect, deps)
+    const onEffectMemoized = useCallback2(onEffect, deps)
 
     useEffect(() => {
         return onEffectMemoized(io) as FIX<void | (() => void)>

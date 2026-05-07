@@ -13,8 +13,8 @@ import type {Void} from '@downforce/std/type'
 import {memo, startTransition, useContext, useMemo, useState} from 'react'
 import {Box, type BoxProps} from './box.js'
 import {classes} from './classes.js'
-import {defineContext} from './ctx.js'
-import {useFn, type HookDeps} from './hook.js'
+import {defineContext} from './context.js'
+import {useCallback2, type HookDeps} from './memo.js'
 import type {Props, VoidProps} from './props.js'
 import type {StateWriter} from './state.js'
 
@@ -147,7 +147,7 @@ export function useMessages<T extends object, L extends string = string, K exten
     onCompute: MessagesComputer<MessageStore<L, K>, T>,
     deps?: undefined | HookDeps,
 ): T & { $msg: MessageStore<L, K> } {
-    const onComputeMemoized = useFn(onCompute, deps)
+    const onComputeMemoized = useCallback2(onCompute, deps)
     const msg = useMessageStore()! as MessageStore<L, K>
     const {locale, localeFallback, messages} = msg
 

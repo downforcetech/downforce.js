@@ -1,11 +1,32 @@
+import {call} from '@downforce/std/fn'
 import {createCssTransition, runAsyncTimeline} from '@downforce/web/animation'
-import {useEffect, useMemo, useState} from 'react'
-import {useRouteTransition} from './router.js'
-import type {UseStateContract} from './state.js'
+import {useEffect, useMemo, useRef, useState} from 'react'
+import {useRoutePath} from '../router.js'
+import type {UseStateContract} from '../state.js'
 
-export function useRoutedViewLifecycle(routeRegexp: RegExp): UseStateContract<ViewLifecycle, void> {
+export function useRouteChange(): {
+    fromRoute: string
+    toRoute: string
+} {
+    const routePath = useRoutePath()
+    const toRoute = routePath
+    const prevRouteRef = useRef(toRoute)
+
+    useEffect(() => {
+        prevRouteRef.current = toRoute
+    }, [toRoute])
+
+    const exchange = useMemo(() => {
+        const fromRoute = prevRouteRef.current
+        return {fromRoute, toRoute}
+    }, [toRoute])
+
+    return exchange
+}
+
+export function useRouteTransitionLifecycle(routeRegexp: RegExp): UseStateContract<ViewLifecycle, void> {
     const [viewLifecycle, setViewLifecycle] = useState<ViewLifecycle>('exited')
-    const {fromRoute, toRoute} = useRouteTransition()
+    const {fromRoute, toRoute} = useRouteChange()
 
     useEffect(() => {
         const toThisView = routeRegexp.test(toRoute)
@@ -44,7 +65,7 @@ export function useRoutedViewLifecycle(routeRegexp: RegExp): UseStateContract<Vi
 * }
 * return <div style={style}>...</div>
 */
-export function useRoutedViewAnimation(
+export function useRouteTransition(
     routeRegexp: RegExp,
     enterOptional?: undefined | Animator,
     exitOptional?: undefined | Animator,
@@ -52,18 +73,18 @@ export function useRoutedViewAnimation(
     viewLifecycle: ViewLifecycle
     style: React.CSSProperties
 } {
-    const [viewLifecycle, setViewLifecycle] = useRoutedViewLifecycle(routeRegexp)
+    const [viewLifecycle, setViewLifecycle] = useRouteTransitionLifecycle(routeRegexp)
     const enter = enterOptional ?? (() => Promise.resolve())
     const exit = exitOptional ?? (() => Promise.resolve())
 
-    const opacity = (() => {
+    const opacity = call(() => {
         switch (viewLifecycle) {
             case 'entering':
             case 'exited':
                 return 0
         }
-        return undefined // Makes TypeScript happy.
-    })()
+        return
+    })
 
     useEffect(() => {
         switch (viewLifecycle) {
@@ -145,7 +166,7 @@ export function getViewElement(selector: string): undefined | HTMLElement {
 
     if (! element) {
         console.warn(
-            '@downforce/react/routed-view.getViewElement(~~selector~~)\n'
+            '@downforce/react/route-transition.getViewElement(~~selector~~)\n'
             + `missing view's animated element "${selector}".`
         )
     }

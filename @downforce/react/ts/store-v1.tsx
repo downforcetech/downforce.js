@@ -1,7 +1,7 @@
 import type {ReduxReducerState} from '@downforce/std/redux'
 import type {Void} from '@downforce/std/type'
 import {useContext, useState} from 'react'
-import {defineContext} from './ctx.js'
+import {defineContext} from './context.js'
 import type {UseStateContract} from './state.js'
 
 export const StoreContextV1: React.Context<undefined | StoreV1<ReduxReducerState>> = defineContext<StoreV1<ReduxReducerState>>('StoreContextV1')

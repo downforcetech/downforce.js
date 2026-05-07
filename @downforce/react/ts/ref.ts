@@ -1,9 +1,10 @@
 import {isFunction} from '@downforce/std/fn'
 import {isObject} from '@downforce/std/object'
 import type {None} from '@downforce/std/optional'
-import {useLayoutEffect, useMemo, useRef} from 'react'
+import type {Void} from '@downforce/std/type'
+import {useMemo} from 'react'
 
-export function useMergeRefs<V>(...refs: Array<void | None | RefHandler<None | V>>): (instance: null | V) => undefined {
+export function useMergeRefs<V>(...refs: Array<undefined | RefHandlerMixed<V>>): (instance: V) => undefined {
     const onRef = useMemo(() => {
         return mergeRefs(...refs)
     }, refs)
@@ -11,20 +12,21 @@ export function useMergeRefs<V>(...refs: Array<void | None | RefHandler<None | V
     return onRef
 }
 
-export function mergeRefs<V>(...refs: Array<void | None | RefHandler<None | V>>): (instance: null | V) => undefined {
-    function onRef(instance: null | V): undefined {
+export function mergeRefs<V>(...refs: Array<undefined | RefHandlerMixed<V>>): (instance: V) => undefined {
+    function onRef(instance: V): undefined {
         for (const ref of refs) {
             if (! ref) {
                 continue
             }
 
-            setRef<None | V>(ref, instance)
+            setRef(ref, instance)
         }
     }
+
     return onRef
 }
 
-export function setRef<V>(ref: RefHandler<V>, value: V): undefined {
+export function setRef<V>(ref: RefHandlerMixed<V>, value: V): undefined {
     if (isFunction(ref)) {
         ref(value)
     }
@@ -33,29 +35,20 @@ export function setRef<V>(ref: RefHandler<V>, value: V): undefined {
     }
 }
 
-export function usePreviousValueRef<T>(value: T): React.RefObject<undefined | T> {
-    const oldValueRef = useRef<T>(undefined)
-
-    useLayoutEffect(() => {
-        function onClean() {
-            oldValueRef.current = value
-        }
-
-        return onClean
-    }, [value])
-
-    return oldValueRef
-}
-
 // Types ///////////////////////////////////////////////////////////////////////
 
-export type RefHandler<V> = React.RefObject<V> | React.RefCallback<V> | React.ForwardedRef<V>
+export type RefHandlerMixed<V> =
+    | ((ref: V) => Void)
+    | React.RefObject<V>
+    | React.RefCallback<V>
+    | React.Ref<V>
+    | React.ForwardedRef<V>
 
 export interface RefProp<V> {
-    onRef?: undefined | RefHandler<V>
+    onRef?: undefined | RefHandlerMixed<V>
 }
 
-export type RefValueOf<R extends None | React.Ref<any> | React.ForwardedRef<any>> =
+export type RefValueOf<R extends None | React.Ref<any>/* | React.ForwardedRef<any>*/> =
     R extends React.RefObject<infer V>
         ? V
     : R extends React.RefCallback<infer V>

@@ -2,7 +2,7 @@ import {arrayWrap} from '@downforce/std/array'
 import type {None} from '@downforce/std/optional'
 import {useRef} from 'react'
 import {useEvent, type EventElement, type EventHandler, type UseEventOptions} from './event.js'
-import {useFn, type HookDeps} from './hook.js'
+import {useCallback2, type HookDeps} from './memo.js'
 
 export function useKey(
     key: KeybindingKey,
@@ -10,7 +10,7 @@ export function useKey(
     deps?: undefined | HookDeps,
     options?: undefined | UseKeyOptions,
 ): undefined {
-    const onKeyMemoized = useFn(onKey, deps)
+    const onKeyMemoized = useCallback2(onKey, deps)
     const documentRef = useRef(document)
     const event = options?.event ?? 'keydown'
     const ref = options?.ref ?? documentRef

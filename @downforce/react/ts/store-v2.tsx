@@ -1,7 +1,7 @@
 import {getReduxEvent, type ReduxEvent, type ReduxEventPolymorphic, type ReduxReducerArgs, type ReduxReducerId, type ReduxReducerState} from '@downforce/std/redux'
 import type {Void} from '@downforce/std/type'
 import {startTransition, useCallback, useContext, useMemo, useRef, useState} from 'react'
-import {defineContext} from './ctx.js'
+import {defineContext} from './context.js'
 
 export const StoreContextV2: React.Context<undefined | StoreV2> = defineContext<StoreV2>('StoreContextV2')
 

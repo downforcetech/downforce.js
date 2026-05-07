@@ -1,6 +1,5 @@
-import type {Fn, FnArgs, Task} from '@downforce/std/fn'
-import type {FIX} from '@downforce/std/type'
-import {useCallback, useEffect, useLayoutEffect, useMemo, useRef} from 'react'
+import type {Fn, FnArgs} from '@downforce/std/fn'
+import {useCallback, useLayoutEffect, useMemo, useRef} from 'react'
 
 export const NoDeps: [] = []
 
@@ -23,7 +22,17 @@ export function useConst<V>(value: V): V {
     return useRef(value).current
 }
 
-export function useFn<A extends FnArgs, R>(
+/*
+* useMemo(fn, deps) but with inverted arguments (deps, fn) and deps as function arguments.
+*/
+export function useComputed<const A extends FnArgs, R>(
+    deps: A,
+    onCompute: Fn<A, R>,
+): R {
+    return useMemo(() => onCompute(...deps), deps)
+}
+
+export function useCallback2<A extends FnArgs, R>(
     onCallback: (...args: A) => R,
     deps: undefined | HookDeps,
 ): (...args: A) => R {
@@ -70,44 +79,6 @@ export function useDeps(
     return moreDeps
         ? baseDeps.concat(moreDeps)
         : baseDeps as Array<unknown>
-}
-
-/*
-* useMemo(fn, deps) but with inverted arguments (deps, fn) and deps as function arguments.
-*/
-export function useComputed<A extends FnArgs, R>(
-    deps: A,
-    onCompute: Fn<A, R>,
-): R {
-    return useMemo(() => onCompute(...deps), deps)
-}
-
-/*
-* useEffect(fn, deps) but with inverted arguments (deps, fn) and deps as function arguments.
-*/
-export function useWatch<A extends Array<unknown>>(
-    deps: readonly [...A],
-    onEffect: Fn<NoInfer<A>, undefined | Task>,
-): undefined {
-    useEffect(() => {
-        return onEffect(...deps) as void | (() => void)
-    }, deps)
-}
-
-export function useWatchChange<A extends Array<unknown>>(
-    deps: readonly [...A],
-    onEffect: Fn<NoInfer<A>, undefined | Task>,
-): undefined {
-    const initRef = useRef(false)
-
-    useEffect(() => {
-        if (! initRef.current) {
-            initRef.current = true
-            return
-        }
-
-        return onEffect(...deps) as FIX<void | (() => void)>
-    }, deps)
 }
 
 // Types ///////////////////////////////////////////////////////////////////////

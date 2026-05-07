@@ -1,6 +1,6 @@
 import {createContainer, type Container, type ContainerFactoriesOf, type ContainerServicesMap} from '@downforce/std/container'
 import {useContext, useMemo} from 'react'
-import {defineContext} from './ctx.js'
+import {defineContext} from './context.js'
 
 export {createContainer, type ContainerServiceOptions, type ContainerStateProps} from '@downforce/std/container'
 
@@ -67,20 +67,20 @@ export function useContainerProvider<M extends ContainerServicesMap, S = undefin
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface ContainerBoundCase1Options<M extends ContainerServicesMap, S = undefined> {
+export interface ContainerBoundCase1Options<M extends ContainerServicesMap, S> {
     container: Container<M, S>
 }
-export interface ContainerBoundCase1Exports<M extends ContainerServicesMap, S = undefined> {
+export interface ContainerBoundCase1Exports<M extends ContainerServicesMap, S> {
     useContainer: {
         (): Container<M, S>
     }
 }
 
-export interface ContainerBoundCase2Options<M extends ContainerServicesMap, S = undefined> {
+export interface ContainerBoundCase2Options<M extends ContainerServicesMap, S> {
     context?: undefined | React.Context<undefined | Container<M, S>>
     contextName?: undefined | string
 }
-export interface ContainerBoundCase2Exports<M extends ContainerServicesMap, S = undefined> extends ContainerBoundCase1Exports<M, S> {
+export interface ContainerBoundCase2Exports<M extends ContainerServicesMap, S> extends ContainerBoundCase1Exports<M, S> {
     ContainerContext: React.Context<undefined | Container<M, S>>
     ContainerProvider: {
         (props: {children: React.ReactNode} & ContainerDefinition<M, S>): React.JSX.Element
@@ -93,7 +93,7 @@ export interface ContainerBoundCase2Exports<M extends ContainerServicesMap, S = 
     }
 }
 
-export interface ContainerDefinition<M extends ContainerServicesMap, S = undefined> {
+export interface ContainerDefinition<M extends ContainerServicesMap, S> {
     services: ContainerFactoriesOf<M, S>
     state: S
 }

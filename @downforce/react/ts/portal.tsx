@@ -2,7 +2,7 @@ import type {FIX} from '@downforce/std/type'
 import {useContext, useMemo} from 'react'
 import {createPortal} from 'react-dom'
 import {Box, type BoxProps} from './box.js'
-import {defineContext} from './ctx.js'
+import {defineContext} from './context.js'
 import {useState3, type UseState3Contract, type StateWriterArg} from './state.js'
 
 export const PortalContext: React.Context<undefined | UseState3Contract<null | PortalElement>> =

@@ -1,3 +1,4 @@
+import {Enum} from '@downforce/std/enum'
 import type {ValueOf} from '@downforce/std/type'
 import type {AuthAuthenticateOptions, AuthCredentials, AuthInvalidateOptions, AuthValidateOptions} from '@downforce/web/auth'
 import {authenticate, invalidateAuthentication, validateAuthentication} from '@downforce/web/auth'
@@ -5,36 +6,41 @@ import {throwInvalidResponse} from '@downforce/web/error'
 import {startTransition, useCallback, useMemo, useState} from 'react'
 import {useBusyLock} from './busy.js'
 
-export const AuthTokenState = {
-    Missing: 'Missing' as const,
-    Validating: 'Validating' as const,
-    Valid: 'Valid' as const,
-    Invalid: 'Invalid' as const,
-}
+export const AuthTokenStateEnum: {
+    Missing: 'Missing'
+    Validating: 'Validating'
+    Valid: 'Valid'
+    Invalid: 'Invalid'
+} = Enum({
+    Missing: 'Missing',
+    Validating: 'Validating',
+    Valid: 'Valid',
+    Invalid: 'Invalid',
+})
 
-export function useAuthentication(args: AuthenticationOptions): AuthenticationManager {
+export function useAuthentication(args: UseAuthenticationOptions): UseAuthenticationContract {
     const {
         authenticate: authenticateOptions,
         validate: validateOptions,
         invalidate: invalidateOptions,
     } = args
-    const [tokenState, setTokenState] = useState<undefined | AuthTokenStateEnum>(undefined)
+    const [tokenState, setTokenState] = useState<undefined | AuthTokenStateEnumType>(undefined)
     const {busy, busyLock, busyRelease} = useBusyLock()
 
     const validateToken = useCallback(async (token: undefined | string): Promise<undefined> => {
         if (! token) {
-            setTokenState(AuthTokenState.Missing)
+            setTokenState(AuthTokenStateEnum.Missing)
             return
         }
 
-        setTokenState(AuthTokenState.Validating)
+        setTokenState(AuthTokenStateEnum.Validating)
         busyLock()
 
         try {
             const tokenIsValid = await validateAuthentication(token, validateOptions)
 
             startTransition(() => {
-                setTokenState(tokenIsValid ? AuthTokenState.Valid : AuthTokenState.Invalid)
+                setTokenState(tokenIsValid ? AuthTokenStateEnum.Valid : AuthTokenStateEnum.Invalid)
             })
         }
         finally {
@@ -50,7 +56,7 @@ export function useAuthentication(args: AuthenticationOptions): AuthenticationMa
             const token = await authenticate(credentials, authenticateOptions)
 
             startTransition(() => {
-                setTokenState(AuthTokenState.Valid)
+                setTokenState(AuthTokenStateEnum.Valid)
             })
 
             return token
@@ -63,7 +69,7 @@ export function useAuthentication(args: AuthenticationOptions): AuthenticationMa
     }, [authenticateOptions])
 
     const destroySession = useCallback(async (token: string): Promise<undefined> => {
-        setTokenState(AuthTokenState.Missing)
+        setTokenState(AuthTokenStateEnum.Missing)
 
         if (! token) {
             return
@@ -85,7 +91,7 @@ export function useAuthentication(args: AuthenticationOptions): AuthenticationMa
     }, [invalidateOptions])
 
     const auth = useMemo(() => {
-        const isAuthenticated = tokenState === AuthTokenState.Valid
+        const isAuthenticated = tokenState === AuthTokenStateEnum.Valid
 
         return {
             tokenState,
@@ -106,21 +112,45 @@ export function useAuthentication(args: AuthenticationOptions): AuthenticationMa
     return auth
 }
 
+export function AuthBarrier(props: AuthBarrierProps): React.ReactNode {
+    const {children, fallback, progress, tokenState} = props
+
+    switch (tokenState) {
+        // Fast path, from the most common to least common.
+        case AuthTokenStateEnum.Valid:
+            return children // Token has been verified and is valid. We can safely continue.
+        case AuthTokenStateEnum.Missing:
+        case AuthTokenStateEnum.Invalid:
+            return fallback // Token is missing or invalid.
+        case AuthTokenStateEnum.Validating:
+            return progress // We are waiting the response from the server.
+        case undefined:
+            return
+    }
+}
+
 // Types ///////////////////////////////////////////////////////////////////////
 
-export interface AuthenticationOptions {
+export interface UseAuthenticationOptions {
     authenticate: AuthAuthenticateOptions
     invalidate: AuthInvalidateOptions
     validate: AuthValidateOptions
 }
 
-export interface AuthenticationManager {
-    tokenState: undefined | AuthTokenStateEnum
+export interface UseAuthenticationContract {
+    tokenState: undefined | AuthTokenStateEnumType
     isAuthenticated: boolean
     pending: boolean
-    validateToken: (token: undefined | string) => Promise<undefined>
-    authenticateCredentials: (credentials: AuthCredentials) => Promise<string>
-    destroySession: (token: string) => Promise<undefined>
+    validateToken(token: undefined | string): Promise<undefined>
+    authenticateCredentials(credentials: AuthCredentials): Promise<string>
+    destroySession(token: string): Promise<undefined>
 }
 
-export type AuthTokenStateEnum = ValueOf<typeof AuthTokenState> & string
+export type AuthTokenStateEnumType = ValueOf<typeof AuthTokenStateEnum>
+
+export interface AuthBarrierProps {
+    tokenState: undefined | AuthTokenStateEnumType
+    children: React.ReactNode
+    progress: React.ReactNode
+    fallback: React.ReactNode
+}

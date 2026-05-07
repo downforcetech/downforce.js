@@ -1,5 +1,5 @@
 import {useCallback, useMemo} from 'react'
-import {useFn, type HookDeps} from './hook.js'
+import {useCallback2, type HookDeps} from './memo.js'
 import {useState3, type StateReader, type StateWriter} from './state.js'
 
 const NoItems: [] = []
@@ -10,7 +10,7 @@ export function useFilter<S, I>(
     onTest: (state: S, item: I, idx: number) => boolean,
     deps?: undefined | HookDeps,
 ): FilterManager<S, I> {
-    const onTestMemoized = useFn(onTest, deps)
+    const onTestMemoized = useCallback2(onTest, deps)
     const [state, setState, getState] = useState3(initialState)
 
     const filteredItems = useMemo(() => {

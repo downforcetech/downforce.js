@@ -5,37 +5,41 @@ import {readReactive, watchReactive, writeReactive, type ReactiveObject, type Re
 import type {ReadWriteSync} from '@downforce/std/store'
 import type {FIX} from '@downforce/std/type'
 import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useState, useSyncExternalStore} from 'react'
-import {useFn, type HookDeps} from './hook.js'
+import {useCallback2, type HookDeps} from './memo.js'
 import {useRenderSignal, type RenderSignal} from './render.js'
-import type {UseStateContract, StateWriterArg} from './state.js'
+import type {StateWriterArg, UseState3Contract, UseStateContract} from './state.js'
 
-export function useReactiveState<V>(reactive: ReactiveObject<V>): UseStateContract<V, V> {
-    const [value, PRIVATE_setValue] = useState(() => readReactive(reactive))
+export function useReactiveState<V>(reactive: ReactiveObject<V>): UseState3Contract<V> {
+    const [state, PRIVATE_setState] = useState(() => readReactive(reactive))
 
-    const setValue = useCallback((value: StateWriterArg<V>): V => {
-        const newValue = compute(value, readReactive(reactive))
-
-        PRIVATE_setValue(newValue)
-        writeReactive(reactive, newValue)
-
-        return newValue
+    const getState = useCallback(() => {
+        return readReactive(reactive)
     }, [reactive])
+
+    const setState = useCallback((stateComputable: StateWriterArg<V>): V => {
+        const newState = compute(stateComputable, readReactive(reactive))
+
+        PRIVATE_setState(newState)
+        writeReactive(reactive, newState)
+
+        return newState
+    }, [reactive, PRIVATE_setState])
 
     useEffect(() => {
         const onClean = watchReactive(
             reactive,
             newValue => {
                 startTransition(() => {
-                    PRIVATE_setValue(newValue)
+                    PRIVATE_setState(newValue)
                 })
             },
             {immediate: true},
         )
 
         return onClean as FIX<void | (() => void)>
-    }, [reactive])
+    }, [reactive, PRIVATE_setState])
 
-    return [value, setValue]
+    return [state, setState, getState]
 }
 
 export function useReactiveValue<V>(reactive: ReactiveObject<V>): V {
@@ -44,8 +48,8 @@ export function useReactiveValue<V>(reactive: ReactiveObject<V>): V {
     return readReactive(reactive)
 }
 
-export function useReactiveValues<A extends Array<ReactiveObject<any>>>(
-    reactives: readonly [...A]
+export function useReactiveValues<const A extends Array<ReactiveObject<any>>>(
+    reactives: A,
 ): ReactiveValuesOf<A> {
     const signal = useReactiveSignals(reactives)
 
@@ -56,20 +60,20 @@ export function useReactiveValues<A extends Array<ReactiveObject<any>>>(
     return values
 }
 
-export function useReactiveList<A extends Array<ReactiveObject<any>>>(
-    reactives: readonly [...A]
-): readonly [...A] {
+export function useReactiveList<const A extends Array<ReactiveObject<any>>>(
+    reactives: A,
+): A {
     const signal = useReactiveSignals(reactives)
 
     const values = useMemo(() => {
-        return [...reactives] as readonly [...A]
+        return [...reactives] as A
     }, [reactives, signal])
 
     return values
 }
 
-export function useReactiveMemo<A extends Array<ReactiveObject<any>>, V>(
-    reactives: readonly [...A],
+export function useReactiveMemo<const A extends Array<ReactiveObject<any>>, V>(
+    reactives: A,
     computer: (...args: ReactiveValuesOf<A>) => V
 ): V {
     const signal = useReactiveSignals(reactives)
@@ -96,7 +100,7 @@ export function useReactiveSelect<V, R>(
     onSelect: Io<undefined | V, R>,
     deps?: undefined | HookDeps,
 ): undefined | R {
-    const onSelectMemoized = useFn(onSelect, deps)
+    const onSelectMemoized = useCallback2(onSelect, deps)
     const selectedValue = onSelectMemoized(matchSome(reactive, readReactive))
     const [signal, setSignal] = useState(selectedValue)
 
@@ -136,13 +140,13 @@ export function useReactiveStore<V>(
     write: ReadWriteSync<V>['write'],
     watch: (observer: ReactiveObserver<V>, options?: undefined | ReactiveWatchOptions) => Task,
 ): UseStateContract<V, V> {
-    const [value, PRIVATE_setValue] = useState(read())
+    const [state, PRIVATE_setState] = useState(read)
 
-    const setValue = useCallback((value: StateWriterArg<V>): V => {
+    const setState = useCallback((value: StateWriterArg<V>): V => {
         const newValue = compute(value, read())
 
         startTransition(() => {
-            PRIVATE_setValue(newValue)
+            PRIVATE_setState(newValue)
         })
         write(newValue)
 
@@ -150,18 +154,19 @@ export function useReactiveStore<V>(
     }, [read, write])
 
     useEffect(() => {
-        function setValueTransition(value: V): undefined {
-            startTransition(() => {
-                PRIVATE_setValue(value)
-            })
-        }
-
-        const onClean = watch(setValueTransition, {immediate: true})
+        const onClean = watch(
+            newValue => {
+                startTransition(() => {
+                    PRIVATE_setState(newValue)
+                })
+            },
+            {immediate: true},
+        )
 
         return onClean as FIX<void | (() => void)>
     }, [watch])
 
-    return [value, setValue]
+    return [state, setState]
 }
 
 export function useReactiveSignal(reactive: undefined | ReactiveObject<any>): RenderSignal {
@@ -216,36 +221,36 @@ export function useReactiveSignals(
 }
 
 export function ReactiveState<V>(props: ReactiveStateProps<V>): React.ReactNode {
-    const {children, from} = props
+    const {children, value} = props
 
-    return children(useReactiveState(from))
+    return children(...useReactiveState(value))
 }
 
 export function ReactiveValue<V>(props: ReactiveValueProps<V>): React.ReactNode {
-    const {children, of} = props
+    const {children, value} = props
 
-    return children(useReactiveState(of)[0])
+    return children(useReactiveValue(value))
 }
 
 export function ReactiveValues<A extends Array<ReactiveObject<any>>>(props: ReactiveValuesProps<A>): React.ReactNode {
-    const {children, of} = props
+    const {children, values} = props
 
-    return children(useReactiveValues(of))
+    return children(useReactiveValues(values))
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
 
 export interface ReactiveStateProps<V> {
-    from: ReactiveObject<V>
-    children(value: UseStateContract<V, V>): React.ReactNode
+    children(...args: UseState3Contract<V>): React.ReactNode
+    value: ReactiveObject<V>
 }
 
 export interface ReactiveValueProps<V> {
-    of: ReactiveObject<V>
     children(value: V): React.ReactNode
+    value: ReactiveObject<V>
 }
 
 export interface ReactiveValuesProps<A extends Array<ReactiveObject<any>>> {
-    of: readonly [...A]
     children(values: ReactiveValuesOf<A>): React.ReactNode
+    values: [...A]
 }

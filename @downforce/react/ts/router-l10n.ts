@@ -38,7 +38,7 @@ export function useRouteParamLocale(options?: undefined | RouteParamsLocaleOptio
             return value.toLowerCase()
         }
 
-        return // Makes TypeScript happy.
+        return
     }, [routeParams, name/*, names*/])
 
     return locale

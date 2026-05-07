@@ -1,5 +1,5 @@
 import {arrayWrap} from '@downforce/std/array'
-import type {Task} from '@downforce/std/fn'
+import {call, type Task} from '@downforce/std/fn'
 import {isSome, isUndefined} from '@downforce/std/optional'
 import {isString} from '@downforce/std/string'
 import {flushStyles} from '@downforce/web/animation'
@@ -18,7 +18,7 @@ import {
     useState
 } from 'react'
 import {classes} from './classes.js'
-import {defineContext} from './ctx.js'
+import {defineContext} from './context.js'
 import {areElementsEqual, strictElement} from './element.js'
 
 const DisplayNoneStyle: React.CSSProperties = {display: 'none'}
@@ -110,22 +110,15 @@ export function Animator(props: AnimatorProps): React.JSX.Element {
         setTasksLifecycle({[taskId]: state})
     }, [])
 
-    const taskEvents = (() => {
+    const taskEvents = call(() => {
         switch (taskAction) {
-            case 'mount':
-                return Math.max(0, props.enter ?? 1)
-            case 'unmount':
-                return Math.max(0, props.exit ?? 1)
-            case 'render':
-                // A render task has no animation and no animation event.
-                return 0
+            case 'mount': return Math.max(0, props.enter ?? 1)
+            case 'unmount': return Math.max(0, props.exit ?? 1)
+            case 'render': return 0 // A render task has no animation and no animation event.
         }
-    })()
+    })
 
-    if (true
-        && taskLifecycle !== 'animated'
-        && taskEvents === 0
-    ) {
+    if (taskLifecycle !== 'animated' && taskEvents === 0) {
         // We derive the state. In this way a mount/unmount action with 0 events
         // is reflected immediately (without re-layout, re-paint and flashing).
         setTaskLifecycle(taskId, 'animated')
@@ -722,20 +715,14 @@ export function createInOutTasks(args: {
     )
 }
 
-export function filterTaskObservers(action: TransitionTaskAction, observers: undefined | TransitionObservers): undefined | TransitionObservers {
+export function filterTaskObservers(
+    action: TransitionTaskAction,
+    observers: undefined | TransitionObservers,
+): undefined | TransitionObservers {
     switch (action) {
-        case 'mount':
-            return {
-                onEntered: observers?.onEntered,
-                onEnd: observers?.onEnd,
-            }
-        case 'unmount':
-            return {
-                onExited: observers?.onExited,
-                onEnd: observers?.onEnd,
-            }
-        case 'render':
-            return
+        case 'mount': return {onEntered: observers?.onEntered, onEnd: observers?.onEnd}
+        case 'unmount': return {onExited: observers?.onExited, onEnd: observers?.onEnd}
+        case 'render': return
     }
 }
 
@@ -744,12 +731,9 @@ export function computeAnimatorContext(
     lifecycle: AnimatorTaskLifecycle,
 ): TransitionContext {
     switch (action) {
-        case 'mount':
-            return {action: 'mount', phase: lifecycle === 'animated' ? 'entered' : 'entering'}
-        case 'unmount':
-            return {action: 'unmount', phase: lifecycle === 'animated' ? 'exited' : 'exiting'}
-        case 'render':
-            return {action: 'mount', phase: 'entered'}
+        case 'mount': return {action: 'mount', phase: lifecycle === 'animated' ? 'entered' : 'entering'}
+        case 'unmount': return {action: 'unmount', phase: lifecycle === 'animated' ? 'exited' : 'exiting'}
+        case 'render': return {action: 'mount', phase: 'entered'}
     }
 }
 
@@ -759,20 +743,16 @@ export function computeAnimatorClasses(
     prefix?: undefined | string
 ): undefined | string {
     switch (lifecycle) {
-        case 'animated':
-            return
+        case 'animated': return
     }
 
-    const name = (() => {
+    const name = call(() => {
         switch (action) {
-            case 'unmount':
-                return 'exit'
-            case 'mount':
-                return 'enter'
-            case 'render':
-                return
+            case 'unmount': return 'exit'
+            case 'mount': return 'enter'
+            case 'render': return
         }
-    })()
+    })
 
     if (! name) {
         return
@@ -814,7 +794,6 @@ export function isValidAnimatorChild(children: TransitionChildren): children is 
     return isValidElement(children)
 }
 
-
 export function findAnimatorElement(handleElement: null | HTMLElement): undefined | Element {
     return handleElement?.previousElementSibling ?? undefined
 }
@@ -823,9 +802,8 @@ export function isValidAnimatorEvent(
     event: AnimatorCompletionEvent,
     target: undefined | TransitionEventTarget,
 ): boolean {
-    // Note: in case no target is provided, any event must be considered valid.
-
     if (! target) {
+        // In case no target is provided, any event must be considered valid.
         return true
     }
 

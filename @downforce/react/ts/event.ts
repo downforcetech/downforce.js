@@ -5,8 +5,8 @@ import type {None} from '@downforce/std/optional'
 import type {Void} from '@downforce/std/type'
 import {observeEvent} from '@downforce/web/event'
 import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react'
-import {useFn, type HookDeps} from './hook.js'
-import {useState3, type UseState3Contract, type StateInit} from './state.js'
+import {useCallback2, type HookDeps} from './memo.js'
+import {useState3, type StateInit, type UseState3Contract} from './state.js'
 
 export function useEvent<E extends Event>(
     targetRefOrRefs: React.RefObject<None | EventElement> | Array<React.RefObject<None | EventElement>>,
@@ -15,7 +15,7 @@ export function useEvent<E extends Event>(
     deps?: undefined | HookDeps,
     options?: undefined | UseEventOptions,
 ): undefined {
-    const onEventMemoized = useFn(onEvent, deps)
+    const onEventMemoized = useCallback2(onEvent, deps)
     const active = options?.active ?? true
     const capture = options?.phase === 'capturing' // Bubbling by default.
     const passive = options?.passive ?? true
@@ -47,7 +47,7 @@ export function useCallbackDebounced<A extends FnArgs>(
     onCall: Fn<A>,
     deps?: undefined | HookDeps,
 ): EventTask<A> {
-    const onCallMemoized = useFn(onCall, deps)
+    const onCallMemoized = useCallback2(onCall, deps)
 
     const callbackDebounced = useMemo(() => {
         return debounced(onCallMemoized, delayMs)
@@ -69,7 +69,7 @@ export function useCallbackThrottled<A extends FnArgs>(
     onCall: Fn<A>,
     deps?: undefined | HookDeps,
 ): EventTask<A> {
-    const onCallMemoized = useFn(onCall, deps)
+    const onCallMemoized = useCallback2(onCall, deps)
 
     const callbackThrottled = useMemo(() => {
         return throttled(onCallMemoized, delayMs)
@@ -94,7 +94,7 @@ export function useCallbackDelayed<A extends FnArgs>(
     (...args: A): undefined
     cancel: Task
 } {
-    const onCallMemoized = useFn(onCall, deps)
+    const onCallMemoized = useCallback2(onCall, deps)
     const taskRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
     const cancel = useCallback((): undefined => {

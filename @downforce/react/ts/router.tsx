@@ -7,9 +7,9 @@ import {exact, matchRoutePattern, testRoutePattern, type RoutePattern, type Rout
 import type {Router, RouterRoute, RouterRouteChange, RouterRouteChangeParams, RouterRouteChangeParamsDict, RouterRouteParams} from '@downforce/web/router'
 import {encodeLink} from '@downforce/web/router'
 import {isUrlWithScheme} from '@downforce/web/url'
-import {Children, isValidElement, useCallback, useContext, useEffect, useMemo, useRef} from 'react'
+import {Children, isValidElement, useCallback, useContext, useEffect, useMemo} from 'react'
 import {classes} from './classes.js'
-import {defineContext} from './ctx.js'
+import {defineContext} from './context.js'
 import type {ElementProps, Props} from './props.js'
 import {useReactiveSelect} from './reactive.js'
 
@@ -411,26 +411,6 @@ export function useRoutePathTest(): RoutePathTester {
         testRoutePath,
         matchRoutePath,
     }
-}
-
-export function useRouteTransition(): {
-    fromRoute: string
-    toRoute: string
-} {
-    const routePath = useRoutePath()
-    const toRoute = routePath
-    const prevRouteRef = useRef(toRoute)
-
-    useEffect(() => {
-        prevRouteRef.current = toRoute
-    }, [toRoute])
-
-    const transition = useMemo(() => {
-        const fromRoute = prevRouteRef.current
-        return {fromRoute, toRoute}
-    }, [toRoute])
-
-    return transition
 }
 
 function isCaseRouteElement(element: unknown): element is React.ReactElement<CaseRouteProps, typeof CaseRoute> {

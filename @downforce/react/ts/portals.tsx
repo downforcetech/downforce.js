@@ -1,7 +1,7 @@
 import {useCallback, useContext, useEffect, useMemo} from 'react'
 import {createPortal} from 'react-dom'
 import {Box, type BoxProps} from './box.js'
-import {defineContext} from './ctx.js'
+import {defineContext} from './context.js'
 import {useState3, type UseState3Contract} from './state.js'
 
 export const PortalsContext: React.Context<undefined | UseState3Contract<Portals>> =

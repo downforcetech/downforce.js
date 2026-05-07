@@ -1,0 +1,11 @@
+.scroller-26b929::before {
+  content: '';
+  display: block;
+  width: var(--VirtualList-scroller-size-horizontal, 100%);
+  height: var(--VirtualList-scroller-size-vertical, 100%);
+}
+
+.v-item-2602e3 {
+  contain: var(--VirtualList-item-containment, layout paint size style);
+  content-visibility: var(--VirtualList-item-visibility, auto);
+}
