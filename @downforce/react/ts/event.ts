@@ -1,12 +1,10 @@
 import {arrayWrap} from '@downforce/std/array'
-import {debounced, throttled, type EventTask} from '@downforce/std/event'
-import {call, noop, type Fn, type FnArgs, type Task} from '@downforce/std/fn'
-import type {None} from '@downforce/std/optional'
+import {call, noop, type Task} from '@downforce/std/fn'
+import {isSome, type None} from '@downforce/std/optional'
 import type {Void} from '@downforce/std/type'
 import {observeEvent} from '@downforce/web/event'
-import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react'
+import {useEffect, useRef} from 'react'
 import {useCallback2, type HookDeps} from './memo.js'
-import {useState3, type StateInit, type UseState3Contract} from './state.js'
 
 export function useEvent<E extends Event>(
     targetRefOrRefs: React.RefObject<None | EventElement> | Array<React.RefObject<None | EventElement>>,
@@ -42,141 +40,50 @@ export function useEvent<E extends Event>(
     }, [eventName, onEventMemoized, active, capture, passive])
 }
 
-export function useCallbackDebounced<A extends FnArgs>(
-    delayMs: number,
-    onCall: Fn<A>,
+export function useEventOutside<E extends Event>(
+    refOrRefs: React.RefObject<None | Element> | Array<React.RefObject<None | Element>>,
+    eventName: string,
+    onEvent: EventHandler<E>,
     deps?: undefined | HookDeps,
-): EventTask<A> {
-    const onCallMemoized = useCallback2(onCall, deps)
+    options?: undefined | UseEventOutsideOptions,
+): undefined {
+    const onEventMemoized = useCallback2(onEvent, deps)
+    const documentRef = useRef<EventElement>(document.documentElement)
+    const behavior = options?.behavior ?? 'every'
+    const rootRef = options?.rootRef ?? documentRef
 
-    const callbackDebounced = useMemo(() => {
-        return debounced(onCallMemoized, delayMs)
-    }, [onCallMemoized, delayMs])
+    useEvent(
+        rootRef,
+        eventName,
+        (event: E) => {
+            const eventTarget = event.target as null | Node
+            const refs = arrayWrap(refOrRefs)
 
-    useEffect(() => {
-        function onClean() {
-            callbackDebounced.cancel()
-        }
+            if (! eventTarget) {
+                onEventMemoized(event)
+                return
+            }
 
-        return onClean
-    }, [callbackDebounced])
+            const refsContainEvent = refs.map(ref => {
+                return ref.current?.contains(eventTarget)
+            }).filter(isSome)
 
-    return callbackDebounced
-}
-
-export function useCallbackThrottled<A extends FnArgs>(
-    delayMs: number,
-    onCall: Fn<A>,
-    deps?: undefined | HookDeps,
-): EventTask<A> {
-    const onCallMemoized = useCallback2(onCall, deps)
-
-    const callbackThrottled = useMemo(() => {
-        return throttled(onCallMemoized, delayMs)
-    }, [onCallMemoized, delayMs])
-
-    useEffect(() => {
-        function onClean() {
-            callbackThrottled.cancel()
-        }
-
-        return onClean
-    }, [callbackThrottled])
-
-    return callbackThrottled
-}
-
-export function useCallbackDelayed<A extends FnArgs>(
-    delayMs: number,
-    onCall: Fn<A>,
-    deps?: undefined | HookDeps,
-): {
-    (...args: A): undefined
-    cancel: Task
-} {
-    const onCallMemoized = useCallback2(onCall, deps)
-    const taskRef = useRef<ReturnType<typeof setTimeout>>(undefined)
-
-    const cancel = useCallback((): undefined => {
-        if (! taskRef.current) {
-            return
-        }
-
-        taskRef.current = void clearTimeout(taskRef.current)
-    }, [])
-
-    const callbackDelayed = useCallback((...args: A): undefined => {
-        cancel()
-
-        taskRef.current = setTimeout(onCallMemoized, delayMs, ...args)
-    }, [onCallMemoized, cancel])
-
-    useLayoutEffect(() => {
-        // We use useLayoutEffect() to conform with React 17 hooks lifecycle.
-        return cancel
-    }, [cancel])
-
-    type Return = (typeof callbackDelayed) & {cancel: Task}
-
-    (callbackDelayed as Return).cancel = cancel
-
-    return callbackDelayed as Return
-}
-
-export function useStateDebounced<T>(
-    initialValue: undefined,
-    delay: number,
-): UseState3Contract<undefined | T>
-export function useStateDebounced<T>(
-    initialValue: StateInit<T>,
-    delay: number,
-): UseState3Contract<T>
-export function useStateDebounced<T>(
-    initialValue: undefined | T,
-    delay: number,
-): UseState3Contract<undefined | T> {
-    const [value, setValue, getValue] = useState3(initialValue)
-    const setValueDebounced = useCallbackDebounced(delay, setValue)
-
-    return [value, setValueDebounced, getValue]
-}
-
-export function useStateThrottled<T>(
-    initialValue: undefined,
-    delay: number,
-): UseState3Contract<undefined | T>
-export function useStateThrottled<T>(
-    initialValue: StateInit<T>,
-    delay: number,
-): UseState3Contract<T>
-export function useStateThrottled<T>(
-    initialValue: undefined | StateInit<T>,
-    delay: number,
-): UseState3Contract<undefined | T> {
-    const [value, setValue, getValue] = useState3(initialValue)
-    const setValueThrottled = useCallbackThrottled(delay, setValue)
-
-    return [value, setValueThrottled, getValue]
-}
-
-export function useValueDebounced<V>(input: V, delay: number): V {
-    const [output, setOutput] = useState(input)
-
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            startTransition(() => {
-                setOutput(input)
+            const eventIsOutside = call(() => {
+                switch (behavior) {
+                    // Event can be outside any ref to be considered outside.
+                    case 'any': return refsContainEvent.some(it => it === false)
+                    // Event must be outside every ref to be considered outside.
+                    case 'every': return refsContainEvent.every(it => it === false)
+                }
             })
-        }, delay)
 
-        function onClean() {
-            clearTimeout(timeoutId)
-        }
-
-        return onClean
-    }, [input])
-
-    return output
+            if (eventIsOutside) {
+                onEventMemoized(event)
+            }
+        },
+        [onEventMemoized, behavior],
+        options,
+    )
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
@@ -185,6 +92,11 @@ export interface UseEventOptions {
     active?: undefined | boolean
     passive?: undefined | boolean
     phase?: undefined |  'bubbling' | 'capturing'
+}
+
+export interface UseEventOutsideOptions extends UseEventOptions {
+    behavior?: undefined | 'any' | 'every'
+    rootRef?: undefined | React.RefObject<None | EventElement>
 }
 
 export type EventElement = Element | EventTarget

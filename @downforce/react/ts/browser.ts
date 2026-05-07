@@ -1,9 +1,42 @@
+import type {None} from '@downforce/std/optional'
+import type {FIX} from '@downforce/std/type'
 import {hasBrowserTouch} from '@downforce/web/browser'
-import {startTransition, useEffect, useState} from 'react'
+import {observeEvent} from '@downforce/web/event'
+import {startTransition, useEffect, useRef, useState} from 'react'
+import {useCallbackDebounced} from './defer.js'
+import {NoDeps} from './memo.js'
 
-export function useBrowserFeaturesClassesProvider(activeOptional?: undefined | boolean): undefined {
+export function useBrowserFeatures(): BrowserFeatures {
+    const [features, setFeatures] = useState(listBrowserFeatures)
+
+    const setFeaturesDebounced = useCallbackDebounced(
+        100,
+        () => {
+            startTransition(() => {
+                setFeatures(listBrowserFeatures())
+            })
+        },
+        NoDeps,
+    )
+
+    useEffect(() => {
+        // Supports DevTools switching between desktop and mobile inspectors.
+        const onClean = observeEvent(window, 'resize', setFeaturesDebounced)
+
+        return onClean as FIX<void | (() => void)>
+    }, [])
+
+    return features
+}
+
+export function useBrowserFeaturesClassesProvider(options?: undefined | {
+    elementRef?: undefined | React.RefObject<None | HTMLElement>
+    active?: undefined | boolean,
+}): undefined {
+    const documentRef = useRef(document.documentElement)
     const features = useBrowserFeatures()
-    const active = activeOptional ?? true
+    const ref = options?.elementRef ?? documentRef
+    const active = options?.active ?? true
 
     useEffect(() => {
         if (! active) {
@@ -13,38 +46,15 @@ export function useBrowserFeaturesClassesProvider(activeOptional?: undefined | b
         const featuresMap = {
             'has-touch': features.touch,
         }
-        const featuresList = Object.entries(featuresMap)
-        const allClasses = featuresList.map(it => it[0])
-        const activeClasses = featuresList.filter(it => it[1]).map(it => it[0])
 
-        document.documentElement.classList.remove(...allClasses)
-        document.documentElement.classList.add(...activeClasses)
+        const allClasses = Object.keys(featuresMap)
+        const activeClasses = Object.entries(featuresMap)
+            .filter(([className, active]) => active)
+            .map(([className]) => className)
 
+        ref.current?.classList.remove(...allClasses)
+        ref.current?.classList.add(...activeClasses)
     }, [features, active])
-}
-
-export function useBrowserFeatures(): BrowserFeatures {
-    const [features, setFeatures] = useState(listBrowserFeatures)
-
-    useEffect(() => {
-        // Compatibility with DevTools:
-        // supports switching between desktop and mobile inspectors.
-        function updateFeatures() {
-            startTransition(() => {
-                setFeatures(listBrowserFeatures())
-            })
-        }
-
-        window.addEventListener('resize', updateFeatures)
-
-        function onClean() {
-            window.removeEventListener('resize', updateFeatures)
-        }
-
-        return onClean
-    }, [])
-
-    return features
 }
 
 export function listBrowserFeatures(): BrowserFeatures {

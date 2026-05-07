@@ -141,7 +141,7 @@ export function useDrag<S, P>(targetRef: React.RefObject<None | DragMoveElement>
     return {dragging}
 }
 
-export function useMove(targetRef: React.RefObject<None | DragMoveElement>, options?: undefined | UseMoveOptions): {
+export function useDragMove(targetRef: React.RefObject<None | DragMoveElement>, options?: undefined | UseDragMoveOptions): {
     moving: boolean
 } {
     const onStart = useCallback((event: DragPointerEvent) => {
@@ -180,7 +180,7 @@ export function useMove(targetRef: React.RefObject<None | DragMoveElement>, opti
     return {moving: dragging}
 }
 
-export function useResize(targetRef: React.RefObject<None | DragResizeElement>, options?: undefined | UseResizeOptions): {
+export function useDragResize(targetRef: React.RefObject<None | DragResizeElement>, options?: undefined | UseDragResizeOptions): {
     resizing: boolean
 } {
     const onStart = useCallback((event: DragPointerEvent) => {
@@ -217,7 +217,7 @@ export function useResize(targetRef: React.RefObject<None | DragResizeElement>, 
     return {resizing: dragging}
 }
 
-export function useScrollHorizontal<E extends HTMLElement>(targetRef: React.RefObject<None | E>, options?: undefined | UseScrollOptions<E>): {
+export function useDragScroll<E extends HTMLElement>(targetRef: React.RefObject<None | E>, options?: undefined | UseDragScrollOptions<E>): {
     scrolling: boolean
 } {
     const onStart = useCallback((event: DragPointerEvent) => {
@@ -266,7 +266,7 @@ export interface UseDragOptions<S, P> extends DragOptions {
     onEnd?: undefined | ((event: DragPointerEvent, progressState: undefined | P, startState: S) => undefined)
 }
 
-export interface UseMoveOptions extends DragMoveOptions<DragMoveElement> {
+export interface UseDragMoveOptions extends DragMoveOptions<DragMoveElement> {
     boundRef?: undefined | React.RefObject<None | DragMoveElement>
     initOptions?: undefined | (() => undefined | DragMoveOptions<DragMoveElement>)
     onStart?: undefined | ((event: DragPointerEvent, startState: DragMoveState<DragMoveElement, DragMoveElement>) => undefined)
@@ -274,14 +274,14 @@ export interface UseMoveOptions extends DragMoveOptions<DragMoveElement> {
     onEnd?: undefined | ((event: DragPointerEvent, progressState: undefined | DragMoveChange, startState: DragMoveState<DragMoveElement, DragMoveElement>) => undefined)
 }
 
-export interface UseResizeOptions extends DragResizeOptions {
+export interface UseDragResizeOptions extends DragResizeOptions {
     initOptions?: undefined | (() => undefined | DragResizeOptions)
     onStart?: undefined | ((event: DragPointerEvent, startState: DragResizeState) => undefined)
     onProgress?: undefined | ((event: DragPointerEvent, progressState: DragResizeChange, startState: DragResizeState) => undefined)
     onEnd?: undefined | ((event: DragPointerEvent, progressState: undefined | DragResizeChange, startState: DragResizeState) => undefined)
 }
 
-export interface UseScrollOptions<E extends HTMLElement> extends DragScrollOptions {
+export interface UseDragScrollOptions<E extends HTMLElement> extends DragScrollOptions {
     initOptions?: undefined | (() => undefined | DragScrollOptions)
     onStart?: undefined | ((event: DragPointerEvent, startState: DragScrollState<E>) => undefined)
     onProgress?: undefined | ((event: DragPointerEvent, progressState: DragScrollChange, startState: DragScrollState<E>) => undefined)

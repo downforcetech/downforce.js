@@ -1,11 +1,14 @@
 import {arrayWrap} from '@downforce/std/array'
+import type {UnionOf} from '@downforce/std/enum'
 import type {None} from '@downforce/std/optional'
+import type {StringAutocomplete} from '@downforce/std/type'
+import {KeyboardKey} from '@downforce/web/keyboard'
 import {useRef} from 'react'
 import {useEvent, type EventElement, type EventHandler, type UseEventOptions} from './event.js'
 import {useCallback2, type HookDeps} from './memo.js'
 
 export function useKey(
-    key: KeybindingKey,
+    key: KeyboardKeyType | Array<KeyboardKeyType>,
     onKey: EventHandler<KeyboardEvent>,
     deps?: undefined | HookDeps,
     options?: undefined | UseKeyOptions,
@@ -20,9 +23,9 @@ export function useKey(
         event,
         (event: KeyboardEvent) => {
             const keys = arrayWrap(key)
-            const isTheKey = keys.includes(event.key)
+            const keyDoesMatch = keys.includes(event.key)
 
-            if (! isTheKey) {
+            if (! keyDoesMatch) {
                 return
             }
 
@@ -35,7 +38,7 @@ export function useKey(
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export type KeybindingKey = string | Array<string> // https://developer.mozilla.org/it/docs/Web/API/KeyboardEvent/key/Key_Values
+export type KeyboardKeyType = UnionOf<typeof KeyboardKey> | StringAutocomplete // https://developer.mozilla.org/it/docs/Web/API/KeyboardEvent/key/Key_Values
 
 export interface UseKeyOptions extends UseEventOptions {
     event?: undefined | 'keyup' | 'keydown'
