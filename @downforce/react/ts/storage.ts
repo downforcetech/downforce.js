@@ -36,10 +36,6 @@ export function useBrowserStorageAccessor<V = string, S = string>(
 
         cancelWriteTaskRef.current?.()
         cancelWriteTaskRef.current = scheduleMacroTaskUsingTimeout(() => {
-            // We can't use valueRef.current here, due to React 17/18 constraint
-            // on references usage on unmounted components. When the the macro task
-            // is executed, the component could be unmounted and the reference
-            // would be undefined.
             accessor.write(encode(newValue))
             cancelWriteTaskRef.current = undefined
         })

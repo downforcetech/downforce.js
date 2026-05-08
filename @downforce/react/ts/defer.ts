@@ -1,6 +1,6 @@
 import {type EventTask, debounced, throttled} from '@downforce/std/event'
 import type {Fn, FnArgs, Task} from '@downforce/std/fn'
-import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react'
+import {startTransition, useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {type HookDeps, NoDeps, useCallback2} from './memo.js'
 import {type StateInit, type StateWriterArg, type UseState3Contract, useState3} from './state.js'
 
@@ -73,8 +73,7 @@ export function useCallbackDelayed<A extends FnArgs>(
         taskRef.current = setTimeout(onCallMemoized, delay, ...args)
     }, [onCallMemoized, cancel])
 
-    useLayoutEffect(() => {
-        // We use useLayoutEffect() to conform with React 17 hooks lifecycle.
+    useEffect(() => {
         return cancel
     }, [cancel])
 

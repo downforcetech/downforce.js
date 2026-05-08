@@ -127,12 +127,8 @@ export function useDrag<S, P>(targetRef: React.RefObject<None | DragMoveElement>
     }, [onPointerStart])
 
     useEffect(() => {
-        // Conforms to the new React 17 behavior:
-        // clean effects must have all values in scope.
-        const state = stateRef.current
-
         function onClean() {
-            state.unmount?.()
+            stateRef.current.unmount?.()
         }
 
         return onClean
