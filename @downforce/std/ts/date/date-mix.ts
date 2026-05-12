@@ -98,7 +98,3 @@ export function dateSecondOf(date: Date): number {
 export function dateMillisecondOf(date: Date): number {
     return date.getMilliseconds()
 }
-
-export function roundTimeToSeconds(time: DateNumber): number {
-    return Math.trunc(time / 1_000) * 1_000
-}

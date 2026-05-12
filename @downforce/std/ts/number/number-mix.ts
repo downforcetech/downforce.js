@@ -34,6 +34,10 @@ export function roundDown(value: number, round: number): number {
     return Math.floor(value / round) * round
 }
 
+export function roundTo(value: number, precision: number): number {
+    return Math.trunc(value / precision) * precision
+}
+
 export function sum(items: Array<number>, getter?: undefined): number;
 export function sum<I>(items: Array<I>, getter: Io<I, number>): number;
 export function sum<I>(items: Array<number> | Array<I>, getter?: undefined | Io<I, number>): number {
