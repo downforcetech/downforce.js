@@ -5,9 +5,9 @@ import {useCallback, useState} from 'react'
 * Used to force the rendering of a component.
 */
 export function useRender(): Task {
-    const [signal, render] = useRenderSignal()
+    const [signal, setSignal] = useRenderSignal()
 
-    return render
+    return setSignal
 }
 
 export function useRenderSignal(): [RenderSignal, Task] {
