@@ -93,7 +93,11 @@ export function useStoreProvider<S extends ReduxReducerState, A extends ReduxEve
 ): StoreInstance<S, A> {
     const store = useMemo(() => {
         return createStore(options)
-    }, [])
+    }, [
+        options.createState,
+        options.observer,
+        options.reduce,
+    ])
 
     return store
 }

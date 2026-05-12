@@ -1,33 +1,30 @@
 import {call, compute, noop, type Io, type Task} from '@downforce/std/fn'
-import {matchSome} from '@downforce/std/optional'
 import type {ReactiveObserver, ReactiveWatchOptions} from '@downforce/std/reactive'
 import {readReactive, watchReactive, writeReactive, type ReactiveObject, type ReactiveValuesOf} from '@downforce/std/reactive'
 import type {ReadWriteSync} from '@downforce/std/store'
-import type {FIX} from '@downforce/std/type'
-import {startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useState, useSyncExternalStore} from 'react'
+import {startTransition, useCallback, useLayoutEffect, useMemo, useState, useSyncExternalStore} from 'react'
 import {useCallback2, type HookDeps} from './memo.js'
 import {useRenderSignal, type RenderSignal} from './render.js'
-import type {StateWriterArg, UseState3Contract, UseStateContract} from './state.js'
+import type {StateWriterArg, UseState3Contract} from './state.js'
 
-export function useReactiveState<V>(reactive: ReactiveObject<V>): UseState3Contract<V> {
-    const [state, PRIVATE_setState] = useState(() => readReactive(reactive))
+export function useReactiveStore<V>(
+    read: ReadWriteSync<V>['read'],
+    write: ReadWriteSync<V>['write'],
+    watch: (observer: ReactiveObserver<V>, options?: undefined | ReactiveWatchOptions) => Task,
+): UseState3Contract<V> {
+    const [state, PRIVATE_setState] = useState(read)
 
-    const getState = useCallback(() => {
-        return readReactive(reactive)
-    }, [reactive])
+    const setState = useCallback((valueComputable: StateWriterArg<V>): V => {
+        const newValue = compute(valueComputable, read())
 
-    const setState = useCallback((stateComputable: StateWriterArg<V>): V => {
-        const newState = compute(stateComputable, readReactive(reactive))
+        PRIVATE_setState(newValue)
+        write(newValue)
 
-        PRIVATE_setState(newState)
-        writeReactive(reactive, newState)
+        return newValue
+    }, [read, write])
 
-        return newState
-    }, [reactive, PRIVATE_setState])
-
-    useEffect(() => {
-        const onClean = watchReactive(
-            reactive,
+    const subscribe = useCallback(() => {
+        const onClean = watch(
             newValue => {
                 startTransition(() => {
                     PRIVATE_setState(newValue)
@@ -36,10 +33,95 @@ export function useReactiveState<V>(reactive: ReactiveObject<V>): UseState3Contr
             {immediate: true},
         )
 
-        return onClean as FIX<void | (() => void)>
-    }, [reactive, PRIVATE_setState])
+        return onClean
+    }, [watch])
 
-    return [state, setState, getState]
+    useSyncExternalStore(subscribe, read, read)
+
+    return [state, setState, read]
+}
+
+export function useReactiveState<V>(reactive: ReactiveObject<V>): UseState3Contract<V> {
+    const read = useCallback(() => {
+        return readReactive(reactive)
+    }, [reactive])
+
+    const write = useCallback((newState: V): V => {
+        writeReactive(reactive, newState)
+
+        return newState
+    }, [reactive])
+
+    const watch = useCallback((observer: ReactiveObserver<V>, options?: undefined | ReactiveWatchOptions): Task => {
+        const onClean = watchReactive(reactive, observer, options)
+
+        return onClean
+    }, [reactive])
+
+    return useReactiveStore(read, write, watch)
+}
+
+export function useReactiveSelect<V, R>(
+    reactive: ReactiveObject<V>,
+    onSelect: Io<V, R>,
+    deps?: undefined | HookDeps,
+): R
+export function useReactiveSelect<V, R>(
+    reactive: undefined | ReactiveObject<V>,
+    onSelect: Io<undefined | V, R>,
+    deps?: undefined | HookDeps,
+): undefined | R
+export function useReactiveSelect<V, R>(
+    reactive: undefined | ReactiveObject<V>,
+    onSelect: Io<undefined | V, R>,
+    deps?: undefined | HookDeps,
+): undefined | R {
+    const onSelectMemoized = useCallback2(onSelect, deps)
+    const selectedValue = reactive ? onSelectMemoized(readReactive(reactive)) : undefined
+    const [signal, setSignal] = useState(selectedValue)
+
+    const getState = useCallback(() => {
+        if (! reactive) {
+            return
+        }
+
+        return onSelectMemoized(readReactive(reactive))
+    }, [reactive, onSelectMemoized])
+
+    const subscribe = useCallback(() => {
+        if (! reactive) {
+            return noop
+        }
+
+        const onClean = watchReactive(
+            reactive,
+            newValue => {
+                startTransition(() => {
+                    setSignal(onSelectMemoized(newValue))
+                })
+            },
+            {immediate: true},
+        )
+
+        return onClean
+    }, [reactive, onSelectMemoized])
+
+    useSyncExternalStore(subscribe, getState, getState)
+
+    return selectedValue
+}
+
+export function useReactiveMemo<const A extends Array<ReactiveObject<any>>, V>(
+    reactives: A,
+    computer: (...args: ReactiveValuesOf<A>) => V
+): V {
+    const signal = useReactiveSignals(reactives)
+
+    const computedValue = useMemo(() => {
+        return computer(...reactives.map(readReactive) as ReactiveValuesOf<A>)
+    }, [reactives, computer, signal])
+
+    return computedValue
 }
 
 export function useReactiveValue<V>(reactive: ReactiveObject<V>): V {
@@ -72,37 +154,16 @@ export function useReactiveList<const A extends Array<ReactiveObject<any>>>(
     return values
 }
 
-export function useReactiveMemo<const A extends Array<ReactiveObject<any>>, V>(
-    reactives: A,
-    computer: (...args: ReactiveValuesOf<A>) => V
-): V {
-    const signal = useReactiveSignals(reactives)
+export function useReactiveSignal(reactive: undefined | ReactiveObject<any>): RenderSignal {
+    const [signal, setSignal] = useRenderSignal()
 
-    const computedValue = useMemo(() => {
-        return computer(...reactives.map(readReactive) as ReactiveValuesOf<A>)
-    }, [reactives, computer, signal])
+    const getState = useCallback(() => {
+        if (! reactive) {
+            return
+        }
 
-    return computedValue
-}
-
-export function useReactiveSelect<V, R>(
-    reactive: ReactiveObject<V>,
-    onSelect: Io<V, R>,
-    deps?: undefined | HookDeps,
-): R
-export function useReactiveSelect<V, R>(
-    reactive: undefined | ReactiveObject<V>,
-    onSelect: Io<undefined | V, R>,
-    deps?: undefined | HookDeps,
-): undefined | R
-export function useReactiveSelect<V, R>(
-    reactive: undefined | ReactiveObject<V>,
-    onSelect: Io<undefined | V, R>,
-    deps?: undefined | HookDeps,
-): undefined | R {
-    const onSelectMemoized = useCallback2(onSelect, deps)
-    const selectedValue = onSelectMemoized(matchSome(reactive, readReactive))
-    const [signal, setSignal] = useState(selectedValue)
+        return readReactive(reactive)
+    }, [reactive])
 
     const subscribe = useCallback(() => {
         if (! reactive) {
@@ -111,85 +172,17 @@ export function useReactiveSelect<V, R>(
 
         const onClean = watchReactive(
             reactive,
-            newValue => {
+            () => {
                 startTransition(() => {
-                    setSignal(onSelectMemoized(newValue))
+                    setSignal()
                 })
             },
-            {immediate: true},
         )
 
         return onClean
-    }, [reactive, onSelectMemoized])
-
-    const readState = useCallback(() => {
-        if (! reactive) {
-            return
-        }
-
-        return readReactive(reactive)
     }, [reactive])
 
-    useSyncExternalStore(subscribe, readState, readState)
-
-    return selectedValue
-}
-
-export function useReactiveStore<V>(
-    read: ReadWriteSync<V>['read'],
-    write: ReadWriteSync<V>['write'],
-    watch: (observer: ReactiveObserver<V>, options?: undefined | ReactiveWatchOptions) => Task,
-): UseStateContract<V, V> {
-    const [state, PRIVATE_setState] = useState(read)
-
-    const setState = useCallback((value: StateWriterArg<V>): V => {
-        const newValue = compute(value, read())
-
-        startTransition(() => {
-            PRIVATE_setState(newValue)
-        })
-        write(newValue)
-
-        return newValue
-    }, [read, write])
-
-    useEffect(() => {
-        const onClean = watch(
-            newValue => {
-                startTransition(() => {
-                    PRIVATE_setState(newValue)
-                })
-            },
-            {immediate: true},
-        )
-
-        return onClean as FIX<void | (() => void)>
-    }, [watch])
-
-    return [state, setState]
-}
-
-export function useReactiveSignal(reactive: undefined | ReactiveObject<any>): RenderSignal {
-    const [signal, render] = useRenderSignal()
-
-    // We use useLayoutEffect (instead of useEffect) to watch the reactive as soon as possible,
-    // avoiding missed notifications.
-    useLayoutEffect(() => {
-        if (! reactive) {
-            return
-        }
-
-        const onClean = watchReactive(
-            reactive,
-            () => {
-                startTransition(() => {
-                    render()
-                })
-            },
-        )
-
-        return onClean as FIX<void | (() => void)>
-    }, [reactive])
+    useSyncExternalStore(subscribe, getState, getState)
 
     return signal
 }
@@ -197,21 +190,19 @@ export function useReactiveSignal(reactive: undefined | ReactiveObject<any>): Re
 export function useReactiveSignals(
     reactives: Array<ReactiveObject<any>> | readonly [...Array<ReactiveObject<any>>],
 ): RenderSignal {
-    const [signal, render] = useRenderSignal()
+    const [signal, setSignal] = useRenderSignal()
 
     // We use useLayoutEffect (instead of useEffect) to watch the reactives as soon as possible,
     // avoiding missed notifications.
     useLayoutEffect(() => {
-        function notify(): undefined {
+        const cleanTasks = reactives.map(it => watchReactive(it, () => {
             startTransition(() => {
-                render()
+                setSignal()
             })
-        }
-
-        const cleaningTasks = reactives.map(it => watchReactive(it, notify))
+        }))
 
         function onClean() {
-            cleaningTasks.forEach(call)
+            cleanTasks.forEach(call)
         }
 
         return onClean
