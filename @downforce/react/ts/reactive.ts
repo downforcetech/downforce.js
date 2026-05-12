@@ -2,7 +2,7 @@ import {call, compute, noop, type Io, type Task} from '@downforce/std/fn'
 import type {ReactiveObserver, ReactiveWatchOptions} from '@downforce/std/reactive'
 import {readReactive, watchReactive, writeReactive, type ReactiveObject, type ReactiveValuesOf} from '@downforce/std/reactive'
 import type {ReadWriteSync} from '@downforce/std/store'
-import {startTransition, useCallback, useLayoutEffect, useMemo, useSyncExternalStore} from 'react'
+import {startTransition, useCallback, useEffect, useMemo, useState, useSyncExternalStore} from 'react'
 import {useCallback2, type HookDeps} from './memo.js'
 import {useRenderSignal} from './render.js'
 import type {StateWriterArg, UseState3Contract} from './state.js'
@@ -24,27 +24,36 @@ export function useReactiveStore<V>(
     write: ReadWriteSync<V>['write'],
     watch: (observer: ReactiveObserver<V>, options?: undefined | ReactiveWatchOptions) => Task,
 ): UseState3Contract<V> {
+    const [state, setStateSignal] = useState(read)
+
     const setState = useCallback((stateComputable: StateWriterArg<V>): V => {
         const newState = compute(stateComputable, read())
 
+        setStateSignal(newState)
         write(newState)
 
         return newState
     }, [read, write])
 
     const subscribe = useCallback((observer: Task) => {
-        const onClean = watch(() => {
-            // See [Note 1] on why we use startTransition even if
-            // useSyncExternalStore does not support transitions.
+        // const onClean = watch(() => {
+        //     // See [Note 1] on why we use startTransition even if
+        //     // useSyncExternalStore does not support transitions.
+        //     startTransition(() => {
+        //         observer()
+        //     })
+        // })
+        const onClean = watch(newState => {
             startTransition(() => {
-                observer()
+                setStateSignal(newState)
             })
-        })
+        }, {immediate: true})
 
         return onClean
     }, [watch])
 
-    const state = useSyncExternalStore(subscribe, read, read)
+    // const state = useSyncExternalStore(subscribe, read, read)
+    useSyncExternalStore(subscribe, read, read)
 
     return [state, setState, read]
 }
@@ -60,8 +69,8 @@ export function useReactiveState<V>(reactive: ReactiveObject<V>): UseState3Contr
         return newState
     }, [reactive])
 
-    const watch = useCallback((observer: ReactiveObserver<V>): Task => {
-        const onClean = watchReactive(reactive, observer)
+    const watch = useCallback((observer: ReactiveObserver<V>, options?: undefined | ReactiveWatchOptions): Task => {
+        const onClean = watchReactive(reactive, observer, options)
 
         return onClean
     }, [reactive])
@@ -94,23 +103,33 @@ export function useReactiveSelect<V, R>(
         return onSelectMemoized(readReactive(reactive))
     }, [reactive, onSelectMemoized])
 
+    const [state, setStateSignal] = useState(getState)
+
     const subscribe = useCallback((observer: Task) => {
         if (! reactive) {
             return noop
         }
 
-        const onClean = watchReactive(reactive, () => {
-            // See [Note 1] on why we use startTransition even if
-            // useSyncExternalStore does not support transitions.
+        // const onClean = watchReactive(reactive, () => {
+        //     // See [Note 1] on why we use startTransition even if
+        //     // useSyncExternalStore does not support transitions.
+        //     startTransition(() => {
+        //         observer()
+        //     })
+        // })
+        const onClean = watchReactive(reactive, newState => {
             startTransition(() => {
-                observer()
+                setStateSignal(onSelectMemoized(newState))
             })
-        })
+        }, {immediate: true})
 
         return onClean
     }, [reactive, onSelectMemoized])
 
-    return useSyncExternalStore(subscribe, getState, getState)
+    // return useSyncExternalStore(subscribe, getState, getState)
+    useSyncExternalStore(subscribe, getState, getState)
+
+    return state
 }
 
 export function useReactiveMemo<const A extends Array<ReactiveObject<any>>, V>(
@@ -135,48 +154,52 @@ export function useReactiveValue<V>(reactive: undefined | ReactiveObject<V>): un
         return readReactive(reactive)
     }, [reactive])
 
+    const [state, setStateSignal] = useState(getState)
+
     const subscribe = useCallback((observer: Task) => {
         if (! reactive) {
             return noop
         }
 
-        const onClean = watchReactive(reactive, () => {
-            // See [Note 1] on why we use startTransition even if
-            // useSyncExternalStore does not support transitions.
+        // const onClean = watchReactive(reactive, () => {
+        //     // See [Note 1] on why we use startTransition even if
+        //     // useSyncExternalStore does not support transitions.
+        //     startTransition(() => {
+        //         observer()
+        //     })
+        // })
+        const onClean = watchReactive(reactive, newState => {
             startTransition(() => {
-                observer()
+                setStateSignal(newState)
             })
-        })
+        }, {immediate: true})
 
         return onClean
     }, [reactive])
 
-    return useSyncExternalStore(subscribe, getState, getState)
+    // return useSyncExternalStore(subscribe, getState, getState)
+    useSyncExternalStore(subscribe, getState, getState)
+
+    return state
 }
 
 export function useReactiveValues<const A extends Array<ReactiveObject<any>>>(
     reactives: A,
 ): ReactiveValuesOf<A> {
-    const reactivesList = useReactiveList(reactives)
-
-    return useMemo(() => {
-        return reactivesList.map(readReactive) as ReactiveValuesOf<A>
-    }, [reactivesList])
-}
-
-export function useReactiveList<const A extends Array<ReactiveObject<any>>>(
-    reactives: A,
-): A {
     const [signal, setSignal] = useRenderSignal()
 
     const values = useMemo(() => {
-        return [...reactives] as A
+        return reactives.map(readReactive) as ReactiveValuesOf<A>
     }, [reactives, signal])
 
-    // We use useLayoutEffect (instead of useEffect) to watch the reactives as soon as possible,
-    // avoiding missed notifications.
-    useLayoutEffect(() => {
-        const cleanTasks = reactives.map(it => watchReactive(it, () => {
+    useEffect(() => {
+        const equal = reactives.every((reactive, idx) => readReactive(reactive) === values[idx])
+
+        if (! equal) {
+            setSignal()
+        }
+
+        const cleanTasks = reactives.map(reactive => watchReactive(reactive, () => {
             startTransition(() => {
                 setSignal()
             })
@@ -190,6 +213,14 @@ export function useReactiveList<const A extends Array<ReactiveObject<any>>>(
     }, [reactives])
 
     return values
+}
+
+export function useReactiveList<const A extends Array<ReactiveObject<any>>>(
+    reactives: A,
+): A {
+    const values = useReactiveValues(reactives)
+
+    return useMemo(() => [...reactives] as A, [reactives, values])
 }
 
 export function ReactiveState<V>(props: ReactiveStateProps<V>): React.ReactNode {
