@@ -8,6 +8,10 @@ export function isObjectEmpty(object: object): boolean {
     return true
 }
 
+export function objectHasKey<O extends object>(object: O, key: keyof O): boolean {
+    return key in object
+}
+
 export function objectFromEntry<K extends PropertyKey, V>(
     key: K,
     value: undefined | V,
