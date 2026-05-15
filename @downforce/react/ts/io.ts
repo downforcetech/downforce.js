@@ -1,9 +1,9 @@
 import type {FnArgs, FnAsync, Io, Task} from '@downforce/std/fn'
 import {areObjectsEqualShallow} from '@downforce/std/object'
 import {isDefined} from '@downforce/std/optional'
-import {catchPromiseError, isError, isResult, matchOutcome, type OutcomeResultOrError} from '@downforce/std/outcome'
+import {catchPromiseError, createError, isError, isResult, matchOutcome, type OutcomeResultOrError} from '@downforce/std/outcome'
 import type {PromiseView} from '@downforce/std/promise'
-import type {FIX} from '@downforce/std/type'
+import type {FIX, ValueOf} from '@downforce/std/type'
 import {startTransition, useCallback, useEffect, useRef, useState} from 'react'
 import {useCallback2, type HookDeps} from './memo.js'
 
@@ -28,7 +28,7 @@ export function useAsyncIo<A extends FnArgs, R>(
         readonly promise: Promise<OutcomeResultOrError<R, unknown>>
     }
 
-    const call = useCallback(async (...args: A): Promise<undefined | OutcomeResultOrError<R, unknown>> => {
+    const call = useCallback(async (...args: A): Promise<AsyncIoCallOutcome<R>> => {
         // We must cancel previous task.
         if (taskHandleRef.current) {
             taskHandleRef.current.canceled = true
@@ -55,7 +55,7 @@ export function useAsyncIo<A extends FnArgs, R>(
 
         const taskHandle: TaskHandle = {
             canceled: false,
-            promise: catchPromiseError(Promise.try(() => onCallMemoized(...args))),
+            promise: Promise.try(() => onCallMemoized(...args)).catch(createError),
         }
 
         taskHandleRef.current = taskHandle
@@ -63,7 +63,13 @@ export function useAsyncIo<A extends FnArgs, R>(
         const resultOrError: OutcomeResultOrError<R, unknown> = await taskHandle.promise
 
         if (taskHandle.canceled) {
-            return
+            return {
+                fulfilled: false,
+                rejected: false,
+                canceled: true,
+                result: undefined,
+                error: undefined,
+            }
         }
 
         startTransition(() => {
@@ -91,7 +97,22 @@ export function useAsyncIo<A extends FnArgs, R>(
             )
         })
 
-        return resultOrError
+        return matchOutcome(resultOrError,
+            (result): AsyncIoCallOutcome<R> => ({
+                fulfilled: true,
+                rejected: false,
+                canceled: false,
+                result: result,
+                error: undefined,
+            }),
+            (error): AsyncIoCallOutcome<R> => ({
+                fulfilled: false,
+                rejected: true,
+                canceled: false,
+                result: undefined,
+                error: error,
+            }),
+        )
     }, [onCallMemoized])
 
     const cancel = useCallback((): undefined => {
@@ -236,9 +257,35 @@ export interface AsyncIoState<R> extends PromiseView {
 }
 
 export interface UseAsyncIoContract<A extends FnArgs, R> extends AsyncIoState<R> {
-    call(...args: A): Promise<undefined | OutcomeResultOrError<R, unknown>>
+    call(...args: A): Promise<AsyncIoCallOutcome<R>>
     cancel(): undefined
     reset(): undefined
     resetError(): undefined
     resetResult(): undefined
+}
+
+export type AsyncIoCallOutcome<R> = ValueOf<AsyncIoCallOutcomeByTypes<R>>
+
+export interface AsyncIoCallOutcomeByTypes<R> {
+    Fulfilled: {
+        fulfilled: true
+        rejected: false
+        canceled: false
+        result: R
+        error: undefined
+    }
+    Rejected: {
+        fulfilled: false
+        rejected: true
+        canceled: false
+        result: undefined
+        error: unknown
+    }
+    Canceled: {
+        fulfilled: false
+        rejected: false
+        canceled: true
+        result: undefined
+        error: undefined
+    }
 }
