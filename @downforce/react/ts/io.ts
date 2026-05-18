@@ -1,7 +1,7 @@
 import type {FnArgs, FnAsync, Io, Task} from '@downforce/std/fn'
 import {areObjectsEqualShallow} from '@downforce/std/object'
 import {isDefined} from '@downforce/std/optional'
-import {catchPromiseError, createError, isError, isResult, matchOutcome, type OutcomeResultOrError} from '@downforce/std/outcome'
+import {createError, matchOutcome, type OutcomeResultOrError} from '@downforce/std/outcome'
 import type {PromiseView} from '@downforce/std/promise'
 import type {FIX, ValueOf} from '@downforce/std/type'
 import {startTransition, useCallback, useEffect, useRef, useState} from 'react'
@@ -12,21 +12,21 @@ export function useAsyncIo<A extends FnArgs, R>(
     deps?: undefined | HookDeps,
 ): UseAsyncIoContract<A, R> {
     const onCallMemoized = useCallback2(onCall, deps)
-    const [state, setState] = useState<AsyncIoState<R>>({
-        output: undefined,
-        error: undefined,
-        result: undefined,
-        fulfilled: false,
-        rejected: false,
-        pending: false,
-        settled: true,
-    })
-    const taskHandleRef = useRef<TaskHandle>(undefined)
 
     interface TaskHandle {
         canceled: boolean
         readonly promise: Promise<OutcomeResultOrError<R, unknown>>
     }
+
+    const [state, setState] = useState<AsyncIoState<R>>({
+        pending: false,
+        settled: true,
+        fulfilled: false,
+        rejected: false,
+        result: undefined,
+        error: undefined,
+    })
+    const taskHandleRef = useRef<TaskHandle>(undefined)
 
     const call = useCallback(async (...args: A): Promise<AsyncIoCallOutcome<R>> => {
         // We must cancel previous task.
@@ -35,17 +35,15 @@ export function useAsyncIo<A extends FnArgs, R>(
         }
 
         // We must retain current result and error states.
-        // Whether the developer wants to clear them, he uses the reset() API
-        // before issuing a call() request.
-        setState(state => {
+        // If those states must be reset, the reset() API can be used before a call() request.
+        setState((state): typeof state => {
             const nextState: AsyncIoState<R> = {
-                output: state.output,
-                error: state.error,
-                result: state.result,
-                fulfilled: state.fulfilled,
-                rejected: state.rejected,
                 pending: true,
                 settled: false,
+                fulfilled: state.fulfilled,
+                rejected: state.rejected,
+                result: state.result,
+                error: state.error,
             }
             if (areObjectsEqualShallow(state, nextState)) {
                 return state // Optimization.
@@ -60,7 +58,7 @@ export function useAsyncIo<A extends FnArgs, R>(
 
         taskHandleRef.current = taskHandle
 
-        const resultOrError: OutcomeResultOrError<R, unknown> = await taskHandle.promise
+        const outcome: OutcomeResultOrError<R, unknown> = await taskHandle.promise
 
         if (taskHandle.canceled) {
             return {
@@ -72,32 +70,34 @@ export function useAsyncIo<A extends FnArgs, R>(
             }
         }
 
-        startTransition(() => {
-            setState(
-                matchOutcome(resultOrError,
-                    (result): AsyncIoState<R> => ({
-                        output: resultOrError,
-                        error: undefined,
-                        result: result,
+        matchOutcome(outcome,
+            result => {
+                startTransition(() => {
+                    setState({
+                        pending: false,
+                        settled: true,
                         fulfilled: true,
                         rejected: false,
+                        result: result,
+                        error: undefined,
+                    })
+                })
+            },
+            error => {
+                startTransition(() => {
+                    setState({
                         pending: false,
                         settled: true,
-                    }),
-                    (error): AsyncIoState<R> => ({
-                        output: resultOrError,
-                        error: error,
-                        result: undefined,
                         fulfilled: false,
                         rejected: true,
-                        pending: false,
-                        settled: true,
-                    }),
-                )
-            )
-        })
+                        result: undefined,
+                        error: error,
+                    })
+                })
+            },
+        )
 
-        return matchOutcome(resultOrError,
+        return matchOutcome(outcome,
             (result): AsyncIoCallOutcome<R> => ({
                 fulfilled: true,
                 rejected: false,
@@ -120,15 +120,14 @@ export function useAsyncIo<A extends FnArgs, R>(
             taskHandleRef.current.canceled = true
         }
 
-        setState(state => {
+        setState((state): typeof state => {
             const nextState: AsyncIoState<R> = {
-                output: state.output,
-                error: state.error,
-                result: state.result,
-                fulfilled: state.fulfilled,
-                rejected: state.rejected,
                 pending: false,
                 settled: true,
+                fulfilled: state.fulfilled,
+                rejected: state.rejected,
+                result: state.result,
+                error: state.error,
             }
             if (areObjectsEqualShallow(state, nextState)) {
                 return state // Optimization.
@@ -138,15 +137,14 @@ export function useAsyncIo<A extends FnArgs, R>(
     }, [])
 
     const reset = useCallback((): undefined => {
-        setState(state => {
+        setState((state): typeof state => {
             const nextState: AsyncIoState<R> = {
-                output: undefined,
-                error: undefined,
-                result: undefined,
-                fulfilled: false,
-                rejected: false,
                 pending: false,
                 settled: true,
+                fulfilled: false,
+                rejected: false,
+                result: undefined,
+                error: undefined,
             }
             if (areObjectsEqualShallow(state, nextState)) {
                 return state // Optimization.
@@ -156,15 +154,14 @@ export function useAsyncIo<A extends FnArgs, R>(
     }, [])
 
     const resetError = useCallback((): undefined => {
-        setState(state => {
+        setState((state): typeof state => {
             const nextState: AsyncIoState<R> = {
-                output: isError(state.output) ? undefined : state.output,
-                error: undefined,
-                result: state.result,
-                fulfilled: state.fulfilled,
-                rejected: false,
                 pending: state.pending,
                 settled: state.settled,
+                fulfilled: state.fulfilled,
+                rejected: false,
+                result: state.result,
+                error: undefined,
             }
             if (areObjectsEqualShallow(state, nextState)) {
                 return state // Optimization.
@@ -174,15 +171,14 @@ export function useAsyncIo<A extends FnArgs, R>(
     }, [])
 
     const resetResult = useCallback((): undefined => {
-        setState(state => {
+        setState((state): typeof state => {
             const nextState: AsyncIoState<R> = {
-                output: isResult(state.output) ? undefined : state.output,
-                error: state.error,
-                result: undefined,
-                fulfilled: false,
-                rejected: state.rejected,
                 pending: state.pending,
                 settled: state.settled,
+                fulfilled: false,
+                rejected: state.rejected,
+                result: undefined,
+                error: state.error,
             }
             if (areObjectsEqualShallow(state, nextState)) {
                 return state // Optimization.
@@ -209,29 +205,32 @@ export function useAsyncIoEffect<I extends AsyncIoState<any>>(
         io.settled,
         io.fulfilled,
         io.rejected,
-        io.output,
         io.result,
         io.error,
     ])
 }
 
 export function useAsyncIoAggregated(asyncIoDict: Record<string, AsyncIoState<unknown>>): {
-    errors: Array<unknown>
-    results: Array<unknown>
     pending: boolean
-    rejected: boolean
     settled: boolean
+    fulfilled: boolean
+    rejected: boolean
+    results: Array<unknown>
+    errors: Array<unknown>
     hasError: boolean
 } {
     const values = Object.values(asyncIoDict)
     const errors = values.map(it => it.error).filter(isDefined)
-    const results = values.map(it => it.result)
-    const pending = values.some(it => it.pending)
-    const rejected = values.some(it => it.rejected)
-    const settled = values.every(it => it.settled)
-    const hasError = errors.length > 0
 
-    return {errors, results, pending, settled, rejected, hasError}
+    return {
+        pending: values.some(it => it.pending),
+        settled: values.every(it => it.settled),
+        fulfilled: values.every(it => it.fulfilled),
+        rejected: values.some(it => it.rejected),
+        results: values.map(it => it.result),
+        errors,
+        hasError: errors.length > 0,
+    }
 }
 
 export function pickAsyncIoState<S>(io: AsyncIoState<S>): AsyncIoState<S> {
@@ -242,7 +241,6 @@ export function pickAsyncIoState<S>(io: AsyncIoState<S>): AsyncIoState<S> {
         fulfilled: io.fulfilled,
         rejected: io.rejected,
         // Outcome.
-        output: io.output,
         result: io.result,
         error: io.error,
     }
@@ -251,9 +249,8 @@ export function pickAsyncIoState<S>(io: AsyncIoState<S>): AsyncIoState<S> {
 // Types ///////////////////////////////////////////////////////////////////////
 
 export interface AsyncIoState<R> extends PromiseView {
-    output: undefined | OutcomeResultOrError<R, unknown>
-    error: undefined | unknown
     result: undefined | R
+    error: undefined | unknown
 }
 
 export interface UseAsyncIoContract<A extends FnArgs, R> extends AsyncIoState<R> {
