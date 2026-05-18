@@ -1,15 +1,14 @@
 import {isArrayReadonly} from '@downforce/std/array'
 import {createReactive, readReactive, writeReactive, type ReactiveObject} from '@downforce/std/reactive'
-import {getReduxEvent, type ReduxEvent, type ReduxEventPolymorphic, type ReduxReducerState} from '@downforce/std/redux'
+import {getReduxEvent, type ReduxEvent, type ReduxEventPolymorphic, type ReduxReducerArgs, type ReduxReducerId, type ReduxReducerState} from '@downforce/std/redux'
 import type {ReadWriteSync} from '@downforce/std/store'
+import type {Void} from '@downforce/std/type'
 import {useCallback, useContext, useMemo} from 'react'
 import {defineContext} from './context.js'
 import type {HookDeps} from './memo.js'
 import {useReactiveSelect} from './reactive.js'
-import type {StoreDefinitionV2 as StoreDefinition, StoreDispatchV2 as StoreDispatch} from './store-v2.js'
 
 export * from '@downforce/std/redux'
-export type {StoreDefinitionV2 as StoreDefinition, StoreDispatchV2 as StoreDispatch, StoreV2Observer as StoreObserver} from './store-v2.js'
 
 export function setupStore<S extends ReduxReducerState, A extends ReduxEvent = ReduxEvent>(
     options: StoreBoundCase1Options<S, A>,
@@ -168,6 +167,19 @@ export interface UseStoreContract<
 export type StoreReader<S extends ReduxReducerState> = ReadWriteSync<S>['read']
 export type StoreSelector<S extends ReduxReducerState, V> = (state: S) => V
 export type StoreSelectorWithDeps<S extends ReduxReducerState, V> = [selector: StoreSelector<S, V>, undefined | HookDeps]
+
+export interface StoreDispatch<S extends ReduxReducerState, A extends ReduxEvent = ReduxEvent> {
+    (action: A): S
+    (...args: A): S
+}
+
+export interface StoreDefinition<S extends ReduxReducerState, A extends ReduxEvent> {
+    createState(): S
+    reduce(state: S, ...args: A): S
+    observer?: undefined | StoreObserver<S>
+}
+
+export type StoreObserver<S extends ReduxReducerState> = (id: ReduxReducerId, args: ReduxReducerArgs, newState: S, oldState: S) => Void
 
 export interface StoreBoundCase1Options<S extends ReduxReducerState, A extends ReduxEvent = ReduxEvent> {
     store: StoreInstance<S, A>
