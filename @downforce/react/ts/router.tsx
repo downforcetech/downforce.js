@@ -10,6 +10,7 @@ import {isUrlWithScheme} from '@downforce/web/url'
 import {Children, isValidElement, useCallback, useContext, useEffect, useMemo} from 'react'
 import {classes} from './classes.js'
 import {defineContext} from './context.js'
+import {NoDeps, useCallback2, type HookDeps} from './memo.js'
 import type {ElementProps, Props} from './props.js'
 import {useReactiveSelect} from './reactive.js'
 
@@ -367,26 +368,40 @@ export function useRouteRead(): Task<RouterRoute> {
 
 export function useRoutePath(): RouterRoute['path'] {
     const routerContext = useRouterContext()!
-    const routePath = useReactiveSelect(routerContext.route, RouterSelectors.selectRoutePath)
+
+    const routePath = useReactiveSelect(
+        routerContext.route,
+        route => route.path,
+        NoDeps,
+    )
 
     return routePath
 }
 
-export function useRouteParam<R>(selectRouteParam: Io<undefined | RouterRouteParams, R>): R {
+export function useRouteParam<R>(
+    onSelect: Io<undefined | RouterRouteParams, R>,
+    deps?: undefined | HookDeps,
+): R {
+    const onSelectMemoized = useCallback2(onSelect, deps)
     const routerContext = useRouterContext()!
 
-    const selector = useCallback((route: RouterRoute) => {
-        return selectRouteParam(route.params)
-    }, [selectRouteParam])
+    const routeParam = useReactiveSelect(
+        routerContext.route,
+        route => onSelectMemoized(route.params),
+        [onSelectMemoized],
+    )
 
-    const selectedRouteParam = useReactiveSelect(routerContext.route, selector)
-
-    return selectedRouteParam
+    return routeParam
 }
 
 export function useRouteParams(): RouterRoute['params'] {
     const routerContext = useRouterContext()!
-    const routeParams = useReactiveSelect(routerContext.route, RouterSelectors.selectRouteParams)
+
+    const routeParams = useReactiveSelect(
+        routerContext.route,
+        route => route.params,
+        NoDeps,
+    )
 
     return routeParams
 }
@@ -421,15 +436,6 @@ function isCaseRouteElement(element: unknown): element is React.ReactElement<Cas
         return false
     }
     return true
-}
-
-export const RouterSelectors = {
-    selectRoutePath(route: RouterRoute): string {
-        return route.path
-    },
-    selectRouteParams(route: RouterRoute): undefined | RouterRouteParams {
-        return route.params
-    },
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
