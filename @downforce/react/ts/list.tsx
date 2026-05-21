@@ -3,7 +3,7 @@ import {areObjectsEqualShallow, omitObjectProps} from '@downforce/std/object'
 import {isUndefined} from '@downforce/std/optional'
 import type {Void} from '@downforce/std/type'
 import {areEqualDeepStrict} from '@downforce/std/value'
-import {memo, startTransition, useCallback, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState} from 'react'
+import {memo, startTransition, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react'
 import {classes} from './classes.js'
 import {useCallbackThrottled} from './defer.js'
 import {useEvent} from './event.js'
@@ -127,7 +127,10 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
     const onResizeThrottled = useCallbackThrottled(resizeThrottleDelay, updateContextAndScroll)
     const onScrollThrottled = useCallbackThrottled(scrollThrottleDelay, updateScroll)
 
-    useLayoutEffect(updateContext, [updateContext])
+    // We use useEffect instead of useLayoutEffect here, because with useLayoutEffect
+    // we would force browser to trash the layout with consequent loooooong task:
+    // Style + Layout + Paint + Composite.
+    useEffect(updateContext, [updateContext])
     useResizeObserver(containerRef, onResizeThrottled)
     useEvent(windowRef, 'resize', onResizeThrottled, undefined, {passive: true})
 
