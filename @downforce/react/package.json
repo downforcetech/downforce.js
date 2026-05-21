@@ -1,6 +1,6 @@
 {
     "name": "@downforce/react",
-    "version": "1.2.32",
+    "version": "1.2.33",
     "type": "module",
     "sideEffects": false,
     "files": [
