@@ -243,7 +243,7 @@ export interface ListVirtualProps<I> extends
         renderState: undefined | ListVirtualModule.LayoutList<I>
         virtualLayout: undefined | ListVirtualModule.Layout<I>
     }) => Void)
-    children(item: I, idx: number, itemLayout: ListVirtualModule.LayoutItem<I>, context: ListVirtualModule.Context): React.ReactElement
+    children(item: I, idx: number, itemLayout: ListVirtualModule.LayoutItem<I>, context: ListVirtualModule.Context): React.ReactNode
     direction?: undefined | Computable<ListVirtualModule.DirectionEnum, [context: ListVirtualModule.Context]>
     grid?: undefined | Computable<number, [context: ListVirtualModule.Context]>
     itemKeyOf?: undefined | ((item: I, idx: number) => number | string)
