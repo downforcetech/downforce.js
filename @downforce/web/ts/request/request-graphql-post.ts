@@ -2,7 +2,7 @@ import {pipe, type Io} from '@downforce/std/fn'
 import {JsonType} from '../mimetype.js'
 import type {GraphqlQueryVariables} from './request-graphql.js'
 import {setupRequestJson} from './request-json.js'
-import {RequestMethod} from './request-method.js'
+import {RequestMethodEnum} from './request-method.js'
 import {createRequest, type RequestOptions} from './request-new.js'
 import {setupRequestMethod} from './request-options.js'
 
@@ -13,7 +13,7 @@ export function createRequestGraphqlPost(pathOrUrl: string, options: RequestOpti
     const {query, variables, ...requestOptions} = options
 
     return pipe(
-        createRequest(RequestMethod.Post, pathOrUrl, requestOptions),
+        createRequest(RequestMethodEnum.Post, pathOrUrl, requestOptions),
         _setupRequestGraphqlPost(query, variables),
     )
 }
@@ -23,7 +23,7 @@ export function setupRequestGraphqlPost(request: Request, query: string, variabl
 
     return pipe(
         request,
-        request => setupRequestMethod(request, RequestMethod.Post),
+        request => setupRequestMethod(request, RequestMethodEnum.Post),
         request => setupRequestJson(request, body, {
             'Accept': JsonType,
         }),

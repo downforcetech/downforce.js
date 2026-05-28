@@ -1,9 +1,9 @@
 import type {Options} from '@downforce/std/type'
-import {RequestMethod, type RequestMethodEnum} from './request-method.js'
+import {RequestMethodEnum, type RequestMethodEnumType} from './request-method.js'
 import {joinRequestPath} from './request-path.js'
 
 export function createRequest(
-    method: RequestMethodEnum,
+    method: RequestMethodEnumType,
     pathOrUrl: string,
     options?: undefined | RequestOptions,
 ): Request {
@@ -15,23 +15,23 @@ export function createRequest(
 }
 
 export function createRequestDelete(pathOrUrl: string, options?: undefined | RequestOptions): Request {
-    return createRequest(RequestMethod.Delete, pathOrUrl, options)
+    return createRequest(RequestMethodEnum.Delete, pathOrUrl, options)
 }
 
 export function createRequestGet(pathOrUrl: string, options?: undefined | RequestOptions): Request {
-    return createRequest(RequestMethod.Get, pathOrUrl, options)
+    return createRequest(RequestMethodEnum.Get, pathOrUrl, options)
 }
 
 export function createRequestPatch(pathOrUrl: string, options?: undefined | RequestOptions): Request {
-    return createRequest(RequestMethod.Patch, pathOrUrl, options)
+    return createRequest(RequestMethodEnum.Patch, pathOrUrl, options)
 }
 
 export function createRequestPost(pathOrUrl: string, options?: undefined | RequestOptions): Request {
-    return createRequest(RequestMethod.Post, pathOrUrl, options)
+    return createRequest(RequestMethodEnum.Post, pathOrUrl, options)
 }
 
 export function createRequestPut(pathOrUrl: string, options?: undefined | RequestOptions): Request {
-    return createRequest(RequestMethod.Put, pathOrUrl, options)
+    return createRequest(RequestMethodEnum.Put, pathOrUrl, options)
 }
 
 // Types ///////////////////////////////////////////////////////////////////////

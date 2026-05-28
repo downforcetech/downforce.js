@@ -1,13 +1,22 @@
 import {identity, pipe, piped, type Io} from '@downforce/std/fn'
 import {isSome} from '@downforce/std/optional'
 import {_thenPromise} from '@downforce/std/promise'
+import type {Options} from '@downforce/std/type'
 import {setupRequestAuthorization} from './request/request-auth.js'
 import {type RequestHeadersInit} from './request/request-headers.js'
-import {RequestMethod, type RequestMethodEnum} from './request/request-method.js'
+import {RequestMethodEnum, type RequestMethodEnumType} from './request/request-method.js'
 import {createRequest} from './request/request-new.js'
-import {setupRequestCache, setupRequestHeaders, setupRequestPriority, setupRequestSignal} from './request/request-options.js'
+import {
+    setupRequestCache,
+    setupRequestCredentials,
+    setupRequestHeaders,
+    setupRequestOptions,
+    setupRequestPriority,
+    setupRequestRedirect,
+    setupRequestSignal,
+} from './request/request-options.js'
 import {setupRequestParams} from './request/request-params.js'
-import {_setupRequestPayload, setupRequestPayload} from './request/request-payload.js'
+import {setupRequestPayload} from './request/request-payload.js'
 import {setupRequestRetry, type RequestRetryOptions} from './request/request-retry.js'
 import {decodeResponseBody} from './response/response-body.js'
 import {rejectResponseFailed} from './response/response-error.js'
@@ -23,12 +32,15 @@ export const HttpClient = {
             baseUrl,
             body,
             cache,
+            credentials,
             decoder,
             encoder,
             headers,
+            init,
             method,
             params,
             priority,
+            redirect,
             retry,
             signal,
             url,
@@ -36,11 +48,14 @@ export const HttpClient = {
 
         return pipe(
             createRequest(method, url, {baseUrl}),
+            request => init ? setupRequestOptions(request, init) : request,
             request => cache ? setupRequestCache(request, cache) : request,
             request => priority ? setupRequestPriority(request, priority) : request,
             request => signal ? setupRequestSignal(request, signal) : request,
             request => authToken ? setupRequestAuthorization(request, authType ?? 'Bearer', authToken) : request,
+            request => credentials ? setupRequestCredentials(request, credentials) : request,
             request => headers ? setupRequestHeaders(request, headers) : request,
+            request => redirect ? setupRequestRedirect(request, redirect) : request,
             request => params ? setupRequestParams(request, params) : request,
             request => isSome(body) ? setupRequestPayload(request, body) : request,
             request => encoder ? encoder(request) : request,
@@ -51,31 +66,31 @@ export const HttpClient = {
     Get<O = Response>(args: HttpClientGetOptions<Response, O>): NoInfer<Promise<O>> {
         return HttpClient.Request({
             ...args,
-            method: RequestMethod.Get,
+            method: RequestMethodEnum.Get,
         })
     },
     Delete<O = Response>(args: HttpClientDeleteOptions<Response, O>): NoInfer<Promise<O>> {
         return HttpClient.Request({
             ...args,
-            method: RequestMethod.Delete,
+            method: RequestMethodEnum.Delete,
         })
     },
     Patch<O = Response>(args: HttpClientPatchOptions<Response, O>): NoInfer<Promise<O>> {
         return HttpClient.Request({
             ...args,
-            method: RequestMethod.Patch,
+            method: RequestMethodEnum.Patch,
         })
     },
     Put<O = Response>(args: HttpClientPutOptions<Response, O>): NoInfer<Promise<O>> {
         return HttpClient.Request({
             ...args,
-            method: RequestMethod.Put,
+            method: RequestMethodEnum.Put,
         })
     },
     Post<O = Response>(args: HttpClientPostOptions<Response, O>): NoInfer<Promise<O>> {
         return HttpClient.Request({
             ...args,
-            method: RequestMethod.Post,
+            method: RequestMethodEnum.Post,
         })
     },
 }
@@ -121,13 +136,16 @@ export interface HttpClientRequestOptions {
     authToken?: undefined | string
     authType?: undefined | string
     baseUrl?: undefined | string
-    body?: undefined | Parameters<typeof _setupRequestPayload>[0]
+    body?: undefined | BodyInit | unknown
     cache?: undefined | RequestCache
+    credentials?: undefined | RequestCredentials
     encoder?: undefined | Io<Request, Request>
     headers?: undefined | RequestHeadersInit
-    method: RequestMethodEnum
+    init?: undefined | Options<RequestInit>
+    method: RequestMethodEnumType
     params?: undefined | UrlParams
     priority?: undefined | RequestPriority
+    redirect?: undefined | RequestRedirect
     retry?: undefined | RequestRetryOptions
     signal?: undefined | AbortSignal
     url: string

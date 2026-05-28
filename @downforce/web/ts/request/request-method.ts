@@ -1,13 +1,20 @@
-import type {StringAutocomplete, ValueOf} from '@downforce/std/type'
+import {Enum, type UnionOf} from '@downforce/std/enum'
+import type {StringAutocomplete} from '@downforce/std/type'
 
-export const RequestMethod = {
-    Delete: 'DELETE' as const,
-    Get: 'GET' as const,
-    Patch: 'PATCH' as const, // Patch must be uppercase, otherwise fetch() fails.
-    Post: 'POST' as const,
-    Put: 'PUT' as const,
-}
+export const RequestMethodEnum: {
+    Delete: 'DELETE'
+    Get: 'GET'
+    Patch: 'PATCH'
+    Post: 'POST'
+    Put: 'PUT'
+} = Enum({
+    Delete: 'DELETE',
+    Get: 'GET',
+    Patch: 'PATCH', // Patch must be uppercase, otherwise fetch() fails.
+    Post: 'POST',
+    Put: 'PUT',
+})
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export type RequestMethodEnum = (ValueOf<typeof RequestMethod>) | StringAutocomplete
+export type RequestMethodEnumType = UnionOf<typeof RequestMethodEnum> | StringAutocomplete

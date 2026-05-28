@@ -2,7 +2,7 @@ import type {Io} from '@downforce/std/fn'
 import type {Options} from '@downforce/std/type'
 import {cloneRequest} from './request-clone.js'
 import {mergeRequestHeaders, type RequestHeadersInit} from './request-headers.js'
-import type {RequestMethodEnum} from './request-method.js'
+import type {RequestMethodEnumType} from './request-method.js'
 
 export function setupRequestOptions(request: Request, options: Options<RequestInit>): Request {
     const {headers, ...otherOptions} = options
@@ -22,11 +22,11 @@ export function _setupRequestOptions(options: Options<RequestInit>): Io<Request,
 
 // Request Method //////////////////////////////////////////////////////////////
 
-export function setupRequestMethod(request: Request, method: undefined | RequestMethodEnum): Request {
+export function setupRequestMethod(request: Request, method: undefined | RequestMethodEnumType): Request {
     return setupRequestOptions(request, {method})
 }
 
-export function _setupRequestMethod(method: undefined | RequestMethodEnum): Io<Request, Request> {
+export function _setupRequestMethod(method: undefined | RequestMethodEnumType): Io<Request, Request> {
     return (request: Request) => setupRequestMethod(request, method)
 }
 
@@ -45,17 +45,27 @@ export function _setupRequestHeaders(...headersList: Array<RequestHeadersInit>):
 // Request Body ////////////////////////////////////////////////////////////////
 
 export function setupRequestBody(request: Request, body: undefined | BodyInit): Request {
-    return cloneRequest(request, {body})
+    return cloneRequest(request, {body: body})
 }
 
 export function _setupRequestBody(body: undefined | BodyInit): Io<Request, Request> {
     return (request: Request) => setupRequestBody(request, body)
 }
 
+// Request Credentials /////////////////////////////////////////////////////////
+
+export function setupRequestCredentials(request: Request, credentials: undefined | RequestCredentials): Request {
+    return cloneRequest(request, {credentials: credentials})
+}
+
+export function _setupRequestCredentials(credentials: undefined | RequestCredentials): Io<Request, Request> {
+    return (request: Request) => setupRequestCredentials(request, credentials)
+}
+
 // Request Cache ///////////////////////////////////////////////////////////////
 
 export function setupRequestCache(request: Request, cache: undefined | RequestCache): Request {
-    return cloneRequest(request, {cache})
+    return cloneRequest(request, {cache: cache})
 }
 
 export function _setupRequestCache(cache: undefined | RequestCache): Io<Request, Request> {
@@ -65,7 +75,7 @@ export function _setupRequestCache(cache: undefined | RequestCache): Io<Request,
 // Request Signal //////////////////////////////////////////////////////////////
 
 export function setupRequestSignal(request: Request, signal: undefined | AbortSignal): Request {
-    return cloneRequest(request, {signal})
+    return cloneRequest(request, {signal: signal})
 }
 
 export function _setupRequestSignal(signal: undefined | AbortSignal): Io<Request, Request> {
@@ -75,9 +85,19 @@ export function _setupRequestSignal(signal: undefined | AbortSignal): Io<Request
 // Request Priority ////////////////////////////////////////////////////////////
 
 export function setupRequestPriority(request: Request, priority: undefined | RequestPriority): Request {
-    return cloneRequest(request, {priority})
+    return cloneRequest(request, {priority: priority})
 }
 
 export function _setupRequestPriority(priority: undefined | RequestPriority): Io<Request, Request> {
     return (request: Request) => setupRequestPriority(request, priority)
+}
+
+// Request Redirect ////////////////////////////////////////////////////////////
+
+export function setupRequestRedirect(request: Request, redirect: undefined | RequestRedirect): Request {
+    return cloneRequest(request, {redirect: redirect})
+}
+
+export function _setupRequestRedirect(priority: undefined | RequestRedirect): Io<Request, Request> {
+    return (request: Request) => setupRequestRedirect(request, priority)
 }

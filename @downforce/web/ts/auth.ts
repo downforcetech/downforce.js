@@ -2,7 +2,7 @@ import {compute, pipe, piped, type Computable, type Fn, type FnArgs} from '@down
 import {isObject} from '@downforce/std/object'
 import {trustString} from '@downforce/std/string'
 import {throwInvalidResponse} from './error.js'
-import {createRequest, RequestMethod, setupRequestJson} from './request.js'
+import {createRequest, RequestMethodEnum, setupRequestJson} from './request.js'
 import {decodeResponseBody} from './response.js'
 
 export const AuthUrlDefault = '/auth'
@@ -17,7 +17,7 @@ export async function authenticate(credentials: AuthCredentials, optionsComputab
         ...requestOptions
     } = compute(optionsComputable, credentials)
 
-    const method = methodOptional ?? RequestMethod.Post
+    const method = methodOptional ?? RequestMethodEnum.Post
     const requestBody = requestBodyOptional ?? createDefaultRequestBody(credentials)
 
     const response = await pipe(
@@ -67,7 +67,7 @@ export async function validateAuthentication(token: string, optionsComputable: A
         ...requestOptions
     } = compute(optionsComputable, token)
 
-    const method = methodOptional ?? RequestMethod.Get
+    const method = methodOptional ?? RequestMethodEnum.Get
 
     const response = await pipe(
         createRequest(method, url, requestOptions),
@@ -86,7 +86,7 @@ export async function invalidateAuthentication(token: string, optionsComputable:
         ...requestOptions
     } = compute(optionsComputable, token)
 
-    const method = methodOptional ?? RequestMethod.Delete
+    const method = methodOptional ?? RequestMethodEnum.Delete
 
     const response = await pipe(
         createRequest(method, url, requestOptions),
