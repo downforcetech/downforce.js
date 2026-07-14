@@ -23,20 +23,20 @@ import {describe, mock, test} from 'node:test'
 const Dirname = import.meta.dirname
 
 const resources = {
-    badMissingFile:Path.join(Dirname, 'data', '.missing'),
-    badParsedFile:Path.join(Dirname, 'data', 'broken.txt'),
+    badMissingFile: Path.join(Dirname, 'data', '.missing'),
+    badParsedFile: Path.join(Dirname, 'data', 'broken.txt'),
     envData: await import('./data/plug.env.ts').then(it => it.default),
-    jsFile:Path.join(Dirname, 'data', 'plug.ts'),
-    jsonFile:Path.join(Dirname, 'data', 'plug.json'),
-    tomlFile:Path.join(Dirname, 'data', 'plug.toml'),
-    yamlFile:Path.join(Dirname, 'data', 'plug.yaml'),
+    jsFile: Path.join(Dirname, 'data', 'plug.ts'),
+    jsonFile: Path.join(Dirname, 'data', 'plug.json'),
+    tomlFile: Path.join(Dirname, 'data', 'plug.toml'),
+    yamlFile: Path.join(Dirname, 'data', 'plug.yaml'),
 }
 const partials = {
     '1_envPartialData': await import('./data/pipe-1.env.ts').then(it => it.default),
-    '2_jsPartialFile':Path.join(Dirname, 'data', 'pipe-2.ts'),
-    '3_jsonPartialFile':Path.join(Dirname, 'data', 'pipe-3.json'),
-    '4_tomlPartialFile':Path.join(Dirname, 'data', 'pipe-4.toml'),
-    '5_yamlPartialFile':Path.join(Dirname, 'data', 'pipe-5.yaml'),
+    '2_jsPartialFile': Path.join(Dirname, 'data', 'pipe-2.ts'),
+    '3_jsonPartialFile': Path.join(Dirname, 'data', 'pipe-3.json'),
+    '4_tomlPartialFile': Path.join(Dirname, 'data', 'pipe-4.toml'),
+    '5_yamlPartialFile': Path.join(Dirname, 'data', 'pipe-5.yaml'),
 }
 
 interface DataInterface {
