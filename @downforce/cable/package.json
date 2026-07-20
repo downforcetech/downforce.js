@@ -20,8 +20,8 @@
         "@downforce/std": "workspace:*"
     },
     "optionalDependencies": {
-        "smol-toml": "1.6",
-        "yaml": "2.8"
+        "smol-toml": "1.7",
+        "yaml": "2.9"
     },
     "peerDependencies": {
         "@types/node": "catalog:"
