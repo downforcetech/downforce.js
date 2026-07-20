@@ -1,4 +1,4 @@
-import {identity, pipe, piped, type Io} from '@downforce/std/fn'
+import {identity, pipe, type Io} from '@downforce/std/fn'
 import {isSome} from '@downforce/std/optional'
 import {_thenPromise} from '@downforce/std/promise'
 import type {Options} from '@downforce/std/type'
@@ -109,11 +109,12 @@ export async function decodeResponseOrReject<O>(
     responsePromise: Response | Promise<Response>,
     decodeContent: Io<unknown, O | Promise<O>>,
 ): Promise<O> {
-    return piped(responsePromise)
-        (rejectResponseFailed) // Rejects on not ok response (4xx/5xx).
-        (decodeResponseBody) // Decodes response to FormData/JSON/Text/UrlSearchParams.
-        (_thenPromise(decodeContent)) // Decodes the mixed unsafe output.
-    ()
+    return pipe(
+        responsePromise,
+        rejectResponseFailed, // Rejects on not ok response (4xx/5xx).
+        decodeResponseBody, // Decodes response to FormData/JSON/Text/UrlSearchParams.
+        _thenPromise(decodeContent), // Decodes the mixed unsafe output.
+    )
 }
 
 /**
