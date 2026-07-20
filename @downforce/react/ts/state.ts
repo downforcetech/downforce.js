@@ -54,7 +54,7 @@ export function useState3<S>(initialState: StateInit<S>): UseState3Contract<S> {
 export function usePatchState<S extends object, R>(
     setState: StateWriter<S, R>,
 ): Io<Partial<S>, R>
-export function usePatchState<S extends object, R>(
+export function usePatchState<S extends object>(
     setState: React.Dispatch<React.SetStateAction<S>>,
 ): Io<Partial<S>, void>
 export function usePatchState<S extends object, R>(
