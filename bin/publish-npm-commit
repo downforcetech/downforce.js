@@ -1,0 +1,68 @@
+#!/usr/bin/env sh
+
+## USAGE #######################################################################
+##
+##   publish-npm-commit version|patch|minor|major <package-dir> ...
+##
+## EXAMPLE
+##
+##   publish-npm-commit patch ./@downforce/*
+##
+################################################################################
+
+set -eu
+
+case "$(dirname "$0")" in
+    /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
+    *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
+esac
+
+RepositoryDir=$(cd "$Dir/.." && pwd)
+
+export PATH="$RepositoryDir/bin:$PATH"
+
+usage() {
+    echo
+    echo "USAGE: $(basename "$0") --help,-h"
+    echo "USAGE: $(basename "$0") version|patch|minor|major <package-dir> ..."
+    echo
+}
+
+if test $# -lt 2; then
+    usage
+    exit 1
+fi
+
+case $1 in
+    --help|-h) shift; usage; exit 0;;
+esac
+
+arg_version=$1
+shift
+
+for pkg; do
+    if ! test -e "$pkg/package.json"; then
+        echo "skipping invalid package '$pkg'."
+        continue
+    fi
+
+    pkg_name=$(npm --prefix "$pkg" pkg get name | tr -d '"')
+
+    npm --prefix "$pkg" run --if-present build
+
+    dirty=$(git -C "$pkg" status --porcelain . | tail -n1)
+    if test -n "$dirty"; then
+        git -C "$pkg" add --all .
+        git -C "$pkg" commit --edit --message "[$pkg_name] "
+    fi
+
+    "$Dir/publish-npm" $arg_version "$pkg"
+
+    pkg_version=$(npm --prefix "$pkg" pkg get version | tr -d '"')
+
+    dirty=$(git -C "$pkg" status --porcelain . | tail -n1)
+    if test -n "$dirty"; then
+        git -C "$pkg" add --all .
+        git -C "$pkg" commit --message "[$pkg_name] npm:v$pkg_version [release]"
+    fi
+done

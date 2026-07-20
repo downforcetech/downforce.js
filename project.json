@@ -1,0 +1,15 @@
+{
+    "name": "repository",
+    "tags": [
+        "type:tool"
+    ],
+    "targets": {
+        "init": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "{workspaceRoot}",
+                "command": "./bin/init"
+            }
+        }
+    }
+}

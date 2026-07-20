@@ -1,0 +1,43 @@
+{
+    "tags": [
+      "type:lib"
+    ],
+    "implicitDependencies": [
+        "repository",
+        "@downforce/tsconfig"
+    ],
+    "targets": {
+        "init": {
+            "dependsOn": [
+                "repository:init",
+                "^build"
+            ],
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "{projectRoot}",
+                "command": "./bin/build.sh"
+            }
+        },
+        "build": {
+            "dependsOn": [
+                "^build",
+                "init"
+            ],
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "{projectRoot}",
+                "command": "./bin/build.sh"
+            }
+        },
+        "test": {
+            "dependsOn": [
+                "build"
+            ],
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "{projectRoot}",
+                "command": "./bin/test.sh"
+            }
+        }
+    }
+}

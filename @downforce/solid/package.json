@@ -12,10 +12,8 @@
         "./*": "./esm/*.js"
     },
     "scripts": {
-        "clean": "rm -rf ./esm/ ./.cache/ || true",
-        "build": "babel ./ts/ --out-dir ./esm/ --extensions '.ts,.tsx' --ignore '**/*.d.ts','node_modules/**/*' && tsc --project ./tsconfig.json",
-        "prepack": "node --run clean && node --run build",
-        "preversion": "node --run build"
+        "prepack": "./bin/clean.sh && ./bin/build.sh && ./bin/test.sh",
+        "preversion": "./bin/build.sh && ./bin/test.sh"
     },
     "peerDependencies": {
         "@downforce/std": "1",
@@ -28,7 +26,7 @@
         "@babel/preset-typescript": "7",
         "@downforce/tsconfig": "workspace:*",
         "babel-preset-solid": "1",
-        "typescript": "6"
+        "typescript": "catalog:"
     },
     "author": "Daniele Orlando",
     "license": "MIT",

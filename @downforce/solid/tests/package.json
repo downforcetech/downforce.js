@@ -1,0 +1,9 @@
+{
+    "name": "@downforce/solid.tests",
+    "type": "module",
+    "dependencies": {
+        "@downforce/std": "workspace:*",
+        "@downforce/web": "workspace:*",
+        "@types/node": "catalog:"
+    }
+}

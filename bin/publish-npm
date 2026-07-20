@@ -1,22 +1,25 @@
 #!/usr/bin/env sh
 
-################################################################################
-# Bumps up a package version and publishes it.
-#
-# USAGE
-# ./npm-publish version|patch|minor|major <package-dir> ...
-#
-# EXAMPLE
-# ./npm-publish patch ./@downforce/*
+## USAGE #######################################################################
+##
+##   publish-npm version|patch|minor|major <package-dir> ...
+##
+## EXAMPLE
+##
+##   publish-npm patch ./@downforce/*
+##
 ################################################################################
 
-set -e # errexit
-set -u # nounset
+set -eu
 
 case "$(dirname "$0")" in
     /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
     *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
 esac
+
+RepositoryDir=$(cd "$Dir/.." && pwd)
+
+export PATH="$RepositoryDir/bin:$PATH"
 
 usage() {
     echo
@@ -31,15 +34,14 @@ if test $# -lt 2; then
 fi
 
 case $1 in
-    --help|-h) shift; usage; exit 0
-    ;;
+    --help|-h) shift; usage; exit 0;;
 esac
 
 arg_version=$1
 shift
 
 for pkg; do
-    if test ! -e "$pkg/package.json"; then
+    if ! test -e "$pkg/package.json"; then
         echo "skipping invalid package '$pkg'."
         continue
     fi

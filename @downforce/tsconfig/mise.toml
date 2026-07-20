@@ -1,0 +1,16 @@
+[tasks.init]
+depends=[
+    '//:init',
+]
+run='./bin/init.sh'
+
+[tasks.build]
+depends=[':init']
+run='./bin/build.sh'
+
+[tasks.test]
+depends=[':build']
+run='./bin/test.sh'
+
+[tasks.clean]
+run='./bin/clean.sh'

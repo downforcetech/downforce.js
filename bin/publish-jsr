@@ -1,22 +1,25 @@
 #!/usr/bin/env sh
 
-################################################################################
-# Bumps up a package version and publishes it.
-#
-# USAGE
-# ./jsr-publish <package-dir> ...
-#
-# EXAMPLE
-# ./jsr-publish ./@downforce/*
+## USAGE #######################################################################
+##
+##   publish-jsr <package-dir> ...
+##
+## EXAMPLE
+##
+##   publish-jsr ./@downforce/*
+##
 ################################################################################
 
-set -e # errexit
-set -u # nounset
+set -eu
 
 case "$(dirname "$0")" in
     /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
     *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
 esac
+
+RepositoryDir=$(cd "$Dir/.." && pwd)
+
+export PATH="$RepositoryDir/bin:$PATH"
 
 usage() {
     echo
@@ -32,7 +35,7 @@ fi
 : ${JsrPublishArgs:=}
 
 for pkg; do
-    if test ! -e "$pkg/jsr.jsonc"; then
+    if ! test -e "$pkg/jsr.jsonc"; then
         echo "skipping invalid package '$pkg'."
         continue
     fi

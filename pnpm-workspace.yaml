@@ -1,22 +1,37 @@
+allowUnusedPatches: false
+autoInstallPeers: false
+dedupeInjectedDeps: false
+dedupePeers: true
+enableGlobalVirtualStore: true
+hoist: false
+hoistPattern: []
+hoistWorkspacePackages: false
+linkWorkspacePackages: deep
+minimumReleaseAge: 4320 # 3 days in minutes.
+minimumReleaseAgeExclude: ['@downforce/*']
+minimumReleaseAgeStrict: true
+preferWorkspacePackages: true
+publicHoistPattern: []
+resolvePeersFromWorkspaceRoot: false
+savePrefix: ''
+saveWorkspaceProtocol: true
+strictPeerDependencies: true
+trustLockfile: true
+trustPolicy: no-downgrade
+trustPolicyExclude: []
+trustPolicyIgnoreAfter: 10080 # 1 week in minutes.
+verifyDepsBeforeRun: install
+
 packages: ['@downforce/*/', '@downforce/*/tests/']
+
+catalog:
+  '@types/node': '26'
+  '@types/react': '19'
+  '@types/react-dom': '19'
+  'react': '19'
+  'react-dom': '19'
+  'typescript': '7'
 
 allowBuilds:
   'esbuild': true
   'nx': false
-
-managePackageManagerVersions: true
-packageManagerStrictVersion: true
-
-optimisticRepeatInstall: true
-
-autoInstallPeers: true
-strictDepBuilds: true
-strictPeerDependencies: true
-
-hoist: false
-hoistWorkspacePackages: false
-hoistPattern: []
-publicHoistPattern: []
-
-linkWorkspacePackages: deep
-preferWorkspacePackages: true

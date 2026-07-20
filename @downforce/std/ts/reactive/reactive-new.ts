@@ -15,7 +15,7 @@ export function createReactive<V>(
             observers: new Set<ReactiveObserver<V>>(),
             notification: undefined,
         },
-        // @ts-ignore
+        // @ts-expect-error
         get [Symbol.toStringTag]() {
             return 'ReactiveState'
         },

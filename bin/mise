@@ -1,0 +1,39 @@
+#!/usr/bin/env sh
+
+set -eu
+
+case $(dirname "$0") in
+    /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
+    *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
+esac
+
+RepositoryDir=$(cd "$Dir/.." && pwd)
+
+export PATH="$RepositoryDir/bin:$PATH"
+
+mise_dir="$RepositoryDir/.cache/mise"
+mise_bin="$mise_dir/bin/mise"
+mise_version=$(grep -E '^min_version\s*=\s*' "$RepositoryDir/mise.toml" | cut -d '=' -f 2 | sed -r 's/[ "'\'']//g')
+
+(
+    if test -e "$mise_bin"; then
+        if test $("$mise_bin" --version | cut -d ' ' -f 1) != "$mise_version"; then
+            rm -f "$mise_bin"
+        fi
+    fi
+    if ! test -e "$mise_bin"; then
+        export MISE_INSTALL_PATH="$mise_bin"
+        export MISE_VERSION="v$mise_version"
+        export MISE_INSTALL_HELP=0
+
+        curl --location --fail --silent --show-error https://mise.run | sh
+    fi
+)
+
+export MISE_CACHE_DIR="$mise_dir/cache"
+export MISE_DATA_DIR="$mise_dir/lib"
+export MISE_STATE_DIR="$mise_dir/state"
+export MISE_TMP_DIR="$mise_dir/tmp"
+export MISE_LOG_FILE="$mise_dir/log"
+
+exec "$mise_bin" "$@"

@@ -1,16 +1,7 @@
 {
-    "scripts": {
-        "init": "pnpm install",
-        "check-outdated": "pnpm outdated --recursive",
-        "update": "pnpm update --recursive",
-        "build": "nx run-many --target build,test --tuiAutoExit",
-        "clean": "nx run-many --target clean --tuiAutoExit"
-    },
+    "name": "repository",
+    "type": "module",
     "devDependencies": {
-        "nx": "22.6.1"
-    },
-    "engines": {
-        "node": ">= 24.14"
-    },
-    "packageManager": "pnpm@10.33.0"
+        "nx": "23.1.1"
+    }
 }

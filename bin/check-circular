@@ -4,13 +4,16 @@
 # Detects circular dependencies.
 ################################################################################
 
-set -e
-set -u
+set -eu
 
 case $(dirname "$0") in
     /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
     *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
 esac
+
+RepositoryDir=$(cd "$Dir/.." && pwd)
+
+export PATH="$RepositoryDir/bin:$PATH"
 
 usage() {
     echo
@@ -40,8 +43,7 @@ if test $# -lt 1; then
 fi
 
 case $1 in
-    --help|-h) shift; usage; exit 0
-    ;;
+    --help|-h) shift; usage; exit 0;;
 esac
 
 arg_reset=no
@@ -49,8 +51,7 @@ arg_adapter=$1
 shift
 
 case ${1:-} in
-    --) arg_reset=yes; shift
-    ;;
+    --) arg_reset=yes; shift;;
 esac
 
 case $arg_adapter in
@@ -72,5 +73,5 @@ case $arg_adapter in
         fi
         exec npx --yes skott@latest "$@"
     ;;
-    *) usage; exit 2
+    *) usage; exit 2;;
 esac

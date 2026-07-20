@@ -13,11 +13,8 @@
         "./*": "./esm/*.js"
     },
     "scripts": {
-        "clean": "rm -rf ./esm/ ./.cache/ || true",
-        "build": "tsc --project ./tsconfig.json && tsc --project ./tests/tsconfig.json",
-        "test": "node --test --test-reporter ${NODE_TEST_REPORTER:-spec} --enable-source-maps ./tests/**/*.test.ts",
-        "prepack": "node --run clean && node --run build && node --run test",
-        "preversion": "node --run build && node --run test"
+        "prepack": "./bin/clean.sh && ./bin/build.sh && ./bin/test.sh",
+        "preversion": "./bin/build.sh && ./bin/test.sh"
     },
     "peerDependencies": {
         "@downforce/std": "1",
@@ -29,7 +26,7 @@
     },
     "devDependencies": {
         "@downforce/tsconfig": "workspace:*",
-        "typescript": "6"
+        "typescript": "catalog:"
     },
     "author": "Daniele Orlando",
     "license": "MIT",

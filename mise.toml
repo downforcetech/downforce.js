@@ -1,0 +1,45 @@
+min_version='2026.8.5'
+monorepo_root=true
+
+[monorepo]
+config_roots=['./@downforce/*/']
+
+[settings]
+locked=true
+lockfile=true
+pin=true
+task.output='keep-order'
+task.timings=true
+
+[tools]
+'bun'='1.3.14'
+'deno'='2.9.5'
+'just'='1.58.0'
+'node'='26.7.0'
+'npm'='12.0.2'
+'pnpm'='11.21.0'
+'watchexec'='2.5.1'
+
+[tasks.init]
+alias='i'
+run='{{ config_root }}/bin/init'
+
+[tasks.build]
+alias='b'
+depends=['//...:build']
+
+[tasks.test]
+alias='t'
+depends=['//...:test']
+
+[tasks.clean]
+alias='c'
+depends=['//...:clean']
+
+[tasks.update]
+alias='u'
+run='{{ config_root }}/bin/pnpm update --recursive'
+
+[tasks.outdated]
+alias='o'
+run='{{ config_root }}/bin/pnpm outdated --recursive || true'

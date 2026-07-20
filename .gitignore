@@ -1,9 +1,8 @@
+/.nx/
+/@downforce/*/cjs/
+/@downforce/*/esm/
+
 .cache/
 .DS_Store
 *.tsbuildinfo
 node_modules/
-pnpm-lock.yaml
-
-/.nx/
-/@downforce/*/cjs/
-/@downforce/*/esm/

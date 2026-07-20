@@ -12,10 +12,8 @@
         "./*": "./esm/*.js"
     },
     "scripts": {
-        "clean": "rm -rf ./esm/ ./.cache/ || true",
-        "build": "tsc --project ./tsconfig.json",
-        "prepack": "node --run clean && node --run build",
-        "preversion": "node --run build"
+        "prepack": "./bin/clean.sh && ./bin/build.sh && ./bin/test.sh",
+        "preversion": "./bin/build.sh && ./bin/test.sh"
     },
     "peerDependencies": {
         "@downforce/std": "1",
@@ -23,7 +21,7 @@
     },
     "devDependencies": {
         "@downforce/tsconfig": "workspace:*",
-        "typescript": "6"
+        "typescript": "catalog:"
     },
     "author": "Daniele Orlando",
     "license": "MIT",

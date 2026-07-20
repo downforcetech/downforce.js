@@ -1,0 +1,35 @@
+#!/usr/bin/env sh
+
+## USAGE #######################################################################
+##
+##   clean [ <dir> ... ]
+##
+################################################################################
+
+set -eu
+
+case $(dirname "$0") in
+    /*|./*) Dir=$(cd "$(dirname "$0")" && pwd);;
+    *) Dir=$(cd "$PWD/$(dirname "$0")" && pwd);;
+esac
+
+RepositoryDir=$(cd "$Dir/.." && pwd)
+
+export PATH="$RepositoryDir/bin:$PATH"
+
+if test $# -eq 0; then
+    set -- "$RepositoryDir"
+fi
+
+echo '╭─ Cleaning NX cache'
+nx reset | sed -e 's/^/│ /'
+# echo "├─ $RepositoryDir/.nx/"
+# rm -rf "$RepositoryDir/.nx/"
+echo '╰─ ✓ done'
+
+echo '╭─ Cleaning Git ignored files'
+for dir; do
+    echo "├─ $dir"
+    git clean -X -d -f "$dir" | sed -e 's/^/│ /'
+done
+echo '╰─ ✓ done'
