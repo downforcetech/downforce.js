@@ -20,7 +20,9 @@
         "@downforce/web": "1"
     },
     "devDependencies": {
+        "@downforce/std": "workspace:*",
         "@downforce/tsconfig": "workspace:*",
+        "@downforce/web": "workspace:*",
         "typescript": "catalog:"
     },
     "author": "Daniele Orlando",

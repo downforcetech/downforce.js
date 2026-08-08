@@ -18,14 +18,17 @@
     "peerDependencies": {
         "@downforce/std": "1",
         "@downforce/web": "1",
-        "solid-js": "1"
+        "solid-js": "1.9"
     },
     "devDependencies": {
         "@babel/cli": "7",
         "@babel/core": "7",
         "@babel/preset-typescript": "7",
+        "@downforce/std": "workspace:*",
         "@downforce/tsconfig": "workspace:*",
-        "babel-preset-solid": "1",
+        "@downforce/web": "workspace:*",
+        "babel-preset-solid": "1.9.12",
+        "solid-js": "1.9",
         "typescript": "catalog:"
     },
     "author": "Daniele Orlando",

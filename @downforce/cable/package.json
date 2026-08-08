@@ -24,10 +24,11 @@
         "yaml": "2.8"
     },
     "peerDependencies": {
-        "@types/node": ">= 24"
+        "@types/node": "catalog:"
     },
     "devDependencies": {
         "@downforce/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
         "typescript": "catalog:"
     },
     "author": "Daniele Orlando",

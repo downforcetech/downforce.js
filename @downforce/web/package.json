@@ -19,6 +19,7 @@
         "@downforce/std": "1"
     },
     "devDependencies": {
+        "@downforce/std": "workspace:*",
         "@downforce/tsconfig": "workspace:*",
         "typescript": "catalog:"
     },
