@@ -1,10 +1,15 @@
-import type {EnumGeneric, UnionOf} from './enum-type.js'
+import type {EnumGeneric, EnumOf, EnumTypeOf, UnionOf} from './enum-type.js'
 
-export function Enum<const E extends EnumGeneric>(definition: E): E {
+export function Enum<const E extends EnumGeneric>(definition: E): EnumOf<E> {
     return Object.freeze(definition)
 }
 
-export function Union<const E extends EnumGeneric>(definition: E): Array<E[keyof E]> {
-    // UnionOfEnum<E> returns a type not expanded. Therefore we use E[keyof E] that expands.
-    return Object.values(definition) as Array<UnionOf<E>>
+export function Union<const E extends EnumGeneric>(definition: E): UnionOf<E> {
+    return Object.values(definition) as UnionOf<E>
+}
+
+export function EnumUnion<const E extends EnumGeneric>(definition: E): [E, UnionOf<E>] {
+    const definitionEnum = Enum(definition)
+    const definitionUnion = Union(definitionEnum)
+    return [definitionEnum, definitionUnion]
 }

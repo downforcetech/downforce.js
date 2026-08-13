@@ -37,7 +37,7 @@
 
 export type Optional<V> = None | V
 export type None = undefined | null
-export type Some<V> = Exclude<V & {}, void | None> // '& {}' casts unknown.
+export type Some<V> = Exclude<V & {}, void | None> // `& {}` casts unknown.
 // export type Some<V> = Exclude<V, void | None> & {} // Works well but does not expand the returned type.
 // export type Some<V> = V extends {} ? V : (V & {}) // Broken. Doesn't work with void.
-// export type Some<V> = NonNullable<V> // Broken. Doesn't work with [].filter(isSome)
+// export type Some<V> = NonNullable<V> // Broken. Doesn't work with `[].filter(isSome)`.

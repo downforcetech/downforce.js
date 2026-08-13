@@ -1,4 +1,4 @@
-import {Enum, Union, type UnionOf} from '@downforce/std/enum'
+import {Enum, Union, type EnumOf, type EnumTypeOf, type UnionOf, type UnionTypeOf} from '@downforce/std/enum'
 import {expectType, type EqualTypes, type AssertType} from '@downforce/std/type'
 import Assert from 'node:assert/strict'
 import {describe, test} from 'node:test'
@@ -27,6 +27,29 @@ describe('@downforce/std/enum', (ctx) => {
         }
     })
 
+    test('EnumOf()', (ctx) => {
+        {
+            type actual = EnumOf<typeof ActualEnum>
+            type expected = {
+                A: 'A'
+                B: 'B'
+                C: 1
+                D: 2
+            }
+
+            type _ = AssertType<EqualTypes<actual, expected>>
+        }
+    })
+
+    test('EnumTypeOf()', (ctx) => {
+        {
+            type actual = EnumTypeOf<typeof ActualEnum>
+            type expected = 'A' | 'B' | 1 | 2
+
+            type _ = AssertType<EqualTypes<actual, expected>>
+        }
+    })
+
     test('Union()', (ctx) => {
         {
             const actual = ActualUnion
@@ -39,12 +62,27 @@ describe('@downforce/std/enum', (ctx) => {
     test('UnionOf()', (ctx) => {
         {
             type actual = UnionOf<typeof ActualEnum>
-            type expected = 'A' | 'B' | 1 | 2
+            type expected = Array<'A' | 'B' | 1 | 2>
 
             type _ = AssertType<EqualTypes<actual, expected>>
         }
         {
             type actual = UnionOf<typeof ActualUnion>
+            type expected = Array<'A' | 'B' | 1 | 2>
+
+            type _ = AssertType<EqualTypes<actual, expected>>
+        }
+    })
+
+    test('UnionTypeOf()', (ctx) => {
+        {
+            type actual = UnionTypeOf<typeof ActualEnum>
+            type expected = 'A' | 'B' | 1 | 2
+
+            type _ = AssertType<EqualTypes<actual, expected>>
+        }
+        {
+            type actual = UnionTypeOf<typeof ActualUnion>
             type expected = 'A' | 'B' | 1 | 2
 
             type _ = AssertType<EqualTypes<actual, expected>>
