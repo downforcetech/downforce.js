@@ -8,7 +8,7 @@ export function Button(props: Props<ButtonProps>): React.JSX.Element {
         <button
             type="button"
             {...otherProps}
-            className={classes('Button-db00 std-button std-text-button', className)}
+            className={classes('Button-db00 std-text-button', className)}
         />
     )
 }

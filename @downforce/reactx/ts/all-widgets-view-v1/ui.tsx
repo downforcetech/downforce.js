@@ -43,12 +43,12 @@ export function WidgetsView(props: Props<WidgetsViewProps>): React.JSX.Element {
                     Buttons
                 </h6>
 
-                <Button className="std-button-dye">
+                <Button>
                     Don't Click Me
                 </Button>
 
                 <ButtonBusy
-                    className="+reveal std-button-dye"
+                    className="+reveal"
                     busy={busy}
                     spinner={<SpinnerV4 active={busy}/>}
                     onClick={() => setBusy(! busy)}
@@ -57,7 +57,7 @@ export function WidgetsView(props: Props<WidgetsViewProps>): React.JSX.Element {
                 </ButtonBusy>
 
                 <ButtonBusy
-                    className="+replace std-button-dye"
+                    className="+replace"
                     busy={busy}
                     spinner={<SpinnerV4 active={busy}/>}
                     onClick={() => setBusy(! busy)}
@@ -69,21 +69,21 @@ export function WidgetsView(props: Props<WidgetsViewProps>): React.JSX.Element {
                     {({armor, close}) =>
                         <>
                             <Button
-                                className="armor std-button-plain std-button-halo"
+                                className="armor"
                                 onClick={armor}
                             >
                                 Armor
                             </Button>
 
                             <Button
-                                className="cancel std-button-plain"
+                                className="cancel"
                                 onClick={close}
                             >
                                 Cancel
                             </Button>
 
                             <Button
-                                className="confirm std-button-dye"
+                                className="confirm"
                                 onClick={close}
                             >
                                 Confirm
@@ -173,7 +173,7 @@ export function WidgetsView(props: Props<WidgetsViewProps>): React.JSX.Element {
             <div className="section-0234">
                 <h6 className="title-74a6">Spinners</h6>
 
-                <Button className="std-button-plain" onClick={event => setSpinner(! spinner)}>
+                <Button onClick={event => setSpinner(! spinner)}>
                     {spinner ? 'Stop' : 'Start'}
                 </Button>
 
@@ -196,7 +196,7 @@ export function WidgetsView(props: Props<WidgetsViewProps>): React.JSX.Element {
             <div className="section-0234">
                 <h6 className="title-74a6">Slider</h6>
 
-                <Button className="std-button-plain" onClick={(event) => setSlide(Math.max(0, slide - 1))}>
+                <Button onClick={(event) => setSlide(Math.max(0, slide - 1))}>
                     Prev.
                 </Button>
                 <Slider
@@ -213,7 +213,7 @@ export function WidgetsView(props: Props<WidgetsViewProps>): React.JSX.Element {
                         </Slide>
                     )}
                 </Slider>
-                <Button className="std-button-plain" onClick={(event) => setSlide(Math.min(4, slide + 1))}>
+                <Button onClick={(event) => setSlide(Math.min(4, slide + 1))}>
                     Next
                 </Button>
             </div>

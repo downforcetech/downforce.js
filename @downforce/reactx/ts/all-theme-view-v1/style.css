@@ -84,10 +84,6 @@
     border-color: currentColor;
 }
 
-.buttons-45cb .std-button {
-    margin: 0 var(--std-gutter3);
-}
-
 .gutter-t1d3 {
     transform-origin: top left;
 }

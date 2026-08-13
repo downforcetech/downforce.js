@@ -2,17 +2,13 @@
     position: relative;
 }
 
-.ButtonArmored-aa3e .armor,
-.ButtonArmored-aa3e .armor.std-button {
+.ButtonArmored-aa3e .armor {
     position: absolute;
 }
 
 .ButtonArmored-aa3e.initial .cancel,
-.ButtonArmored-aa3e.initial .cancel.std-button,
 .ButtonArmored-aa3e.initial .confirm,
-.ButtonArmored-aa3e.initial .confirm.std-button,
-.ButtonArmored-aa3e.armored .armor,
-.ButtonArmored-aa3e.armored .armor.std-button {
+.ButtonArmored-aa3e.armored .armor {
     opacity: 0;
     pointer-events: none;
 }

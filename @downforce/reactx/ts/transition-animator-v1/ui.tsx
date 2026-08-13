@@ -1,7 +1,7 @@
 import {Box, type BoxProps} from '@downforce/react/box'
 import {classes} from '@downforce/react/classes'
 import type {Props} from '@downforce/react/props'
-import {Enum, type UnionOf} from '@downforce/std/enum'
+import {Enum, type EnumTypeOf} from '@downforce/std/enum'
 
 export const TransitionEffectEnum: {
     Fade: 'std-transition-fade'
@@ -31,5 +31,5 @@ export function TransitionAnimator(props: Props<TransitionAnimatorProps>): React
 // Types ///////////////////////////////////////////////////////////////////////
 
 export interface TransitionAnimatorProps extends BoxProps {
-    effect: UnionOf<typeof TransitionEffectEnum>
+    effect: EnumTypeOf<typeof TransitionEffectEnum>
 }
