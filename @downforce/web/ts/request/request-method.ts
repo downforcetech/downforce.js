@@ -1,4 +1,4 @@
-import {Enum, type UnionOf} from '@downforce/std/enum'
+import {Enum, type EnumTypeOf} from '@downforce/std/enum'
 import type {StringAutocomplete} from '@downforce/std/type'
 
 export const RequestMethodEnum: {
@@ -19,4 +19,4 @@ export const RequestMethodEnum: {
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export type RequestMethodEnumType = UnionOf<typeof RequestMethodEnum> | StringAutocomplete
+export type RequestMethodEnumType = EnumTypeOf<typeof RequestMethodEnum> | StringAutocomplete
