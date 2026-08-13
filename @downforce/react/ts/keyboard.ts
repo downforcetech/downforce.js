@@ -1,5 +1,5 @@
 import {arrayWrap} from '@downforce/std/array'
-import type {UnionOf} from '@downforce/std/enum'
+import type {EnumTypeOf} from '@downforce/std/enum'
 import type {None} from '@downforce/std/optional'
 import type {StringAutocomplete} from '@downforce/std/type'
 import {KeyboardKey} from '@downforce/web/keyboard'
@@ -38,7 +38,7 @@ export function useKey(
 
 // Types ///////////////////////////////////////////////////////////////////////
 
-export type KeyboardKeyType = UnionOf<typeof KeyboardKey> | StringAutocomplete // https://developer.mozilla.org/it/docs/Web/API/KeyboardEvent/key/Key_Values
+export type KeyboardKeyType = EnumTypeOf<typeof KeyboardKey> | StringAutocomplete // https://developer.mozilla.org/it/docs/Web/API/KeyboardEvent/key/Key_Values
 
 export interface UseKeyOptions extends UseEventOptions {
     event?: undefined | 'keyup' | 'keydown'

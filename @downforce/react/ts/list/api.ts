@@ -1,38 +1,28 @@
-import {Enum, type UnionOf} from '@downforce/std/enum'
+import {Enum, type EnumTypeOf, Union, type UnionOf} from '@downforce/std/enum'
 import {compute, type Computable} from '@downforce/std/fn'
 import {getMapValue} from '@downforce/std/map'
 import type {ElementOf} from '@downforce/std/type'
 
-const Enums: {
-    DirectionEnum: {
-        Horizontal: 'horizontal'
-        Vertical: 'vertical'
-    }
-    UpdatePriorityEnum: {
-        High: 'high'
-        Low: 'low'
-    }
-} = {
-    DirectionEnum: Enum({
-        Horizontal: 'horizontal',
-        Vertical: 'vertical',
-    }),
-    UpdatePriorityEnum: Enum({
-        High: 'high',
-        Low: 'low',
-    }),
-}
+const DirectionEnum: {
+    Horizontal: 'horizontal'
+    Vertical: 'vertical'
+} = Enum({
+    Horizontal: 'horizontal',
+    Vertical: 'vertical',
+})
+const UpdatePriorityEnum: {
+    High: 'high'
+    Low: 'low'
+} = Enum({
+    High: 'high',
+    Low: 'low',
+})
 
-declare namespace Unions {
-    type DirectionEnum = UnionOf<typeof Enums.DirectionEnum>
-    type UpdatePriorityEnum = UnionOf<typeof Enums.UpdatePriorityEnum>
-}
-
-export const ListVirtualSdk: {
-    enums: {
-        DirectionEnum: typeof Enums.DirectionEnum
-        UpdatePriorityEnum: typeof Enums.UpdatePriorityEnum
-    }
+export const ListVirtualKit: {
+    DirectionEnum: typeof DirectionEnum
+    DirectionUnion: UnionOf<typeof DirectionEnum>
+    UpdatePriorityEnum: typeof UpdatePriorityEnum
+    UpdatePriorityUnion: UnionOf<typeof UpdatePriorityEnum>
     defaults: {
         offscreen: number
         resizeThrottleDelay: number
@@ -82,32 +72,32 @@ export const ListVirtualSdk: {
         direction: undefined | ListVirtualModule.DirectionEnum,
     ): React.CSSProperties
 } = {
-    enums: {
-        DirectionEnum: Enums.DirectionEnum,
-        UpdatePriorityEnum: Enums.UpdatePriorityEnum,
-    },
+    DirectionEnum: DirectionEnum,
+    DirectionUnion: Union(DirectionEnum),
+    UpdatePriorityEnum: UpdatePriorityEnum,
+    UpdatePriorityUnion: Union(UpdatePriorityEnum),
 
     defaults: {
         offscreen: 2,
         resizeThrottleDelay: 100,
         scrollThrottleDelay: 100,
-        updatePriority: Enums.UpdatePriorityEnum.Low,
+        updatePriority: UpdatePriorityEnum.Low,
     },
 
     matchDirection(direction, matches) {
         switch (direction) {
-            case ListVirtualSdk.enums.DirectionEnum.Horizontal:
+            case ListVirtualKit.DirectionEnum.Horizontal:
                 return compute(matches.horizontal)
-            case ListVirtualSdk.enums.DirectionEnum.Vertical:
+            case ListVirtualKit.DirectionEnum.Vertical:
                 return compute(matches.vertical)
         }
     },
 
     matchUpdatePriority(direction, matches) {
         switch (direction) {
-            case ListVirtualSdk.enums.UpdatePriorityEnum.High:
+            case ListVirtualKit.UpdatePriorityEnum.High:
                 return compute(matches.high)
-            case ListVirtualSdk.enums.UpdatePriorityEnum.Low:
+            case ListVirtualKit.UpdatePriorityEnum.Low:
                 return compute(matches.low)
         }
     },
@@ -170,7 +160,7 @@ export const ListVirtualSdk: {
             offscreen,
         } = args
 
-        const containerDirectionSize = ListVirtualSdk.matchDirection(direction, {
+        const containerDirectionSize = ListVirtualKit.matchDirection(direction, {
             horizontal: context.containerClient.width,
             vertical: context.containerClient.height,
         })
@@ -187,7 +177,7 @@ export const ListVirtualSdk: {
             const itemGridIdx = idx % grid
             const itemDirectionOffset = virtualDirectionSize
 
-            const itemLayoutBox = ListVirtualSdk.matchDirection(direction, {
+            const itemLayoutBox = ListVirtualKit.matchDirection(direction, {
                 horizontal(): ListVirtualModule.LayoutBox {
                     return {
                         height: context.scrollerClient.height / grid,
@@ -202,7 +192,7 @@ export const ListVirtualSdk: {
                 },
             })
 
-            const itemLayoutPosition = ListVirtualSdk.matchDirection(direction, {
+            const itemLayoutPosition = ListVirtualKit.matchDirection(direction, {
                 horizontal(): ListVirtualModule.LayoutPosition {
                     return {
                         x: itemDirectionOffset,
@@ -227,7 +217,7 @@ export const ListVirtualSdk: {
                 y: itemLayoutPosition.y,
             }
 
-            const layoutKey = ListVirtualSdk.computeVirtualLayoutKeyOf({
+            const layoutKey = ListVirtualKit.computeVirtualLayoutKeyOf({
                 containerDimension: containerDirectionSize,
                 position: itemDirectionOffset,
             })
@@ -303,7 +293,7 @@ export const ListVirtualSdk: {
             return sharedStyles
         }
 
-        return ListVirtualSdk.matchDirection(direction, {
+        return ListVirtualKit.matchDirection(direction, {
             horizontal(): React.CSSProperties {
                 return {
                     ...sharedStyles,
@@ -333,7 +323,7 @@ export const ListVirtualSdk: {
             return sharedStyles
         }
 
-        return ListVirtualSdk.matchDirection(direction, {
+        return ListVirtualKit.matchDirection(direction, {
             horizontal(): React.CSSProperties {
                 return {
                     ...sharedStyles,
@@ -369,8 +359,8 @@ export const ListVirtualSdk: {
 // Types ///////////////////////////////////////////////////////////////////////
 
 export declare namespace ListVirtualModule {
-    type DirectionEnum = Unions.DirectionEnum
-    type UpdatePriorityEnum = Unions.UpdatePriorityEnum
+    type DirectionEnum = EnumTypeOf<typeof DirectionEnum>
+    type UpdatePriorityEnum = EnumTypeOf<typeof UpdatePriorityEnum>
 
     type LayoutList<I> = Array<LayoutItem<I>>
     type LayoutMap<I> = Map<number, LayoutList<I>>

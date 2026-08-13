@@ -7,7 +7,7 @@ import {memo, startTransition, useCallback, useEffect, useImperativeHandle, useM
 import {classes} from './classes.js'
 import {useCallbackThrottled} from './defer.js'
 import {useEvent} from './event.js'
-import {ListVirtualSdk as Sdk, type ListVirtualModule} from './list/api.js'
+import {ListVirtualKit, type ListVirtualModule} from './list/api.js'
 import type {ElementProps, Props, VoidProps} from './props.js'
 import {useResizeObserver} from './resize-observer.js'
 
@@ -32,13 +32,13 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
         ...otherProps
     } = props
 
-    const directionComputable = directionOptional ?? Sdk.enums.DirectionEnum.Vertical
+    const directionComputable = directionOptional ?? ListVirtualKit.DirectionEnum.Vertical
     const gridComputable = gridOptional ?? 1
-    const offscreenComputable = offscreenOptional ?? Sdk.defaults.offscreen
-    const resizeThrottleDelay = resizeThrottleDelayOptional ?? Sdk.defaults.resizeThrottleDelay
-    const scrollThrottleDelay = scrollThrottleDelayOptional ?? Sdk.defaults.scrollThrottleDelay
-    const updatePriority = updatePriorityOptional ?? Sdk.defaults.updatePriority
-    const itemKeyOf = itemKeyOfOptional ?? (Sdk.computeItemKeyOf as (item: I, idx: number) => number | string)
+    const offscreenComputable = offscreenOptional ?? ListVirtualKit.defaults.offscreen
+    const resizeThrottleDelay = resizeThrottleDelayOptional ?? ListVirtualKit.defaults.resizeThrottleDelay
+    const scrollThrottleDelay = scrollThrottleDelayOptional ?? ListVirtualKit.defaults.scrollThrottleDelay
+    const updatePriority = updatePriorityOptional ?? ListVirtualKit.defaults.updatePriority
+    const itemKeyOf = itemKeyOfOptional ?? (ListVirtualKit.computeItemKeyOf as (item: I, idx: number) => number | string)
 
     const [context, setContext] = useState<undefined | ListVirtualModule.Context>()
     const [scrollPositionKey, setScrollPositionKey] = useState(0)
@@ -62,7 +62,7 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
             return
         }
 
-        const newContext = Sdk.computeContext({containerElement, scrollerElement})
+        const newContext = ListVirtualKit.computeContext({containerElement, scrollerElement})
 
         if (areEqualDeepStrict(contextRef.current, newContext)) {
             return
@@ -70,7 +70,7 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
 
         contextRef.current = newContext
 
-        Sdk.matchUpdatePriority(updatePriority, {
+        ListVirtualKit.matchUpdatePriority(updatePriority, {
             high() {
                 setContext(newContext)
             },
@@ -92,22 +92,22 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
             return
         }
 
-        const newScrollPositionKey = Sdk.matchDirection(direction, {
+        const newScrollPositionKey = ListVirtualKit.matchDirection(direction, {
             horizontal() {
-                return Sdk.computeVirtualLayoutKeyOf({
+                return ListVirtualKit.computeVirtualLayoutKeyOf({
                     containerDimension: context.containerClient.width,
                     position: scrollerRef.current?.scrollLeft ?? 0,
                 })
             },
             vertical() {
-                return Sdk.computeVirtualLayoutKeyOf({
+                return ListVirtualKit.computeVirtualLayoutKeyOf({
                     containerDimension: context.containerClient.height,
                     position: scrollerRef.current?.scrollTop ?? 0,
                 })
             },
         })
 
-        Sdk.matchUpdatePriority(updatePriority, {
+        ListVirtualKit.matchUpdatePriority(updatePriority, {
             high() {
                 setScrollPositionKey(newScrollPositionKey)
             },
@@ -148,7 +148,7 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
             return
         }
 
-        return Sdk.computeVirtualLayout({
+        return ListVirtualKit.computeVirtualLayout({
             context: context,
             direction: direction,
             grid: grid,
@@ -164,7 +164,7 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
             return
         }
 
-        return Sdk.computeRenderState({
+        return ListVirtualKit.computeRenderState({
             offscreen: virtualLayout.offscreen,
             scrollPositionKey: scrollPositionKey,
             virtualLayoutMap: virtualLayout.virtualLayoutMap,
@@ -194,20 +194,20 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
             className={classes('ListVirtual-2616fa', className)}
             style={{
                 ...style,
-                ...Sdk.styleOfContainer(direction),
+                ...ListVirtualKit.styleOfContainer(direction),
             }}
         >
             <div
                 ref={scrollerRef}
                 className='scroller-26b929'
-                style={Sdk.styleOfScroller(direction, virtualLayout?.virtualSize)}
+                style={ListVirtualKit.styleOfScroller(direction, virtualLayout?.virtualSize)}
                 onScrollCapture={onScrollThrottled}
             >
                 {context && renderState?.map(it => (
                     <div
                         key={it.key}
                         className='v-item-2602e3'
-                        style={Sdk.styleOfItem(it, direction)}
+                        style={ListVirtualKit.styleOfItem(it, direction)}
                     >
                         {children(it.item, it.idx, it, context)}
                     </div>
