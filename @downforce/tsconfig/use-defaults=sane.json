@@ -39,6 +39,7 @@
         "strictPropertyInitialization": true,
         "target": "esnext",
         "tsBuildInfoFile": "${configDir}/.cache/tsbuildinfo",
+        "types": ["*"],
         "useUnknownInCatchVariables": true,
         "verbatimModuleSyntax": true
     }

@@ -7,7 +7,6 @@
         "allowImportingTsExtensions": true,
         "jsx": "preserve",
         "jsxImportSource": "solid-js",
-        "noEmit": true,
-        "types": ["solid-js"]
+        "noEmit": true
     }
 }

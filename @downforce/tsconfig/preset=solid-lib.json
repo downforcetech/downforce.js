@@ -7,7 +7,6 @@
     "compilerOptions": {
         "emitDeclarationOnly": true,
         "jsx": "preserve",
-        "jsxImportSource": "solid-js",
-        "types": ["solid-js"]
+        "jsxImportSource": "solid-js"
     }
 }
