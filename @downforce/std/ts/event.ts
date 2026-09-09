@@ -1,141 +1,174 @@
+import {call} from './fn/fn-call.js'
 import type {Fn, FnArgs} from './fn/fn-type.js'
 import {isDefined, isUndefined} from './optional/optional-is.js'
 
-export function debounced<A extends FnArgs>(task: Fn<A>, delay: number): EventTask<A> {
-    interface State {
-        lastCallArgs: undefined | A
-        lastCallTime: undefined | number
+export function debounced<A extends FnArgs>(
+    task: Fn<A>,
+    delay: number,
+): EventTask<A> {
+    const state: {
+        callArgs: undefined | A
+        callTime: undefined | number
         timeoutId: undefined | ReturnType<typeof setTimeout>
-    }
-
-    const state: State = {
-        lastCallArgs: undefined,
-        lastCallTime: undefined,
+    } = {
+        callArgs: undefined,
+        callTime: undefined,
         timeoutId: undefined,
     }
 
-    function call(...args: A): undefined {
-        if (! call.enabled) {
+    function callTask(...args: A): undefined {
+        if (! callTask.enabled) {
             return
         }
 
-        state.lastCallArgs = args
-        state.lastCallTime = Date.now()
+        state.callArgs = args
+        state.callTime = performance.now()
 
         if (isDefined(state.timeoutId)) {
             return
         }
 
-        state.timeoutId = setTimeout(run, delay)
+        state.timeoutId = setTimeout(runTask, delay)
     }
 
-    function run(): undefined {
+    function runTask(): undefined {
         state.timeoutId = undefined
 
-        if (isUndefined(state.lastCallArgs)) {
+        if (! state.callArgs) {
             return
         }
-        if (isUndefined(state.lastCallTime)) {
-            return
-        }
-
-        const timeElapsedSinceLastCall = Date.now() - state.lastCallTime
-        const timeIsExpired = timeElapsedSinceLastCall >= delay
-
-        if (! timeIsExpired) {
-            const delayRemaining = delay - timeElapsedSinceLastCall
-            state.timeoutId = setTimeout(run, delayRemaining)
+        if (isUndefined(state.callTime)) {
             return
         }
 
-        task(...state.lastCallArgs)
+        const timeElapsedSinceCallTime = performance.now() - state.callTime
+
+        if (timeElapsedSinceCallTime < delay) {
+            state.timeoutId = setTimeout(runTask, delay - timeElapsedSinceCallTime)
+        }
+        else {
+            const args = state.callArgs // Supports re-entrant calls.
+            state.callArgs = undefined // Releases captured memory.
+
+            task(...args)
+        }
     }
 
     function cancel(): undefined {
-        if (isUndefined(state.timeoutId)) {
-            return
+        if (isDefined(state.timeoutId)) {
+            clearTimeout(state.timeoutId)
         }
-
-        clearTimeout(state.timeoutId)
+        state.callArgs = undefined // Releases captured memory.
         state.timeoutId = undefined
     }
 
     function disable(): undefined {
-        call.enabled = false
+        callTask.enabled = false
         cancel()
     }
 
     function enable(): undefined {
-        call.enabled = true
+        callTask.enabled = true
     }
 
-    call.enabled = true
-    call.cancel = cancel
-    call.disable = disable
-    call.enable = enable
+    callTask.enabled = true
+    callTask.cancel = cancel
+    callTask.disable = disable
+    callTask.enable = enable
 
-    return call
+    return callTask
 }
 
-export function throttled<A extends FnArgs>(task: Fn<A>, delay: number): EventTask<A> {
-    interface State {
-        lastCallArgs: undefined | A
-        timeoutId: undefined | ReturnType<typeof setTimeout>
-    }
+export function throttled<A extends FnArgs>(
+    task: Fn<A>,
+    delay: number,
+    options?: undefined | ThrottledOptions,
+): EventTask<A> {
+    const leading = options?.leading ?? true
+    const trailing = options?.trailing ?? true
 
-    const state: State = {
-        lastCallArgs: undefined,
+    const state: {
+        callArgs: undefined | A
+        runTime: undefined | number
+        timeoutId: undefined | ReturnType<typeof setTimeout>
+    } = {
+        callArgs: undefined,
+        runTime: undefined,
         timeoutId: undefined,
     }
 
-    function call(...args: A): undefined {
-        if (! call.enabled) {
+    function callTask(...args: A): undefined {
+        if (! callTask.enabled) {
             return
         }
 
-        state.lastCallArgs = args
+        state.callArgs = args
 
         if (isDefined(state.timeoutId)) {
             return
         }
 
-        state.timeoutId = setTimeout(run, delay)
-    }
+        const runDelay = call(() => {
+            if (isUndefined(state.runTime)) {
+                return leading ? 0 : delay
+            }
 
-    function run(): undefined {
-        state.timeoutId = undefined
+            const timeElapsedSinceRunTime = performance.now() - state.runTime
 
-        if (isUndefined(state.lastCallArgs)) {
+            if (timeElapsedSinceRunTime >= delay) {
+                return 0
+            }
+
+            // timeElapsedSinceRunTime < delay
+            return trailing ? (delay - timeElapsedSinceRunTime) : undefined
+        })
+
+        if (isUndefined(runDelay)) {
+            state.callArgs = undefined // Releases captured memory.
             return
         }
 
-        task(...state.lastCallArgs)
+        state.timeoutId = setTimeout(runTask, runDelay)
+    }
+
+    function runTask(): undefined {
+        state.timeoutId = undefined
+
+        if (! state.callArgs) {
+            return
+        }
+
+        state.runTime = performance.now()
+
+        const args = state.callArgs // Supports re-entrant calls.
+        state.callArgs = undefined // Releases captured memory.
+
+        task(...args)
     }
 
     function cancel(): undefined {
-        if (isUndefined(state.timeoutId)) {
-            return
+        if (isDefined(state.timeoutId)) {
+            clearTimeout(state.timeoutId)
         }
-
-        clearTimeout(state.timeoutId)
+        state.callArgs = undefined // Releases captured memory.
         state.timeoutId = undefined
     }
 
     function disable(): undefined {
-        call.enabled = false
+        callTask.enabled = false
         cancel()
     }
 
     function enable(): undefined {
-        call.enabled = true
+        callTask.enabled = true
     }
 
-    call.enabled = true
-    call.cancel = cancel
-    call.disable = disable
-    call.enable = enable
+    callTask.enabled = true
+    callTask.cancel = cancel
+    callTask.disable = disable
+    callTask.enable = enable
 
-    return call
+    return callTask
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
@@ -146,4 +179,9 @@ export interface EventTask<A extends FnArgs = []> {
     disable(): undefined
     enable(): undefined
     readonly enabled: boolean
+}
+
+export interface ThrottledOptions {
+    leading?: undefined | boolean
+    trailing?: undefined | boolean
 }
