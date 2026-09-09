@@ -1,5 +1,6 @@
-import {type EventTask, debounced, throttled} from '@downforce/std/event'
+import {type EventTask, type ThrottledOptions, debounced, throttled} from '@downforce/std/event'
 import type {Fn, FnArgs, Task} from '@downforce/std/fn'
+import {isNumber} from '@downforce/std/number'
 import {startTransition, useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {type HookDeps, NoDeps, useCallback2} from './memo.js'
 import {type StateInit, type StateWriterArg, type UseState3Contract, useState3} from './state.js'
@@ -27,15 +28,21 @@ export function useCallbackDebounced<A extends FnArgs>(
 }
 
 export function useCallbackThrottled<A extends FnArgs>(
-    delay: number,
+    delayOrOptions: number | ({delay: number} & ThrottledOptions),
     onCall: Fn<A>,
     deps?: undefined | HookDeps,
 ): EventTask<A> {
     const onCallMemoized = useCallback2(onCall, deps)
+    const delay = isNumber(delayOrOptions) ? delayOrOptions : delayOrOptions.delay
+    const leading = isNumber(delayOrOptions) ? undefined : delayOrOptions.leading
+    const trailing = isNumber(delayOrOptions) ? undefined : delayOrOptions.trailing
 
     const callbackThrottled = useMemo(() => {
-        return throttled(onCallMemoized, delay)
-    }, [onCallMemoized, delay])
+        return throttled(onCallMemoized, delay, {
+            leading: leading,
+            trailing: trailing,
+        })
+    }, [onCallMemoized, delay, leading, trailing])
 
     useEffect(() => {
         function onClean() {
