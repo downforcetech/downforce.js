@@ -89,7 +89,7 @@ export function createSpringAnimation(options: SpringAnimationOptions): [Task<Pr
         }
 
         const precision = options.precision ?? SpringPrecision
-        const time = (Date.now() - initialTime) / precision
+        const time = (performance.now() - initialTime) / precision
         const snapping = options.snapping ?? SpringSnapping
         const position = computeDampedSimpleHarmonicMotion(time, options)
         const shouldSnap = Math.abs(position) <= snapping
@@ -113,7 +113,7 @@ export function createSpringAnimation(options: SpringAnimationOptions): [Task<Pr
     }
 
     function play() {
-        loop(Date.now())
+        loop(performance.now())
 
         return promise
     }
