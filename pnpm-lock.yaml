@@ -37,11 +37,11 @@ importers:
   '@downforce/cable':
     dependencies:
       '@downforce/std':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../std
     devDependencies:
       '@downforce/tsconfig':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../tsconfig
       '@types/node':
         specifier: 'catalog:'
@@ -69,13 +69,13 @@ importers:
   '@downforce/react':
     devDependencies:
       '@downforce/std':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../std
       '@downforce/tsconfig':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../tsconfig
       '@downforce/web':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../web
       '@types/react':
         specifier: 'catalog:'
@@ -105,22 +105,22 @@ importers:
   '@downforce/reactx':
     devDependencies:
       '@downforce/react':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../react
       '@downforce/std':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../std
       '@downforce/std.css':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../std.css
       '@downforce/tsconfig':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../tsconfig
       '@downforce/web':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../web
       '@downforce/webx':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../webx
       '@types/react':
         specifier: 'catalog:'
@@ -159,13 +159,13 @@ importers:
         specifier: '7'
         version: 7.29.7(@babel/core@7.29.7)(supports-color@7.2.0)
       '@downforce/std':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../std
       '@downforce/tsconfig':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../tsconfig
       '@downforce/web':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../web
       babel-preset-solid:
         specifier: 1.9.12
@@ -192,7 +192,7 @@ importers:
   '@downforce/std':
     devDependencies:
       '@downforce/tsconfig':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../tsconfig
       typescript:
         specifier: 'catalog:'
@@ -201,13 +201,13 @@ importers:
   '@downforce/std.css':
     devDependencies:
       '@downforce/std':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../std
       '@downforce/tsconfig':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../tsconfig
       '@downforce/web':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../web
       typescript:
         specifier: 'catalog:'
@@ -238,10 +238,10 @@ importers:
   '@downforce/web':
     devDependencies:
       '@downforce/std':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../std
       '@downforce/tsconfig':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../tsconfig
       typescript:
         specifier: 'catalog:'
@@ -259,13 +259,13 @@ importers:
   '@downforce/webx':
     devDependencies:
       '@downforce/std':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../std
       '@downforce/tsconfig':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../tsconfig
       '@downforce/web':
-        specifier: workspace:*
+        specifier: workspace:1
         version: link:../web
       typescript:
         specifier: 'catalog:'
