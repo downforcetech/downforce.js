@@ -12,8 +12,8 @@ export interface ReactiveState<V> {
     generation: number
     readonly comparator: ReactiveComparator<V>
     readonly middleware: undefined | ReactiveMiddleware<V>
-    observersList: Array<ReactiveObserverState<V>>
     readonly observersMap: Map<ReactiveObserver<V>, ReactiveObserverState<V>>
+    readonly observersSet: Set<ReactiveObserverState<V>>
     notificationCleanup: undefined | Task
     notificationGeneration: number
 }
@@ -40,6 +40,6 @@ export type ReactiveValuesOf<A extends Array<ReactiveObject<any>>> =
     {[key in keyof A]: ReactiveValueOf<A[key]>}
 
 export interface ReactiveObserverState<V> {
-    observer: undefined | ReactiveObserver<V>
+    observer: ReactiveObserver<V>
     generation: number
 }
