@@ -18,7 +18,7 @@ export function useCallbackDebounced<A extends FnArgs>(
 
     useEffect(() => {
         function onClean() {
-            callbackDebounced.cancel()
+            callbackDebounced.controller.cancel()
         }
 
         return onClean
@@ -46,7 +46,7 @@ export function useCallbackThrottled<A extends FnArgs>(
 
     useEffect(() => {
         function onClean() {
-            callbackThrottled.cancel()
+            callbackThrottled.controller.cancel()
         }
 
         return onClean
