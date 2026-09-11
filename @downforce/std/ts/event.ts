@@ -1,5 +1,5 @@
 import {call} from './fn/fn-call.js'
-import type {Fn, FnArgs} from './fn/fn-type.js'
+import type {Fn, FnArgs, Task} from './fn/fn-type.js'
 import {isDefined, isUndefined} from './optional/optional-is.js'
 
 export function debounced<A extends FnArgs>(
@@ -16,8 +16,14 @@ export function debounced<A extends FnArgs>(
         timeoutId: undefined,
     }
 
-    function callTask(...args: A): undefined {
-        if (! callTask.enabled) {
+    const controller = createEventTaskController({
+        onCancel: cancel,
+        onDisable: cancel,
+        onEnable: undefined,
+    })
+
+    function taskWrapper(...args: A): undefined {
+        if (! controller.enabled) {
             return
         }
 
@@ -62,21 +68,9 @@ export function debounced<A extends FnArgs>(
         state.timeoutId = undefined
     }
 
-    function disable(): undefined {
-        callTask.enabled = false
-        cancel()
-    }
+    taskWrapper.controller = controller
 
-    function enable(): undefined {
-        callTask.enabled = true
-    }
-
-    callTask.enabled = true
-    callTask.cancel = cancel
-    callTask.disable = disable
-    callTask.enable = enable
-
-    return callTask
+    return taskWrapper
 }
 
 export function throttled<A extends FnArgs>(
@@ -97,8 +91,14 @@ export function throttled<A extends FnArgs>(
         timeoutId: undefined,
     }
 
-    function callTask(...args: A): undefined {
-        if (! callTask.enabled) {
+    const controller = createEventTaskController({
+        onCancel: cancel,
+        onDisable: cancel,
+        onEnable: undefined,
+    })
+
+    function taskWrapper(...args: A): undefined {
+        if (! controller.enabled) {
             return
         }
 
@@ -154,34 +154,67 @@ export function throttled<A extends FnArgs>(
         state.timeoutId = undefined
     }
 
-    function disable(): undefined {
-        callTask.enabled = false
-        cancel()
+    taskWrapper.controller = controller
+
+    return taskWrapper
+}
+
+export function createEventTaskController(args: {
+    onCancel: undefined | Task
+    onDisable: undefined | Task
+    onEnable: undefined | Task
+}): EventTaskController {
+    const state: {
+        enabled: boolean
+    } = {
+        enabled: true,
     }
 
-    function enable(): undefined {
-        callTask.enabled = true
+    const self: EventTaskController = {
+        get enabled() {
+            return state.enabled
+        },
+        cancel() {
+            args.onCancel?.()
+        },
+        disable() {
+            if (! state.enabled) {
+                return
+            }
+
+            state.enabled = false
+
+            args.onDisable?.()
+        },
+        enable() {
+            if (state.enabled) {
+                return
+            }
+
+            state.enabled = true
+
+            args.onEnable?.()
+        },
     }
 
-    callTask.enabled = true
-    callTask.cancel = cancel
-    callTask.disable = disable
-    callTask.enable = enable
-
-    return callTask
+    return self
 }
 
 // Types ///////////////////////////////////////////////////////////////////////
 
 export interface EventTask<A extends FnArgs = []> {
     (...args: A): undefined
-    cancel(): undefined
-    disable(): undefined
-    enable(): undefined
-    readonly enabled: boolean
+    readonly controller: EventTaskController
 }
 
 export interface ThrottledOptions {
     leading?: undefined | boolean
     trailing?: undefined | boolean
+}
+
+export interface EventTaskController {
+    readonly enabled: boolean
+    cancel(): undefined
+    disable(): undefined
+    enable(): undefined
 }

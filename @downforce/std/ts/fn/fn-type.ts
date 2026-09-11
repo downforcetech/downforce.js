@@ -16,4 +16,6 @@ export type Task<R = Void> = TaskSync<R>
 export type TaskSync<R = Void> = () => R
 export type TaskAsync<R = Void> = () => Promise<R>
 
-export type Handler<V> = (value: V) => Void
+export type Handler<V> = HandlerOne<V>
+export type HandlerOne<V> = (value: V) => Void
+export type HandlerMany<A extends FnArgs> = (...args: A) => Void

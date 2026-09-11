@@ -1,5 +1,5 @@
 import {areEqual} from '../value/value-equal.js'
-import type {ReactiveObserver, ReactiveOptions, ReactiveObject} from './reactive-type.js'
+import type {ReactiveObject, ReactiveOptions} from './reactive-type.js'
 
 export const ReactiveStateSymbol: unique symbol = Symbol('ReactiveState')
 
@@ -7,20 +7,32 @@ export function createReactive<V>(
     value: V,
     options?: undefined | ReactiveOptions<NoInfer<V>>,
 ): ReactiveObject<V> {
-    return {
+    const initialGeneration = 0
+
+    const self: ReactiveObject<V> = {
         [ReactiveStateSymbol]: {
             value: value,
+            generation: initialGeneration,
             comparator: options?.equals ?? areEqual,
             middleware: options?.middleware,
-            observers: new Set<ReactiveObserver<V>>(),
-            notification: undefined,
+            observersList: [],
+            observersMap: new Map(),
+            notificationCleanup: undefined,
+            notificationGeneration: initialGeneration,
         },
         // @ts-expect-error
-        get [Symbol.toStringTag]() {
-            return 'ReactiveState'
-        },
+        [Symbol.toStringTag]: 'Reactive',
         toString() {
-            return JSON.stringify(value)
+            const value = self[ReactiveStateSymbol]!.value
+
+            try {
+                return JSON.stringify(value)
+            }
+            catch (error) {
+                return String(value)
+            }
         },
     }
+
+    return self
 }

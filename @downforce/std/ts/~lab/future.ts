@@ -1,5 +1,4 @@
 import {call} from '../fn/fn-call.js'
-import type {FnCancelableProtocol, FnCancelableState} from '../fn/fn-cancel.js'
 import type {Task} from '../fn/fn-type.js'
 import type {PromiseView} from '../promise/promise-type.js'
 import type {Void, Writable} from '../type/type-type.js'
@@ -136,11 +135,19 @@ export function futureWrap<P, E = unknown>(value: P | PromiseLike<P>): Future<Aw
 
 // Type ////////////////////////////////////////////////////////////////////////
 
-export interface Future<R, E = unknown> extends Promise<R>, FutureState<R, E>, FnCancelableProtocol {
+export interface Future<R, E = unknown> extends Promise<R>, FutureState<R, E>, FutureCancelableProtocol {
     onCancel(onCancel: Task): Task
 }
 
-export interface FutureState<R, E = unknown> extends PromiseView, FnCancelableState {
+export interface FutureState<R, E = unknown> extends PromiseView, FutureCancelableState {
     readonly result: undefined | R
     readonly error: undefined | E
+}
+
+export interface FutureCancelableState {
+    readonly canceled: boolean
+}
+
+export interface FutureCancelableProtocol {
+    cancel(): undefined
 }

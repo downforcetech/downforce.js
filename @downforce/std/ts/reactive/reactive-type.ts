@@ -9,10 +9,13 @@ export interface ReactiveObject<V> {
 
 export interface ReactiveState<V> {
     value: V
+    generation: number
     readonly comparator: ReactiveComparator<V>
     readonly middleware: undefined | ReactiveMiddleware<V>
-    readonly observers: Set<ReactiveObserver<V>>
-    notification: undefined | Task
+    observersList: Array<ReactiveObserverState<V>>
+    readonly observersMap: Map<ReactiveObserver<V>, ReactiveObserverState<V>>
+    notificationCleanup: undefined | Task
+    notificationGeneration: number
 }
 
 export type ReactiveMiddleware<V> = (newValue: V, oldValue: V) => V
@@ -35,3 +38,8 @@ export type ReactiveValueOf<R extends ReactiveObject<any>> =
 
 export type ReactiveValuesOf<A extends Array<ReactiveObject<any>>> =
     {[key in keyof A]: ReactiveValueOf<A[key]>}
+
+export interface ReactiveObserverState<V> {
+    observer: undefined | ReactiveObserver<V>
+    generation: number
+}
