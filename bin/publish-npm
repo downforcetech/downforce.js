@@ -53,13 +53,13 @@ for pkg; do
         esac
 
         if test "$arg_version" != version; then
-            npm version --no-git-tag-version $arg_version
+            pnpm version --no-git-checks --no-git-tag-version $arg_version
 
             printf -- 'Press Enter to continue'
             read answer
         fi
 
-        until npm publish --access public; do
+        until pnpm publish --no-git-checks --access public; do
             printf -- 'Press Enter to retry'
             read answer
         done

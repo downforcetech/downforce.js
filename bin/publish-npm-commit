@@ -46,9 +46,7 @@ for pkg; do
         continue
     fi
 
-    pkg_name=$(npm --prefix "$pkg" pkg get name | tr -d '"')
-
-    npm --prefix "$pkg" run --if-present build
+    pkg_name=$(jq --raw-output .name "$pkg/package.json")
 
     dirty=$(git -C "$pkg" status --porcelain . | tail -n1)
     if test -n "$dirty"; then
@@ -58,7 +56,7 @@ for pkg; do
 
     "$Dir/publish-npm" $arg_version "$pkg"
 
-    pkg_version=$(npm --prefix "$pkg" pkg get version | tr -d '"')
+    pkg_version=$(jq --raw-output .version "$pkg/package.json")
 
     dirty=$(git -C "$pkg" status --porcelain . | tail -n1)
     if test -n "$dirty"; then
