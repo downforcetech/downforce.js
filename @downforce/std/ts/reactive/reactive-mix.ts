@@ -1,5 +1,4 @@
 import {scheduleMicroTask} from '../eventloop.js'
-import {call} from '../fn/fn-call.js'
 import type {Task} from '../fn/fn-type.js'
 import {ReactiveStateSymbol} from './reactive-new.js'
 import type {ReactiveObject, ReactiveObserver, ReactiveObserverState, ReactiveState, ReactiveWatchOptions} from './reactive-type.js'
@@ -61,7 +60,7 @@ export function writeReactive<V>(reactive: ReactiveObject<V>, value: V): V {
 
             // We iterate the live observers, so that an observer un-subscribed by another
             // observer is skipped, protecting against the re-entrant un-subscription.
-            for (const it of state.observersSet) {
+            for (const it of state.observersMap.values()) {
                 const {observer} = it
                 // We destructure the observer for faster access and for preventing
                 // it from accessing the internal state thorough `this`.
@@ -89,25 +88,32 @@ export function watchReactive<V>(
     const immediate = options?.immediate ?? false
 
     // An already registered observer keeps its registration generation.
-    const observerState: ReactiveObserverState<V> = state.observersMap.get(observer) ?? call(() => {
+    if (! state.observersMap.has(observer)) {
         const observerState: ReactiveObserverState<V> = {
             observer: observer,
             generation: state.generation,
         }
 
         state.observersMap.set(observer, observerState)
-        state.observersSet.add(observerState)
-
-        return observerState
-    })
+    }
 
     if (immediate) {
         observer(state.value, state.value)
     }
 
     function stop(): undefined {
+        // We read the latest state, handling a scenario like this:
+        // 1) const stopObserver1 = watchReactive(reactive, observer)
+        // 2) const stopObserver2 = watchReactive(reactive, observer)
+        // 3) stopObserver1() // It must stop observer1 and observer2, which are the same.
+        // 4) const stopObserver3 = watchReactive(reactive, observer)
+        const latestObserverState = state.observersMap.get(observer)
+
+        if (! latestObserverState) {
+            return
+        }
+
         state.observersMap.delete(observer)
-        state.observersSet.delete(observerState)
     }
 
     return stop

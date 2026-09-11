@@ -13,7 +13,6 @@ export interface ReactiveState<V> {
     readonly comparator: ReactiveComparator<V>
     readonly middleware: undefined | ReactiveMiddleware<V>
     readonly observersMap: Map<ReactiveObserver<V>, ReactiveObserverState<V>>
-    readonly observersSet: Set<ReactiveObserverState<V>>
     notificationCleanup: undefined | Task
     notificationGeneration: number
 }

@@ -16,7 +16,6 @@ export function createReactive<V>(
             comparator: options?.equals ?? areEqual,
             middleware: options?.middleware,
             observersMap: new Map(),
-            observersSet: new Set(),
             notificationCleanup: undefined,
             notificationGeneration: initialGeneration,
         },
