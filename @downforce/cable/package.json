@@ -17,7 +17,7 @@
         "preversion": "./bin/build.sh && ./bin/test.sh"
     },
     "dependencies": {
-        "@downforce/std": "workspace:*"
+        "@downforce/std": "workspace:1"
     },
     "optionalDependencies": {
         "smol-toml": "1.7",
@@ -27,7 +27,7 @@
         "@types/node": "catalog:"
     },
     "devDependencies": {
-        "@downforce/tsconfig": "workspace:*",
+        "@downforce/tsconfig": "workspace:1",
         "@types/node": "catalog:",
         "typescript": "catalog:"
     },
