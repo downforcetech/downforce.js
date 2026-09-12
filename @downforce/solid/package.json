@@ -16,17 +16,17 @@
         "preversion": "./bin/build.sh && ./bin/test.sh"
     },
     "peerDependencies": {
-        "@downforce/std": "1",
-        "@downforce/web": "1",
+        "@downforce/std": "workspace:1",
+        "@downforce/web": "workspace:1",
         "solid-js": "1.9"
     },
     "devDependencies": {
         "@babel/cli": "7",
         "@babel/core": "7",
         "@babel/preset-typescript": "7",
-        "@downforce/std": "workspace:*",
-        "@downforce/tsconfig": "workspace:*",
-        "@downforce/web": "workspace:*",
+        "@downforce/std": "workspace:1",
+        "@downforce/tsconfig": "workspace:1",
+        "@downforce/web": "workspace:1",
         "babel-preset-solid": "1.9.12",
         "solid-js": "1.9",
         "typescript": "catalog:"
