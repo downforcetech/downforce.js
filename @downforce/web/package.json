@@ -16,11 +16,11 @@
         "preversion": "./bin/build.sh && ./bin/test.sh"
     },
     "peerDependencies": {
-        "@downforce/std": "1"
+        "@downforce/std": "workspace:1"
     },
     "devDependencies": {
-        "@downforce/std": "workspace:*",
-        "@downforce/tsconfig": "workspace:*",
+        "@downforce/std": "workspace:1",
+        "@downforce/tsconfig": "workspace:1",
         "typescript": "catalog:"
     },
     "author": "Daniele Orlando",
