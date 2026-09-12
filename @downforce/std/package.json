@@ -16,7 +16,7 @@
         "preversion": "./bin/build.sh && ./bin/test.sh"
     },
     "devDependencies": {
-        "@downforce/tsconfig": "workspace:*",
+        "@downforce/tsconfig": "workspace:1",
         "typescript": "catalog:"
     },
     "author": "Daniele Orlando",
