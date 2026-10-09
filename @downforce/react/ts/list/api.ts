@@ -235,6 +235,10 @@ export const ListVirtualKit: {
             }
         })
 
+        if (items.length % grid !== 0) {
+            virtualDirectionSize += gridItemDirectionSizeMax
+        }
+
         return {
             context: context,
             direction: direction,
