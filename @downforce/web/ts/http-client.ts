@@ -97,7 +97,8 @@ export const HttpClient = {
 
 export function createResponseDecoder(): Io<Response | Promise<Response>, Promise<unknown>>
 export function createResponseDecoder<O>(contentDecoder: Io<unknown, O | Promise<O>>): Io<Response | Promise<Response>, Promise<O>>
-export function createResponseDecoder<O>(contentDecoder?: undefined | Io<unknown, O | Promise<O>>): Io<Response | Promise<Response>, Promise<unknown | O>> {
+export function createResponseDecoder<I, O>(contentDecoder: Io<I, O | Promise<O>>): Io<Response | Promise<Response>, Promise<O>>
+export function createResponseDecoder<I, O>(contentDecoder?: undefined | Io<unknown | I, O | Promise<O>>): Io<Response | Promise<Response>, Promise<unknown | O>> {
     function decode(responsePromise: Response | Promise<Response>): Promise<unknown | O> {
         return decodeResponseOrReject(responsePromise, contentDecoder ?? identity)
     }
