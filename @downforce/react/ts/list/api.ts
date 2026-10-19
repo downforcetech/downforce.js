@@ -1,6 +1,7 @@
 import {Enum, type EnumTypeOf, Union, type UnionOf} from '@downforce/std/enum'
-import {compute, type Computable} from '@downforce/std/fn'
+import {call, compute, type Computable} from '@downforce/std/fn'
 import {getMapValue} from '@downforce/std/map'
+import {clamp} from '@downforce/std/number'
 import type {ElementOf} from '@downforce/std/type'
 
 const DirectionEnum: {
@@ -10,6 +11,19 @@ const DirectionEnum: {
     Horizontal: 'horizontal',
     Vertical: 'vertical',
 })
+
+const ScrollAlignEnum: {
+    Center: 'center'
+    End: 'end'
+    Nearest: 'nearest'
+    Start: 'start'
+} = Enum({
+    Center: 'center',
+    End: 'end',
+    Nearest: 'nearest',
+    Start: 'start',
+})
+
 const UpdatePriorityEnum: {
     High: 'high'
     Low: 'low'
@@ -18,14 +32,21 @@ const UpdatePriorityEnum: {
     Low: 'low',
 })
 
+const Presets = {
+    scrollScalingDisabled: {offset: 0, scale: 1} satisfies ListVirtualModule.ScrollScaling,
+}
+
 export const ListVirtualKit: {
     DirectionEnum: typeof DirectionEnum
     DirectionUnion: UnionOf<typeof DirectionEnum>
+    ScrollAlignEnum: typeof ScrollAlignEnum
+    ScrollAlignUnion: UnionOf<typeof ScrollAlignEnum>
     UpdatePriorityEnum: typeof UpdatePriorityEnum
     UpdatePriorityUnion: UnionOf<typeof UpdatePriorityEnum>
     defaults: {
         offscreen: number
         resizeThrottleDelay: number
+        scrollSizeMax: number
         scrollThrottleDelay: number
         updatePriority: ListVirtualModule.UpdatePriorityEnum
     }
@@ -55,31 +76,49 @@ export const ListVirtualKit: {
         scrollPositionKey: number
         virtualLayoutMap: ListVirtualModule.LayoutMap<I>
     }): ListVirtualModule.LayoutList<I>
+    computeScrollScaling(args: {
+        scrollPositionKey: number
+        scrollSizeMax: number
+        virtualLayout: undefined | ListVirtualModule.Layout<unknown>
+    }): ListVirtualModule.ScrollScaling
+    computeScrollPositionOfItem(args: {
+        align: ListVirtualModule.ScrollAlignEnum
+        item: ListVirtualModule.LayoutItem<unknown>
+        scrollPosition: number
+        scrollScaling: ListVirtualModule.ScrollScaling
+        scrollerSize: number
+        virtualLayout: ListVirtualModule.Layout<unknown>
+    }): number
     computeItemKeyOf(item: unknown, idx: number): number | string
-    computeVirtualLayoutKeyOf(args: {
-        containerDimension: number
+    computeScrollPositionKey(args: {
+        containerSize: number
         position: number
     }): number
-    styleOfContainer(
+    computeContainerStyle(
         direction: undefined | ListVirtualModule.DirectionEnum,
     ): React.CSSProperties
-    styleOfScroller(
+    computeScrollerStyle(
         direction: undefined | ListVirtualModule.DirectionEnum,
         virtualSize: undefined | number,
+        scrollSizeMax: number,
     ): React.CSSProperties
-    styleOfItem<I>(
+    computeItemStyle<I>(
         item: ListVirtualModule.LayoutItem<I>,
         direction: undefined | ListVirtualModule.DirectionEnum,
+        scrollScaling?: undefined | ListVirtualModule.ScrollScaling,
     ): React.CSSProperties
 } = {
     DirectionEnum: DirectionEnum,
     DirectionUnion: Union(DirectionEnum),
+    ScrollAlignEnum: ScrollAlignEnum,
+    ScrollAlignUnion: Union(ScrollAlignEnum),
     UpdatePriorityEnum: UpdatePriorityEnum,
     UpdatePriorityUnion: Union(UpdatePriorityEnum),
 
     defaults: {
         offscreen: 2,
         resizeThrottleDelay: 100,
+        scrollSizeMax: 15_000_000, // Chrome ~17M, Firefox ~17M.
         scrollThrottleDelay: 100,
         updatePriority: UpdatePriorityEnum.Low,
     },
@@ -217,8 +256,8 @@ export const ListVirtualKit: {
                 y: itemLayoutPosition.y,
             }
 
-            const layoutKey = ListVirtualKit.computeVirtualLayoutKeyOf({
-                containerDimension: containerDirectionSize,
+            const layoutKey = ListVirtualKit.computeScrollPositionKey({
+                containerSize: containerDirectionSize,
                 position: itemDirectionOffset,
             })
 
@@ -278,17 +317,79 @@ export const ListVirtualKit: {
         return renderState
     },
 
+    computeScrollScaling(args) {
+        const {scrollPositionKey, scrollSizeMax, virtualLayout} = args
+
+        if (! virtualLayout) {
+            return Presets.scrollScalingDisabled
+        }
+        if (virtualLayout.virtualSize < scrollSizeMax) {
+            return Presets.scrollScalingDisabled
+        }
+
+        const {context, direction, virtualSize} = virtualLayout
+
+        const containerSize = ListVirtualKit.matchDirection(direction, {
+            horizontal: context.containerClient.width,
+            vertical: context.containerClient.height,
+        })
+
+        // Maps physical scroll [0, max - container] to virtual scroll [0, virtualSize - container].
+        const scale = (virtualSize - containerSize) / (scrollSizeMax - containerSize)
+        const virtualAnchor = scrollPositionKey * containerSize
+        const scrollAnchor = Math.round(virtualAnchor / scale)
+        const offset = virtualAnchor - scrollAnchor
+
+        return {offset: offset, scale: scale}
+    },
+
+    computeScrollPositionOfItem(args) {
+        const {align, item, scrollPosition, scrollScaling, scrollerSize, virtualLayout} = args
+        const {scale} = scrollScaling
+
+        const itemStart = ListVirtualKit.matchDirection(virtualLayout.direction, {
+            horizontal: item.x,
+            vertical: item.y,
+        })
+        const itemSize = ListVirtualKit.matchDirection(virtualLayout.direction, {
+            horizontal: item.width,
+            vertical: item.height,
+        })
+        const itemEnd = itemStart + itemSize
+        const virtualPosition = scrollPosition * scale
+
+        const virtualTarget = call(() => {
+            switch (align) {
+                case ScrollAlignEnum.Start: return itemStart
+                case ScrollAlignEnum.Center: return itemStart + (itemSize - scrollerSize) / 2
+                case ScrollAlignEnum.End: return itemEnd - scrollerSize
+                case ScrollAlignEnum.Nearest: {
+                    if (itemStart < virtualPosition || itemSize > scrollerSize) {
+                        return itemStart
+                    }
+                    if (itemEnd > virtualPosition + scrollerSize) {
+                        return itemEnd - scrollerSize
+                    }
+                    return virtualPosition
+                }
+            }
+        })
+        const virtualTargetClamped = clamp(0, virtualTarget, virtualLayout.virtualSize - scrollerSize)
+
+        return virtualTargetClamped / scale
+    },
+
     computeItemKeyOf(item, idx) {
         return idx
     },
 
-    computeVirtualLayoutKeyOf(args) {
-        const {containerDimension, position} = args
+    computeScrollPositionKey(args) {
+        const {containerSize, position} = args
 
-        return Math.trunc(position / containerDimension)
+        return Math.trunc(position / containerSize)
     },
 
-    styleOfContainer(direction) {
+    computeContainerStyle(direction) {
         const sharedStyles: React.CSSProperties = {
             display: 'flex',
         }
@@ -315,7 +416,7 @@ export const ListVirtualKit: {
         })
     },
 
-    styleOfScroller(direction, virtualSize) {
+    computeScrollerStyle(direction, virtualSize, scrollSizeMax) {
         const sharedStyles: React.CSSProperties = {
             position: 'relative',
             flexGrow: 1,
@@ -327,13 +428,15 @@ export const ListVirtualKit: {
             return sharedStyles
         }
 
+        const scrollSize = Math.min(virtualSize ?? 0, scrollSizeMax)
+
         return ListVirtualKit.matchDirection(direction, {
             horizontal(): React.CSSProperties {
                 return {
                     ...sharedStyles,
                     overflowX: 'auto',
                     overflowY: 'hidden',
-                    ['--VirtualList-scroller-size-horizontal' as string]: `${virtualSize}px`,
+                    ['--ListVirtual-scroller-width' as string]: `${scrollSize}px`,
                 }
             },
             vertical(): React.CSSProperties {
@@ -341,14 +444,14 @@ export const ListVirtualKit: {
                     ...sharedStyles,
                     overflowX: 'hidden',
                     overflowY: 'auto',
-                    ['--VirtualList-scroller-size-vertical' as string]: `${virtualSize}px`,
+                    ['--ListVirtual-scroller-height' as string]: `${scrollSize}px`,
                 }
             },
         })
     },
 
-    styleOfItem(item, direction) {
-        return {
+    computeItemStyle(item, direction, scrollScaling) {
+        const sharedStyles: React.CSSProperties = {
             position: 'absolute',
             top: item.y,
             left: item.x,
@@ -357,6 +460,29 @@ export const ListVirtualKit: {
             height: item.height,
             width: item.width,
         }
+
+        if (! direction) {
+            return sharedStyles
+        }
+        if (! scrollScaling) {
+            return sharedStyles
+        }
+        if (scrollScaling.scale === 1) {
+            return sharedStyles
+        }
+
+        return ListVirtualKit.matchDirection(direction, {
+            horizontal: (): React.CSSProperties => ({
+                ...sharedStyles,
+                left: item.x - scrollScaling.offset,
+                translate: 'var(--ListVirtual-scroller-translate)',
+            }),
+            vertical: (): React.CSSProperties => ({
+                ...sharedStyles,
+                top: item.y - scrollScaling.offset,
+                translate: 'var(--ListVirtual-scroller-translate)',
+            }),
+        })
     },
 }
 
@@ -364,6 +490,7 @@ export const ListVirtualKit: {
 
 export declare namespace ListVirtualModule {
     type DirectionEnum = EnumTypeOf<typeof DirectionEnum>
+    type ScrollAlignEnum = EnumTypeOf<typeof ScrollAlignEnum>
     type UpdatePriorityEnum = EnumTypeOf<typeof UpdatePriorityEnum>
 
     type LayoutList<I> = Array<LayoutItem<I>>
@@ -398,6 +525,11 @@ export declare namespace ListVirtualModule {
         item: I
     }
 
+    interface ScrollScaling {
+        offset: number
+        scale: number
+    }
+
     interface LayoutBox {
         height: number
         width: number
@@ -406,5 +538,10 @@ export declare namespace ListVirtualModule {
     interface LayoutPosition {
         x: number
         y: number
+    }
+
+    interface ScrollIntoViewOptions {
+        align?: undefined | ScrollAlignEnum
+        behavior?: undefined | ScrollBehavior
     }
 }

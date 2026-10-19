@@ -1,11 +1,11 @@
 .scroller-26b929::before {
   content: '';
   display: block;
-  width: var(--VirtualList-scroller-size-horizontal, 100%);
-  height: var(--VirtualList-scroller-size-vertical, 100%);
+  width: var(--ListVirtual-scroller-width, 100%);
+  height: var(--ListVirtual-scroller-height, 100%);
 }
 
 .v-item-2602e3 {
-  contain: var(--VirtualList-item-containment, layout paint size style);
-  content-visibility: var(--VirtualList-item-visibility, auto);
+  contain: var(--ListVirtual-item-containment, layout paint size style);
+  content-visibility: var(--ListVirtual-item-visibility, auto);
 }

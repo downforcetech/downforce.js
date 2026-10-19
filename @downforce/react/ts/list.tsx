@@ -3,7 +3,7 @@ import {areObjectsEqualShallow, omitObjectProps} from '@downforce/std/object'
 import {isUndefined} from '@downforce/std/optional'
 import type {Void} from '@downforce/std/type'
 import {areEqualDeepStrict} from '@downforce/std/value'
-import {memo, startTransition, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react'
+import {memo, startTransition, useCallback, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState} from 'react'
 import {classes} from './classes.js'
 import {useCallbackThrottled} from './defer.js'
 import {useEvent} from './event.js'
@@ -26,6 +26,7 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
         onRenderChange,
         ref: refOptional,
         resizeThrottleDelay: resizeThrottleDelayOptional,
+        scrollSizeMax: scrollSizeMaxOptional,
         scrollThrottleDelay: scrollThrottleDelayOptional,
         style,
         updatePriority: updatePriorityOptional,
@@ -36,6 +37,7 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
     const gridComputable = gridOptional ?? 1
     const offscreenComputable = offscreenOptional ?? ListVirtualKit.defaults.offscreen
     const resizeThrottleDelay = resizeThrottleDelayOptional ?? ListVirtualKit.defaults.resizeThrottleDelay
+    const scrollSizeMax = scrollSizeMaxOptional ?? ListVirtualKit.defaults.scrollSizeMax
     const scrollThrottleDelay = scrollThrottleDelayOptional ?? ListVirtualKit.defaults.scrollThrottleDelay
     const updatePriority = updatePriorityOptional ?? ListVirtualKit.defaults.updatePriority
     const itemKeyOf = itemKeyOfOptional ?? (ListVirtualKit.computeItemKeyOf as (item: I, idx: number) => number | string)
@@ -46,6 +48,7 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
     const windowRef = useRef<Window>(window)
     const containerRef = useRef<HTMLDivElement>(null)
     const scrollerRef = useRef<HTMLDivElement>(null)
+    const scrollScalingRef = useRef<ListVirtualModule.ScrollScaling>({offset: 0, scale: 1})
 
     const direction = context ? compute(directionComputable, context) : undefined
     const grid = context ? Math.max(0, compute(gridComputable, context)) : undefined
@@ -82,7 +85,7 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
         })
     }, [updatePriority])
 
-    const updateScroll = useCallback((): undefined => {
+    const updateScrollPositionKey = useCallback((): undefined => {
         const context = contextRef.current
 
         if (! context) {
@@ -92,47 +95,76 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
             return
         }
 
-        const newScrollPositionKey = ListVirtualKit.matchDirection(direction, {
+        const scrollScale = scrollScalingRef.current.scale
+
+        const scrollPositionKey = ListVirtualKit.matchDirection(direction, {
             horizontal() {
-                return ListVirtualKit.computeVirtualLayoutKeyOf({
-                    containerDimension: context.containerClient.width,
-                    position: scrollerRef.current?.scrollLeft ?? 0,
+                return ListVirtualKit.computeScrollPositionKey({
+                    containerSize: context.containerClient.width,
+                    position: (scrollerRef.current?.scrollLeft ?? 0) * scrollScale,
                 })
             },
             vertical() {
-                return ListVirtualKit.computeVirtualLayoutKeyOf({
-                    containerDimension: context.containerClient.height,
-                    position: scrollerRef.current?.scrollTop ?? 0,
+                return ListVirtualKit.computeScrollPositionKey({
+                    containerSize: context.containerClient.height,
+                    position: (scrollerRef.current?.scrollTop ?? 0) * scrollScale,
                 })
             },
         })
 
         ListVirtualKit.matchUpdatePriority(updatePriority, {
             high() {
-                setScrollPositionKey(newScrollPositionKey)
+                setScrollPositionKey(scrollPositionKey)
             },
             low() {
                 startTransition(() => {
-                    setScrollPositionKey(newScrollPositionKey)
+                    setScrollPositionKey(scrollPositionKey)
                 })
             },
         })
     }, [direction, updatePriority])
 
-    const updateContextAndScroll = useCallback(() => {
+    const updateScrollPositionKeyThrottled = useCallbackThrottled(scrollThrottleDelay, updateScrollPositionKey)
+
+    const updateScrollTranslate = useCallback((): undefined => {
+        const scrollerElement = scrollerRef.current
+        const {offset, scale} = scrollScalingRef.current
+
+        if (scale === 1) {
+            return
+        }
+        if (! scrollerElement) {
+            return
+        }
+        if (! direction) {
+            return
+        }
+
+        const translateValue = ListVirtualKit.matchDirection(direction, {
+            horizontal() {
+                const shift = offset - scrollerElement.scrollLeft * (scale - 1)
+                return `${shift}px 0`
+            },
+            vertical() {
+                const shift = offset - scrollerElement.scrollTop * (scale - 1)
+                return `0 ${shift}px`
+            },
+        })
+
+        scrollerElement.style.setProperty('--ListVirtual-scroller-translate', translateValue)
+    }, [direction])
+
+    const updateContextAndScrollPositionKey = useCallback(() => {
         updateContext()
-        updateScroll()
-    }, [updateContext, updateScroll])
+        updateScrollPositionKey()
+    }, [updateContext, updateScrollPositionKey])
 
-    const onResizeThrottled = useCallbackThrottled(resizeThrottleDelay, updateContextAndScroll)
-    const onScrollThrottled = useCallbackThrottled(scrollThrottleDelay, updateScroll)
+    const updateContextAndScrollPositionKeyThrottled = useCallbackThrottled(resizeThrottleDelay, updateContextAndScrollPositionKey)
 
-    // We use useEffect instead of useLayoutEffect here, because with useLayoutEffect
-    // we would force browser to trash the layout with consequent loooooong task:
-    // Style + Layout + Paint + Composite.
-    useEffect(updateContext, [updateContext])
-    useResizeObserver(containerRef, onResizeThrottled)
-    useEvent(windowRef, 'resize', onResizeThrottled, undefined, {passive: true})
+    const onScroll = useCallback(() => {
+        updateScrollTranslate()
+        updateScrollPositionKeyThrottled()
+    }, [updateScrollTranslate, updateScrollPositionKeyThrottled])
 
     const virtualLayout = useMemo(() => {
         if (! context) {
@@ -171,11 +203,90 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
         })
     }, [scrollPositionKey, virtualLayout])
 
+    const scrollScaling = useMemo(() => {
+        return ListVirtualKit.computeScrollScaling({
+            scrollPositionKey: scrollPositionKey,
+            scrollSizeMax: scrollSizeMax,
+            virtualLayout: virtualLayout,
+        })
+    }, [scrollPositionKey, scrollSizeMax, virtualLayout])
+
     useImperativeHandle<ListVirtualRefValue<I>, ListVirtualRefValue<I>>(refOptional, () => ({
         containerRef: containerRef,
         scrollerRef: scrollerRef,
+        scrollScaling: scrollScaling,
         virtualLayout: virtualLayout,
-    }), [virtualLayout])
+        scrollIntoView(idx, options) {
+            const scrollerElement = scrollerRef.current
+            const item = virtualLayout?.virtualLayoutList[idx]
+
+            if (! scrollerElement) {
+                return
+            }
+            if (! virtualLayout) {
+                return
+            }
+            if (! item) {
+                return
+            }
+
+            const position = ListVirtualKit.computeScrollPositionOfItem({
+                align: options?.align ?? ListVirtualKit.ScrollAlignEnum.Start,
+                item: item,
+                scrollPosition: ListVirtualKit.matchDirection(virtualLayout.direction, {
+                    horizontal() {
+                        return scrollerElement.scrollLeft
+                    },
+                    vertical() {
+                        return scrollerElement.scrollTop
+                    },
+                }),
+                scrollScaling: scrollScaling,
+                scrollerSize: ListVirtualKit.matchDirection(virtualLayout.direction, {
+                    horizontal() {
+                        return scrollerElement.clientWidth
+                    },
+                    vertical() {
+                        return scrollerElement.clientHeight
+                    },
+                }),
+                virtualLayout: virtualLayout,
+            })
+
+            scrollerElement.scrollTo({
+                behavior: options?.behavior ?? 'auto',
+                ...ListVirtualKit.matchDirection(virtualLayout.direction, {
+                    horizontal() {
+                        return {left: position}
+                    },
+                    vertical() {
+                        return {top: position}
+                    },
+                }),
+            })
+        },
+    }), [scrollScaling, virtualLayout])
+
+    // We use useEffect instead of useLayoutEffect here, because `updateContext()` reads the DOM,
+    // and inside an useLayoutEffect forces the browser to trash the layout with consequent loooooong task:
+    // Style + Layout + Paint + Composite.
+    useEffect(updateContext, [updateContext])
+    useResizeObserver(containerRef, updateContextAndScrollPositionKeyThrottled)
+    useEvent(windowRef, 'resize', updateContextAndScrollPositionKeyThrottled, undefined, {passive: true})
+
+    useLayoutEffect(() => {
+        if (scrollScalingRef.current.scale !== scrollScaling.scale && scrollScaling.scale === 1) {
+            scrollerRef.current?.style.removeProperty('--ListVirtual-scroller-translate')
+        }
+
+        scrollScalingRef.current = scrollScaling
+
+        updateScrollTranslate()
+    }, [scrollScaling, updateScrollTranslate])
+
+    useEffect(() => {
+        updateScrollPositionKey()
+    }, [scrollScaling.scale, updateScrollPositionKey])
 
     useEffect(() => {
         onLayoutChange?.(virtualLayout)
@@ -192,22 +303,19 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
             {...otherProps}
             ref={containerRef}
             className={classes('ListVirtual-2616fa', className)}
-            style={{
-                ...style,
-                ...ListVirtualKit.styleOfContainer(direction),
-            }}
+            style={{...style, ...ListVirtualKit.computeContainerStyle(direction)}}
         >
             <div
                 ref={scrollerRef}
                 className='scroller-26b929'
-                style={ListVirtualKit.styleOfScroller(direction, virtualLayout?.virtualSize)}
-                onScrollCapture={onScrollThrottled}
+                style={ListVirtualKit.computeScrollerStyle(direction, virtualLayout?.virtualSize, scrollSizeMax)}
+                onScrollCapture={onScroll}
             >
                 {context && renderState?.map(it => (
                     <div
                         key={it.key}
                         className='v-item-2602e3'
-                        style={ListVirtualKit.styleOfItem(it, direction)}
+                        style={ListVirtualKit.computeItemStyle(it, direction, scrollScaling)}
                     >
                         {children(it.item, it.idx, it, context)}
                     </div>
@@ -253,6 +361,7 @@ export interface ListVirtualProps<I> extends
     onLayoutChange?: undefined | ((virtualLayout: undefined | ListVirtualModule.Layout<I>) => Void)
     onRenderChange?: undefined | ((renderState: undefined | ListVirtualModule.LayoutList<I>) => Void)
     resizeThrottleDelay?: undefined | number
+    scrollSizeMax?: undefined | number
     scrollThrottleDelay?: undefined | number
     updatePriority?: undefined | ListVirtualModule.UpdatePriorityEnum
 }
@@ -260,5 +369,7 @@ export interface ListVirtualProps<I> extends
 export interface ListVirtualRefValue<I> {
     containerRef: React.RefObject<null | HTMLDivElement>
     scrollerRef: React.RefObject<null | HTMLDivElement>
+    scrollScaling: ListVirtualModule.ScrollScaling
     virtualLayout: undefined | ListVirtualModule.Layout<I>
+    scrollIntoView(idx: number, options?: undefined | ListVirtualModule.ScrollIntoViewOptions): undefined
 }
