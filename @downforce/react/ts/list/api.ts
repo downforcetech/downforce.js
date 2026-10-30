@@ -94,11 +94,7 @@ export const ListVirtualKit: {
         containerSize: number
         position: number
     }): number
-    computeContainerStyle(
-        direction: undefined | ListVirtualModule.DirectionEnum,
-    ): React.CSSProperties
     computeScrollerStyle(
-        direction: undefined | ListVirtualModule.DirectionEnum,
         virtualSize: undefined | number,
         scrollSizeMax: number,
     ): React.CSSProperties
@@ -389,96 +385,40 @@ export const ListVirtualKit: {
         return Math.trunc(position / containerSize)
     },
 
-    computeContainerStyle(direction) {
-        const sharedStyles: React.CSSProperties = {
-            display: 'flex',
-        }
-
-        if (! direction) {
-            return sharedStyles
-        }
-
-        return ListVirtualKit.matchDirection(direction, {
-            horizontal(): React.CSSProperties {
-                return {
-                    ...sharedStyles,
-                    flexDirection: 'row',
-                    overflow: 'hidden',
-                }
-            },
-            vertical(): React.CSSProperties {
-                return {
-                    ...sharedStyles,
-                    flexDirection: 'column',
-                    overflow: 'hidden',
-                }
-            },
-        })
-    },
-
-    computeScrollerStyle(direction, virtualSize, scrollSizeMax) {
-        const sharedStyles: React.CSSProperties = {
-            position: 'relative',
-            flexGrow: 1,
-            flexShrink: 1,
-            flexBasis: 0,
-        }
-
-        if (! direction) {
-            return sharedStyles
-        }
-
+    computeScrollerStyle(virtualSize, scrollSizeMax) {
         const scrollSize = Math.min(virtualSize ?? 0, scrollSizeMax)
 
-        return ListVirtualKit.matchDirection(direction, {
-            horizontal(): React.CSSProperties {
-                return {
-                    ...sharedStyles,
-                    overflowX: 'auto',
-                    overflowY: 'hidden',
-                    ['--ListVirtual-scroller-width' as string]: `${scrollSize}px`,
-                }
-            },
-            vertical(): React.CSSProperties {
-                return {
-                    ...sharedStyles,
-                    overflowX: 'hidden',
-                    overflowY: 'auto',
-                    ['--ListVirtual-scroller-height' as string]: `${scrollSize}px`,
-                }
-            },
-        })
+        return {
+            ['--ListVirtual-scroller-size' as string]: `${scrollSize}px`,
+        }
     },
 
     computeItemStyle(item, direction, scrollScaling) {
-        const sharedStyles: React.CSSProperties = {
-            position: 'absolute',
+        const itemStyle: React.CSSProperties = {
             top: item.y,
             left: item.x,
-            right: item.x + item.width,
-            bottom: item.y + item.height,
             height: item.height,
             width: item.width,
         }
 
         if (! direction) {
-            return sharedStyles
+            return itemStyle
         }
         if (! scrollScaling) {
-            return sharedStyles
+            return itemStyle
         }
         if (scrollScaling.scale === 1) {
-            return sharedStyles
+            return itemStyle
         }
 
         return ListVirtualKit.matchDirection(direction, {
             horizontal: (): React.CSSProperties => ({
-                ...sharedStyles,
+                ...itemStyle,
                 left: item.x - scrollScaling.offset,
                 translate: 'var(--ListVirtual-scroller-translate)',
             }),
             vertical: (): React.CSSProperties => ({
-                ...sharedStyles,
+                ...itemStyle,
                 top: item.y - scrollScaling.offset,
                 translate: 'var(--ListVirtual-scroller-translate)',
             }),

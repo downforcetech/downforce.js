@@ -28,7 +28,6 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
         resizeThrottleDelay: resizeThrottleDelayOptional,
         scrollSizeMax: scrollSizeMaxOptional,
         scrollThrottleDelay: scrollThrottleDelayOptional,
-        style,
         updatePriority: updatePriorityOptional,
         ...otherProps
     } = props
@@ -303,12 +302,13 @@ export function ListVirtual<I>(props: Props<ListVirtualProps<I>>): React.JSX.Ele
             {...otherProps}
             ref={containerRef}
             className={classes('ListVirtual-2616fa', className)}
-            style={{...style, ...ListVirtualKit.computeContainerStyle(direction)}}
+            data-direction={direction}
         >
             <div
                 ref={scrollerRef}
                 className='scroller-26b929'
-                style={ListVirtualKit.computeScrollerStyle(direction, virtualLayout?.virtualSize, scrollSizeMax)}
+                data-direction={direction}
+                style={ListVirtualKit.computeScrollerStyle(virtualLayout?.virtualSize, scrollSizeMax)}
                 onScrollCapture={onScroll}
             >
                 {context && renderState?.map(it => (

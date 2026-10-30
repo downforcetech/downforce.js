@@ -1,11 +1,43 @@
+.ListVirtual-2616fa {
+    display: flex;
+    overflow: hidden;
+}
+.ListVirtual-2616fa[data-direction='horizontal'] {
+    flex-direction: row;
+}
+.ListVirtual-2616fa[data-direction='vertical'] {
+    flex-direction: column;
+}
+
+.scroller-26b929 {
+    position: relative;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+}
+.scroller-26b929[data-direction='horizontal'] {
+    overflow-x: var(--ListVirtual-scroller-overflow-main, auto);
+    overflow-y: var(--ListVirtual-scroller-overflow-cross, hidden);
+}
+.scroller-26b929[data-direction='vertical'] {
+    overflow-x: var(--ListVirtual-scroller-overflow-cross, hidden);
+    overflow-y: var(--ListVirtual-scroller-overflow-main, auto);
+}
 .scroller-26b929::before {
-  content: '';
-  display: block;
-  width: var(--ListVirtual-scroller-width, 100%);
-  height: var(--ListVirtual-scroller-height, 100%);
+    content: '';
+    display: block;
+}
+.scroller-26b929[data-direction='horizontal']::before {
+    width: var(--ListVirtual-scroller-size, 100%);
+    height: 100%;
+}
+.scroller-26b929[data-direction='vertical']::before {
+    width: 100%;
+    height: var(--ListVirtual-scroller-size, 100%);
 }
 
 .v-item-2602e3 {
-  contain: var(--ListVirtual-item-containment, layout paint size style);
-  content-visibility: var(--ListVirtual-item-visibility, auto);
+    position: absolute;
+    contain: var(--ListVirtual-item-containment, layout paint size style);
+    content-visibility: var(--ListVirtual-item-visibility, auto);
 }
